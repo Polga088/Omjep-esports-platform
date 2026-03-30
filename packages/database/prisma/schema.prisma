@@ -1,0 +1,171 @@
+// ============================================================
+// OMJEP — Schéma de base de données EA FC 26 E-Sport Platform
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  PLAYER
+}
+
+enum Position {
+  GK
+  DC
+  LAT
+  RAT
+  MDC
+  MOC
+  MG
+  MD
+  BU
+  ATT
+}
+
+enum Platform {
+  CROSSPLAY
+  PS5
+  XBOX
+  PC
+}
+
+enum ClubRole {
+  FOUNDER
+  MANAGER
+  CO_MANAGER
+  PLAYER
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+  DISPUTED
+}
+
+enum TransferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+// ============================================================
+// MODELS
+// ============================================================
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique
+  password_hash String
+  role          UserRole  @default(PLAYER)
+  created_at    DateTime  @default(now())
+
+  // Identifiants de jeu
+  ea_persona_name String? @unique
+  gamertag_psn    String?
+  gamertag_xbox   String?
+
+  // Profil sportif
+  preferred_position Position?
+  nationality        String?
+
+  // Relations
+  teamMemberships  TeamMember[]
+  stats            PlayerStats?
+  transferRequests TransferRequest[]
+
+  @@map("users")
+}
+
+model Team {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @unique
+  logo_url   String?
+  created_at DateTime @default(now())
+
+  // Identifiants proclubs.io (crucial pour l'intégration API future)
+  ea_club_id String?  @unique
+  platform   Platform @default(CROSSPLAY)
+
+  // Relations
+  members          TeamMember[]
+  homeMatches      Match[]          @relation("HomeTeam")
+  awayMatches      Match[]          @relation("AwayTeam")
+  transferRequests TransferRequest[]
+
+  @@map("teams")
+}
+
+// Table de liaison Roster (Many-to-Many explicite User <-> Team)
+model TeamMember {
+  user_id   String   @db.Uuid
+  team_id   String   @db.Uuid
+  club_role ClubRole @default(PLAYER)
+  joined_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, team_id])
+  @@map("team_members")
+}
+
+// Statistiques individuelles globales (One-to-One avec User)
+model PlayerStats {
+  id             String @id @default(uuid()) @db.Uuid
+  user_id        String @unique @db.Uuid
+
+  matches_played Int   @default(0)
+  goals          Int   @default(0)
+  assists        Int   @default(0)
+  clean_sheets   Int   @default(0)
+  motm           Int   @default(0) // Man of the Match count
+  average_rating Float @default(0.0)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("player_stats")
+}
+
+model Match {
+  id           String      @id @default(uuid()) @db.Uuid
+  ea_match_id  String?     @unique // Identifiant optionnel pour l'API proclubs.io
+  home_team_id String      @db.Uuid
+  away_team_id String      @db.Uuid
+  home_score   Int?
+  away_score   Int?
+  status       MatchStatus @default(SCHEDULED)
+  played_at    DateTime?
+
+  homeTeam Team @relation("HomeTeam", fields: [home_team_id], references: [id])
+  awayTeam Team @relation("AwayTeam", fields: [away_team_id], references: [id])
+
+  @@map("matches")
+}
+
+// Mercato — demandes de transfert
+model TransferRequest {
+  id         String         @id @default(uuid()) @db.Uuid
+  player_id  String         @db.Uuid
+  team_id    String         @db.Uuid
+  status     TransferStatus @default(PENDING)
+  created_at DateTime       @default(now())
+
+  player User @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  team   Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("transfer_requests")
+}
