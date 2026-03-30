@@ -3,10 +3,10 @@ import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDateString, IsArray, IsUUID
 export class CreateCompetitionDto {
   @IsString()
   @IsNotEmpty()
-  name: string;!
+  name!: string;
 
   @IsEnum(['LEAGUE', 'CUP'])
-  type: 'LEAGUE' | 'CUP';!
+  type!: 'LEAGUE' | 'CUP';
 
   @IsOptional()
   @IsDateString()
@@ -19,5 +19,5 @@ export class CreateCompetitionDto {
   @IsOptional()
   @IsArray()
   @IsUUID('4', { each: true })
-  team_ids?: string[];!
+  team_ids?: string[];
 }

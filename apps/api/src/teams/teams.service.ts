@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@omjep/database';
 
@@ -90,7 +90,19 @@ export class TeamsService {
 
   async update(id: string, data: Prisma.TeamUpdateInput) {
     await this.findOne(id);
-    return this.prisma.team.update({ where: { id }, data });
+    try {
+      return await this.prisma.team.update({ where: { id }, data });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Cet ID ProClubs est déjà lié à un autre club.',
+        );
+      }
+      throw error;
+    }
   }
 
   async remove(id: string) {
