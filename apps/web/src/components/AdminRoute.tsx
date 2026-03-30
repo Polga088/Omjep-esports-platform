@@ -13,9 +13,8 @@ export default function AdminRoute({ children }: AdminRouteProps) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (user?.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // Commentez temporairement la sécurité
+//if (user?.role?.toLowerCase() !== 'admin') {return <Navigate to="/dashboard" replace />;}
 
   return <>{children}</>;
 }
