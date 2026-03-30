@@ -5,6 +5,14 @@ import {
 } from 'lucide-react';
 import api from '@/lib/api';
 
+function PlayerLink({ id, children, className }: { id: string; children: React.ReactNode; className?: string }) {
+  return (
+    <Link to={`/dashboard/profile/${id}`} className={className}>
+      {children}
+    </Link>
+  );
+}
+
 interface TopPlayer {
   player: { id: string; ea_persona_name: string | null };
   team: { id: string; name: string; logo_url: string | null };
@@ -57,9 +65,9 @@ function PodiumAvatar({ player, index }: { player: TopPlayer; index: number }) {
         </span>
       </div>
 
-      <p className={`font-bold ${nameSize} text-white text-center truncate max-w-[120px]`}>
+      <PlayerLink id={player.player.id} className={`font-bold ${nameSize} text-white text-center truncate max-w-[120px] hover:text-amber-300 transition-colors`}>
         {player.player.ea_persona_name ?? 'Anonyme'}
-      </p>
+      </PlayerLink>
 
       <div className="flex items-center gap-1.5">
         {player.team.logo_url ? (
@@ -163,9 +171,9 @@ function RankTable({ players }: { players: TopPlayer[] }) {
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00D4FF]/15 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-xs font-bold text-[#00D4FF] uppercase shrink-0">
                         {(entry.player.ea_persona_name ?? '?').charAt(0)}
                       </div>
-                      <span className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors truncate">
+                      <PlayerLink id={entry.player.id} className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors truncate">
                         {entry.player.ea_persona_name ?? 'Anonyme'}
-                      </span>
+                      </PlayerLink>
                     </div>
                   </td>
                   <td className="px-4 py-3.5">

@@ -30,6 +30,11 @@ export class UsersController {
     return this.usersService.updateProfile(req.user.id, dto);
   }
 
+  @Get(':id/profile-card')
+  getProfileCard(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.getProfileCard(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);

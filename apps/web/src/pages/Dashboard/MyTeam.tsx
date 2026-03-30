@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -263,9 +264,12 @@ export default function MyTeam() {
                             {pseudo.charAt(0)}
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors">
+                            <Link
+                              to={`/dashboard/profile/${user.id}`}
+                              className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors hover:underline decoration-[#00D4FF]/40 underline-offset-2"
+                            >
                               {pseudo}
-                            </p>
+                            </Link>
                             <p className="text-xs text-slate-600">{user.nationality ?? '—'}</p>
                           </div>
                         </div>

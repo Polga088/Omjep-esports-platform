@@ -79,6 +79,64 @@ export class UsersService {
     });
   }
 
+  async getProfileCard(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        ea_persona_name: true,
+        preferred_position: true,
+        nationality: true,
+        gamertag_psn: true,
+        gamertag_xbox: true,
+        role: true,
+        created_at: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException(`Joueur #${id} introuvable`);
+
+    const currentMembership = await this.prisma.teamMember.findFirst({
+      where: { user_id: id },
+      orderBy: { joined_at: 'desc' },
+      include: { team: true },
+    });
+
+    const teamIds = (
+      await this.prisma.teamMember.findMany({
+        where: { user_id: id },
+        select: { team_id: true },
+      })
+    ).map((m) => m.team_id);
+
+    const [goals, assists, matches] = await Promise.all([
+      this.prisma.matchEvent.count({
+        where: { player_id: id, type: 'GOAL' },
+      }),
+      this.prisma.matchEvent.count({
+        where: { player_id: id, type: 'ASSIST' },
+      }),
+      teamIds.length > 0
+        ? this.prisma.match.count({
+            where: {
+              status: { in: ['PLAYED', 'FINISHED'] },
+              OR: [
+                { home_team_id: { in: teamIds } },
+                { away_team_id: { in: teamIds } },
+              ],
+            },
+          })
+        : Promise.resolve(0),
+    ]);
+
+    return {
+      user,
+      team: currentMembership?.team ?? null,
+      stats: { goals, assists, matches },
+    };
+  }
+
   async remove(id: string) {
     await this.findOne(id);
     return this.prisma.user.delete({ where: { id } });
