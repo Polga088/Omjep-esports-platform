@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import {
   Swords, Loader2, X, CheckCircle2, AlertCircle,
-  Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal,
+  Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal, RefreshCw,
 } from 'lucide-react';
 import api from '@/lib/api';
 
@@ -114,6 +114,7 @@ export default function AdminMatches() {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [syncingMatchId, setSyncingMatchId] = useState<string | null>(null);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -242,6 +243,22 @@ export default function AdminMatches() {
       setError(err.response?.data?.message ?? 'Erreur lors de la validation.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleSyncMatch = async (matchId: string) => {
+    setSyncingMatchId(matchId);
+    setError('');
+    try {
+      await api.post(`/admin/sync/${matchId}`);
+      setSuccess('Match synchronisé avec succès !');
+      await fetchData();
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? 'Erreur lors de la synchronisation ProClubs.');
+      setTimeout(() => setError(''), 4000);
+    } finally {
+      setSyncingMatchId(null);
     }
   };
 
@@ -449,6 +466,20 @@ export default function AdminMatches() {
                   <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot} ${match.status === 'LIVE' ? 'animate-pulse' : ''}`} />
                   {statusCfg.label}
                 </span>
+
+                {/* Sync Live button */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSyncMatch(match.id);
+                  }}
+                  disabled={syncingMatchId === match.id}
+                  title="Synchroniser via ProClubs"
+                  className="p-2 rounded-xl border border-amber-400/15 bg-white/[0.03] text-amber-400/60 hover:text-amber-400 hover:border-amber-400/30 hover:bg-amber-400/10 transition-all duration-200 disabled:opacity-50 shrink-0"
+                >
+                  <RefreshCw className={`w-4 h-4 ${syncingMatchId === match.id ? 'animate-spin' : ''}`} />
+                </button>
 
                 {/* Click hint for scheduled matches */}
                 {isScheduled && (

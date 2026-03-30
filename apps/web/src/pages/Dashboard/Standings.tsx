@@ -308,14 +308,14 @@ export default function Standings() {
                       <td className="px-3 py-3.5 text-center">
                         <span
                           className={`text-sm font-bold tabular-nums ${
-                            entry.goalDifference > 0
+                            entry.diff > 0
                               ? 'text-emerald-400'
-                              : entry.goalDifference < 0
+                              : entry.diff < 0
                                 ? 'text-red-400'
                                 : 'text-slate-500'
                           }`}
                         >
-                          {entry.goalDifference > 0 ? '+' : ''}{entry.goalDifference}
+                          {entry.diff > 0 ? '+' : ''}{entry.diff}
                         </span>
                       </td>
 

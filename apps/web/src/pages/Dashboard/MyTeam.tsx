@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users } from 'lucide-react';
+import { UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import InvitePlayerModal from '@/components/InvitePlayerModal';
@@ -38,6 +38,7 @@ interface MyTeamData {
   id: string;
   name: string;
   logo_url: string | null;
+  external_id: string | null;
   members: TeamMember[];
 }
 
@@ -115,6 +116,11 @@ export default function MyTeam() {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const { user } = useAuthStore();
 
+  const [externalIdInput, setExternalIdInput] = useState('');
+  const [linkingClub, setLinkingClub] = useState(false);
+  const [linkSuccess, setLinkSuccess] = useState('');
+  const [linkError, setLinkError] = useState('');
+
   useEffect(() => {
     let cancelled = false;
 
@@ -149,6 +155,32 @@ export default function MyTeam() {
     allMembers.length > 0
       ? allMembers.reduce((sum, m) => sum + (m.user.stats?.average_rating ?? 0), 0) / allMembers.length
       : 0;
+
+  const isManager = currentMember &&
+    ['FOUNDER', 'MANAGER'].includes(currentMember.club_role);
+
+  const isSynced = !!team?.external_id;
+
+  useEffect(() => {
+    if (team?.external_id) setExternalIdInput(team.external_id);
+  }, [team?.external_id]);
+
+  const handleLinkClub = async () => {
+    if (!team || !externalIdInput.trim()) return;
+    setLinkingClub(true);
+    setLinkError('');
+    setLinkSuccess('');
+    try {
+      await api.patch(`/teams/${team.id}`, { external_id: externalIdInput.trim() });
+      setTeam((prev) => prev ? { ...prev, external_id: externalIdInput.trim() } : prev);
+      setLinkSuccess('Club ProClubs lié avec succès !');
+      setTimeout(() => setLinkSuccess(''), 4000);
+    } catch (err: any) {
+      setLinkError(err.response?.data?.message ?? 'Erreur lors de la liaison.');
+    } finally {
+      setLinkingClub(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -317,6 +349,83 @@ export default function MyTeam() {
           <span className="text-xs text-slate-700">Données live — v1.0</span>
         </div>
       </div>
+
+      {/* Section Liaison EA Sports — visible pour Manager / Fondateur */}
+      {isManager && team && (
+        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
+          <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Link2 className="w-4 h-4 text-amber-400" />
+              <h2 className="text-sm font-semibold text-white">Liaison EA Sports</h2>
+            </div>
+            <span
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                isSynced
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                  : 'bg-white/5 border-white/10 text-slate-500'
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full ${isSynced ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+              {isSynced ? 'Synchronisé' : 'Non lié'}
+            </span>
+          </div>
+          <div className="px-6 py-6 space-y-4">
+            <p className="text-sm text-slate-400">
+              Liez votre club EA Sports FC Pro Clubs pour synchroniser automatiquement les résultats et statistiques de matchs.
+            </p>
+
+            {linkSuccess && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs animate-[fadeIn_0.3s_ease-out]">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                {linkSuccess}
+              </div>
+            )}
+            {linkError && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs animate-[fadeIn_0.3s_ease-out]">
+                {linkError}
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1">
+                <label className="block text-xs font-semibold uppercase tracking-widest text-slate-600 mb-2">
+                  ID Club ProClubs
+                </label>
+                <input
+                  type="text"
+                  value={externalIdInput}
+                  onChange={(e) => setExternalIdInput(e.target.value)}
+                  placeholder="ex: 12345678"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-amber-400/10 text-white text-sm placeholder:text-slate-700 focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200 tabular-nums"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={handleLinkClub}
+                  disabled={linkingClub || !externalIdInput.trim()}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-400 to-amber-600 text-[#0A0E1A] shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:brightness-110 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                  {linkingClub ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Link2 className="w-4 h-4" />
+                  )}
+                  {isSynced ? 'Mettre à jour' : 'Lier le club'}
+                </button>
+              </div>
+            </div>
+
+            {isSynced && (
+              <div className="flex items-center gap-2 pt-1">
+                <span className="text-xs text-slate-600">Club ID actuel :</span>
+                <code className="px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/15 text-amber-400 text-xs font-mono">
+                  {team.external_id}
+                </code>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Section Recrutement — visible uniquement pour Fondateur / Manager / Co-Manager */}
       {canRecruit && team && (

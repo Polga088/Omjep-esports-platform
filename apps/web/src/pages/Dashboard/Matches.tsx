@@ -205,6 +205,9 @@ function MatchCard({ match }: { match: Match }) {
               <span className="text-slate-600 text-[10px] uppercase tracking-wider">
                 Terminé
               </span>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/5 border border-amber-400/10 text-[9px] font-semibold text-amber-400/50 mt-0.5">
+                Source: ProClubs.io
+              </span>
             </>
           ) : (
             <>
