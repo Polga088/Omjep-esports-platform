@@ -38,7 +38,7 @@ interface MyTeamData {
   id: string;
   name: string;
   logo_url: string | null;
-  external_id: string | null;
+  proclubs_url: string | null;
   members: TeamMember[];
 }
 
@@ -159,11 +159,11 @@ export default function MyTeam() {
   const isManager = currentMember &&
     ['FOUNDER', 'MANAGER'].includes(currentMember.club_role);
 
-  const isSynced = !!team?.external_id;
+  const isSynced = !!team?.proclubs_url;
 
   useEffect(() => {
-    if (team?.external_id) setExternalIdInput(team.external_id);
-  }, [team?.external_id]);
+    if (team?.proclubs_url) setExternalIdInput(team.proclubs_url);
+  }, [team?.proclubs_url]);
 
   const handleLinkClub = async () => {
     if (!team || !externalIdInput.trim()) return;
@@ -171,8 +171,8 @@ export default function MyTeam() {
     setLinkError('');
     setLinkSuccess('');
     try {
-      await api.patch(`/teams/${team.id}`, { external_id: externalIdInput.trim() });
-      setTeam((prev) => prev ? { ...prev, external_id: externalIdInput.trim() } : prev);
+      await api.patch(`/teams/${team.id}`, { proclubs_url: externalIdInput.trim() });
+      setTeam((prev) => prev ? { ...prev, proclubs_url: externalIdInput.trim() } : prev);
       setLinkSuccess('Club ProClubs lié avec succès !');
       setTimeout(() => setLinkSuccess(''), 4000);
     } catch (err: any) {
@@ -389,13 +389,13 @@ export default function MyTeam() {
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <label className="block text-xs font-semibold uppercase tracking-widest text-slate-600 mb-2">
-                  ID Club ProClubs
+                  URL ProClubs.io
                 </label>
                 <input
                   type="text"
                   value={externalIdInput}
                   onChange={(e) => setExternalIdInput(e.target.value)}
-                  placeholder="ex: 12345678"
+                  placeholder="ex: https://proclubs.io/club/ps5/mon-club/12345/overview"
                   className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-amber-400/10 text-white text-sm placeholder:text-slate-700 focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200 tabular-nums"
                 />
               </div>
@@ -417,10 +417,15 @@ export default function MyTeam() {
 
             {isSynced && (
               <div className="flex items-center gap-2 pt-1">
-                <span className="text-xs text-slate-600">Club ID actuel :</span>
-                <code className="px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/15 text-amber-400 text-xs font-mono">
-                  {team.external_id}
-                </code>
+                <span className="text-xs text-slate-600">URL actuelle :</span>
+                <a
+                  href={team.proclubs_url!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/15 text-amber-400 text-xs font-mono hover:bg-amber-400/20 transition-colors truncate max-w-xs"
+                >
+                  {team.proclubs_url}
+                </a>
               </div>
             )}
           </div>

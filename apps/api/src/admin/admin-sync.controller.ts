@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Param,
+  Body,
   ParseUUIDPipe,
   UseGuards,
   BadRequestException,
@@ -32,7 +33,39 @@ export class AdminSyncController {
       return {
         message: 'Match synchronisé avec succès via ProClubs.',
         synced: true,
-        match: result.match,
+        match: result.updatedMatch,
+        matchedPlayers: result.matchedPlayers,
+        eventsCreated: result.createdEventsCount,
+      };
+    } catch (error) {
+      throw new BadRequestException((error as Error).message);
+    }
+  }
+
+  @Post('url/scrape')
+  async syncFromUrl(@Body('url') url: string) {
+    if (!url || !url.startsWith('http')) {
+      throw new BadRequestException(
+        'Une URL ProClubs.io valide est requise (ex: https://proclubs.io/club/...).',
+      );
+    }
+
+    try {
+      const result = await this.proClubsService.syncFromProClubsUrl(url);
+
+      if (!result.synced) {
+        return {
+          message: `Synchronisation impossible : ${result.reason}`,
+          synced: false,
+          scraped: result.scraped,
+        };
+      }
+
+      return {
+        message: 'Données ProClubs récupérées et matchées avec succès.',
+        synced: true,
+        scraped: result.scraped,
+        matchedPlayers: result.matchedPlayers,
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message);

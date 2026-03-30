@@ -3342,7 +3342,7 @@ export namespace Prisma {
 
   export type TeamMinAggregateOutputType = {
     id: string | null
-    external_id: string | null
+    proclubs_url: string | null
     name: string | null
     logo_url: string | null
     created_at: Date | null
@@ -3352,7 +3352,7 @@ export namespace Prisma {
 
   export type TeamMaxAggregateOutputType = {
     id: string | null
-    external_id: string | null
+    proclubs_url: string | null
     name: string | null
     logo_url: string | null
     created_at: Date | null
@@ -3362,7 +3362,7 @@ export namespace Prisma {
 
   export type TeamCountAggregateOutputType = {
     id: number
-    external_id: number
+    proclubs_url: number
     name: number
     logo_url: number
     created_at: number
@@ -3374,7 +3374,7 @@ export namespace Prisma {
 
   export type TeamMinAggregateInputType = {
     id?: true
-    external_id?: true
+    proclubs_url?: true
     name?: true
     logo_url?: true
     created_at?: true
@@ -3384,7 +3384,7 @@ export namespace Prisma {
 
   export type TeamMaxAggregateInputType = {
     id?: true
-    external_id?: true
+    proclubs_url?: true
     name?: true
     logo_url?: true
     created_at?: true
@@ -3394,7 +3394,7 @@ export namespace Prisma {
 
   export type TeamCountAggregateInputType = {
     id?: true
-    external_id?: true
+    proclubs_url?: true
     name?: true
     logo_url?: true
     created_at?: true
@@ -3477,7 +3477,7 @@ export namespace Prisma {
 
   export type TeamGroupByOutputType = {
     id: string
-    external_id: string | null
+    proclubs_url: string | null
     name: string
     logo_url: string | null
     created_at: Date
@@ -3504,7 +3504,7 @@ export namespace Prisma {
 
   export type TeamSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    external_id?: boolean
+    proclubs_url?: boolean
     name?: boolean
     logo_url?: boolean
     created_at?: boolean
@@ -3522,7 +3522,7 @@ export namespace Prisma {
 
   export type TeamSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    external_id?: boolean
+    proclubs_url?: boolean
     name?: boolean
     logo_url?: boolean
     created_at?: boolean
@@ -3532,7 +3532,7 @@ export namespace Prisma {
 
   export type TeamSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    external_id?: boolean
+    proclubs_url?: boolean
     name?: boolean
     logo_url?: boolean
     created_at?: boolean
@@ -3542,7 +3542,7 @@ export namespace Prisma {
 
   export type TeamSelectScalar = {
     id?: boolean
-    external_id?: boolean
+    proclubs_url?: boolean
     name?: boolean
     logo_url?: boolean
     created_at?: boolean
@@ -3550,7 +3550,7 @@ export namespace Prisma {
     platform?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "external_id" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proclubs_url" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | Team$membersArgs<ExtArgs>
     homeMatches?: boolean | Team$homeMatchesArgs<ExtArgs>
@@ -3577,7 +3577,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      external_id: string | null
+      proclubs_url: string | null
       name: string
       logo_url: string | null
       created_at: Date
@@ -4014,7 +4014,7 @@ export namespace Prisma {
    */
   interface TeamFieldRefs {
     readonly id: FieldRef<"Team", 'String'>
-    readonly external_id: FieldRef<"Team", 'String'>
+    readonly proclubs_url: FieldRef<"Team", 'String'>
     readonly name: FieldRef<"Team", 'String'>
     readonly logo_url: FieldRef<"Team", 'String'>
     readonly created_at: FieldRef<"Team", 'DateTime'>
@@ -13527,7 +13527,7 @@ export namespace Prisma {
 
   export const TeamScalarFieldEnum: {
     id: 'id',
-    external_id: 'external_id',
+    proclubs_url: 'proclubs_url',
     name: 'name',
     logo_url: 'logo_url',
     created_at: 'created_at',
@@ -13969,7 +13969,7 @@ export namespace Prisma {
     OR?: TeamWhereInput[]
     NOT?: TeamWhereInput | TeamWhereInput[]
     id?: UuidFilter<"Team"> | string
-    external_id?: StringNullableFilter<"Team"> | string | null
+    proclubs_url?: StringNullableFilter<"Team"> | string | null
     name?: StringFilter<"Team"> | string
     logo_url?: StringNullableFilter<"Team"> | string | null
     created_at?: DateTimeFilter<"Team"> | Date | string
@@ -13986,7 +13986,7 @@ export namespace Prisma {
 
   export type TeamOrderByWithRelationInput = {
     id?: SortOrder
-    external_id?: SortOrderInput | SortOrder
+    proclubs_url?: SortOrderInput | SortOrder
     name?: SortOrder
     logo_url?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -14003,7 +14003,7 @@ export namespace Prisma {
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    external_id?: string
+    proclubs_url?: string
     name?: string
     ea_club_id?: string
     AND?: TeamWhereInput | TeamWhereInput[]
@@ -14019,11 +14019,11 @@ export namespace Prisma {
     transferRequests?: TransferRequestListRelationFilter
     invitations?: InvitationListRelationFilter
     matchEvents?: MatchEventListRelationFilter
-  }, "id" | "external_id" | "name" | "ea_club_id">
+  }, "id" | "proclubs_url" | "name" | "ea_club_id">
 
   export type TeamOrderByWithAggregationInput = {
     id?: SortOrder
-    external_id?: SortOrderInput | SortOrder
+    proclubs_url?: SortOrderInput | SortOrder
     name?: SortOrder
     logo_url?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -14039,7 +14039,7 @@ export namespace Prisma {
     OR?: TeamScalarWhereWithAggregatesInput[]
     NOT?: TeamScalarWhereWithAggregatesInput | TeamScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Team"> | string
-    external_id?: StringNullableWithAggregatesFilter<"Team"> | string | null
+    proclubs_url?: StringNullableWithAggregatesFilter<"Team"> | string | null
     name?: StringWithAggregatesFilter<"Team"> | string
     logo_url?: StringNullableWithAggregatesFilter<"Team"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"Team"> | Date | string
@@ -14702,7 +14702,7 @@ export namespace Prisma {
 
   export type TeamCreateInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -14719,7 +14719,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -14736,7 +14736,7 @@ export namespace Prisma {
 
   export type TeamUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14753,7 +14753,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14770,7 +14770,7 @@ export namespace Prisma {
 
   export type TeamCreateManyInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -14780,7 +14780,7 @@ export namespace Prisma {
 
   export type TeamUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14790,7 +14790,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15585,7 +15585,7 @@ export namespace Prisma {
 
   export type TeamCountOrderByAggregateInput = {
     id?: SortOrder
-    external_id?: SortOrder
+    proclubs_url?: SortOrder
     name?: SortOrder
     logo_url?: SortOrder
     created_at?: SortOrder
@@ -15595,7 +15595,7 @@ export namespace Prisma {
 
   export type TeamMaxOrderByAggregateInput = {
     id?: SortOrder
-    external_id?: SortOrder
+    proclubs_url?: SortOrder
     name?: SortOrder
     logo_url?: SortOrder
     created_at?: SortOrder
@@ -15605,7 +15605,7 @@ export namespace Prisma {
 
   export type TeamMinOrderByAggregateInput = {
     id?: SortOrder
-    external_id?: SortOrder
+    proclubs_url?: SortOrder
     name?: SortOrder
     logo_url?: SortOrder
     created_at?: SortOrder
@@ -18251,7 +18251,7 @@ export namespace Prisma {
 
   export type TeamCreateWithoutMembersInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18267,7 +18267,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateWithoutMembersInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18348,7 +18348,7 @@ export namespace Prisma {
 
   export type TeamUpdateWithoutMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18364,7 +18364,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18587,7 +18587,7 @@ export namespace Prisma {
 
   export type TeamCreateWithoutCompetitionsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18603,7 +18603,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateWithoutCompetitionsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18668,7 +18668,7 @@ export namespace Prisma {
 
   export type TeamUpdateWithoutCompetitionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18684,7 +18684,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateWithoutCompetitionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18727,7 +18727,7 @@ export namespace Prisma {
 
   export type TeamCreateWithoutHomeMatchesInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18743,7 +18743,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateWithoutHomeMatchesInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18764,7 +18764,7 @@ export namespace Prisma {
 
   export type TeamCreateWithoutAwayMatchesInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18780,7 +18780,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateWithoutAwayMatchesInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -18871,7 +18871,7 @@ export namespace Prisma {
 
   export type TeamUpdateWithoutHomeMatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18887,7 +18887,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateWithoutHomeMatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18914,7 +18914,7 @@ export namespace Prisma {
 
   export type TeamUpdateWithoutAwayMatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18930,7 +18930,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateWithoutAwayMatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19036,7 +19036,7 @@ export namespace Prisma {
 
   export type TeamCreateWithoutMatchEventsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -19052,7 +19052,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateWithoutMatchEventsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -19170,7 +19170,7 @@ export namespace Prisma {
 
   export type TeamUpdateWithoutMatchEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19186,7 +19186,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateWithoutMatchEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19245,7 +19245,7 @@ export namespace Prisma {
 
   export type TeamCreateWithoutTransferRequestsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -19261,7 +19261,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateWithoutTransferRequestsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -19342,7 +19342,7 @@ export namespace Prisma {
 
   export type TeamUpdateWithoutTransferRequestsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19358,7 +19358,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateWithoutTransferRequestsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19374,7 +19374,7 @@ export namespace Prisma {
 
   export type TeamCreateWithoutInvitationsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -19390,7 +19390,7 @@ export namespace Prisma {
 
   export type TeamUncheckedCreateWithoutInvitationsInput = {
     id?: string
-    external_id?: string | null
+    proclubs_url?: string | null
     name: string
     logo_url?: string | null
     created_at?: Date | string
@@ -19508,7 +19508,7 @@ export namespace Prisma {
 
   export type TeamUpdateWithoutInvitationsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19524,7 +19524,7 @@ export namespace Prisma {
 
   export type TeamUncheckedUpdateWithoutInvitationsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string

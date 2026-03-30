@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import {
   Swords, Loader2, X, CheckCircle2, AlertCircle,
-  Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal, RefreshCw,
+  Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal, Globe,
 } from 'lucide-react';
 import api from '@/lib/api';
+import SyncPreviewModal from '@/components/SyncPreviewModal';
 
 interface Team {
   id: string;
@@ -114,7 +115,8 @@ export default function AdminMatches() {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [syncingMatchId, setSyncingMatchId] = useState<string | null>(null);
+  const [syncPreviewMatch, setSyncPreviewMatch] = useState<Match | null>(null);
+  const [syncedMatchIds, setSyncedMatchIds] = useState<Set<string>>(new Set());
 
   const modalRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -246,20 +248,11 @@ export default function AdminMatches() {
     }
   };
 
-  const handleSyncMatch = async (matchId: string) => {
-    setSyncingMatchId(matchId);
-    setError('');
-    try {
-      await api.post(`/admin/sync/${matchId}`);
-      setSuccess('Match synchronisé avec succès !');
-      await fetchData();
-      setTimeout(() => setSuccess(''), 4000);
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? 'Erreur lors de la synchronisation ProClubs.');
-      setTimeout(() => setError(''), 4000);
-    } finally {
-      setSyncingMatchId(null);
-    }
+  const handleSyncCompleted = async (matchId: string) => {
+    setSyncedMatchIds((prev) => new Set(prev).add(matchId));
+    setSuccess('Match importé via ProClubs.io !');
+    await fetchData();
+    setTimeout(() => setSuccess(''), 4000);
   };
 
   const selectedCompName = filterCompetition
@@ -436,13 +429,23 @@ export default function AdminMatches() {
                   </div>
 
                   {/* Score / VS */}
-                  <div className="shrink-0 min-w-[70px] flex items-center justify-center">
+                  <div className="shrink-0 min-w-[70px] flex items-center justify-center gap-1.5">
                     {match.home_score != null && match.away_score != null ? (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.05] border border-white/[0.06]">
-                        <span className="text-base font-black text-white tabular-nums">{match.home_score}</span>
-                        <span className="text-xs text-slate-600 font-medium">-</span>
-                        <span className="text-base font-black text-white tabular-nums">{match.away_score}</span>
-                      </div>
+                      <>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.05] border border-white/[0.06]">
+                          <span className="text-base font-black text-white tabular-nums">{match.home_score}</span>
+                          <span className="text-xs text-slate-600 font-medium">-</span>
+                          <span className="text-base font-black text-white tabular-nums">{match.away_score}</span>
+                        </div>
+                        {syncedMatchIds.has(match.id) && (
+                          <div
+                            className="w-5 h-5 rounded-md bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center shrink-0"
+                            title="Importé via ProClubs.io"
+                          >
+                            <Globe className="w-3 h-3 text-emerald-400" />
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">VS</span>
                     )}
@@ -467,19 +470,21 @@ export default function AdminMatches() {
                   {statusCfg.label}
                 </span>
 
-                {/* Sync Live button */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSyncMatch(match.id);
-                  }}
-                  disabled={syncingMatchId === match.id}
-                  title="Synchroniser via ProClubs"
-                  className="p-2 rounded-xl border border-amber-400/15 bg-white/[0.03] text-amber-400/60 hover:text-amber-400 hover:border-amber-400/30 hover:bg-amber-400/10 transition-all duration-200 disabled:opacity-50 shrink-0"
-                >
-                  <RefreshCw className={`w-4 h-4 ${syncingMatchId === match.id ? 'animate-spin' : ''}`} />
-                </button>
+                {/* ProClubs import button */}
+                {isScheduled && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSyncPreviewMatch(match);
+                    }}
+                    title="Importer via ProClubs.io"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-emerald-400/15 bg-emerald-400/[0.04] text-emerald-400/70 hover:text-emerald-400 hover:border-emerald-400/30 hover:bg-emerald-400/10 transition-all duration-200 shrink-0"
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span className="hidden xl:inline text-[11px] font-semibold">ProClubs.io</span>
+                  </button>
+                )}
 
                 {/* Click hint for scheduled matches */}
                 {isScheduled && (
@@ -720,6 +725,16 @@ export default function AdminMatches() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* ProClubs Sync Preview Modal */}
+      {syncPreviewMatch && (
+        <SyncPreviewModal
+          match={syncPreviewMatch}
+          open={!!syncPreviewMatch}
+          onClose={() => setSyncPreviewMatch(null)}
+          onSynced={() => handleSyncCompleted(syncPreviewMatch.id)}
+        />
       )}
 
       {/* Keyframe animations */}

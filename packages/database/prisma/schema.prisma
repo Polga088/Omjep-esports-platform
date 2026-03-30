@@ -119,13 +119,13 @@ model User {
 }
 
 model Team {
-  id          String   @id @default(uuid()) @db.Uuid
-  external_id String?  @unique
-  name        String   @unique
-  logo_url    String?
-  created_at  DateTime @default(now())
+  id           String   @id @default(uuid()) @db.Uuid
+  proclubs_url String?  @unique
+  name         String   @unique
+  logo_url     String?
+  created_at   DateTime @default(now())
 
-  // Identifiants proclubs.io (crucial pour l'intégration API future)
+  // Identifiants proclubs.io
   ea_club_id String?  @unique
   platform   Platform @default(CROSSPLAY)
 

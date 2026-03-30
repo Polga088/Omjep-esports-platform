@@ -1,79 +1,96 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../prisma/prisma.service';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
-// ─── Types for the ProClubs match results API ───────────────────────
-interface ProClubsPlayerResult {
-  ea_persona_name: string;
+// ─── Scraped data structures ────────────────────────────────────────
+
+export interface ScrapedPlayerEvent {
+  playerName: string;
   goals: number;
   assists: number;
 }
 
-interface ProClubsMatchResult {
-  match_id: string;
-  home_club_id: string;
-  away_club_id: string;
-  home_score: number;
-  away_score: number;
-  played_at: string;
-  home_players: ProClubsPlayerResult[];
-  away_players: ProClubsPlayerResult[];
+export interface ScrapedMatchResult {
+  homeTeamName: string;
+  awayTeamName: string;
+  homeScore: number;
+  awayScore: number;
+  players: ScrapedPlayerEvent[];
 }
 
-interface ProClubsResultsResponse {
-  club_id: string;
-  last_match: ProClubsMatchResult | null;
+export interface PersonaMatch {
+  scraped: string;
+  goals: number;
+  assists: number;
+  matched: { userId: string; teamId: string; eaPersonaName: string } | null;
+}
+
+export interface SyncFromUrlResult {
+  synced: boolean;
+  reason?: string;
+  scraped?: ScrapedMatchResult;
+  matchedPlayers?: PersonaMatch[];
+  createdEventsCount?: number;
+  updatedMatch?: Record<string, unknown>;
 }
 
 @Injectable()
 export class ProClubsService {
   private readonly logger = new Logger(ProClubsService.name);
-  private readonly apiBaseUrl =
-    process.env.PROCLUBS_API_BASE_URL ?? 'https://proclubs.io/api';
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly http: HttpService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Fetches the latest match result for a given EA club and returns raw data.
+   * Main entry point: scrapes a ProClubs.io URL, extracts the latest match
+   * result + scorers/assisters, and matches them to OMJEP users via ea_persona_name.
    */
-  async fetchClubResults(
-    clubId: string,
-  ): Promise<ProClubsResultsResponse | null> {
-    const url = `${this.apiBaseUrl}/club/${clubId}/results`;
+  async syncFromProClubsUrl(url: string): Promise<SyncFromUrlResult> {
+    this.logger.log(`[ProClubs] Scraping URL: ${url}`);
 
-    try {
-      this.logger.debug(`[ProClubs] GET ${url}`);
-      const response = await firstValueFrom(
-        this.http.get<ProClubsResultsResponse>(url),
-      );
-      return response.data;
-    } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        this.logger.warn(
-          `[ProClubs] API unavailable (${(error as Error).message}). Returning mock data for club ${clubId}.`,
-        );
-        return this.getMockResults(clubId);
-      }
-
-      this.logger.error(
-        `[ProClubs] HTTP request failed for club ${clubId}: ${(error as Error).message}`,
-      );
-      return null;
+    const scraped = await this.scrapeProClubsPage(url);
+    if (!scraped) {
+      return { synced: false, reason: 'scrape_failed' };
     }
+
+    this.logger.log(
+      `[ProClubs] Scraped match: ${scraped.homeTeamName} ${scraped.homeScore}–${scraped.awayScore} ${scraped.awayTeamName} (${scraped.players.length} player entries)`,
+    );
+
+    const team = await this.prisma.team.findUnique({
+      where: { proclubs_url: url },
+      include: {
+        members: { include: { user: true } },
+      },
+    });
+
+    if (!team) {
+      return {
+        synced: false,
+        reason: 'no_team_linked',
+        scraped,
+      };
+    }
+
+    const personaMap = this.buildPersonaMapFromTeam(team);
+    const matchedPlayers = this.matchScrapedPlayers(scraped.players, personaMap);
+
+    this.logger.log(
+      `[ProClubs] Matched ${matchedPlayers.filter((p) => p.matched).length}/${matchedPlayers.length} players to OMJEP users`,
+    );
+
+    return {
+      synced: true,
+      scraped,
+      matchedPlayers,
+    };
   }
 
   /**
-   * Synchronises a specific OMJEP match by pulling ProClubs data from both teams.
-   * - Finds the SCHEDULED match
-   * - Fetches results from ProClubs for the home team's ea_club_id
-   * - Updates the score
-   * - Creates MatchEvents (GOAL / ASSIST) by resolving ea_persona_name → User
+   * Full sync: scrape the page, find/create the Match in DB, insert MatchEvents.
+   * Requires a matchId to target a specific OMJEP match.
    */
-  async syncMatch(matchId: string) {
+  async syncMatchFromUrl(matchId: string): Promise<SyncFromUrlResult> {
     const match = await this.prisma.match.findUnique({
       where: { id: matchId },
       include: {
@@ -86,30 +103,22 @@ export class ProClubsService {
       throw new NotFoundException(`Match ${matchId} introuvable.`);
     }
 
-    if (match.status !== 'SCHEDULED') {
+    const proClubsUrl = match.homeTeam.proclubs_url;
+    if (!proClubsUrl) {
       throw new Error(
-        `Match ${matchId} n'est pas SCHEDULED (status actuel : ${match.status}).`,
+        `L'équipe "${match.homeTeam.name}" n'a pas de proclubs_url configurée.`,
       );
     }
 
-    const homeClubId = match.homeTeam.ea_club_id;
-    if (!homeClubId) {
-      throw new Error(
-        `L'équipe domicile "${match.homeTeam.name}" n'a pas de ea_club_id configuré.`,
-      );
+    const scraped = await this.scrapeProClubsPage(proClubsUrl);
+    if (!scraped) {
+      return { synced: false, reason: 'scrape_failed' };
     }
 
-    const results = await this.fetchClubResults(homeClubId);
-    if (!results?.last_match) {
-      this.logger.warn(`[ProClubs] Aucun résultat trouvé pour le club ${homeClubId}.`);
-      return { synced: false, reason: 'no_results' };
-    }
+    const personaMap = this.buildPersonaMapFromMatch(match);
+    const matchedPlayers = this.matchScrapedPlayers(scraped.players, personaMap);
 
-    const externalMatch = results.last_match;
-
-    const personaMap = this.buildPersonaMap(match);
-
-    const events = this.extractEvents(externalMatch, personaMap);
+    const events = this.buildEventsFromMatched(matchedPlayers);
 
     const updated = await this.prisma.$transaction(async (tx) => {
       if (events.length > 0) {
@@ -117,8 +126,8 @@ export class ProClubsService {
         await tx.matchEvent.createMany({
           data: events.map((e) => ({
             match_id: matchId,
-            player_id: e.player_id,
-            team_id: e.team_id,
+            player_id: e.playerId,
+            team_id: e.teamId,
             type: e.type,
             minute: null,
           })),
@@ -128,11 +137,10 @@ export class ProClubsService {
       return tx.match.update({
         where: { id: matchId },
         data: {
-          home_score: externalMatch.home_score,
-          away_score: externalMatch.away_score,
-          ea_match_id: externalMatch.match_id,
+          home_score: scraped.homeScore,
+          away_score: scraped.awayScore,
           status: 'PLAYED',
-          played_at: new Date(externalMatch.played_at),
+          played_at: new Date(),
         },
         include: {
           homeTeam: { select: { id: true, name: true } },
@@ -151,25 +159,197 @@ export class ProClubsService {
       `[ProClubs] Match synced: ${updated.homeTeam.name} ${updated.home_score}–${updated.away_score} ${updated.awayTeam.name} (${events.length} events)`,
     );
 
-    return { synced: true, match: updated };
+    return {
+      synced: true,
+      scraped,
+      matchedPlayers,
+      createdEventsCount: events.length,
+      updatedMatch: updated as unknown as Record<string, unknown>,
+    };
   }
 
-  // ─── Private helpers ──────────────────────────────────────────────
+  // ─── Scraping logic ────────────────────────────────────────────────
 
   /**
-   * Builds a lowercase ea_persona_name → { userId, teamId } lookup from both rosters.
+   * Fetches the HTML from a ProClubs.io URL and extracts match data.
+   *
+   * ProClubs.io page structure (expected selectors — adjust if the site changes):
+   * - Match score: `.match-score`, `.result-score`, or similar
+   * - Team names: `.team-name`, `.club-name`, or header elements
+   * - Player stats table: rows with player name, goals, assists columns
+   *
+   * Falls back to mock data in development if the URL is unreachable.
    */
-  private buildPersonaMap(match: {
+  async scrapeProClubsPage(
+    url: string,
+  ): Promise<ScrapedMatchResult | null> {
+    try {
+      const { data: html } = await axios.get<string>(url, {
+        timeout: 15_000,
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (compatible; OMJEP-Bot/1.0)',
+          Accept: 'text/html',
+        },
+      });
+
+      return this.parseProClubsHtml(html);
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'production') {
+        this.logger.warn(
+          `[ProClubs] Scrape failed (${(error as Error).message}). Returning mock data.`,
+        );
+        return this.getMockScrapedResult();
+      }
+
+      this.logger.error(
+        `[ProClubs] Failed to scrape ${url}: ${(error as Error).message}`,
+      );
+      return null;
+    }
+  }
+
+  /**
+   * Parses the HTML of a ProClubs.io page.
+   *
+   * Common patterns on proclubs.io:
+   *   - `.match-result` or `.match-header` for the score block
+   *   - `.team-home .team-name` / `.team-away .team-name` for team names
+   *   - Score digits in `.score`, `.match-score`, or similar
+   *   - Player stats in a table or list with columns: name, goals, assists, rating
+   *
+   * This parser tries multiple selector strategies to be resilient.
+   */
+  private parseProClubsHtml(html: string): ScrapedMatchResult | null {
+    const $ = cheerio.load(html);
+
+    const homeTeamName =
+      this.textFrom($, '.team-home .team-name') ||
+      this.textFrom($, '.home-team .club-name') ||
+      this.textFrom($, '[data-team="home"] .name') ||
+      'Home';
+
+    const awayTeamName =
+      this.textFrom($, '.team-away .team-name') ||
+      this.textFrom($, '.away-team .club-name') ||
+      this.textFrom($, '[data-team="away"] .name') ||
+      'Away';
+
+    const scoreText =
+      this.textFrom($, '.match-score') ||
+      this.textFrom($, '.result-score') ||
+      this.textFrom($, '.score');
+
+    let homeScore = 0;
+    let awayScore = 0;
+
+    if (scoreText) {
+      const scoreParts = scoreText.split(/[-–:]/).map((s) => parseInt(s.trim(), 10));
+      if (scoreParts.length >= 2 && !isNaN(scoreParts[0]) && !isNaN(scoreParts[1])) {
+        homeScore = scoreParts[0];
+        awayScore = scoreParts[1];
+      }
+    }
+
+    const players: ScrapedPlayerEvent[] = [];
+
+    const playerSelectors = [
+      'table tbody tr',
+      '.player-stats-row',
+      '.player-row',
+      '.match-players .player',
+    ];
+
+    for (const selector of playerSelectors) {
+      $(selector).each((_, el) => {
+        const row = $(el);
+        const cells = row.find('td');
+
+        if (cells.length >= 3) {
+          const playerName = $(cells[0]).text().trim();
+          const goals = parseInt($(cells[1]).text().trim(), 10) || 0;
+          const assists = parseInt($(cells[2]).text().trim(), 10) || 0;
+
+          if (playerName && (goals > 0 || assists > 0)) {
+            players.push({ playerName, goals, assists });
+          }
+        }
+
+        const nameEl = row.find('.player-name, .name, [data-player-name]');
+        const goalsEl = row.find('.goals, [data-goals]');
+        const assistsEl = row.find('.assists, [data-assists]');
+
+        if (nameEl.length > 0) {
+          const pName = nameEl.first().text().trim();
+          const pGoals = parseInt(goalsEl.first().text().trim(), 10) || 0;
+          const pAssists = parseInt(assistsEl.first().text().trim(), 10) || 0;
+
+          if (pName && (pGoals > 0 || pAssists > 0)) {
+            const exists = players.some(
+              (p) => p.playerName.toLowerCase() === pName.toLowerCase(),
+            );
+            if (!exists) {
+              players.push({ playerName: pName, goals: pGoals, assists: pAssists });
+            }
+          }
+        }
+      });
+
+      if (players.length > 0) break;
+    }
+
+    if (homeScore === 0 && awayScore === 0 && players.length === 0) {
+      this.logger.warn('[ProClubs] Could not extract any data from the HTML.');
+      return null;
+    }
+
+    return { homeTeamName, awayTeamName, homeScore, awayScore, players };
+  }
+
+  private textFrom($: cheerio.CheerioAPI, selector: string): string {
+    const el = $(selector).first();
+    return el.length > 0 ? el.text().trim() : '';
+  }
+
+  // ─── Persona matching ─────────────────────────────────────────────
+
+  /**
+   * Builds a lowercase name → { userId, teamId, eaPersonaName } map from a team.
+   */
+  private buildPersonaMapFromTeam(team: {
+    id: string;
+    members: { user: { id: string; ea_persona_name: string | null } }[];
+  }): Map<string, { userId: string; teamId: string; eaPersonaName: string }> {
+    const map = new Map<string, { userId: string; teamId: string; eaPersonaName: string }>();
+
+    for (const m of team.members) {
+      if (m.user.ea_persona_name) {
+        map.set(m.user.ea_persona_name.toLowerCase(), {
+          userId: m.user.id,
+          teamId: team.id,
+          eaPersonaName: m.user.ea_persona_name,
+        });
+      }
+    }
+
+    return map;
+  }
+
+  /**
+   * Builds a combined persona map from both home and away teams (for match sync).
+   */
+  private buildPersonaMapFromMatch(match: {
     homeTeam: { id: string; members: { user: { id: string; ea_persona_name: string | null } }[] };
     awayTeam: { id: string; members: { user: { id: string; ea_persona_name: string | null } }[] };
-  }): Map<string, { userId: string; teamId: string }> {
-    const map = new Map<string, { userId: string; teamId: string }>();
+  }): Map<string, { userId: string; teamId: string; eaPersonaName: string }> {
+    const map = new Map<string, { userId: string; teamId: string; eaPersonaName: string }>();
 
     for (const m of match.homeTeam.members) {
       if (m.user.ea_persona_name) {
         map.set(m.user.ea_persona_name.toLowerCase(), {
           userId: m.user.id,
           teamId: match.homeTeam.id,
+          eaPersonaName: m.user.ea_persona_name,
         });
       }
     }
@@ -179,6 +359,7 @@ export class ProClubsService {
         map.set(m.user.ea_persona_name.toLowerCase(), {
           userId: m.user.id,
           teamId: match.awayTeam.id,
+          eaPersonaName: m.user.ea_persona_name,
         });
       }
     }
@@ -187,69 +368,97 @@ export class ProClubsService {
   }
 
   /**
-   * Extracts GOAL and ASSIST events from ProClubs player stats,
-   * resolving each ea_persona_name to an OMJEP User.
+   * Matches scraped player names to OMJEP users using fuzzy-tolerant logic:
+   *   1. Exact match (case-insensitive)
+   *   2. Substring match (scraped name contained in ea_persona_name or vice versa)
+   *   3. Normalized match (strip spaces, dashes, underscores)
    */
-  private extractEvents(
-    externalMatch: ProClubsMatchResult,
-    personaMap: Map<string, { userId: string; teamId: string }>,
-  ): { player_id: string; team_id: string; type: 'GOAL' | 'ASSIST' }[] {
-    const events: { player_id: string; team_id: string; type: 'GOAL' | 'ASSIST' }[] = [];
+  matchScrapedPlayers(
+    scrapedPlayers: ScrapedPlayerEvent[],
+    personaMap: Map<string, { userId: string; teamId: string; eaPersonaName: string }>,
+  ): PersonaMatch[] {
+    return scrapedPlayers.map((sp) => {
+      const base = { scraped: sp.playerName, goals: sp.goals, assists: sp.assists };
+      const normalized = this.normalize(sp.playerName);
 
-    const processPlayers = (players: ProClubsPlayerResult[]) => {
-      for (const p of players) {
-        const resolved = personaMap.get(p.ea_persona_name.toLowerCase());
-        if (!resolved) {
-          this.logger.debug(
-            `[ProClubs] Persona "${p.ea_persona_name}" non trouvée en DB. Ignorée.`,
-          );
-          continue;
-        }
+      const exactMatch = personaMap.get(sp.playerName.toLowerCase());
+      if (exactMatch) {
+        return { ...base, matched: exactMatch };
+      }
 
-        for (let i = 0; i < p.goals; i++) {
-          events.push({
-            player_id: resolved.userId,
-            team_id: resolved.teamId,
-            type: 'GOAL',
-          });
-        }
-
-        for (let i = 0; i < p.assists; i++) {
-          events.push({
-            player_id: resolved.userId,
-            team_id: resolved.teamId,
-            type: 'ASSIST',
-          });
+      for (const [key, value] of personaMap.entries()) {
+        if (key.includes(normalized) || normalized.includes(key)) {
+          return { ...base, matched: value };
         }
       }
-    };
 
-    processPlayers(externalMatch.home_players);
-    processPlayers(externalMatch.away_players);
+      for (const [key, value] of personaMap.entries()) {
+        if (this.normalize(key) === normalized) {
+          return { ...base, matched: value };
+        }
+      }
+
+      this.logger.debug(
+        `[ProClubs] No match for scraped player "${sp.playerName}"`,
+      );
+      return { ...base, matched: null };
+    });
+  }
+
+  private normalize(name: string): string {
+    return name.toLowerCase().replace(/[\s\-_.']/g, '');
+  }
+
+  // ─── Event building ───────────────────────────────────────────────
+
+  private buildEventsFromMatched(
+    matchedPlayers: PersonaMatch[],
+  ): { playerId: string; teamId: string; type: 'GOAL' | 'ASSIST' }[] {
+    const events: { playerId: string; teamId: string; type: 'GOAL' | 'ASSIST' }[] = [];
+
+    for (const pm of matchedPlayers) {
+      if (!pm.matched) continue;
+
+      for (let i = 0; i < pm.goals; i++) {
+        events.push({
+          playerId: pm.matched.userId,
+          teamId: pm.matched.teamId,
+          type: 'GOAL',
+        });
+      }
+
+      for (let i = 0; i < pm.assists; i++) {
+        events.push({
+          playerId: pm.matched.userId,
+          teamId: pm.matched.teamId,
+          type: 'ASSIST',
+        });
+      }
+    }
 
     return events;
   }
 
+  /**
+   * Alias kept for backward compatibility with AdminSyncController.
+   */
+  async syncMatch(matchId: string) {
+    return this.syncMatchFromUrl(matchId);
+  }
+
   // ─── Mock data for development ────────────────────────────────────
 
-  private getMockResults(clubId: string): ProClubsResultsResponse {
+  private getMockScrapedResult(): ScrapedMatchResult {
     return {
-      club_id: clubId,
-      last_match: {
-        match_id: `mock-ea-match-${Date.now()}`,
-        home_club_id: clubId,
-        away_club_id: 'opponent-club-id',
-        home_score: 3,
-        away_score: 1,
-        played_at: new Date().toISOString(),
-        home_players: [
-          { ea_persona_name: 'MockPlayer1', goals: 2, assists: 0 },
-          { ea_persona_name: 'MockPlayer2', goals: 1, assists: 2 },
-        ],
-        away_players: [
-          { ea_persona_name: 'MockPlayer3', goals: 1, assists: 0 },
-        ],
-      },
+      homeTeamName: 'Eagles FC',
+      awayTeamName: 'Rival FC',
+      homeScore: 3,
+      awayScore: 1,
+      players: [
+        { playerName: 'MockPlayer1', goals: 2, assists: 0 },
+        { playerName: 'MockPlayer2', goals: 1, assists: 2 },
+        { playerName: 'MockPlayer3', goals: 1, assists: 0 },
+      ],
     };
   }
 }

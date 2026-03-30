@@ -137,7 +137,7 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.TeamScalarFieldEnum = {
   id: 'id',
-  external_id: 'external_id',
+  proclubs_url: 'proclubs_url',
   name: 'name',
   logo_url: 'logo_url',
   created_at: 'created_at',
