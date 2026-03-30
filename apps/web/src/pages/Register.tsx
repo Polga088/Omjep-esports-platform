@@ -4,7 +4,7 @@ import { Zap, Mail, Lock, Eye, EyeOff, User, Gamepad2, AlertCircle, CheckCircle 
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 
-type Role = 'player' | 'manager';
+type Role = 'PLAYER' | 'MANAGER';
 
 interface FormState {
   email: string;
@@ -21,7 +21,7 @@ export default function Register() {
     email: '',
     ea_persona_name: '',
     password: '',
-    role: 'player',
+    role: 'PLAYER',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,8 +59,8 @@ export default function Register() {
   };
 
   const roles: { value: Role; label: string; description: string }[] = [
-    { value: 'player', label: 'Joueur', description: 'Rejoins un club et compétitionne' },
-    { value: 'manager', label: 'Manager', description: 'Crée et gère ton propre club' },
+    { value: 'PLAYER', label: 'Joueur', description: 'Rejoins un club et compétitionne' },
+    { value: 'MANAGER', label: 'Manager', description: 'Crée et gère ton propre club' },
   ];
 
   return (

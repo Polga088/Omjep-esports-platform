@@ -6,6 +6,7 @@ import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import DashboardIndex from '@/pages/Dashboard/Index';
+import MyTeam from '@/pages/Dashboard/MyTeam';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           }
         >
           <Route path="/dashboard" element={<DashboardIndex />} />
+          <Route path="/dashboard/team" element={<MyTeam />} />
         </Route>
       </Routes>
     </BrowserRouter>
