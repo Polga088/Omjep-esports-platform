@@ -12,6 +12,7 @@ import MyTeam from '@/pages/Dashboard/MyTeam';
 import Profile from '@/pages/Dashboard/Profile';
 import Ladder from '@/pages/Dashboard/Ladder';
 import Matches from '@/pages/Dashboard/Matches';
+import Standings from '@/pages/Dashboard/Standings';
 import AdminCompetitions from '@/pages/Admin/Competitions';
 import AdminMatches from '@/pages/Admin/Matches';
 
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/dashboard/team" element={<MyTeam />} />
           <Route path="/dashboard/ladder" element={<Ladder />} />
           <Route path="/dashboard/matches" element={<Matches />} />
+          <Route path="/dashboard/competitions/:id" element={<Standings />} />
           <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
 

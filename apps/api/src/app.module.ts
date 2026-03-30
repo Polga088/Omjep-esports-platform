@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { SyncModule } from './sync/sync.module';
 import { AdminModule } from './admin/admin.module';
 import { MatchesModule } from './matches/matches.module';
+import { CompetitionsModule } from './competitions/competitions.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MatchesModule } from './matches/matches.module';
     UsersModule,
     TeamsModule,
     MatchesModule,
+    CompetitionsModule,
     SyncModule,
     AdminModule,
   ],

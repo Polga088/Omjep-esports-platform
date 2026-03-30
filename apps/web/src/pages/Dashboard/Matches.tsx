@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Clock, Swords, Trophy, Calendar, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Clock, Swords, Trophy, Calendar, AlertCircle, TrendingUp } from 'lucide-react';
 import api from '@/lib/api';
 
 interface Team {
@@ -149,16 +150,27 @@ function MatchCard({ match }: { match: Match }) {
 
       {/* Competition badge */}
       <div className="relative flex items-center justify-between mb-5">
-        {match.competition ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#00D4FF]/8 border border-[#00D4FF]/15 text-[#00D4FF] text-[10px] font-bold uppercase tracking-wider">
-            <Trophy className="w-3 h-3" />
-            {match.competition.name}
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-500 text-[10px] font-bold uppercase tracking-wider">
-            Match Amical
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {match.competition ? (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#00D4FF]/8 border border-[#00D4FF]/15 text-[#00D4FF] text-[10px] font-bold uppercase tracking-wider">
+              <Trophy className="w-3 h-3" />
+              {match.competition.name}
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+              Match Amical
+            </span>
+          )}
+          {match.competition && (
+            <Link
+              to={`/dashboard/competitions/${match.competition.id}`}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold text-slate-500 hover:text-amber-400 hover:bg-amber-500/10 border border-transparent hover:border-amber-500/20 transition-all"
+            >
+              <TrendingUp className="w-3 h-3" />
+              Classement
+            </Link>
+          )}
+        </div>
 
         {isPlayed && <ResultBadge isWin={isWin} isDraw={isDraw} />}
       </div>
