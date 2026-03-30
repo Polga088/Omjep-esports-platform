@@ -24,11 +24,7 @@ export class InvitationsController {
     @Request() req: { user: { id: string } },
     @Body() dto: CreateInvitationDto,
   ) {
-    return this.invitationsService.create(
-      req.user.id,
-      dto.team_id,
-      dto.invitee_email,
-    );
+    return this.invitationsService.create(req.user.id, dto);
   }
 
   @Get('my-pending')

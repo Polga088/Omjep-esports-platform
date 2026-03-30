@@ -6,12 +6,15 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateInvitationDto } from './dto/create-invitation.dto';
 
 @Injectable()
 export class InvitationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(inviterId: string, teamId: string, inviteeEmail: string) {
+  async create(inviterId: string, dto: CreateInvitationDto) {
+    const { team_id: teamId, ea_persona_name, invitee_email } = dto;
+
     const membership = await this.prisma.teamMember.findFirst({
       where: { user_id: inviterId, team_id: teamId },
     });
@@ -27,9 +30,31 @@ export class InvitationsService {
       );
     }
 
-    const invitee = await this.prisma.user.findUnique({
-      where: { email: inviteeEmail },
-    });
+    let invitee: { id: string; email: string } | null = null;
+    let resolvedEmail: string;
+
+    if (ea_persona_name) {
+      const userByPersona = await this.prisma.user.findUnique({
+        where: { ea_persona_name },
+        select: { id: true, email: true },
+      });
+
+      if (!userByPersona) {
+        throw new NotFoundException(
+          'Joueur introuvable avec ce pseudo EA.',
+        );
+      }
+
+      invitee = userByPersona;
+      resolvedEmail = userByPersona.email;
+    } else {
+      resolvedEmail = invitee_email!;
+
+      invitee = await this.prisma.user.findUnique({
+        where: { email: resolvedEmail },
+        select: { id: true, email: true },
+      });
+    }
 
     if (invitee) {
       const alreadyMember = await this.prisma.teamMember.findFirst({
@@ -43,7 +68,7 @@ export class InvitationsService {
     const existingPending = await this.prisma.invitation.findFirst({
       where: {
         team_id: teamId,
-        invitee_email: inviteeEmail,
+        invitee_email: resolvedEmail,
         status: 'PENDING',
       },
     });
@@ -57,7 +82,7 @@ export class InvitationsService {
       data: {
         team_id: teamId,
         inviter_id: inviterId,
-        invitee_email: inviteeEmail,
+        invitee_email: resolvedEmail,
         invitee_id: invitee?.id ?? null,
       },
       include: {
