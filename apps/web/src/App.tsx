@@ -13,6 +13,7 @@ import Profile from '@/pages/Dashboard/Profile';
 import Ladder from '@/pages/Dashboard/Ladder';
 import Matches from '@/pages/Dashboard/Matches';
 import AdminCompetitions from '@/pages/Admin/Competitions';
+import AdminMatches from '@/pages/Admin/Matches';
 
 export default function App() {
   return (
@@ -50,6 +51,7 @@ export default function App() {
         >
           <Route path="/admin" element={<AdminCompetitions />} />
           <Route path="/admin/competitions" element={<AdminCompetitions />} />
+          <Route path="/admin/matches" element={<AdminMatches />} />
         </Route>
       </Routes>
     </BrowserRouter>
