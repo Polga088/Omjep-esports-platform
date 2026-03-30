@@ -58,7 +58,7 @@ export class ProClubsService {
     );
 
     const team = await this.prisma.team.findUnique({
-      where: { proclubs_url: url },
+      where: { proclubs_url: url } as any,
       include: {
         members: { include: { user: true } },
       },
@@ -72,7 +72,7 @@ export class ProClubsService {
       };
     }
 
-    const personaMap = this.buildPersonaMapFromTeam(team);
+    const personaMap = this.buildPersonaMapFromTeam(team as any);
     const matchedPlayers = this.matchScrapedPlayers(scraped.players, personaMap);
 
     this.logger.log(
@@ -103,7 +103,7 @@ export class ProClubsService {
       throw new NotFoundException(`Match ${matchId} introuvable.`);
     }
 
-    const proClubsUrl = match.homeTeam.proclubs_url;
+    const proClubsUrl = (match.homeTeam as any).proclubs_url;
     if (!proClubsUrl) {
       throw new Error(
         `L'équipe "${match.homeTeam.name}" n'a pas de proclubs_url configurée.`,
