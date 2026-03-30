@@ -73,6 +73,16 @@ export type Contract = $Result.DefaultSelection<Prisma.$ContractPayload>
  * 
  */
 export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
+/**
+ * Model TransferOffer
+ * 
+ */
+export type TransferOffer = $Result.DefaultSelection<Prisma.$TransferOfferPayload>
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 
 /**
  * Enums
@@ -155,7 +165,8 @@ export type CompetitionStatus = (typeof CompetitionStatus)[keyof typeof Competit
 export const TransferStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
 };
 
 export type TransferStatus = (typeof TransferStatus)[keyof typeof TransferStatus]
@@ -469,6 +480,26 @@ export class PrismaClient<
     * ```
     */
   get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transferOffer`: Exposes CRUD operations for the **TransferOffer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TransferOffers
+    * const transferOffers = await prisma.transferOffer.findMany()
+    * ```
+    */
+  get transferOffer(): Prisma.TransferOfferDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notifications
+    * const notifications = await prisma.notification.findMany()
+    * ```
+    */
+  get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -921,7 +952,9 @@ export namespace Prisma {
     TransferRequest: 'TransferRequest',
     Invitation: 'Invitation',
     Contract: 'Contract',
-    Transaction: 'Transaction'
+    Transaction: 'Transaction',
+    TransferOffer: 'TransferOffer',
+    Notification: 'Notification'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -940,7 +973,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "team" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction"
+      modelProps: "user" | "team" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1832,6 +1865,154 @@ export namespace Prisma {
           }
         }
       }
+      TransferOffer: {
+        payload: Prisma.$TransferOfferPayload<ExtArgs>
+        fields: Prisma.TransferOfferFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransferOfferFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransferOfferFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>
+          }
+          findFirst: {
+            args: Prisma.TransferOfferFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransferOfferFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>
+          }
+          findMany: {
+            args: Prisma.TransferOfferFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>[]
+          }
+          create: {
+            args: Prisma.TransferOfferCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>
+          }
+          createMany: {
+            args: Prisma.TransferOfferCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransferOfferCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>[]
+          }
+          delete: {
+            args: Prisma.TransferOfferDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>
+          }
+          update: {
+            args: Prisma.TransferOfferUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransferOfferDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransferOfferUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransferOfferUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransferOfferUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferOfferPayload>
+          }
+          aggregate: {
+            args: Prisma.TransferOfferAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransferOffer>
+          }
+          groupBy: {
+            args: Prisma.TransferOfferGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransferOfferGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransferOfferCountArgs<ExtArgs>
+            result: $Utils.Optional<TransferOfferCountAggregateOutputType> | number
+          }
+        }
+      }
+      Notification: {
+        payload: Prisma.$NotificationPayload<ExtArgs>
+        fields: Prisma.NotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findMany: {
+            args: Prisma.NotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          create: {
+            args: Prisma.NotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          createMany: {
+            args: Prisma.NotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          update: {
+            args: Prisma.NotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.NotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotification>
+          }
+          groupBy: {
+            args: Prisma.NotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1940,6 +2121,8 @@ export namespace Prisma {
     invitation?: InvitationOmit
     contract?: ContractOmit
     transaction?: TransactionOmit
+    transferOffer?: TransferOfferOmit
+    notification?: NotificationOmit
   }
 
   /* Types for Logging */
@@ -2026,6 +2209,8 @@ export namespace Prisma {
     receivedInvitations: number
     matchEvents: number
     contracts: number
+    transferOffers: number
+    notifications: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2035,6 +2220,8 @@ export namespace Prisma {
     receivedInvitations?: boolean | UserCountOutputTypeCountReceivedInvitationsArgs
     matchEvents?: boolean | UserCountOutputTypeCountMatchEventsArgs
     contracts?: boolean | UserCountOutputTypeCountContractsArgs
+    transferOffers?: boolean | UserCountOutputTypeCountTransferOffersArgs
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   }
 
   // Custom InputTypes
@@ -2090,6 +2277,20 @@ export namespace Prisma {
     where?: ContractWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransferOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferOfferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+  }
+
 
   /**
    * Count Type TeamCountOutputType
@@ -2105,6 +2306,8 @@ export namespace Prisma {
     matchEvents: number
     contracts: number
     transactions: number
+    sentOffers: number
+    receivedOffers: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2117,6 +2320,8 @@ export namespace Prisma {
     matchEvents?: boolean | TeamCountOutputTypeCountMatchEventsArgs
     contracts?: boolean | TeamCountOutputTypeCountContractsArgs
     transactions?: boolean | TeamCountOutputTypeCountTransactionsArgs
+    sentOffers?: boolean | TeamCountOutputTypeCountSentOffersArgs
+    receivedOffers?: boolean | TeamCountOutputTypeCountReceivedOffersArgs
   }
 
   // Custom InputTypes
@@ -2191,6 +2396,20 @@ export namespace Prisma {
    */
   export type TeamCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountSentOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferOfferWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountReceivedOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferOfferWhereInput
   }
 
 
@@ -2488,6 +2707,8 @@ export namespace Prisma {
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     matchEvents?: boolean | User$matchEventsArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
+    transferOffers?: boolean | User$transferOffersArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2542,6 +2763,8 @@ export namespace Prisma {
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     matchEvents?: boolean | User$matchEventsArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
+    transferOffers?: boolean | User$transferOffersArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2557,6 +2780,8 @@ export namespace Prisma {
       receivedInvitations: Prisma.$InvitationPayload<ExtArgs>[]
       matchEvents: Prisma.$MatchEventPayload<ExtArgs>[]
       contracts: Prisma.$ContractPayload<ExtArgs>[]
+      transferOffers: Prisma.$TransferOfferPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2971,6 +3196,8 @@ export namespace Prisma {
     receivedInvitations<T extends User$receivedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     matchEvents<T extends User$matchEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$matchEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     contracts<T extends User$contractsArgs<ExtArgs> = {}>(args?: Subset<T, User$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transferOffers<T extends User$transferOffersArgs<ExtArgs> = {}>(args?: Subset<T, User$transferOffersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3562,6 +3789,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.transferOffers
+   */
+  export type User$transferOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    where?: TransferOfferWhereInput
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    cursor?: TransferOfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferOfferScalarFieldEnum | TransferOfferScalarFieldEnum[]
+  }
+
+  /**
+   * User.notifications
+   */
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3811,6 +4086,8 @@ export namespace Prisma {
     matchEvents?: boolean | Team$matchEventsArgs<ExtArgs>
     contracts?: boolean | Team$contractsArgs<ExtArgs>
     transactions?: boolean | Team$transactionsArgs<ExtArgs>
+    sentOffers?: boolean | Team$sentOffersArgs<ExtArgs>
+    receivedOffers?: boolean | Team$receivedOffersArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -3858,6 +4135,8 @@ export namespace Prisma {
     matchEvents?: boolean | Team$matchEventsArgs<ExtArgs>
     contracts?: boolean | Team$contractsArgs<ExtArgs>
     transactions?: boolean | Team$transactionsArgs<ExtArgs>
+    sentOffers?: boolean | Team$sentOffersArgs<ExtArgs>
+    receivedOffers?: boolean | Team$receivedOffersArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3875,6 +4154,8 @@ export namespace Prisma {
       matchEvents: Prisma.$MatchEventPayload<ExtArgs>[]
       contracts: Prisma.$ContractPayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      sentOffers: Prisma.$TransferOfferPayload<ExtArgs>[]
+      receivedOffers: Prisma.$TransferOfferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4288,6 +4569,8 @@ export namespace Prisma {
     matchEvents<T extends Team$matchEventsArgs<ExtArgs> = {}>(args?: Subset<T, Team$matchEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     contracts<T extends Team$contractsArgs<ExtArgs> = {}>(args?: Subset<T, Team$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends Team$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sentOffers<T extends Team$sentOffersArgs<ExtArgs> = {}>(args?: Subset<T, Team$sentOffersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receivedOffers<T extends Team$receivedOffersArgs<ExtArgs> = {}>(args?: Subset<T, Team$receivedOffersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4926,6 +5209,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Team.sentOffers
+   */
+  export type Team$sentOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    where?: TransferOfferWhereInput
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    cursor?: TransferOfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferOfferScalarFieldEnum | TransferOfferScalarFieldEnum[]
+  }
+
+  /**
+   * Team.receivedOffers
+   */
+  export type Team$receivedOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    where?: TransferOfferWhereInput
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    cursor?: TransferOfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferOfferScalarFieldEnum | TransferOfferScalarFieldEnum[]
   }
 
   /**
@@ -16070,6 +16401,2233 @@ export namespace Prisma {
 
 
   /**
+   * Model TransferOffer
+   */
+
+  export type AggregateTransferOffer = {
+    _count: TransferOfferCountAggregateOutputType | null
+    _avg: TransferOfferAvgAggregateOutputType | null
+    _sum: TransferOfferSumAggregateOutputType | null
+    _min: TransferOfferMinAggregateOutputType | null
+    _max: TransferOfferMaxAggregateOutputType | null
+  }
+
+  export type TransferOfferAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransferOfferSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransferOfferMinAggregateOutputType = {
+    id: string | null
+    player_id: string | null
+    from_team_id: string | null
+    to_team_id: string | null
+    amount: number | null
+    status: $Enums.TransferStatus | null
+    created_at: Date | null
+    responded_at: Date | null
+  }
+
+  export type TransferOfferMaxAggregateOutputType = {
+    id: string | null
+    player_id: string | null
+    from_team_id: string | null
+    to_team_id: string | null
+    amount: number | null
+    status: $Enums.TransferStatus | null
+    created_at: Date | null
+    responded_at: Date | null
+  }
+
+  export type TransferOfferCountAggregateOutputType = {
+    id: number
+    player_id: number
+    from_team_id: number
+    to_team_id: number
+    amount: number
+    status: number
+    created_at: number
+    responded_at: number
+    _all: number
+  }
+
+
+  export type TransferOfferAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransferOfferSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransferOfferMinAggregateInputType = {
+    id?: true
+    player_id?: true
+    from_team_id?: true
+    to_team_id?: true
+    amount?: true
+    status?: true
+    created_at?: true
+    responded_at?: true
+  }
+
+  export type TransferOfferMaxAggregateInputType = {
+    id?: true
+    player_id?: true
+    from_team_id?: true
+    to_team_id?: true
+    amount?: true
+    status?: true
+    created_at?: true
+    responded_at?: true
+  }
+
+  export type TransferOfferCountAggregateInputType = {
+    id?: true
+    player_id?: true
+    from_team_id?: true
+    to_team_id?: true
+    amount?: true
+    status?: true
+    created_at?: true
+    responded_at?: true
+    _all?: true
+  }
+
+  export type TransferOfferAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransferOffer to aggregate.
+     */
+    where?: TransferOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferOffers to fetch.
+     */
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransferOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferOffers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TransferOffers
+    **/
+    _count?: true | TransferOfferCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransferOfferAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransferOfferSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransferOfferMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransferOfferMaxAggregateInputType
+  }
+
+  export type GetTransferOfferAggregateType<T extends TransferOfferAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransferOffer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransferOffer[P]>
+      : GetScalarType<T[P], AggregateTransferOffer[P]>
+  }
+
+
+
+
+  export type TransferOfferGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferOfferWhereInput
+    orderBy?: TransferOfferOrderByWithAggregationInput | TransferOfferOrderByWithAggregationInput[]
+    by: TransferOfferScalarFieldEnum[] | TransferOfferScalarFieldEnum
+    having?: TransferOfferScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransferOfferCountAggregateInputType | true
+    _avg?: TransferOfferAvgAggregateInputType
+    _sum?: TransferOfferSumAggregateInputType
+    _min?: TransferOfferMinAggregateInputType
+    _max?: TransferOfferMaxAggregateInputType
+  }
+
+  export type TransferOfferGroupByOutputType = {
+    id: string
+    player_id: string
+    from_team_id: string
+    to_team_id: string
+    amount: number
+    status: $Enums.TransferStatus
+    created_at: Date
+    responded_at: Date | null
+    _count: TransferOfferCountAggregateOutputType | null
+    _avg: TransferOfferAvgAggregateOutputType | null
+    _sum: TransferOfferSumAggregateOutputType | null
+    _min: TransferOfferMinAggregateOutputType | null
+    _max: TransferOfferMaxAggregateOutputType | null
+  }
+
+  type GetTransferOfferGroupByPayload<T extends TransferOfferGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransferOfferGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransferOfferGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransferOfferGroupByOutputType[P]>
+            : GetScalarType<T[P], TransferOfferGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransferOfferSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    player_id?: boolean
+    from_team_id?: boolean
+    to_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    created_at?: boolean
+    responded_at?: boolean
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    fromTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    toTeam?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transferOffer"]>
+
+  export type TransferOfferSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    player_id?: boolean
+    from_team_id?: boolean
+    to_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    created_at?: boolean
+    responded_at?: boolean
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    fromTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    toTeam?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transferOffer"]>
+
+  export type TransferOfferSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    player_id?: boolean
+    from_team_id?: boolean
+    to_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    created_at?: boolean
+    responded_at?: boolean
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    fromTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    toTeam?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transferOffer"]>
+
+  export type TransferOfferSelectScalar = {
+    id?: boolean
+    player_id?: boolean
+    from_team_id?: boolean
+    to_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    created_at?: boolean
+    responded_at?: boolean
+  }
+
+  export type TransferOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "player_id" | "from_team_id" | "to_team_id" | "amount" | "status" | "created_at" | "responded_at", ExtArgs["result"]["transferOffer"]>
+  export type TransferOfferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    fromTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    toTeam?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type TransferOfferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    fromTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    toTeam?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type TransferOfferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    fromTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    toTeam?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+
+  export type $TransferOfferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TransferOffer"
+    objects: {
+      player: Prisma.$UserPayload<ExtArgs>
+      fromTeam: Prisma.$TeamPayload<ExtArgs>
+      toTeam: Prisma.$TeamPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      player_id: string
+      from_team_id: string
+      to_team_id: string
+      amount: number
+      status: $Enums.TransferStatus
+      created_at: Date
+      responded_at: Date | null
+    }, ExtArgs["result"]["transferOffer"]>
+    composites: {}
+  }
+
+  type TransferOfferGetPayload<S extends boolean | null | undefined | TransferOfferDefaultArgs> = $Result.GetResult<Prisma.$TransferOfferPayload, S>
+
+  type TransferOfferCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransferOfferFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransferOfferCountAggregateInputType | true
+    }
+
+  export interface TransferOfferDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TransferOffer'], meta: { name: 'TransferOffer' } }
+    /**
+     * Find zero or one TransferOffer that matches the filter.
+     * @param {TransferOfferFindUniqueArgs} args - Arguments to find a TransferOffer
+     * @example
+     * // Get one TransferOffer
+     * const transferOffer = await prisma.transferOffer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransferOfferFindUniqueArgs>(args: SelectSubset<T, TransferOfferFindUniqueArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TransferOffer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransferOfferFindUniqueOrThrowArgs} args - Arguments to find a TransferOffer
+     * @example
+     * // Get one TransferOffer
+     * const transferOffer = await prisma.transferOffer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransferOfferFindUniqueOrThrowArgs>(args: SelectSubset<T, TransferOfferFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransferOffer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferOfferFindFirstArgs} args - Arguments to find a TransferOffer
+     * @example
+     * // Get one TransferOffer
+     * const transferOffer = await prisma.transferOffer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransferOfferFindFirstArgs>(args?: SelectSubset<T, TransferOfferFindFirstArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransferOffer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferOfferFindFirstOrThrowArgs} args - Arguments to find a TransferOffer
+     * @example
+     * // Get one TransferOffer
+     * const transferOffer = await prisma.transferOffer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransferOfferFindFirstOrThrowArgs>(args?: SelectSubset<T, TransferOfferFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TransferOffers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferOfferFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TransferOffers
+     * const transferOffers = await prisma.transferOffer.findMany()
+     * 
+     * // Get first 10 TransferOffers
+     * const transferOffers = await prisma.transferOffer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transferOfferWithIdOnly = await prisma.transferOffer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransferOfferFindManyArgs>(args?: SelectSubset<T, TransferOfferFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TransferOffer.
+     * @param {TransferOfferCreateArgs} args - Arguments to create a TransferOffer.
+     * @example
+     * // Create one TransferOffer
+     * const TransferOffer = await prisma.transferOffer.create({
+     *   data: {
+     *     // ... data to create a TransferOffer
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransferOfferCreateArgs>(args: SelectSubset<T, TransferOfferCreateArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TransferOffers.
+     * @param {TransferOfferCreateManyArgs} args - Arguments to create many TransferOffers.
+     * @example
+     * // Create many TransferOffers
+     * const transferOffer = await prisma.transferOffer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransferOfferCreateManyArgs>(args?: SelectSubset<T, TransferOfferCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TransferOffers and returns the data saved in the database.
+     * @param {TransferOfferCreateManyAndReturnArgs} args - Arguments to create many TransferOffers.
+     * @example
+     * // Create many TransferOffers
+     * const transferOffer = await prisma.transferOffer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TransferOffers and only return the `id`
+     * const transferOfferWithIdOnly = await prisma.transferOffer.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransferOfferCreateManyAndReturnArgs>(args?: SelectSubset<T, TransferOfferCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TransferOffer.
+     * @param {TransferOfferDeleteArgs} args - Arguments to delete one TransferOffer.
+     * @example
+     * // Delete one TransferOffer
+     * const TransferOffer = await prisma.transferOffer.delete({
+     *   where: {
+     *     // ... filter to delete one TransferOffer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransferOfferDeleteArgs>(args: SelectSubset<T, TransferOfferDeleteArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TransferOffer.
+     * @param {TransferOfferUpdateArgs} args - Arguments to update one TransferOffer.
+     * @example
+     * // Update one TransferOffer
+     * const transferOffer = await prisma.transferOffer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransferOfferUpdateArgs>(args: SelectSubset<T, TransferOfferUpdateArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TransferOffers.
+     * @param {TransferOfferDeleteManyArgs} args - Arguments to filter TransferOffers to delete.
+     * @example
+     * // Delete a few TransferOffers
+     * const { count } = await prisma.transferOffer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransferOfferDeleteManyArgs>(args?: SelectSubset<T, TransferOfferDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransferOffers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferOfferUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TransferOffers
+     * const transferOffer = await prisma.transferOffer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransferOfferUpdateManyArgs>(args: SelectSubset<T, TransferOfferUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransferOffers and returns the data updated in the database.
+     * @param {TransferOfferUpdateManyAndReturnArgs} args - Arguments to update many TransferOffers.
+     * @example
+     * // Update many TransferOffers
+     * const transferOffer = await prisma.transferOffer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TransferOffers and only return the `id`
+     * const transferOfferWithIdOnly = await prisma.transferOffer.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransferOfferUpdateManyAndReturnArgs>(args: SelectSubset<T, TransferOfferUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TransferOffer.
+     * @param {TransferOfferUpsertArgs} args - Arguments to update or create a TransferOffer.
+     * @example
+     * // Update or create a TransferOffer
+     * const transferOffer = await prisma.transferOffer.upsert({
+     *   create: {
+     *     // ... data to create a TransferOffer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TransferOffer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransferOfferUpsertArgs>(args: SelectSubset<T, TransferOfferUpsertArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TransferOffers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferOfferCountArgs} args - Arguments to filter TransferOffers to count.
+     * @example
+     * // Count the number of TransferOffers
+     * const count = await prisma.transferOffer.count({
+     *   where: {
+     *     // ... the filter for the TransferOffers we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransferOfferCountArgs>(
+      args?: Subset<T, TransferOfferCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransferOfferCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TransferOffer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferOfferAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransferOfferAggregateArgs>(args: Subset<T, TransferOfferAggregateArgs>): Prisma.PrismaPromise<GetTransferOfferAggregateType<T>>
+
+    /**
+     * Group by TransferOffer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferOfferGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransferOfferGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransferOfferGroupByArgs['orderBy'] }
+        : { orderBy?: TransferOfferGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransferOfferGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransferOfferGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TransferOffer model
+   */
+  readonly fields: TransferOfferFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TransferOffer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransferOfferClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    player<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    fromTeam<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    toTeam<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TransferOffer model
+   */
+  interface TransferOfferFieldRefs {
+    readonly id: FieldRef<"TransferOffer", 'String'>
+    readonly player_id: FieldRef<"TransferOffer", 'String'>
+    readonly from_team_id: FieldRef<"TransferOffer", 'String'>
+    readonly to_team_id: FieldRef<"TransferOffer", 'String'>
+    readonly amount: FieldRef<"TransferOffer", 'Float'>
+    readonly status: FieldRef<"TransferOffer", 'TransferStatus'>
+    readonly created_at: FieldRef<"TransferOffer", 'DateTime'>
+    readonly responded_at: FieldRef<"TransferOffer", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TransferOffer findUnique
+   */
+  export type TransferOfferFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferOffer to fetch.
+     */
+    where: TransferOfferWhereUniqueInput
+  }
+
+  /**
+   * TransferOffer findUniqueOrThrow
+   */
+  export type TransferOfferFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferOffer to fetch.
+     */
+    where: TransferOfferWhereUniqueInput
+  }
+
+  /**
+   * TransferOffer findFirst
+   */
+  export type TransferOfferFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferOffer to fetch.
+     */
+    where?: TransferOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferOffers to fetch.
+     */
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransferOffers.
+     */
+    cursor?: TransferOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferOffers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransferOffers.
+     */
+    distinct?: TransferOfferScalarFieldEnum | TransferOfferScalarFieldEnum[]
+  }
+
+  /**
+   * TransferOffer findFirstOrThrow
+   */
+  export type TransferOfferFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferOffer to fetch.
+     */
+    where?: TransferOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferOffers to fetch.
+     */
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransferOffers.
+     */
+    cursor?: TransferOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferOffers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransferOffers.
+     */
+    distinct?: TransferOfferScalarFieldEnum | TransferOfferScalarFieldEnum[]
+  }
+
+  /**
+   * TransferOffer findMany
+   */
+  export type TransferOfferFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferOffers to fetch.
+     */
+    where?: TransferOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferOffers to fetch.
+     */
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TransferOffers.
+     */
+    cursor?: TransferOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferOffers.
+     */
+    skip?: number
+    distinct?: TransferOfferScalarFieldEnum | TransferOfferScalarFieldEnum[]
+  }
+
+  /**
+   * TransferOffer create
+   */
+  export type TransferOfferCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TransferOffer.
+     */
+    data: XOR<TransferOfferCreateInput, TransferOfferUncheckedCreateInput>
+  }
+
+  /**
+   * TransferOffer createMany
+   */
+  export type TransferOfferCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TransferOffers.
+     */
+    data: TransferOfferCreateManyInput | TransferOfferCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TransferOffer createManyAndReturn
+   */
+  export type TransferOfferCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * The data used to create many TransferOffers.
+     */
+    data: TransferOfferCreateManyInput | TransferOfferCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TransferOffer update
+   */
+  export type TransferOfferUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TransferOffer.
+     */
+    data: XOR<TransferOfferUpdateInput, TransferOfferUncheckedUpdateInput>
+    /**
+     * Choose, which TransferOffer to update.
+     */
+    where: TransferOfferWhereUniqueInput
+  }
+
+  /**
+   * TransferOffer updateMany
+   */
+  export type TransferOfferUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TransferOffers.
+     */
+    data: XOR<TransferOfferUpdateManyMutationInput, TransferOfferUncheckedUpdateManyInput>
+    /**
+     * Filter which TransferOffers to update
+     */
+    where?: TransferOfferWhereInput
+    /**
+     * Limit how many TransferOffers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransferOffer updateManyAndReturn
+   */
+  export type TransferOfferUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * The data used to update TransferOffers.
+     */
+    data: XOR<TransferOfferUpdateManyMutationInput, TransferOfferUncheckedUpdateManyInput>
+    /**
+     * Filter which TransferOffers to update
+     */
+    where?: TransferOfferWhereInput
+    /**
+     * Limit how many TransferOffers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TransferOffer upsert
+   */
+  export type TransferOfferUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TransferOffer to update in case it exists.
+     */
+    where: TransferOfferWhereUniqueInput
+    /**
+     * In case the TransferOffer found by the `where` argument doesn't exist, create a new TransferOffer with this data.
+     */
+    create: XOR<TransferOfferCreateInput, TransferOfferUncheckedCreateInput>
+    /**
+     * In case the TransferOffer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransferOfferUpdateInput, TransferOfferUncheckedUpdateInput>
+  }
+
+  /**
+   * TransferOffer delete
+   */
+  export type TransferOfferDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    /**
+     * Filter which TransferOffer to delete.
+     */
+    where: TransferOfferWhereUniqueInput
+  }
+
+  /**
+   * TransferOffer deleteMany
+   */
+  export type TransferOfferDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransferOffers to delete
+     */
+    where?: TransferOfferWhereInput
+    /**
+     * Limit how many TransferOffers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransferOffer without action
+   */
+  export type TransferOfferDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Notification
+   */
+
+  export type AggregateNotification = {
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  export type NotificationMinAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    title: string | null
+    message: string | null
+    is_read: boolean | null
+    created_at: Date | null
+  }
+
+  export type NotificationMaxAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    title: string | null
+    message: string | null
+    is_read: boolean | null
+    created_at: Date | null
+  }
+
+  export type NotificationCountAggregateOutputType = {
+    id: number
+    user_id: number
+    title: number
+    message: number
+    is_read: number
+    metadata: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type NotificationMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    title?: true
+    message?: true
+    is_read?: true
+    created_at?: true
+  }
+
+  export type NotificationMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    title?: true
+    message?: true
+    is_read?: true
+    created_at?: true
+  }
+
+  export type NotificationCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    title?: true
+    message?: true
+    is_read?: true
+    metadata?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type NotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notification to aggregate.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Notifications
+    **/
+    _count?: true | NotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type GetNotificationAggregateType<T extends NotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotification[P]>
+      : GetScalarType<T[P], AggregateNotification[P]>
+  }
+
+
+
+
+  export type NotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithAggregationInput | NotificationOrderByWithAggregationInput[]
+    by: NotificationScalarFieldEnum[] | NotificationScalarFieldEnum
+    having?: NotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationCountAggregateInputType | true
+    _min?: NotificationMinAggregateInputType
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type NotificationGroupByOutputType = {
+    id: string
+    user_id: string
+    title: string
+    message: string
+    is_read: boolean
+    metadata: JsonValue | null
+    created_at: Date
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  type GetNotificationGroupByPayload<T extends NotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    message?: boolean
+    is_read?: boolean
+    metadata?: boolean
+    created_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    message?: boolean
+    is_read?: boolean
+    metadata?: boolean
+    created_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    message?: boolean
+    is_read?: boolean
+    metadata?: boolean
+    created_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    message?: boolean
+    is_read?: boolean
+    metadata?: boolean
+    created_at?: boolean
+  }
+
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "title" | "message" | "is_read" | "metadata" | "created_at", ExtArgs["result"]["notification"]>
+  export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Notification"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      user_id: string
+      title: string
+      message: string
+      is_read: boolean
+      metadata: Prisma.JsonValue | null
+      created_at: Date
+    }, ExtArgs["result"]["notification"]>
+    composites: {}
+  }
+
+  type NotificationGetPayload<S extends boolean | null | undefined | NotificationDefaultArgs> = $Result.GetResult<Prisma.$NotificationPayload, S>
+
+  type NotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NotificationCountAggregateInputType | true
+    }
+
+  export interface NotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Notification'], meta: { name: 'Notification' } }
+    /**
+     * Find zero or one Notification that matches the filter.
+     * @param {NotificationFindUniqueArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationFindUniqueArgs>(args: SelectSubset<T, NotificationFindUniqueArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Notification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NotificationFindUniqueOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationFindFirstArgs>(args?: SelectSubset<T, NotificationFindFirstArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Notifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notifications
+     * const notifications = await prisma.notification.findMany()
+     * 
+     * // Get first 10 Notifications
+     * const notifications = await prisma.notification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notificationWithIdOnly = await prisma.notification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NotificationFindManyArgs>(args?: SelectSubset<T, NotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Notification.
+     * @param {NotificationCreateArgs} args - Arguments to create a Notification.
+     * @example
+     * // Create one Notification
+     * const Notification = await prisma.notification.create({
+     *   data: {
+     *     // ... data to create a Notification
+     *   }
+     * })
+     * 
+     */
+    create<T extends NotificationCreateArgs>(args: SelectSubset<T, NotificationCreateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Notifications.
+     * @param {NotificationCreateManyArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NotificationCreateManyArgs>(args?: SelectSubset<T, NotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Notifications and returns the data saved in the database.
+     * @param {NotificationCreateManyAndReturnArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Notification.
+     * @param {NotificationDeleteArgs} args - Arguments to delete one Notification.
+     * @example
+     * // Delete one Notification
+     * const Notification = await prisma.notification.delete({
+     *   where: {
+     *     // ... filter to delete one Notification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NotificationDeleteArgs>(args: SelectSubset<T, NotificationDeleteArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Notification.
+     * @param {NotificationUpdateArgs} args - Arguments to update one Notification.
+     * @example
+     * // Update one Notification
+     * const notification = await prisma.notification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NotificationUpdateArgs>(args: SelectSubset<T, NotificationUpdateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Notifications.
+     * @param {NotificationDeleteManyArgs} args - Arguments to filter Notifications to delete.
+     * @example
+     * // Delete a few Notifications
+     * const { count } = await prisma.notification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NotificationDeleteManyArgs>(args?: SelectSubset<T, NotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NotificationUpdateManyArgs>(args: SelectSubset<T, NotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications and returns the data updated in the database.
+     * @param {NotificationUpdateManyAndReturnArgs} args - Arguments to update many Notifications.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, NotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Notification.
+     * @param {NotificationUpsertArgs} args - Arguments to update or create a Notification.
+     * @example
+     * // Update or create a Notification
+     * const notification = await prisma.notification.upsert({
+     *   create: {
+     *     // ... data to create a Notification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Notification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationUpsertArgs>(args: SelectSubset<T, NotificationUpsertArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationCountArgs} args - Arguments to filter Notifications to count.
+     * @example
+     * // Count the number of Notifications
+     * const count = await prisma.notification.count({
+     *   where: {
+     *     // ... the filter for the Notifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationCountArgs>(
+      args?: Subset<T, NotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationAggregateArgs>(args: Subset<T, NotificationAggregateArgs>): Prisma.PrismaPromise<GetNotificationAggregateType<T>>
+
+    /**
+     * Group by Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Notification model
+   */
+  readonly fields: NotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Notification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Notification model
+   */
+  interface NotificationFieldRefs {
+    readonly id: FieldRef<"Notification", 'String'>
+    readonly user_id: FieldRef<"Notification", 'String'>
+    readonly title: FieldRef<"Notification", 'String'>
+    readonly message: FieldRef<"Notification", 'String'>
+    readonly is_read: FieldRef<"Notification", 'Boolean'>
+    readonly metadata: FieldRef<"Notification", 'Json'>
+    readonly created_at: FieldRef<"Notification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Notification findUnique
+   */
+  export type NotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findUniqueOrThrow
+   */
+  export type NotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findFirst
+   */
+  export type NotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findFirstOrThrow
+   */
+  export type NotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findMany
+   */
+  export type NotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notifications to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification create
+   */
+  export type NotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Notification.
+     */
+    data: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+  }
+
+  /**
+   * Notification createMany
+   */
+  export type NotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Notification createManyAndReturn
+   */
+  export type NotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification update
+   */
+  export type NotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Notification.
+     */
+    data: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+    /**
+     * Choose, which Notification to update.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification updateMany
+   */
+  export type NotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification updateManyAndReturn
+   */
+  export type NotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification upsert
+   */
+  export type NotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Notification to update in case it exists.
+     */
+    where: NotificationWhereUniqueInput
+    /**
+     * In case the Notification found by the `where` argument doesn't exist, create a new Notification with this data.
+     */
+    create: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+    /**
+     * In case the Notification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * Notification delete
+   */
+  export type NotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter which Notification to delete.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification deleteMany
+   */
+  export type NotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notifications to delete
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification without action
+   */
+  export type NotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -16236,12 +18794,47 @@ export namespace Prisma {
   export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
 
 
+  export const TransferOfferScalarFieldEnum: {
+    id: 'id',
+    player_id: 'player_id',
+    from_team_id: 'from_team_id',
+    to_team_id: 'to_team_id',
+    amount: 'amount',
+    status: 'status',
+    created_at: 'created_at',
+    responded_at: 'responded_at'
+  };
+
+  export type TransferOfferScalarFieldEnum = (typeof TransferOfferScalarFieldEnum)[keyof typeof TransferOfferScalarFieldEnum]
+
+
+  export const NotificationScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    title: 'title',
+    message: 'message',
+    is_read: 'is_read',
+    metadata: 'metadata',
+    created_at: 'created_at'
+  };
+
+  export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -16258,6 +18851,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -16473,6 +19075,27 @@ export namespace Prisma {
    */
   export type ListEnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType[]'>
     
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
   /**
    * Deep Input Types
    */
@@ -16500,6 +19123,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationListRelationFilter
     matchEvents?: MatchEventListRelationFilter
     contracts?: ContractListRelationFilter
+    transferOffers?: TransferOfferListRelationFilter
+    notifications?: NotificationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -16521,6 +19146,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationOrderByRelationAggregateInput
     matchEvents?: MatchEventOrderByRelationAggregateInput
     contracts?: ContractOrderByRelationAggregateInput
+    transferOffers?: TransferOfferOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -16545,6 +19172,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationListRelationFilter
     matchEvents?: MatchEventListRelationFilter
     contracts?: ContractListRelationFilter
+    transferOffers?: TransferOfferListRelationFilter
+    notifications?: NotificationListRelationFilter
   }, "id" | "external_id" | "email" | "ea_persona_name">
 
   export type UserOrderByWithAggregationInput = {
@@ -16602,6 +19231,8 @@ export namespace Prisma {
     matchEvents?: MatchEventListRelationFilter
     contracts?: ContractListRelationFilter
     transactions?: TransactionListRelationFilter
+    sentOffers?: TransferOfferListRelationFilter
+    receivedOffers?: TransferOfferListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
@@ -16622,6 +19253,8 @@ export namespace Prisma {
     matchEvents?: MatchEventOrderByRelationAggregateInput
     contracts?: ContractOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    sentOffers?: TransferOfferOrderByRelationAggregateInput
+    receivedOffers?: TransferOfferOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -16645,6 +19278,8 @@ export namespace Prisma {
     matchEvents?: MatchEventListRelationFilter
     contracts?: ContractListRelationFilter
     transactions?: TransactionListRelationFilter
+    sentOffers?: TransferOfferListRelationFilter
+    receivedOffers?: TransferOfferListRelationFilter
   }, "id" | "proclubs_url" | "name" | "ea_club_id">
 
   export type TeamOrderByWithAggregationInput = {
@@ -17335,6 +19970,149 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
   }
 
+  export type TransferOfferWhereInput = {
+    AND?: TransferOfferWhereInput | TransferOfferWhereInput[]
+    OR?: TransferOfferWhereInput[]
+    NOT?: TransferOfferWhereInput | TransferOfferWhereInput[]
+    id?: UuidFilter<"TransferOffer"> | string
+    player_id?: UuidFilter<"TransferOffer"> | string
+    from_team_id?: UuidFilter<"TransferOffer"> | string
+    to_team_id?: UuidFilter<"TransferOffer"> | string
+    amount?: FloatFilter<"TransferOffer"> | number
+    status?: EnumTransferStatusFilter<"TransferOffer"> | $Enums.TransferStatus
+    created_at?: DateTimeFilter<"TransferOffer"> | Date | string
+    responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+    player?: XOR<UserScalarRelationFilter, UserWhereInput>
+    fromTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    toTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }
+
+  export type TransferOfferOrderByWithRelationInput = {
+    id?: SortOrder
+    player_id?: SortOrder
+    from_team_id?: SortOrder
+    to_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    responded_at?: SortOrderInput | SortOrder
+    player?: UserOrderByWithRelationInput
+    fromTeam?: TeamOrderByWithRelationInput
+    toTeam?: TeamOrderByWithRelationInput
+  }
+
+  export type TransferOfferWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TransferOfferWhereInput | TransferOfferWhereInput[]
+    OR?: TransferOfferWhereInput[]
+    NOT?: TransferOfferWhereInput | TransferOfferWhereInput[]
+    player_id?: UuidFilter<"TransferOffer"> | string
+    from_team_id?: UuidFilter<"TransferOffer"> | string
+    to_team_id?: UuidFilter<"TransferOffer"> | string
+    amount?: FloatFilter<"TransferOffer"> | number
+    status?: EnumTransferStatusFilter<"TransferOffer"> | $Enums.TransferStatus
+    created_at?: DateTimeFilter<"TransferOffer"> | Date | string
+    responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+    player?: XOR<UserScalarRelationFilter, UserWhereInput>
+    fromTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    toTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }, "id">
+
+  export type TransferOfferOrderByWithAggregationInput = {
+    id?: SortOrder
+    player_id?: SortOrder
+    from_team_id?: SortOrder
+    to_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    responded_at?: SortOrderInput | SortOrder
+    _count?: TransferOfferCountOrderByAggregateInput
+    _avg?: TransferOfferAvgOrderByAggregateInput
+    _max?: TransferOfferMaxOrderByAggregateInput
+    _min?: TransferOfferMinOrderByAggregateInput
+    _sum?: TransferOfferSumOrderByAggregateInput
+  }
+
+  export type TransferOfferScalarWhereWithAggregatesInput = {
+    AND?: TransferOfferScalarWhereWithAggregatesInput | TransferOfferScalarWhereWithAggregatesInput[]
+    OR?: TransferOfferScalarWhereWithAggregatesInput[]
+    NOT?: TransferOfferScalarWhereWithAggregatesInput | TransferOfferScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"TransferOffer"> | string
+    player_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
+    from_team_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
+    to_team_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
+    amount?: FloatWithAggregatesFilter<"TransferOffer"> | number
+    status?: EnumTransferStatusWithAggregatesFilter<"TransferOffer"> | $Enums.TransferStatus
+    created_at?: DateTimeWithAggregatesFilter<"TransferOffer"> | Date | string
+    responded_at?: DateTimeNullableWithAggregatesFilter<"TransferOffer"> | Date | string | null
+  }
+
+  export type NotificationWhereInput = {
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    id?: UuidFilter<"Notification"> | string
+    user_id?: UuidFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    message?: StringFilter<"Notification"> | string
+    is_read?: BoolFilter<"Notification"> | boolean
+    metadata?: JsonNullableFilter<"Notification">
+    created_at?: DateTimeFilter<"Notification"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type NotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    is_read?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type NotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    user_id?: UuidFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    message?: StringFilter<"Notification"> | string
+    is_read?: BoolFilter<"Notification"> | boolean
+    metadata?: JsonNullableFilter<"Notification">
+    created_at?: DateTimeFilter<"Notification"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type NotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    is_read?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: NotificationCountOrderByAggregateInput
+    _max?: NotificationMaxOrderByAggregateInput
+    _min?: NotificationMinOrderByAggregateInput
+  }
+
+  export type NotificationScalarWhereWithAggregatesInput = {
+    AND?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    OR?: NotificationScalarWhereWithAggregatesInput[]
+    NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Notification"> | string
+    user_id?: UuidWithAggregatesFilter<"Notification"> | string
+    title?: StringWithAggregatesFilter<"Notification"> | string
+    message?: StringWithAggregatesFilter<"Notification"> | string
+    is_read?: BoolWithAggregatesFilter<"Notification"> | boolean
+    metadata?: JsonNullableWithAggregatesFilter<"Notification">
+    created_at?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     external_id?: string | null
@@ -17354,6 +20132,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -17375,6 +20155,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -17396,6 +20178,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -17417,6 +20201,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -17479,6 +20265,8 @@ export namespace Prisma {
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
@@ -17499,6 +20287,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUpdateInput = {
@@ -17519,6 +20309,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
@@ -17539,6 +20331,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
@@ -18211,6 +21005,149 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransferOfferCreateInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+    player: UserCreateNestedOneWithoutTransferOffersInput
+    fromTeam: TeamCreateNestedOneWithoutSentOffersInput
+    toTeam: TeamCreateNestedOneWithoutReceivedOffersInput
+  }
+
+  export type TransferOfferUncheckedCreateInput = {
+    id?: string
+    player_id: string
+    from_team_id: string
+    to_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferOfferUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
+    fromTeam?: TeamUpdateOneRequiredWithoutSentOffersNestedInput
+    toTeam?: TeamUpdateOneRequiredWithoutReceivedOffersNestedInput
+  }
+
+  export type TransferOfferUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferOfferCreateManyInput = {
+    id?: string
+    player_id: string
+    from_team_id: string
+    to_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferOfferUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferOfferUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type NotificationCreateInput = {
+    id?: string
+    title: string
+    message: string
+    is_read?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    user: UserCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateInput = {
+    id?: string
+    user_id: string
+    title: string
+    message: string
+    is_read?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+  }
+
+  export type NotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationCreateManyInput = {
+    id?: string
+    user_id: string
+    title: string
+    message: string
+    is_read?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+  }
+
+  export type NotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -18313,6 +21250,18 @@ export namespace Prisma {
     none?: ContractWhereInput
   }
 
+  export type TransferOfferListRelationFilter = {
+    every?: TransferOfferWhereInput
+    some?: TransferOfferWhereInput
+    none?: TransferOfferWhereInput
+  }
+
+  export type NotificationListRelationFilter = {
+    every?: NotificationWhereInput
+    some?: NotificationWhereInput
+    none?: NotificationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -18335,6 +21284,14 @@ export namespace Prisma {
   }
 
   export type ContractOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransferOfferOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19192,6 +22149,137 @@ export namespace Prisma {
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
   }
 
+  export type TransferOfferCountOrderByAggregateInput = {
+    id?: SortOrder
+    player_id?: SortOrder
+    from_team_id?: SortOrder
+    to_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    responded_at?: SortOrder
+  }
+
+  export type TransferOfferAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type TransferOfferMaxOrderByAggregateInput = {
+    id?: SortOrder
+    player_id?: SortOrder
+    from_team_id?: SortOrder
+    to_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    responded_at?: SortOrder
+  }
+
+  export type TransferOfferMinOrderByAggregateInput = {
+    id?: SortOrder
+    player_id?: SortOrder
+    from_team_id?: SortOrder
+    to_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    responded_at?: SortOrder
+  }
+
+  export type TransferOfferSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    is_read?: SortOrder
+    metadata?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type NotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    is_read?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type NotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    is_read?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
   export type TeamMemberCreateNestedManyWithoutUserInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -19240,6 +22328,20 @@ export namespace Prisma {
     connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
   }
 
+  export type TransferOfferCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<TransferOfferCreateWithoutPlayerInput, TransferOfferUncheckedCreateWithoutPlayerInput> | TransferOfferCreateWithoutPlayerInput[] | TransferOfferUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutPlayerInput | TransferOfferCreateOrConnectWithoutPlayerInput[]
+    createMany?: TransferOfferCreateManyPlayerInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+  }
+
+  export type NotificationCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
   export type TeamMemberUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -19286,6 +22388,20 @@ export namespace Prisma {
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
     createMany?: ContractCreateManyUserInputEnvelope
     connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type TransferOfferUncheckedCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<TransferOfferCreateWithoutPlayerInput, TransferOfferUncheckedCreateWithoutPlayerInput> | TransferOfferCreateWithoutPlayerInput[] | TransferOfferUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutPlayerInput | TransferOfferCreateOrConnectWithoutPlayerInput[]
+    createMany?: TransferOfferCreateManyPlayerInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -19402,6 +22518,34 @@ export namespace Prisma {
     deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
   }
 
+  export type TransferOfferUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutPlayerInput, TransferOfferUncheckedCreateWithoutPlayerInput> | TransferOfferCreateWithoutPlayerInput[] | TransferOfferUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutPlayerInput | TransferOfferCreateOrConnectWithoutPlayerInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutPlayerInput | TransferOfferUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: TransferOfferCreateManyPlayerInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutPlayerInput | TransferOfferUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutPlayerInput | TransferOfferUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+  }
+
+  export type NotificationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
   export type TeamMemberUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -19496,6 +22640,34 @@ export namespace Prisma {
     deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
   }
 
+  export type TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutPlayerInput, TransferOfferUncheckedCreateWithoutPlayerInput> | TransferOfferCreateWithoutPlayerInput[] | TransferOfferUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutPlayerInput | TransferOfferCreateOrConnectWithoutPlayerInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutPlayerInput | TransferOfferUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: TransferOfferCreateManyPlayerInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutPlayerInput | TransferOfferUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutPlayerInput | TransferOfferUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
   export type TeamMemberCreateNestedManyWithoutTeamInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -19559,6 +22731,20 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type TransferOfferCreateNestedManyWithoutFromTeamInput = {
+    create?: XOR<TransferOfferCreateWithoutFromTeamInput, TransferOfferUncheckedCreateWithoutFromTeamInput> | TransferOfferCreateWithoutFromTeamInput[] | TransferOfferUncheckedCreateWithoutFromTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutFromTeamInput | TransferOfferCreateOrConnectWithoutFromTeamInput[]
+    createMany?: TransferOfferCreateManyFromTeamInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+  }
+
+  export type TransferOfferCreateNestedManyWithoutToTeamInput = {
+    create?: XOR<TransferOfferCreateWithoutToTeamInput, TransferOfferUncheckedCreateWithoutToTeamInput> | TransferOfferCreateWithoutToTeamInput[] | TransferOfferUncheckedCreateWithoutToTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutToTeamInput | TransferOfferCreateOrConnectWithoutToTeamInput[]
+    createMany?: TransferOfferCreateManyToTeamInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+  }
+
   export type TeamMemberUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -19620,6 +22806,20 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutTeamInput | TransactionCreateOrConnectWithoutTeamInput[]
     createMany?: TransactionCreateManyTeamInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput = {
+    create?: XOR<TransferOfferCreateWithoutFromTeamInput, TransferOfferUncheckedCreateWithoutFromTeamInput> | TransferOfferCreateWithoutFromTeamInput[] | TransferOfferUncheckedCreateWithoutFromTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutFromTeamInput | TransferOfferCreateOrConnectWithoutFromTeamInput[]
+    createMany?: TransferOfferCreateManyFromTeamInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+  }
+
+  export type TransferOfferUncheckedCreateNestedManyWithoutToTeamInput = {
+    create?: XOR<TransferOfferCreateWithoutToTeamInput, TransferOfferUncheckedCreateWithoutToTeamInput> | TransferOfferCreateWithoutToTeamInput[] | TransferOfferUncheckedCreateWithoutToTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutToTeamInput | TransferOfferCreateOrConnectWithoutToTeamInput[]
+    createMany?: TransferOfferCreateManyToTeamInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
   }
 
   export type EnumPlatformFieldUpdateOperationsInput = {
@@ -19760,6 +22960,34 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type TransferOfferUpdateManyWithoutFromTeamNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutFromTeamInput, TransferOfferUncheckedCreateWithoutFromTeamInput> | TransferOfferCreateWithoutFromTeamInput[] | TransferOfferUncheckedCreateWithoutFromTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutFromTeamInput | TransferOfferCreateOrConnectWithoutFromTeamInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutFromTeamInput | TransferOfferUpsertWithWhereUniqueWithoutFromTeamInput[]
+    createMany?: TransferOfferCreateManyFromTeamInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutFromTeamInput | TransferOfferUpdateWithWhereUniqueWithoutFromTeamInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutFromTeamInput | TransferOfferUpdateManyWithWhereWithoutFromTeamInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+  }
+
+  export type TransferOfferUpdateManyWithoutToTeamNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutToTeamInput, TransferOfferUncheckedCreateWithoutToTeamInput> | TransferOfferCreateWithoutToTeamInput[] | TransferOfferUncheckedCreateWithoutToTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutToTeamInput | TransferOfferCreateOrConnectWithoutToTeamInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutToTeamInput | TransferOfferUpsertWithWhereUniqueWithoutToTeamInput[]
+    createMany?: TransferOfferCreateManyToTeamInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutToTeamInput | TransferOfferUpdateWithWhereUniqueWithoutToTeamInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutToTeamInput | TransferOfferUpdateManyWithWhereWithoutToTeamInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+  }
+
   export type TeamMemberUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -19884,6 +23112,34 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutTeamInput | TransactionUpdateWithWhereUniqueWithoutTeamInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutTeamInput | TransactionUpdateManyWithWhereWithoutTeamInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutFromTeamInput, TransferOfferUncheckedCreateWithoutFromTeamInput> | TransferOfferCreateWithoutFromTeamInput[] | TransferOfferUncheckedCreateWithoutFromTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutFromTeamInput | TransferOfferCreateOrConnectWithoutFromTeamInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutFromTeamInput | TransferOfferUpsertWithWhereUniqueWithoutFromTeamInput[]
+    createMany?: TransferOfferCreateManyFromTeamInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutFromTeamInput | TransferOfferUpdateWithWhereUniqueWithoutFromTeamInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutFromTeamInput | TransferOfferUpdateManyWithWhereWithoutFromTeamInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+  }
+
+  export type TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutToTeamInput, TransferOfferUncheckedCreateWithoutToTeamInput> | TransferOfferCreateWithoutToTeamInput[] | TransferOfferUncheckedCreateWithoutToTeamInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutToTeamInput | TransferOfferCreateOrConnectWithoutToTeamInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutToTeamInput | TransferOfferUpsertWithWhereUniqueWithoutToTeamInput[]
+    createMany?: TransferOfferCreateManyToTeamInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutToTeamInput | TransferOfferUpdateWithWhereUniqueWithoutToTeamInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutToTeamInput | TransferOfferUpdateManyWithWhereWithoutToTeamInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutTeamMembershipsInput = {
@@ -20334,6 +23590,66 @@ export namespace Prisma {
     update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutTransactionsInput, TeamUpdateWithoutTransactionsInput>, TeamUncheckedUpdateWithoutTransactionsInput>
   }
 
+  export type UserCreateNestedOneWithoutTransferOffersInput = {
+    create?: XOR<UserCreateWithoutTransferOffersInput, UserUncheckedCreateWithoutTransferOffersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransferOffersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutSentOffersInput = {
+    create?: XOR<TeamCreateWithoutSentOffersInput, TeamUncheckedCreateWithoutSentOffersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutSentOffersInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutReceivedOffersInput = {
+    create?: XOR<TeamCreateWithoutReceivedOffersInput, TeamUncheckedCreateWithoutReceivedOffersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutReceivedOffersInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutTransferOffersNestedInput = {
+    create?: XOR<UserCreateWithoutTransferOffersInput, UserUncheckedCreateWithoutTransferOffersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransferOffersInput
+    upsert?: UserUpsertWithoutTransferOffersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransferOffersInput, UserUpdateWithoutTransferOffersInput>, UserUncheckedUpdateWithoutTransferOffersInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutSentOffersNestedInput = {
+    create?: XOR<TeamCreateWithoutSentOffersInput, TeamUncheckedCreateWithoutSentOffersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutSentOffersInput
+    upsert?: TeamUpsertWithoutSentOffersInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSentOffersInput, TeamUpdateWithoutSentOffersInput>, TeamUncheckedUpdateWithoutSentOffersInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutReceivedOffersNestedInput = {
+    create?: XOR<TeamCreateWithoutReceivedOffersInput, TeamUncheckedCreateWithoutReceivedOffersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutReceivedOffersInput
+    upsert?: TeamUpsertWithoutReceivedOffersInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutReceivedOffersInput, TeamUpdateWithoutReceivedOffersInput>, TeamUncheckedUpdateWithoutReceivedOffersInput>
+  }
+
+  export type UserCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    upsert?: UserUpsertWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
   export type NestedUuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -20775,6 +24091,42 @@ export namespace Prisma {
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type TeamMemberCreateWithoutUserInput = {
     club_role?: $Enums.ClubRole
     joined_at?: Date | string
@@ -20951,6 +24303,64 @@ export namespace Prisma {
 
   export type ContractCreateManyUserInputEnvelope = {
     data: ContractCreateManyUserInput | ContractCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferOfferCreateWithoutPlayerInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+    fromTeam: TeamCreateNestedOneWithoutSentOffersInput
+    toTeam: TeamCreateNestedOneWithoutReceivedOffersInput
+  }
+
+  export type TransferOfferUncheckedCreateWithoutPlayerInput = {
+    id?: string
+    from_team_id: string
+    to_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferOfferCreateOrConnectWithoutPlayerInput = {
+    where: TransferOfferWhereUniqueInput
+    create: XOR<TransferOfferCreateWithoutPlayerInput, TransferOfferUncheckedCreateWithoutPlayerInput>
+  }
+
+  export type TransferOfferCreateManyPlayerInputEnvelope = {
+    data: TransferOfferCreateManyPlayerInput | TransferOfferCreateManyPlayerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type NotificationCreateWithoutUserInput = {
+    id?: string
+    title: string
+    message: string
+    is_read?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+  }
+
+  export type NotificationUncheckedCreateWithoutUserInput = {
+    id?: string
+    title: string
+    message: string
+    is_read?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+  }
+
+  export type NotificationCreateOrConnectWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationCreateManyUserInputEnvelope = {
+    data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -21137,6 +24547,65 @@ export namespace Prisma {
     salary?: FloatFilter<"Contract"> | number
     release_clause?: FloatFilter<"Contract"> | number
     expires_at?: DateTimeFilter<"Contract"> | Date | string
+  }
+
+  export type TransferOfferUpsertWithWhereUniqueWithoutPlayerInput = {
+    where: TransferOfferWhereUniqueInput
+    update: XOR<TransferOfferUpdateWithoutPlayerInput, TransferOfferUncheckedUpdateWithoutPlayerInput>
+    create: XOR<TransferOfferCreateWithoutPlayerInput, TransferOfferUncheckedCreateWithoutPlayerInput>
+  }
+
+  export type TransferOfferUpdateWithWhereUniqueWithoutPlayerInput = {
+    where: TransferOfferWhereUniqueInput
+    data: XOR<TransferOfferUpdateWithoutPlayerInput, TransferOfferUncheckedUpdateWithoutPlayerInput>
+  }
+
+  export type TransferOfferUpdateManyWithWhereWithoutPlayerInput = {
+    where: TransferOfferScalarWhereInput
+    data: XOR<TransferOfferUpdateManyMutationInput, TransferOfferUncheckedUpdateManyWithoutPlayerInput>
+  }
+
+  export type TransferOfferScalarWhereInput = {
+    AND?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+    OR?: TransferOfferScalarWhereInput[]
+    NOT?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+    id?: UuidFilter<"TransferOffer"> | string
+    player_id?: UuidFilter<"TransferOffer"> | string
+    from_team_id?: UuidFilter<"TransferOffer"> | string
+    to_team_id?: UuidFilter<"TransferOffer"> | string
+    amount?: FloatFilter<"TransferOffer"> | number
+    status?: EnumTransferStatusFilter<"TransferOffer"> | $Enums.TransferStatus
+    created_at?: DateTimeFilter<"TransferOffer"> | Date | string
+    responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+  }
+
+  export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutUserInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationScalarWhereInput = {
+    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    OR?: NotificationScalarWhereInput[]
+    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    id?: UuidFilter<"Notification"> | string
+    user_id?: UuidFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    message?: StringFilter<"Notification"> | string
+    is_read?: BoolFilter<"Notification"> | boolean
+    metadata?: JsonNullableFilter<"Notification">
+    created_at?: DateTimeFilter<"Notification"> | Date | string
   }
 
   export type TeamMemberCreateWithoutTeamInput = {
@@ -21383,6 +24852,66 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TransferOfferCreateWithoutFromTeamInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+    player: UserCreateNestedOneWithoutTransferOffersInput
+    toTeam: TeamCreateNestedOneWithoutReceivedOffersInput
+  }
+
+  export type TransferOfferUncheckedCreateWithoutFromTeamInput = {
+    id?: string
+    player_id: string
+    to_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferOfferCreateOrConnectWithoutFromTeamInput = {
+    where: TransferOfferWhereUniqueInput
+    create: XOR<TransferOfferCreateWithoutFromTeamInput, TransferOfferUncheckedCreateWithoutFromTeamInput>
+  }
+
+  export type TransferOfferCreateManyFromTeamInputEnvelope = {
+    data: TransferOfferCreateManyFromTeamInput | TransferOfferCreateManyFromTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferOfferCreateWithoutToTeamInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+    player: UserCreateNestedOneWithoutTransferOffersInput
+    fromTeam: TeamCreateNestedOneWithoutSentOffersInput
+  }
+
+  export type TransferOfferUncheckedCreateWithoutToTeamInput = {
+    id?: string
+    player_id: string
+    from_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferOfferCreateOrConnectWithoutToTeamInput = {
+    where: TransferOfferWhereUniqueInput
+    create: XOR<TransferOfferCreateWithoutToTeamInput, TransferOfferUncheckedCreateWithoutToTeamInput>
+  }
+
+  export type TransferOfferCreateManyToTeamInputEnvelope = {
+    data: TransferOfferCreateManyToTeamInput | TransferOfferCreateManyToTeamInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TeamMemberUpsertWithWhereUniqueWithoutTeamInput = {
     where: TeamMemberWhereUniqueInput
     update: XOR<TeamMemberUpdateWithoutTeamInput, TeamMemberUncheckedUpdateWithoutTeamInput>
@@ -21564,6 +25093,38 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Transaction"> | Date | string
   }
 
+  export type TransferOfferUpsertWithWhereUniqueWithoutFromTeamInput = {
+    where: TransferOfferWhereUniqueInput
+    update: XOR<TransferOfferUpdateWithoutFromTeamInput, TransferOfferUncheckedUpdateWithoutFromTeamInput>
+    create: XOR<TransferOfferCreateWithoutFromTeamInput, TransferOfferUncheckedCreateWithoutFromTeamInput>
+  }
+
+  export type TransferOfferUpdateWithWhereUniqueWithoutFromTeamInput = {
+    where: TransferOfferWhereUniqueInput
+    data: XOR<TransferOfferUpdateWithoutFromTeamInput, TransferOfferUncheckedUpdateWithoutFromTeamInput>
+  }
+
+  export type TransferOfferUpdateManyWithWhereWithoutFromTeamInput = {
+    where: TransferOfferScalarWhereInput
+    data: XOR<TransferOfferUpdateManyMutationInput, TransferOfferUncheckedUpdateManyWithoutFromTeamInput>
+  }
+
+  export type TransferOfferUpsertWithWhereUniqueWithoutToTeamInput = {
+    where: TransferOfferWhereUniqueInput
+    update: XOR<TransferOfferUpdateWithoutToTeamInput, TransferOfferUncheckedUpdateWithoutToTeamInput>
+    create: XOR<TransferOfferCreateWithoutToTeamInput, TransferOfferUncheckedCreateWithoutToTeamInput>
+  }
+
+  export type TransferOfferUpdateWithWhereUniqueWithoutToTeamInput = {
+    where: TransferOfferWhereUniqueInput
+    data: XOR<TransferOfferUpdateWithoutToTeamInput, TransferOfferUncheckedUpdateWithoutToTeamInput>
+  }
+
+  export type TransferOfferUpdateManyWithWhereWithoutToTeamInput = {
+    where: TransferOfferScalarWhereInput
+    data: XOR<TransferOfferUpdateManyMutationInput, TransferOfferUncheckedUpdateManyWithoutToTeamInput>
+  }
+
   export type UserCreateWithoutTeamMembershipsInput = {
     id?: string
     external_id?: string | null
@@ -21582,6 +25143,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -21602,6 +25165,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -21626,6 +25191,8 @@ export namespace Prisma {
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
@@ -21645,6 +25212,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -21681,6 +25250,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -21701,6 +25272,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutMembersInput = {
@@ -21731,6 +25304,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
@@ -21750,6 +25325,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type UserCreateWithoutStatsInput = {
@@ -21770,6 +25347,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutStatsInput = {
@@ -21790,6 +25369,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutStatsInput = {
@@ -21826,6 +25407,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatsInput = {
@@ -21846,6 +25429,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompetitionTeamCreateWithoutCompetitionInput = {
@@ -21980,6 +25565,8 @@ export namespace Prisma {
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutCompetitionsInput = {
@@ -21999,6 +25586,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutCompetitionsInput = {
@@ -22067,6 +25656,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutCompetitionsInput = {
@@ -22086,6 +25677,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type CompetitionCreateWithoutMatchesInput = {
@@ -22132,6 +25725,8 @@ export namespace Prisma {
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutHomeMatchesInput = {
@@ -22151,6 +25746,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutHomeMatchesInput = {
@@ -22175,6 +25772,8 @@ export namespace Prisma {
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutAwayMatchesInput = {
@@ -22194,6 +25793,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutAwayMatchesInput = {
@@ -22288,6 +25889,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutHomeMatchesInput = {
@@ -22307,6 +25910,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUpsertWithoutAwayMatchesInput = {
@@ -22337,6 +25942,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutAwayMatchesInput = {
@@ -22356,6 +25963,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type MatchEventUpsertWithWhereUniqueWithoutMatchInput = {
@@ -22423,6 +26032,8 @@ export namespace Prisma {
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMatchEventsInput = {
@@ -22443,6 +26054,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMatchEventsInput = {
@@ -22467,6 +26080,8 @@ export namespace Prisma {
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMatchEventsInput = {
@@ -22486,6 +26101,8 @@ export namespace Prisma {
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMatchEventsInput = {
@@ -22559,6 +26176,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchEventsInput = {
@@ -22579,6 +26198,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutMatchEventsInput = {
@@ -22609,6 +26230,8 @@ export namespace Prisma {
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMatchEventsInput = {
@@ -22628,6 +26251,8 @@ export namespace Prisma {
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type UserCreateWithoutTransferRequestsInput = {
@@ -22648,6 +26273,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransferRequestsInput = {
@@ -22668,6 +26295,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransferRequestsInput = {
@@ -22692,6 +26321,8 @@ export namespace Prisma {
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutTransferRequestsInput = {
@@ -22711,6 +26342,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutTransferRequestsInput = {
@@ -22747,6 +26380,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferRequestsInput = {
@@ -22767,6 +26402,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutTransferRequestsInput = {
@@ -22797,6 +26434,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutTransferRequestsInput = {
@@ -22816,6 +26455,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamCreateWithoutInvitationsInput = {
@@ -22835,6 +26476,8 @@ export namespace Prisma {
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutInvitationsInput = {
@@ -22854,6 +26497,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutInvitationsInput = {
@@ -22879,6 +26524,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -22899,6 +26546,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -22924,6 +26573,8 @@ export namespace Prisma {
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -22944,6 +26595,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -22979,6 +26632,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutInvitationsInput = {
@@ -22998,6 +26653,8 @@ export namespace Prisma {
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type UserUpsertWithoutSentInvitationsInput = {
@@ -23029,6 +26686,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -23049,6 +26708,8 @@ export namespace Prisma {
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutReceivedInvitationsInput = {
@@ -23080,6 +26741,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -23100,6 +26763,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamCreateWithoutContractsInput = {
@@ -23119,6 +26784,8 @@ export namespace Prisma {
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutContractsInput = {
@@ -23138,6 +26805,8 @@ export namespace Prisma {
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutContractsInput = {
@@ -23163,6 +26832,8 @@ export namespace Prisma {
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutContractsInput = {
@@ -23183,6 +26854,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutContractsInput = {
@@ -23218,6 +26891,8 @@ export namespace Prisma {
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutContractsInput = {
@@ -23237,6 +26912,8 @@ export namespace Prisma {
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
   }
 
   export type UserUpsertWithoutContractsInput = {
@@ -23268,6 +26945,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutContractsInput = {
@@ -23288,6 +26967,8 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamCreateWithoutTransactionsInput = {
@@ -23307,6 +26988,8 @@ export namespace Prisma {
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamUncheckedCreateWithoutTransactionsInput = {
@@ -23326,6 +27009,8 @@ export namespace Prisma {
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
   }
 
   export type TeamCreateOrConnectWithoutTransactionsInput = {
@@ -23361,6 +27046,8 @@ export namespace Prisma {
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutTransactionsInput = {
@@ -23380,6 +27067,416 @@ export namespace Prisma {
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+  }
+
+  export type UserCreateWithoutTransferOffersInput = {
+    id?: string
+    external_id?: string | null
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTransferOffersInput = {
+    id?: string
+    external_id?: string | null
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTransferOffersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransferOffersInput, UserUncheckedCreateWithoutTransferOffersInput>
+  }
+
+  export type TeamCreateWithoutSentOffersInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutSentOffersInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutSentOffersInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutSentOffersInput, TeamUncheckedCreateWithoutSentOffersInput>
+  }
+
+  export type TeamCreateWithoutReceivedOffersInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutReceivedOffersInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutReceivedOffersInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutReceivedOffersInput, TeamUncheckedCreateWithoutReceivedOffersInput>
+  }
+
+  export type UserUpsertWithoutTransferOffersInput = {
+    update: XOR<UserUpdateWithoutTransferOffersInput, UserUncheckedUpdateWithoutTransferOffersInput>
+    create: XOR<UserCreateWithoutTransferOffersInput, UserUncheckedCreateWithoutTransferOffersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransferOffersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransferOffersInput, UserUncheckedUpdateWithoutTransferOffersInput>
+  }
+
+  export type UserUpdateWithoutTransferOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransferOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TeamUpsertWithoutSentOffersInput = {
+    update: XOR<TeamUpdateWithoutSentOffersInput, TeamUncheckedUpdateWithoutSentOffersInput>
+    create: XOR<TeamCreateWithoutSentOffersInput, TeamUncheckedCreateWithoutSentOffersInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutSentOffersInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutSentOffersInput, TeamUncheckedUpdateWithoutSentOffersInput>
+  }
+
+  export type TeamUpdateWithoutSentOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutSentOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+  }
+
+  export type TeamUpsertWithoutReceivedOffersInput = {
+    update: XOR<TeamUpdateWithoutReceivedOffersInput, TeamUncheckedUpdateWithoutReceivedOffersInput>
+    create: XOR<TeamCreateWithoutReceivedOffersInput, TeamUncheckedCreateWithoutReceivedOffersInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutReceivedOffersInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutReceivedOffersInput, TeamUncheckedUpdateWithoutReceivedOffersInput>
+  }
+
+  export type TeamUpdateWithoutReceivedOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutReceivedOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+  }
+
+  export type UserCreateWithoutNotificationsInput = {
+    id?: string
+    external_id?: string | null
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+  }
+
+  export type UserUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    external_id?: string | null
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+  }
+
+  export type UserCreateOrConnectWithoutNotificationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type UserUpsertWithoutNotificationsInput = {
+    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type UserUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type TeamMemberCreateManyUserInput = {
@@ -23427,6 +27524,25 @@ export namespace Prisma {
     salary: number
     release_clause: number
     expires_at: Date | string
+  }
+
+  export type TransferOfferCreateManyPlayerInput = {
+    id?: string
+    from_team_id: string
+    to_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type NotificationCreateManyUserInput = {
+    id?: string
+    title: string
+    message: string
+    is_read?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
   }
 
   export type TeamMemberUpdateWithoutUserInput = {
@@ -23570,6 +27686,63 @@ export namespace Prisma {
     expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransferOfferUpdateWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fromTeam?: TeamUpdateOneRequiredWithoutSentOffersNestedInput
+    toTeam?: TeamUpdateOneRequiredWithoutReceivedOffersNestedInput
+  }
+
+  export type TransferOfferUncheckedUpdateWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferOfferUncheckedUpdateManyWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type NotificationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TeamMemberCreateManyTeamInput = {
     user_id: string
     club_role?: $Enums.ClubRole
@@ -23643,6 +27816,26 @@ export namespace Prisma {
     type: $Enums.TransactionType
     description?: string | null
     created_at?: Date | string
+  }
+
+  export type TransferOfferCreateManyFromTeamInput = {
+    id?: string
+    player_id: string
+    to_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferOfferCreateManyToTeamInput = {
+    id?: string
+    player_id: string
+    from_team_id: string
+    amount: number
+    status?: $Enums.TransferStatus
+    created_at?: Date | string
+    responded_at?: Date | string | null
   }
 
   export type TeamMemberUpdateWithoutTeamInput = {
@@ -23872,6 +28065,66 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferOfferUpdateWithoutFromTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
+    toTeam?: TeamUpdateOneRequiredWithoutReceivedOffersNestedInput
+  }
+
+  export type TransferOfferUncheckedUpdateWithoutFromTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferOfferUncheckedUpdateManyWithoutFromTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferOfferUpdateWithoutToTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
+    fromTeam?: TeamUpdateOneRequiredWithoutSentOffersNestedInput
+  }
+
+  export type TransferOfferUncheckedUpdateWithoutToTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferOfferUncheckedUpdateManyWithoutToTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CompetitionTeamCreateManyCompetitionInput = {

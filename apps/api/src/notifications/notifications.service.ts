@@ -7,7 +7,7 @@ export class NotificationsService {
 
   async send(userId: string, title: string, message: string, metadata?: Record<string, unknown>) {
     return this.prisma.notification.create({
-      data: { user_id: userId, title, message, metadata: metadata ?? undefined },
+      data: { user_id: userId, title, message, metadata: (metadata as any) ?? undefined },
     });
   }
 
@@ -24,7 +24,7 @@ export class NotificationsService {
         user_id: m.user_id,
         title,
         message,
-        metadata: metadata ?? undefined,
+        metadata: (metadata as any) ?? undefined,
       })),
     });
   }

@@ -73,6 +73,7 @@ enum TransferStatus {
   PENDING
   ACCEPTED
   REJECTED
+  CANCELLED
 }
 
 enum InvitationStatus {
@@ -121,6 +122,8 @@ model User {
   receivedInvitations Invitation[]      @relation("InvitationInvitee")
   matchEvents         MatchEvent[]
   contracts           Contract[]
+  transferOffers      TransferOffer[]   @relation("TransferOfferPlayer")
+  notifications       Notification[]
 
   @@map("users")
 }
@@ -149,6 +152,8 @@ model Team {
   matchEvents      MatchEvent[]
   contracts        Contract[]
   transactions     Transaction[]
+  sentOffers       TransferOffer[]   @relation("OfferFromTeam")
+  receivedOffers   TransferOffer[]   @relation("OfferToTeam")
 
   @@map("teams")
 }
@@ -311,4 +316,43 @@ model Transaction {
   team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
 
   @@map("transactions")
+}
+
+// ============================================================
+// MERCATO LIVE — Offres de transfert entre clubs
+// ============================================================
+
+model TransferOffer {
+  id           String         @id @default(uuid()) @db.Uuid
+  player_id    String         @db.Uuid
+  from_team_id String         @db.Uuid
+  to_team_id   String         @db.Uuid
+  amount       Float
+  status       TransferStatus @default(PENDING)
+  created_at   DateTime       @default(now())
+  responded_at DateTime?
+
+  player   User @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
+  fromTeam Team @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
+  toTeam   Team @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
+
+  @@map("transfer_offers")
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+
+model Notification {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  title      String
+  message    String
+  is_read    Boolean  @default(false)
+  metadata   Json?
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
 }

@@ -238,9 +238,35 @@ exports.Prisma.TransactionScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.TransferOfferScalarFieldEnum = {
+  id: 'id',
+  player_id: 'player_id',
+  from_team_id: 'from_team_id',
+  to_team_id: 'to_team_id',
+  amount: 'amount',
+  status: 'status',
+  created_at: 'created_at',
+  responded_at: 'responded_at'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  title: 'title',
+  message: 'message',
+  is_read: 'is_read',
+  metadata: 'metadata',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -251,6 +277,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
@@ -313,7 +345,8 @@ exports.EventType = exports.$Enums.EventType = {
 exports.TransferStatus = exports.$Enums.TransferStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.InvitationStatus = exports.$Enums.InvitationStatus = {
@@ -340,7 +373,9 @@ exports.Prisma.ModelName = {
   TransferRequest: 'TransferRequest',
   Invitation: 'Invitation',
   Contract: 'Contract',
-  Transaction: 'Transaction'
+  Transaction: 'Transaction',
+  TransferOffer: 'TransferOffer',
+  Notification: 'Notification'
 };
 
 /**
