@@ -177,7 +177,7 @@ export default function Ladder() {
                   </td>
                 </tr>
               ) : (
-                filtered.map((team, index) => {
+                filtered.map((team) => {
                   const globalRank = teams.indexOf(team) + 1;
                   const isMyTeam = team.id === myTeamId;
 

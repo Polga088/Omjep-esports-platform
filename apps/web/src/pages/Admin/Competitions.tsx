@@ -82,6 +82,7 @@ export default function AdminCompetitions() {
       const timer = setTimeout(() => setConfirmDelete(null), 4000);
       return () => clearTimeout(timer);
     }
+    return;
   }, [confirmDelete]);
 
   const fetchData = async () => {

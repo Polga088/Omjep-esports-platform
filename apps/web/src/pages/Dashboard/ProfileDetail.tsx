@@ -83,9 +83,11 @@ function CareerProgressionSection({ xp, level }: { xp: number; level: number }) 
     if (xp > prevXpRef.current) {
       setJustGainedXp(true);
       const t = setTimeout(() => setJustGainedXp(false), 3000);
+      prevXpRef.current = xp;
       return () => clearTimeout(t);
     }
     prevXpRef.current = xp;
+    return;
   }, [xp]);
 
   return (

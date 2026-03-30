@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2,
   CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
-  FileText, TrendingUp, TrendingDown, Banknote, Trophy, Repeat, Gem, Info,
+  FileText, TrendingUp, Banknote, Trophy, Repeat, Gem, Info,
   AlertTriangle,
 } from 'lucide-react';
 import { motion } from 'framer-motion';

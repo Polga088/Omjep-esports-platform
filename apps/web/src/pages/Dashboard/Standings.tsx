@@ -17,6 +17,7 @@ interface StandingTeam {
   goalsFor: number;
   goalsAgainst: number;
   goalDifference: number;
+  diff: number;
   points: number;
   form?: ('W' | 'D' | 'L')[];
 }

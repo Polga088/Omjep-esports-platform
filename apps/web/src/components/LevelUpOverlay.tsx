@@ -54,6 +54,7 @@ export default function LevelUpOverlay({ active, newLevel, onDone }: LevelUpOver
       timerRef.current = setTimeout(() => onDone?.(), 4000);
       return () => clearTimeout(timerRef.current);
     }
+    return;
   }, [active, onDone]);
 
   return (

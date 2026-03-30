@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Repeat, Send, Inbox, Loader2, Check, X, Clock,
-  ArrowRight, ShieldCheck, AlertTriangle, Sparkles,
+  ArrowRight, ShieldCheck, Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
