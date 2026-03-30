@@ -11,6 +11,7 @@ import DashboardIndex from '@/pages/Dashboard/Index';
 import MyTeam from '@/pages/Dashboard/MyTeam';
 import Profile from '@/pages/Dashboard/Profile';
 import Ladder from '@/pages/Dashboard/Ladder';
+import Matches from '@/pages/Dashboard/Matches';
 import AdminCompetitions from '@/pages/Admin/Competitions';
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/dashboard" element={<DashboardIndex />} />
           <Route path="/dashboard/team" element={<MyTeam />} />
           <Route path="/dashboard/ladder" element={<Ladder />} />
+          <Route path="/dashboard/matches" element={<Matches />} />
           <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
 

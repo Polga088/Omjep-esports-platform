@@ -7,6 +7,7 @@ import { TeamsModule } from './teams/teams.module';
 import { AuthModule } from './auth/auth.module';
 import { SyncModule } from './sync/sync.module';
 import { AdminModule } from './admin/admin.module';
+import { MatchesModule } from './matches/matches.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AdminModule } from './admin/admin.module';
     AuthModule,
     UsersModule,
     TeamsModule,
+    MatchesModule,
     SyncModule,
     AdminModule,
   ],
