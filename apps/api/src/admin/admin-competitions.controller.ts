@@ -1,6 +1,8 @@
 import {
   Controller,
+  Get,
   Post,
+  Delete,
   Param,
   Body,
   UseGuards,
@@ -18,6 +20,29 @@ import { CreateCompetitionDto } from './dto/create-competition.dto';
 @Roles('ADMIN')
 export class AdminCompetitionsController {
   constructor(private readonly prisma: PrismaService) {}
+
+  @Get()
+  async findAll() {
+    return this.prisma.competition.findMany({
+      orderBy: { created_at: 'desc' },
+      include: {
+        teams: { include: { team: true } },
+        _count: { select: { matches: true } },
+      },
+    });
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const competition = await this.prisma.competition.findUnique({
+      where: { id },
+    });
+    if (!competition) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+    await this.prisma.competition.delete({ where: { id } });
+    return { message: 'Compétition supprimée.' };
+  }
 
   @Post()
   async createCompetition(@Body() dto: CreateCompetitionDto) {
