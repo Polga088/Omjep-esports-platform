@@ -75,6 +75,12 @@ enum TransferStatus {
   REJECTED
 }
 
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 // ============================================================
 // MODELS
 // ============================================================
@@ -96,9 +102,11 @@ model User {
   nationality        String?
 
   // Relations
-  teamMemberships  TeamMember[]
-  stats            PlayerStats?
-  transferRequests TransferRequest[]
+  teamMemberships     TeamMember[]
+  stats               PlayerStats?
+  transferRequests    TransferRequest[]
+  sentInvitations     Invitation[]      @relation("InvitationInviter")
+  receivedInvitations Invitation[]      @relation("InvitationInvitee")
 
   @@map("users")
 }
@@ -119,6 +127,7 @@ model Team {
   awayMatches      Match[]           @relation("AwayTeam")
   competitions     CompetitionTeam[]
   transferRequests TransferRequest[]
+  invitations      Invitation[]
 
   @@map("teams")
 }
@@ -217,4 +226,21 @@ model TransferRequest {
   team   Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
 
   @@map("transfer_requests")
+}
+
+// Mercato — invitations envoyées par un manager à un joueur
+model Invitation {
+  id            String           @id @default(uuid()) @db.Uuid
+  team_id       String           @db.Uuid
+  inviter_id    String           @db.Uuid
+  invitee_email String
+  invitee_id    String?          @db.Uuid
+  status        InvitationStatus @default(PENDING)
+  created_at    DateTime         @default(now())
+
+  team    Team  @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  inviter User  @relation("InvitationInviter", fields: [inviter_id], references: [id], onDelete: Cascade)
+  invitee User? @relation("InvitationInvitee", fields: [invitee_id], references: [id], onDelete: SetNull)
+
+  @@map("invitations")
 }

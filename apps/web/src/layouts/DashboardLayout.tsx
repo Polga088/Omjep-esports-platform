@@ -5,6 +5,7 @@ import {
   LogOut, ChevronRight, Menu, X, UserCog, Swords,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
+import NotificationBell from '@/components/NotificationBell';
 
 const sidebarLinks = [
   { to: '/dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard, exact: true },
@@ -149,6 +150,10 @@ export default function DashboardLayout() {
                 <span className="text-slate-300 capitalize">{currentPageTitle}</span>
               </>
             )}
+          </div>
+
+          <div className="ml-auto">
+            <NotificationBell />
           </div>
         </header>
 

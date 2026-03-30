@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import MainLayout from '@/layouts/MainLayout';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import AdminLayout from '@/layouts/AdminLayout';
@@ -19,6 +20,17 @@ import AdminMatches from '@/pages/Admin/Matches';
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster
+        theme="dark"
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#0D1221',
+            border: '1px solid rgba(255,255,255,0.1)',
+            color: '#f1f5f9',
+          },
+        }}
+      />
       <Routes>
         {/* Public routes */}
         <Route element={<MainLayout />}>

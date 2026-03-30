@@ -198,6 +198,16 @@ exports.Prisma.TransferRequestScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.InvitationScalarFieldEnum = {
+  id: 'id',
+  team_id: 'team_id',
+  inviter_id: 'inviter_id',
+  invitee_email: 'invitee_email',
+  invitee_id: 'invitee_id',
+  status: 'status',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -271,6 +281,12 @@ exports.TransferStatus = exports.$Enums.TransferStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.InvitationStatus = exports.$Enums.InvitationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Team: 'Team',
@@ -279,7 +295,8 @@ exports.Prisma.ModelName = {
   Competition: 'Competition',
   CompetitionTeam: 'CompetitionTeam',
   Match: 'Match',
-  TransferRequest: 'TransferRequest'
+  TransferRequest: 'TransferRequest',
+  Invitation: 'Invitation'
 };
 
 /**

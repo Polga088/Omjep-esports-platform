@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users } from 'lucide-react';
 import api from '../../lib/api';
+import { useAuthStore } from '@/store/useAuthStore';
+import InvitePlayerModal from '@/components/InvitePlayerModal';
 
 // ─── Types (miroir du payload Prisma) ────────────────────────────────────────
 
@@ -109,6 +111,8 @@ export default function MyTeam() {
   const [team, setTeam] = useState<MyTeamData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const { user } = useAuthStore();
 
   useEffect(() => {
     let cancelled = false;
@@ -135,6 +139,10 @@ export default function MyTeam() {
   const players = team?.members.filter((m) => m.club_role === 'PLAYER') ?? [];
   const staff   = team?.members.filter((m) => m.club_role !== 'PLAYER') ?? [];
   const allMembers = team?.members ?? [];
+
+  const currentMember = team?.members.find((m) => m.user_id === user?.id);
+  const canRecruit = currentMember &&
+    ['FOUNDER', 'MANAGER', 'CO_MANAGER'].includes(currentMember.club_role);
 
   const avgRating =
     allMembers.length > 0
@@ -164,10 +172,15 @@ export default function MyTeam() {
           </p>
         </div>
 
-        <button className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#00D4FF] to-[#0099BB] text-[#0A0E1A] shadow-lg shadow-[#00D4FF]/20 hover:shadow-[#00D4FF]/40 hover:brightness-110 active:scale-95 transition-all duration-200 whitespace-nowrap">
-          <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          Recruter un joueur
-        </button>
+        {canRecruit && (
+          <button
+            onClick={() => setInviteModalOpen(true)}
+            className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#00D4FF] to-[#0099BB] text-[#0A0E1A] shadow-lg shadow-[#00D4FF]/20 hover:shadow-[#00D4FF]/40 hover:brightness-110 active:scale-95 transition-all duration-200 whitespace-nowrap"
+          >
+            <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            Recruter un joueur
+          </button>
+        )}
       </div>
 
       {/* Stats strip */}
@@ -300,6 +313,37 @@ export default function MyTeam() {
           <span className="text-xs text-slate-700">Données live — v1.0</span>
         </div>
       </div>
+
+      {/* Section Recrutement — visible uniquement pour Fondateur / Manager / Co-Manager */}
+      {canRecruit && team && (
+        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
+          <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
+            <UserPlus className="w-4 h-4 text-[#00D4FF]" />
+            <h2 className="text-sm font-semibold text-white">Recrutement</h2>
+          </div>
+          <div className="px-6 py-6">
+            <p className="text-sm text-slate-400 mb-4">
+              En tant que <span className="text-white font-medium">{roleConfig[currentMember!.club_role].label}</span>, vous pouvez inviter de nouveaux joueurs à rejoindre <span className="text-[#00D4FF] font-medium">{team.name}</span>.
+            </p>
+            <button
+              onClick={() => setInviteModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#00D4FF] to-[#0099BB] text-[#0A0E1A] shadow-lg shadow-[#00D4FF]/20 hover:shadow-[#00D4FF]/40 hover:brightness-110 active:scale-95 transition-all"
+            >
+              <UserPlus className="w-4 h-4" />
+              Inviter un Joueur
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modale d'invitation */}
+      {team && (
+        <InvitePlayerModal
+          teamId={team.id}
+          open={inviteModalOpen}
+          onClose={() => setInviteModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
