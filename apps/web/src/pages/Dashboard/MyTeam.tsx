@@ -1,15 +1,61 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Component } from 'react';
+import type { ReactNode, ErrorInfo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2,
   CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
   FileText, TrendingUp, TrendingDown, Banknote, Trophy, Repeat, Gem, Info,
+  AlertTriangle,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../../lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import InvitePlayerModal from '@/components/InvitePlayerModal';
 import { xpProgress } from '@/lib/leveling';
+
+// ─── Error Boundary ──────────────────────────────────────────────────────────
+
+interface EBProps { children: ReactNode }
+interface EBState { hasError: boolean; error: Error | null }
+
+class TeamErrorBoundary extends Component<EBProps, EBState> {
+  constructor(props: EBProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): EBState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('[MyTeam] Render error:', error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-8 text-center space-y-3">
+          <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
+          <h2 className="text-lg font-bold text-white">Une erreur est survenue</h2>
+          <p className="text-sm text-slate-400">
+            L'affichage de la page équipe a rencontré un problème.
+          </p>
+          <p className="text-xs text-slate-600 font-mono break-all">
+            {this.state.error?.message}
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="mt-2 px-5 py-2 rounded-xl text-sm font-semibold bg-white/10 text-white border border-white/10 hover:bg-white/15 transition-colors"
+          >
+            Réessayer
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // ─── Types (miroir du payload Prisma) ────────────────────────────────────────
 
@@ -45,9 +91,9 @@ interface MyTeamData {
   name: string;
   logo_url: string | null;
   proclubs_url: string | null;
-  budget: number;
-  xp: number;
-  prestige_level: number;
+  budget?: number;
+  xp?: number;
+  prestige_level?: number;
   members: TeamMember[];
 }
 
@@ -352,6 +398,7 @@ export default function MyTeam() {
   };
 
   return (
+    <TeamErrorBoundary>
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -401,13 +448,24 @@ export default function MyTeam() {
 
       {/* Prestige du Club */}
       {team && !isLoading && (
-        <PrestigeSection xp={team.xp} prestigeLevel={team.prestige_level} />
+        <PrestigeSection xp={team.xp ?? 0} prestigeLevel={team.prestige_level ?? 1} />
       )}
 
       {/* Erreur */}
       {error && !isLoading && (
         <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-4 text-sm text-red-400">
           {error}
+        </div>
+      )}
+
+      {/* Équipe non trouvée */}
+      {!isLoading && !team && !error && (
+        <div className="rounded-2xl border border-white/5 bg-[#0D1221] p-12 text-center space-y-3">
+          <Gamepad2 className="w-10 h-10 text-slate-600 mx-auto" />
+          <h2 className="text-lg font-bold text-white">Équipe non trouvée</h2>
+          <p className="text-sm text-slate-500">
+            Vous n'êtes actuellement membre d'aucune équipe, ou les données n'ont pas pu être chargées.
+          </p>
         </div>
       )}
 
@@ -549,7 +607,7 @@ export default function MyTeam() {
                   </div>
                   <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Budget</span>
                 </div>
-                <span className="text-2xl font-black tabular-nums text-emerald-400">{formatMoney(finance.budget)} €</span>
+                <span className="text-2xl font-black tabular-nums text-emerald-400">{formatMoney(finance?.budget ?? 0)} €</span>
               </div>
               <div className="rounded-xl bg-[#0D1221] border border-blue-500/15 p-5">
                 <div className="flex items-center gap-2 mb-2">
@@ -558,7 +616,7 @@ export default function MyTeam() {
                   </div>
                   <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Contrats</span>
                 </div>
-                <span className="text-2xl font-black tabular-nums text-blue-400">{finance.contracts.length}</span>
+                <span className="text-2xl font-black tabular-nums text-blue-400">{finance?.contracts?.length ?? 0}</span>
               </div>
               <div className="rounded-xl bg-[#0D1221] border border-amber-500/15 p-5">
                 <div className="flex items-center gap-2 mb-2">
@@ -568,7 +626,7 @@ export default function MyTeam() {
                   <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Masse salariale</span>
                 </div>
                 <span className="text-2xl font-black tabular-nums text-amber-400">
-                  {formatMoney(finance.contracts.reduce((s, c) => s + c.salary, 0))} €
+                  {formatMoney((finance?.contracts ?? []).reduce((s, c) => s + (c.salary ?? 0), 0))} €
                   <span className="text-xs font-semibold text-slate-500 ml-1">/sem</span>
                 </span>
               </div>
@@ -590,12 +648,12 @@ export default function MyTeam() {
                   <h2 className="text-sm font-semibold text-white">Dernières transactions</h2>
                 </div>
                 <div className="divide-y divide-white/5 max-h-[420px] overflow-y-auto">
-                  {finance.transactions.length === 0 ? (
+                  {(finance?.transactions ?? []).length === 0 ? (
                     <div className="px-6 py-12 text-center text-sm text-slate-600">
                       Aucune transaction enregistrée.
                     </div>
                   ) : (
-                    finance.transactions.map((tx) => {
+                    (finance?.transactions ?? []).map((tx) => {
                       const cfg = txTypeConfig[tx.type];
                       const TxIcon = cfg.icon;
                       const isPositive = tx.amount >= 0;
@@ -651,14 +709,14 @@ export default function MyTeam() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {finance.contracts.length === 0 ? (
+                      {(finance?.contracts ?? []).length === 0 ? (
                         <tr>
                           <td colSpan={4} className="px-5 py-12 text-center text-sm text-slate-600">
                             Aucun contrat actif.
                           </td>
                         </tr>
                       ) : (
-                        finance.contracts.map((c) => {
+                        (finance?.contracts ?? []).map((c) => {
                           const expired = new Date(c.expires_at) < new Date();
                           return (
                             <tr key={c.id} className="hover:bg-white/[0.02] transition-colors">
@@ -807,5 +865,6 @@ export default function MyTeam() {
         />
       )}
     </div>
+    </TeamErrorBoundary>
   );
 }
