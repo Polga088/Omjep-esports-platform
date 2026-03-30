@@ -40,10 +40,10 @@ export default function AdminLayout() {
           </div>
           <div>
             <span className="font-bold text-sm tracking-widest text-amber-400 uppercase block leading-tight">
-              Admin
+              OMJEP
             </span>
-            <span className="text-[10px] text-slate-500 tracking-wider uppercase">
-              Eagles Panel
+            <span className="text-[10px] text-slate-500 tracking-wider uppercase leading-tight block">
+              Org. Marocaine des Jeux Électroniques Pro
             </span>
           </div>
         </div>

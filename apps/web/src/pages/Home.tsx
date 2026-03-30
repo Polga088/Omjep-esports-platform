@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Zap, Trophy, Users, ChevronRight, Star, Shield, Swords } from 'lucide-react';
+import { Crown, Trophy, Users, ChevronRight, Star, Shield, Swords } from 'lucide-react';
 
 const stats = [
   { label: 'Clubs actifs', value: '128+', icon: Shield },
@@ -32,13 +32,13 @@ export default function Home() {
       <section className="relative min-h-[92vh] flex items-center overflow-hidden">
         {/* Background glows */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-[#00D4FF]/5 blur-[120px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-[#FF6B35]/5 blur-[100px]" />
+          <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-amber-400/5 blur-[120px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-amber-600/5 blur-[100px]" />
           {/* Grid pattern */}
           <div
             className="absolute inset-0 opacity-[0.03]"
             style={{
-              backgroundImage: `linear-gradient(rgba(0,212,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.5) 1px, transparent 1px)`,
+              backgroundImage: `linear-gradient(rgba(251,191,36,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,0.5) 1px, transparent 1px)`,
               backgroundSize: '60px 60px',
             }}
           />
@@ -47,7 +47,7 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="max-w-4xl">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00D4FF]/20 bg-[#00D4FF]/5 text-[#00D4FF] text-sm font-medium mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-400/20 bg-amber-400/5 text-amber-400 text-sm font-medium mb-8">
               <Star className="w-3.5 h-3.5" fill="currentColor" />
               Saison 2026 — Inscriptions ouvertes
             </div>
@@ -55,7 +55,7 @@ export default function Home() {
             <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-none mb-6">
               <span className="text-white">DOMINEZ</span>
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D4FF] to-[#0099BB]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
                 L'ARÈNE
               </span>
               <br />
@@ -70,9 +70,9 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg bg-[#00D4FF] text-[#0A0E1A] hover:bg-[#00BBDD] transition-all shadow-xl shadow-[#00D4FF]/25 hover:shadow-[#00D4FF]/40 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg bg-amber-400 text-[#0A0E1A] hover:bg-amber-300 transition-all shadow-xl shadow-amber-400/25 hover:shadow-amber-400/40 hover:-translate-y-0.5"
               >
-                <Zap className="w-5 h-5" fill="currentColor" />
+                <Crown className="w-5 h-5" fill="currentColor" />
                 Rejoindre maintenant
               </Link>
               <Link
@@ -96,8 +96,8 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {stats.map(({ label, value, icon: Icon }) => (
               <div key={label} className="flex items-center gap-4 justify-center sm:justify-start">
-                <div className="w-12 h-12 rounded-xl bg-[#00D4FF]/10 border border-[#00D4FF]/20 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-5 h-5 text-[#00D4FF]" />
+                <div className="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 text-amber-400" />
                 </div>
                 <div>
                   <p className="font-display font-bold text-3xl text-white">{value}</p>
@@ -125,10 +125,10 @@ export default function Home() {
             {features.map(({ icon: Icon, title, description }) => (
               <div
                 key={title}
-                className="group p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-[#00D4FF]/20 transition-all"
+                className="group p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-amber-400/20 transition-all"
               >
-                <div className="w-12 h-12 rounded-xl bg-[#00D4FF]/10 border border-[#00D4FF]/10 flex items-center justify-center mb-4 group-hover:bg-[#00D4FF]/15 group-hover:border-[#00D4FF]/30 transition-all">
-                  <Icon className="w-5 h-5 text-[#00D4FF]" />
+                <div className="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/10 flex items-center justify-center mb-4 group-hover:bg-amber-400/15 group-hover:border-amber-400/30 transition-all">
+                  <Icon className="w-5 h-5 text-amber-400" />
                 </div>
                 <h3 className="font-display font-semibold text-xl text-white mb-2">{title}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">{description}</p>
@@ -141,21 +141,21 @@ export default function Home() {
       {/* CTA */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-3xl border border-[#00D4FF]/15 bg-gradient-to-br from-[#00D4FF]/5 to-transparent p-12 text-center overflow-hidden">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-[#00D4FF]/5 blur-[80px] pointer-events-none" />
+          <div className="relative rounded-3xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 to-transparent p-12 text-center overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-amber-400/5 blur-[80px] pointer-events-none" />
             <div className="relative">
-              <Trophy className="w-12 h-12 text-[#00D4FF] mx-auto mb-6" />
+              <Trophy className="w-12 h-12 text-amber-400 mx-auto mb-6" />
               <h2 className="font-display font-bold text-3xl sm:text-4xl text-white mb-4">
                 Prêt à compétitionner ?
               </h2>
               <p className="text-slate-400 max-w-lg mx-auto mb-8">
-                Créez votre compte gratuitement et rejoignez la communauté OMJEP Eagles dès aujourd'hui.
+                Créez votre compte gratuitement et rejoignez la communauté OMJEP dès aujourd'hui.
               </p>
               <Link
                 to="/register"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg bg-[#00D4FF] text-[#0A0E1A] hover:bg-[#00BBDD] transition-all shadow-xl shadow-[#00D4FF]/25"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg bg-amber-400 text-[#0A0E1A] hover:bg-amber-300 transition-all shadow-xl shadow-amber-400/25"
               >
-                <Zap className="w-5 h-5" fill="currentColor" />
+                <Crown className="w-5 h-5" fill="currentColor" />
                 Créer mon compte
               </Link>
             </div>

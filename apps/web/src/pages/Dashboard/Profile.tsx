@@ -131,8 +131,8 @@ export default function Profile() {
         {/* Section: Informations de Jeu */}
         <section className="space-y-5">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 border border-[#00D4FF]/20 flex items-center justify-center">
-              <Gamepad2 className="w-4 h-4 text-[#00D4FF]" />
+            <div className="w-8 h-8 rounded-lg bg-amber-400/10 border border-amber-400/20 flex items-center justify-center">
+              <Gamepad2 className="w-4 h-4 text-amber-400" />
             </div>
             <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
               Informations de Jeu

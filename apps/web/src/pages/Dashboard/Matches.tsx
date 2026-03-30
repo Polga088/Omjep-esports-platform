@@ -61,10 +61,10 @@ function TeamLogo({ team, side }: { team: Team; side: 'home' | 'away' }) {
 
   const gradients =
     side === 'home'
-      ? 'from-[#00D4FF]/20 to-[#0099BB]/10 border-[#00D4FF]/15'
+      ? 'from-amber-400/20 to-amber-600/10 border-amber-400/15'
       : 'from-[#FF6B35]/20 to-[#CC5529]/10 border-[#FF6B35]/15';
 
-  const textColor = side === 'home' ? 'text-[#00D4FF]' : 'text-[#FF6B35]';
+  const textColor = side === 'home' ? 'text-amber-400' : 'text-[#FF6B35]';
 
   if (team.logoUrl) {
     return (
@@ -130,7 +130,7 @@ function MatchCard({ match }: { match: Match }) {
       : isDraw
         ? 'hover:shadow-slate-400/8'
         : 'hover:shadow-red-500/8'
-    : 'hover:shadow-[#00D4FF]/8';
+    : 'hover:shadow-amber-400/8';
 
   const scheduledDate = new Date(match.scheduledAt);
   const formattedDate = scheduledDate.toLocaleDateString('fr-FR', {
@@ -152,7 +152,7 @@ function MatchCard({ match }: { match: Match }) {
       <div className="relative flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           {match.competition ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#00D4FF]/8 border border-[#00D4FF]/15 text-[#00D4FF] text-[10px] font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/8 border border-amber-400/15 text-amber-400 text-[10px] font-bold uppercase tracking-wider">
               <Trophy className="w-3 h-3" />
               {match.competition.name}
             </span>
@@ -182,7 +182,7 @@ function MatchCard({ match }: { match: Match }) {
           <TeamLogo team={match.homeTeam} side="home" />
           <p
             className={`font-display font-bold text-sm sm:text-base truncate ${
-              isHome ? 'text-[#00D4FF]' : 'text-white'
+              isHome ? 'text-amber-400' : 'text-white'
             }`}
           >
             {match.homeTeam.name}
@@ -208,7 +208,7 @@ function MatchCard({ match }: { match: Match }) {
             </>
           ) : (
             <>
-              <div className="flex items-center gap-1.5 text-[#00D4FF]">
+              <div className="flex items-center gap-1.5 text-amber-400">
                 <Clock className="w-3.5 h-3.5" />
                 <span className="font-display font-bold text-sm">{formattedTime}</span>
               </div>
@@ -239,7 +239,7 @@ function EmptyState({ tab }: { tab: Tab }) {
   return (
     <div className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-12 flex flex-col items-center justify-center text-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-slate-800/10 to-transparent pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-[#00D4FF]/[0.03] blur-[80px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-amber-400/[0.03] blur-[80px] pointer-events-none" />
 
       <div className="relative">
         <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
@@ -310,11 +310,11 @@ export default function Matches() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="relative rounded-2xl border border-[#00D4FF]/15 bg-gradient-to-br from-[#00D4FF]/5 via-transparent to-transparent p-8 overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#00D4FF]/5 blur-[80px] pointer-events-none" />
+      <div className="relative rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8 overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-amber-400/5 blur-[80px] pointer-events-none" />
         <div className="relative flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00D4FF]/30 to-[#FF6B35]/30 flex items-center justify-center border border-[#00D4FF]/20">
-            <Swords className="w-6 h-6 text-[#00D4FF]" />
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400/30 to-amber-600/30 flex items-center justify-center border border-amber-400/20">
+            <Swords className="w-6 h-6 text-amber-400" />
           </div>
           <div>
             <h1 className="font-display font-bold text-2xl text-white">Matchs</h1>
@@ -361,7 +361,7 @@ export default function Matches() {
                   onClick={() => setActiveTab(key)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
                     active
-                      ? 'bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 shadow-sm shadow-[#00D4FF]/5'
+                      ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20 shadow-sm shadow-amber-400/5'
                       : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
                   }`}
                 >
@@ -371,7 +371,7 @@ export default function Matches() {
                     <span
                       className={`ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
                         active
-                          ? 'bg-[#00D4FF]/20 text-[#00D4FF]'
+                          ? 'bg-amber-400/20 text-amber-400'
                           : 'bg-white/5 text-slate-500'
                       }`}
                     >

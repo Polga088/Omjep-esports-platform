@@ -168,10 +168,10 @@ function RankTable({ players }: { players: TopPlayer[] }) {
                   </td>
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00D4FF]/15 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-xs font-bold text-[#00D4FF] uppercase shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400/15 to-amber-600/10 border border-white/10 flex items-center justify-center text-xs font-bold text-amber-400 uppercase shrink-0">
                         {(entry.player.ea_persona_name ?? '?').charAt(0)}
                       </div>
-                      <PlayerLink id={entry.player.id} className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors truncate">
+                      <PlayerLink id={entry.player.id} className="text-sm font-semibold text-white group-hover:text-amber-400 transition-colors truncate">
                         {entry.player.ea_persona_name ?? 'Anonyme'}
                       </PlayerLink>
                     </div>
@@ -242,7 +242,7 @@ export default function Stats() {
       <div>
         <Link
           to={`/dashboard/competitions/${id}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#00D4FF] transition-colors mb-4"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-amber-400 transition-colors mb-4"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Retour au classement

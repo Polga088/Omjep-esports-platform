@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Zap, Mail, Lock, Eye, EyeOff, User, Gamepad2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Crown, Mail, Lock, Eye, EyeOff, User, Gamepad2, AlertCircle, CheckCircle } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -67,7 +67,7 @@ export default function Register() {
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] rounded-full bg-[#FF6B35]/3 blur-[120px]" />
-        <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] rounded-full bg-[#00D4FF]/3 blur-[100px]" />
+        <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] rounded-full bg-amber-400/3 blur-[100px]" />
       </div>
 
       <div className="relative w-full max-w-md">
@@ -114,7 +114,7 @@ export default function Register() {
                   value={form.email}
                   onChange={handleChange}
                   placeholder="vous@exemple.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40 focus:border-[#00D4FF]/40 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400/40 transition-all"
                 />
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function Register() {
                   value={form.ea_persona_name}
                   onChange={handleChange}
                   placeholder="VotreNomEA"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40 focus:border-[#00D4FF]/40 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400/40 transition-all"
                 />
               </div>
               <p className="text-xs text-slate-600 mt-1.5">Votre pseudo EA FC (doit correspondre exactement)</p>
@@ -157,7 +157,7 @@ export default function Register() {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Minimum 8 caractères"
-                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40 focus:border-[#00D4FF]/40 transition-all"
+                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400/40 transition-all"
                 />
                 <button
                   type="button"
@@ -180,12 +180,12 @@ export default function Register() {
                     onClick={() => setForm((prev) => ({ ...prev, role: value }))}
                     className={`p-3.5 rounded-xl border text-left transition-all ${
                       form.role === value
-                        ? 'border-[#00D4FF]/40 bg-[#00D4FF]/10 text-[#00D4FF]'
+                        ? 'border-amber-400/40 bg-amber-400/10 text-amber-400'
                         : 'border-white/10 bg-white/[0.02] text-slate-400 hover:border-white/20 hover:text-white'
                     }`}
                   >
                     <p className="text-sm font-semibold">{label}</p>
-                    <p className={`text-xs mt-0.5 ${form.role === value ? 'text-[#00D4FF]/70' : 'text-slate-600'}`}>
+                    <p className={`text-xs mt-0.5 ${form.role === value ? 'text-amber-400/70' : 'text-slate-600'}`}>
                       {description}
                     </p>
                   </button>
@@ -197,12 +197,12 @@ export default function Register() {
             <button
               type="submit"
               disabled={isLoading || success}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-sm bg-[#00D4FF] text-[#0A0E1A] hover:bg-[#00BBDD] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#00D4FF]/20 hover:shadow-[#00D4FF]/30 mt-2"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-sm bg-amber-400 text-[#0A0E1A] hover:bg-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-amber-400/20 hover:shadow-amber-400/30 mt-2"
             >
               {isLoading ? (
                 <span className="w-4 h-4 border-2 border-[#0A0E1A]/30 border-t-[#0A0E1A] rounded-full animate-spin" />
               ) : (
-                <Zap className="w-4 h-4" fill="currentColor" />
+                <Crown className="w-4 h-4" fill="currentColor" />
               )}
               {isLoading ? 'Création du compte...' : 'Créer mon compte'}
             </button>
@@ -210,7 +210,7 @@ export default function Register() {
 
           <p className="text-center text-slate-500 text-sm mt-6">
             Déjà inscrit ?{' '}
-            <Link to="/login" className="text-[#00D4FF] hover:text-[#00BBDD] font-medium transition-colors">
+            <Link to="/login" className="text-amber-400 hover:text-amber-300 font-medium transition-colors">
               Se connecter
             </Link>
           </p>

@@ -127,11 +127,11 @@ export default function DashboardIndex() {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="relative rounded-2xl border border-[#00D4FF]/15 bg-gradient-to-br from-[#00D4FF]/5 via-transparent to-transparent p-8 overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#00D4FF]/5 blur-[80px] pointer-events-none" />
+      <div className="relative rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8 overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-amber-400/5 blur-[80px] pointer-events-none" />
         <div className="relative">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00D4FF]/30 to-[#FF6B35]/30 flex items-center justify-center text-lg font-bold text-[#00D4FF] uppercase border border-[#00D4FF]/20">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400/30 to-amber-600/30 flex items-center justify-center text-lg font-bold text-amber-400 uppercase border border-amber-400/20">
               {user?.ea_persona_name?.charAt(0) ?? 'U'}
             </div>
             <div>
@@ -142,10 +142,10 @@ export default function DashboardIndex() {
             </div>
           </div>
           <p className="text-slate-400 text-sm">
-            Centre de commandement — Moroccan Eagles
+            Centre de commandement — OMJEP
           </p>
           {user?.role && (
-            <span className="inline-block mt-3 px-3 py-1 rounded-full bg-[#00D4FF]/10 border border-[#00D4FF]/20 text-[#00D4FF] text-xs font-medium capitalize">
+            <span className="inline-block mt-3 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-medium capitalize">
               {user.role === 'manager' ? 'Manager de Club' : 'Joueur'}
             </span>
           )}
@@ -355,19 +355,19 @@ export default function DashboardIndex() {
             <Link
               key={to}
               to={to}
-              className="group p-5 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-[#00D4FF]/20 transition-all duration-200"
+              className="group p-5 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-amber-400/20 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#00D4FF]/10 group-hover:border-[#00D4FF]/20 transition-all">
-                  <Icon className="w-4 h-4 text-slate-400 group-hover:text-[#00D4FF] transition-colors" />
+                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-400/10 group-hover:border-amber-400/20 transition-all">
+                  <Icon className="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors">
+                  <p className="text-sm font-semibold text-white group-hover:text-amber-400 transition-colors">
                     {label}
                   </p>
                   <p className="text-xs text-slate-500 truncate">{description}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-[#00D4FF]/60 flex-shrink-0 transition-colors" />
+                <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-amber-400/60 flex-shrink-0 transition-colors" />
               </div>
             </Link>
           ))}

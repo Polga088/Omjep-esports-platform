@@ -565,7 +565,7 @@ export default function AdminMatches() {
                       onClick={() => setAddEventSide(addEventSide === 'home' ? null : 'home')}
                       className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
                         addEventSide === 'home'
-                          ? 'bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/25'
+                          ? 'bg-amber-400/15 text-amber-400 border border-amber-400/25'
                           : 'bg-white/[0.04] text-slate-500 border border-white/[0.06] hover:text-slate-300 hover:border-white/10'
                       }`}
                     >

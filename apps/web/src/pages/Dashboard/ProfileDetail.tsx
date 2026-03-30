@@ -84,7 +84,7 @@ export default function ProfileDetail() {
       {/* Back link */}
       <Link
         to="/dashboard"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#00D4FF] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-amber-400 transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         Retour au dashboard

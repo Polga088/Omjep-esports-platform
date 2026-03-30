@@ -156,10 +156,10 @@ export default function MyTeam() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D4FF]/20 to-[#00D4FF]/5 border border-[#00D4FF]/20 flex items-center justify-center">
-              <Gamepad2 className="w-4 h-4 text-[#00D4FF]" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400/20 to-amber-400/5 border border-amber-400/20 flex items-center justify-center">
+              <Gamepad2 className="w-4 h-4 text-amber-400" />
             </div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#00D4FF]/70">Gestion du Club</span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-amber-400/70">Gestion du Club</span>
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight">
             {isLoading ? (
@@ -176,7 +176,7 @@ export default function MyTeam() {
         {canRecruit && (
           <button
             onClick={() => setInviteModalOpen(true)}
-            className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#00D4FF] to-[#0099BB] text-[#0A0E1A] shadow-lg shadow-[#00D4FF]/20 hover:shadow-[#00D4FF]/40 hover:brightness-110 active:scale-95 transition-all duration-200 whitespace-nowrap"
+            className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-400 to-amber-600 text-[#0A0E1A] shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:brightness-110 active:scale-95 transition-all duration-200 whitespace-nowrap"
           >
             <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" />
             Recruter un joueur
@@ -189,7 +189,7 @@ export default function MyTeam() {
         {[
           { label: 'Total joueurs', value: isLoading ? '—' : players.length, accent: 'text-blue-400' },
           { label: 'Staff / Managers', value: isLoading ? '—' : staff.length, accent: 'text-emerald-400' },
-          { label: 'Note moy. équipe', value: isLoading ? '—' : avgRating > 0 ? avgRating.toFixed(1) : 'N/A', accent: 'text-[#00D4FF]' },
+          { label: 'Note moy. équipe', value: isLoading ? '—' : avgRating > 0 ? avgRating.toFixed(1) : 'N/A', accent: 'text-amber-400' },
         ].map(({ label, value, accent }) => (
           <div key={label} className="rounded-xl bg-[#0D1221] border border-white/5 p-4 flex flex-col items-center">
             <span className={`text-2xl font-black tabular-nums ${accent}`}>{value}</span>
@@ -209,7 +209,7 @@ export default function MyTeam() {
       <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
         <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-[#00D4FF]" />
+            <Star className="w-4 h-4 text-amber-400" />
             <h2 className="text-sm font-semibold text-white">Roster actuel</h2>
           </div>
           <span className="text-xs text-slate-600 bg-white/5 px-2.5 py-1 rounded-full">
@@ -260,13 +260,13 @@ export default function MyTeam() {
                       {/* Player */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00D4FF]/20 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-sm font-bold text-[#00D4FF] uppercase shrink-0 group-hover:border-[#00D4FF]/30 transition-colors">
+                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0 group-hover:border-amber-400/30 transition-colors">
                             {pseudo.charAt(0)}
                           </div>
                           <div>
                             <Link
                               to={`/dashboard/profile/${user.id}`}
-                              className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors hover:underline decoration-[#00D4FF]/40 underline-offset-2"
+                              className="text-sm font-semibold text-white group-hover:text-amber-400 transition-colors hover:underline decoration-amber-400/40 underline-offset-2"
                             >
                               {pseudo}
                             </Link>
@@ -322,16 +322,16 @@ export default function MyTeam() {
       {canRecruit && team && (
         <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
           <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-            <UserPlus className="w-4 h-4 text-[#00D4FF]" />
+            <UserPlus className="w-4 h-4 text-amber-400" />
             <h2 className="text-sm font-semibold text-white">Recrutement</h2>
           </div>
           <div className="px-6 py-6">
             <p className="text-sm text-slate-400 mb-4">
-              En tant que <span className="text-white font-medium">{roleConfig[currentMember!.club_role].label}</span>, vous pouvez inviter de nouveaux joueurs à rejoindre <span className="text-[#00D4FF] font-medium">{team.name}</span>.
+              En tant que <span className="text-white font-medium">{roleConfig[currentMember!.club_role].label}</span>, vous pouvez inviter de nouveaux joueurs à rejoindre <span className="text-amber-400 font-medium">{team.name}</span>.
             </p>
             <button
               onClick={() => setInviteModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#00D4FF] to-[#0099BB] text-[#0A0E1A] shadow-lg shadow-[#00D4FF]/20 hover:shadow-[#00D4FF]/40 hover:brightness-110 active:scale-95 transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-400 to-amber-600 text-[#0A0E1A] shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:brightness-110 active:scale-95 transition-all"
             >
               <UserPlus className="w-4 h-4" />
               Inviter un Joueur

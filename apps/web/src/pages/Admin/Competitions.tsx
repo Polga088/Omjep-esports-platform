@@ -390,7 +390,7 @@ export default function AdminCompetitions() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  placeholder="Ex : Eagles Pro League S1"
+                  placeholder="Ex : OMJEP Pro League S1"
                   className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200"
                 />
               </div>

@@ -149,13 +149,13 @@ export default function NotificationBell() {
                             className="w-10 h-10 rounded-xl object-cover border border-white/10 shrink-0"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00D4FF]/20 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-sm font-bold text-[#00D4FF] uppercase shrink-0">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0">
                             {inv.team.name.charAt(0)}
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-white">
-                            <span className="font-semibold text-[#00D4FF]">{inv.team.name}</span>
+                            <span className="font-semibold text-amber-400">{inv.team.name}</span>
                             {' '}vous invite à rejoindre !
                           </p>
                           <p className="text-xs text-slate-500 mt-0.5">

@@ -116,7 +116,7 @@ export default function Ladder() {
             placeholder="Rechercher un club…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0D1221] border border-white/10 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#00D4FF]/40 focus:ring-1 focus:ring-[#00D4FF]/20 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0D1221] border border-white/10 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-400/40 focus:ring-1 focus:ring-amber-400/20 transition-all"
           />
         </div>
       </div>
@@ -205,7 +205,7 @@ export default function Ladder() {
                               className="w-9 h-9 rounded-xl object-cover border border-white/10 shrink-0"
                             />
                           ) : (
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00D4FF]/20 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-sm font-bold text-[#00D4FF] uppercase shrink-0">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0">
                               {team.name.charAt(0)}
                             </div>
                           )}
@@ -213,7 +213,7 @@ export default function Ladder() {
                             <p className={`text-sm font-semibold transition-colors ${
                               isMyTeam
                                 ? 'text-indigo-300'
-                                : 'text-white group-hover:text-[#00D4FF]'
+                                : 'text-white group-hover:text-amber-400'
                             }`}>
                               {team.name}
                             </p>

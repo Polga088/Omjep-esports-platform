@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Zap, LayoutDashboard, Users, Trophy, ShoppingBag,
+  Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
   LogOut, ChevronRight, Menu, X, UserCog, Swords,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -46,21 +46,26 @@ export default function DashboardLayout() {
   const SidebarContent = () => (
     <>
       {/* Logo */}
-      <div className="p-6 border-b border-white/5">
-        <Link to="/" className="flex items-center gap-2 group" onClick={() => setSidebarOpen(false)}>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D4FF] to-[#0099BB] flex items-center justify-center shadow-lg shadow-[#00D4FF]/20">
-            <Zap className="w-4 h-4 text-[#0A0E1A]" fill="currentColor" />
+      <div className="p-6 border-b border-amber-400/10">
+        <Link to="/" className="flex items-center gap-3 group" onClick={() => setSidebarOpen(false)}>
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-400/20">
+            <Crown className="w-5 h-5 text-[#0A0E1A]" fill="currentColor" />
           </div>
-          <span className="font-bold text-lg tracking-wider text-white group-hover:text-[#00D4FF] transition-colors uppercase">
-            Eagles
-          </span>
+          <div>
+            <span className="font-bold text-sm tracking-widest text-amber-400 uppercase block leading-tight">
+              OMJEP
+            </span>
+            <span className="text-[10px] text-slate-500 tracking-wider uppercase leading-tight block">
+              Org. Marocaine des Jeux Électroniques Pro
+            </span>
+          </div>
         </Link>
       </div>
 
       {/* User info */}
-      <div className="px-4 py-4 border-b border-white/5">
+      <div className="px-4 py-4 border-b border-amber-400/10">
         <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-white/5">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#00D4FF]/30 to-[#FF6B35]/30 flex items-center justify-center text-sm font-bold text-[#00D4FF] uppercase border border-[#00D4FF]/20 shrink-0">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-600/30 flex items-center justify-center text-sm font-bold text-amber-400 uppercase border border-amber-400/20 shrink-0">
             {user?.ea_persona_name?.charAt(0) ?? 'U'}
           </div>
           <div className="min-w-0">
@@ -81,20 +86,20 @@ export default function DashboardLayout() {
               onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                 active
-                  ? 'text-[#00D4FF] bg-[#00D4FF]/10 border border-[#00D4FF]/20'
+                  ? 'text-amber-400 bg-amber-400/10 border border-amber-400/20'
                   : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#00D4FF]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-amber-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
               <span className="flex-1">{label}</span>
-              {active && <ChevronRight className="w-3.5 h-3.5 text-[#00D4FF]/60" />}
+              {active && <ChevronRight className="w-3.5 h-3.5 text-amber-400/60" />}
             </Link>
           );
         })}
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-white/5">
+      <div className="p-4 border-t border-amber-400/10">
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:text-red-400 hover:bg-red-500/5 border border-transparent hover:border-red-500/10 transition-all group"
@@ -121,7 +126,7 @@ export default function DashboardLayout() {
         className={`
           fixed lg:static inset-y-0 left-0 z-30
           w-64 min-h-screen flex flex-col
-          border-r border-white/5 bg-[#0D1221]
+          border-r border-amber-400/10 bg-[#020617]
           transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
@@ -132,7 +137,7 @@ export default function DashboardLayout() {
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="h-16 border-b border-white/5 bg-[#0A0E1A]/80 backdrop-blur-md flex items-center px-4 lg:px-8 gap-4 sticky top-0 z-10">
+        <header className="h-16 border-b border-amber-400/10 bg-[#0A0E1A]/80 backdrop-blur-md flex items-center px-4 lg:px-8 gap-4 sticky top-0 z-10">
           {/* Mobile hamburger */}
           <button
             onClick={() => setSidebarOpen(true)}

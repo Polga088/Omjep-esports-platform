@@ -111,7 +111,7 @@ export default function Standings() {
       <div>
         <Link
           to="/dashboard/matches"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#00D4FF] transition-colors mb-4"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-amber-400 transition-colors mb-4"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Retour aux matchs
@@ -241,7 +241,7 @@ export default function Standings() {
                               className="w-8 h-8 rounded-lg object-cover border border-white/10 shrink-0"
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D4FF]/20 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-xs font-bold text-[#00D4FF] uppercase shrink-0">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-xs font-bold text-amber-400 uppercase shrink-0">
                               {entry.team.name.charAt(0)}
                             </div>
                           )}
@@ -253,7 +253,7 @@ export default function Standings() {
                                     ? 'text-indigo-300'
                                     : isLeader
                                       ? 'text-amber-200 group-hover:text-amber-100'
-                                      : 'text-white group-hover:text-[#00D4FF]'
+                                      : 'text-white group-hover:text-amber-400'
                                 }`}
                               >
                                 {entry.team.name}
