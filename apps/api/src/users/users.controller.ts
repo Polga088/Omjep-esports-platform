@@ -6,10 +6,14 @@ import {
   Delete,
   Param,
   Body,
+  Req,
+  UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Prisma } from '@omjep/database';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('users')
 export class UsersController {
@@ -18,6 +22,12 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile')
+  updateProfile(@Req() req: any, @Body() dto: UpdateProfileDto) {
+    return this.usersService.updateProfile(req.user.id, dto);
   }
 
   @Get(':id')

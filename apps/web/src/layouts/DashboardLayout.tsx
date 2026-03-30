@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Zap, LayoutDashboard, Users, Trophy, ShoppingBag,
-  LogOut, ChevronRight, Menu, X,
+  LogOut, ChevronRight, Menu, X, UserCog,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -11,6 +11,7 @@ const sidebarLinks = [
   { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
   { to: '/dashboard/ladder', label: 'Classement', icon: Trophy },
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
+  { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -18,6 +19,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/team': 'Mon Équipe',
   '/dashboard/ladder': 'Classement',
   '/dashboard/store': 'Boutique',
+  '/dashboard/profile': 'Mon Profil',
 };
 
 export default function DashboardLayout() {

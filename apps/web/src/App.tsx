@@ -7,6 +7,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import DashboardIndex from '@/pages/Dashboard/Index';
 import MyTeam from '@/pages/Dashboard/MyTeam';
+import Profile from '@/pages/Dashboard/Profile';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
         >
           <Route path="/dashboard" element={<DashboardIndex />} />
           <Route path="/dashboard/team" element={<MyTeam />} />
+          <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>
