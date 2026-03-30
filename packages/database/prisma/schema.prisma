@@ -114,6 +114,10 @@ model User {
   preferred_position Position?
   nationality        String?
 
+  // Leveling
+  xp    Int @default(0)
+  level Int @default(1)
+
   // Relations
   teamMemberships    TeamMember[]
   stats              PlayerStats?
@@ -141,6 +145,10 @@ model Team {
 
   // Finances
   budget Float @default(1000000)
+
+  // Leveling
+  xp             Int @default(0)
+  prestige_level Int @default(1)
 
   // Relations
   members          TeamMember[]

@@ -92,6 +92,8 @@ export class UsersService {
         gamertag_xbox: true,
         role: true,
         created_at: true,
+        xp: true,
+        level: true,
       },
     });
 

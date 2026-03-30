@@ -2494,8 +2494,20 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserAvgAggregateOutputType = {
+    xp: number | null
+    level: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    xp: number | null
+    level: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -2510,6 +2522,8 @@ export namespace Prisma {
     gamertag_xbox: string | null
     preferred_position: $Enums.Position | null
     nationality: string | null
+    xp: number | null
+    level: number | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2524,6 +2538,8 @@ export namespace Prisma {
     gamertag_xbox: string | null
     preferred_position: $Enums.Position | null
     nationality: string | null
+    xp: number | null
+    level: number | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2538,9 +2554,21 @@ export namespace Prisma {
     gamertag_xbox: number
     preferred_position: number
     nationality: number
+    xp: number
+    level: number
     _all: number
   }
 
+
+  export type UserAvgAggregateInputType = {
+    xp?: true
+    level?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    xp?: true
+    level?: true
+  }
 
   export type UserMinAggregateInputType = {
     id?: true
@@ -2554,6 +2582,8 @@ export namespace Prisma {
     gamertag_xbox?: true
     preferred_position?: true
     nationality?: true
+    xp?: true
+    level?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2568,6 +2598,8 @@ export namespace Prisma {
     gamertag_xbox?: true
     preferred_position?: true
     nationality?: true
+    xp?: true
+    level?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2582,6 +2614,8 @@ export namespace Prisma {
     gamertag_xbox?: true
     preferred_position?: true
     nationality?: true
+    xp?: true
+    level?: true
     _all?: true
   }
 
@@ -2623,6 +2657,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -2653,6 +2699,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -2669,7 +2717,11 @@ export namespace Prisma {
     gamertag_xbox: string | null
     preferred_position: $Enums.Position | null
     nationality: string | null
+    xp: number
+    level: number
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -2700,6 +2752,8 @@ export namespace Prisma {
     gamertag_xbox?: boolean
     preferred_position?: boolean
     nationality?: boolean
+    xp?: boolean
+    level?: boolean
     teamMemberships?: boolean | User$teamMembershipsArgs<ExtArgs>
     stats?: boolean | User$statsArgs<ExtArgs>
     transferRequests?: boolean | User$transferRequestsArgs<ExtArgs>
@@ -2724,6 +2778,8 @@ export namespace Prisma {
     gamertag_xbox?: boolean
     preferred_position?: boolean
     nationality?: boolean
+    xp?: boolean
+    level?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2738,6 +2794,8 @@ export namespace Prisma {
     gamertag_xbox?: boolean
     preferred_position?: boolean
     nationality?: boolean
+    xp?: boolean
+    level?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2752,9 +2810,11 @@ export namespace Prisma {
     gamertag_xbox?: boolean
     preferred_position?: boolean
     nationality?: boolean
+    xp?: boolean
+    level?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "external_id" | "email" | "password_hash" | "role" | "created_at" | "ea_persona_name" | "gamertag_psn" | "gamertag_xbox" | "preferred_position" | "nationality", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "external_id" | "email" | "password_hash" | "role" | "created_at" | "ea_persona_name" | "gamertag_psn" | "gamertag_xbox" | "preferred_position" | "nationality" | "xp" | "level", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teamMemberships?: boolean | User$teamMembershipsArgs<ExtArgs>
     stats?: boolean | User$statsArgs<ExtArgs>
@@ -2795,6 +2855,8 @@ export namespace Prisma {
       gamertag_xbox: string | null
       preferred_position: $Enums.Position | null
       nationality: string | null
+      xp: number
+      level: number
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3238,6 +3300,8 @@ export namespace Prisma {
     readonly gamertag_xbox: FieldRef<"User", 'String'>
     readonly preferred_position: FieldRef<"User", 'Position'>
     readonly nationality: FieldRef<"User", 'String'>
+    readonly xp: FieldRef<"User", 'Int'>
+    readonly level: FieldRef<"User", 'Int'>
   }
     
 
@@ -3869,10 +3933,14 @@ export namespace Prisma {
 
   export type TeamAvgAggregateOutputType = {
     budget: number | null
+    xp: number | null
+    prestige_level: number | null
   }
 
   export type TeamSumAggregateOutputType = {
     budget: number | null
+    xp: number | null
+    prestige_level: number | null
   }
 
   export type TeamMinAggregateOutputType = {
@@ -3884,6 +3952,8 @@ export namespace Prisma {
     ea_club_id: string | null
     platform: $Enums.Platform | null
     budget: number | null
+    xp: number | null
+    prestige_level: number | null
   }
 
   export type TeamMaxAggregateOutputType = {
@@ -3895,6 +3965,8 @@ export namespace Prisma {
     ea_club_id: string | null
     platform: $Enums.Platform | null
     budget: number | null
+    xp: number | null
+    prestige_level: number | null
   }
 
   export type TeamCountAggregateOutputType = {
@@ -3906,16 +3978,22 @@ export namespace Prisma {
     ea_club_id: number
     platform: number
     budget: number
+    xp: number
+    prestige_level: number
     _all: number
   }
 
 
   export type TeamAvgAggregateInputType = {
     budget?: true
+    xp?: true
+    prestige_level?: true
   }
 
   export type TeamSumAggregateInputType = {
     budget?: true
+    xp?: true
+    prestige_level?: true
   }
 
   export type TeamMinAggregateInputType = {
@@ -3927,6 +4005,8 @@ export namespace Prisma {
     ea_club_id?: true
     platform?: true
     budget?: true
+    xp?: true
+    prestige_level?: true
   }
 
   export type TeamMaxAggregateInputType = {
@@ -3938,6 +4018,8 @@ export namespace Prisma {
     ea_club_id?: true
     platform?: true
     budget?: true
+    xp?: true
+    prestige_level?: true
   }
 
   export type TeamCountAggregateInputType = {
@@ -3949,6 +4031,8 @@ export namespace Prisma {
     ea_club_id?: true
     platform?: true
     budget?: true
+    xp?: true
+    prestige_level?: true
     _all?: true
   }
 
@@ -4047,6 +4131,8 @@ export namespace Prisma {
     ea_club_id: string | null
     platform: $Enums.Platform
     budget: number
+    xp: number
+    prestige_level: number
     _count: TeamCountAggregateOutputType | null
     _avg: TeamAvgAggregateOutputType | null
     _sum: TeamSumAggregateOutputType | null
@@ -4077,6 +4163,8 @@ export namespace Prisma {
     ea_club_id?: boolean
     platform?: boolean
     budget?: boolean
+    xp?: boolean
+    prestige_level?: boolean
     members?: boolean | Team$membersArgs<ExtArgs>
     homeMatches?: boolean | Team$homeMatchesArgs<ExtArgs>
     awayMatches?: boolean | Team$awayMatchesArgs<ExtArgs>
@@ -4100,6 +4188,8 @@ export namespace Prisma {
     ea_club_id?: boolean
     platform?: boolean
     budget?: boolean
+    xp?: boolean
+    prestige_level?: boolean
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4111,6 +4201,8 @@ export namespace Prisma {
     ea_club_id?: boolean
     platform?: boolean
     budget?: boolean
+    xp?: boolean
+    prestige_level?: boolean
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectScalar = {
@@ -4122,9 +4214,11 @@ export namespace Prisma {
     ea_club_id?: boolean
     platform?: boolean
     budget?: boolean
+    xp?: boolean
+    prestige_level?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proclubs_url" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform" | "budget", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proclubs_url" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform" | "budget" | "xp" | "prestige_level", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | Team$membersArgs<ExtArgs>
     homeMatches?: boolean | Team$homeMatchesArgs<ExtArgs>
@@ -4166,6 +4260,8 @@ export namespace Prisma {
       ea_club_id: string | null
       platform: $Enums.Platform
       budget: number
+      xp: number
+      prestige_level: number
     }, ExtArgs["result"]["team"]>
     composites: {}
   }
@@ -4608,6 +4704,8 @@ export namespace Prisma {
     readonly ea_club_id: FieldRef<"Team", 'String'>
     readonly platform: FieldRef<"Team", 'Platform'>
     readonly budget: FieldRef<"Team", 'Float'>
+    readonly xp: FieldRef<"Team", 'Int'>
+    readonly prestige_level: FieldRef<"Team", 'Int'>
   }
     
 
@@ -18652,7 +18750,9 @@ export namespace Prisma {
     gamertag_psn: 'gamertag_psn',
     gamertag_xbox: 'gamertag_xbox',
     preferred_position: 'preferred_position',
-    nationality: 'nationality'
+    nationality: 'nationality',
+    xp: 'xp',
+    level: 'level'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -18666,7 +18766,9 @@ export namespace Prisma {
     created_at: 'created_at',
     ea_club_id: 'ea_club_id',
     platform: 'platform',
-    budget: 'budget'
+    budget: 'budget',
+    xp: 'xp',
+    prestige_level: 'prestige_level'
   };
 
   export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
@@ -18924,6 +19026,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Platform'
    */
   export type EnumPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Platform'>
@@ -18962,20 +19078,6 @@ export namespace Prisma {
    * Reference to a field of type 'ClubRole[]'
    */
   export type ListEnumClubRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClubRole[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -19116,6 +19218,8 @@ export namespace Prisma {
     gamertag_xbox?: StringNullableFilter<"User"> | string | null
     preferred_position?: EnumPositionNullableFilter<"User"> | $Enums.Position | null
     nationality?: StringNullableFilter<"User"> | string | null
+    xp?: IntFilter<"User"> | number
+    level?: IntFilter<"User"> | number
     teamMemberships?: TeamMemberListRelationFilter
     stats?: XOR<PlayerStatsNullableScalarRelationFilter, PlayerStatsWhereInput> | null
     transferRequests?: TransferRequestListRelationFilter
@@ -19139,6 +19243,8 @@ export namespace Prisma {
     gamertag_xbox?: SortOrderInput | SortOrder
     preferred_position?: SortOrderInput | SortOrder
     nationality?: SortOrderInput | SortOrder
+    xp?: SortOrder
+    level?: SortOrder
     teamMemberships?: TeamMemberOrderByRelationAggregateInput
     stats?: PlayerStatsOrderByWithRelationInput
     transferRequests?: TransferRequestOrderByRelationAggregateInput
@@ -19165,6 +19271,8 @@ export namespace Prisma {
     gamertag_xbox?: StringNullableFilter<"User"> | string | null
     preferred_position?: EnumPositionNullableFilter<"User"> | $Enums.Position | null
     nationality?: StringNullableFilter<"User"> | string | null
+    xp?: IntFilter<"User"> | number
+    level?: IntFilter<"User"> | number
     teamMemberships?: TeamMemberListRelationFilter
     stats?: XOR<PlayerStatsNullableScalarRelationFilter, PlayerStatsWhereInput> | null
     transferRequests?: TransferRequestListRelationFilter
@@ -19188,9 +19296,13 @@ export namespace Prisma {
     gamertag_xbox?: SortOrderInput | SortOrder
     preferred_position?: SortOrderInput | SortOrder
     nationality?: SortOrderInput | SortOrder
+    xp?: SortOrder
+    level?: SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -19208,6 +19320,8 @@ export namespace Prisma {
     gamertag_xbox?: StringNullableWithAggregatesFilter<"User"> | string | null
     preferred_position?: EnumPositionNullableWithAggregatesFilter<"User"> | $Enums.Position | null
     nationality?: StringNullableWithAggregatesFilter<"User"> | string | null
+    xp?: IntWithAggregatesFilter<"User"> | number
+    level?: IntWithAggregatesFilter<"User"> | number
   }
 
   export type TeamWhereInput = {
@@ -19222,6 +19336,8 @@ export namespace Prisma {
     ea_club_id?: StringNullableFilter<"Team"> | string | null
     platform?: EnumPlatformFilter<"Team"> | $Enums.Platform
     budget?: FloatFilter<"Team"> | number
+    xp?: IntFilter<"Team"> | number
+    prestige_level?: IntFilter<"Team"> | number
     members?: TeamMemberListRelationFilter
     homeMatches?: MatchListRelationFilter
     awayMatches?: MatchListRelationFilter
@@ -19244,6 +19360,8 @@ export namespace Prisma {
     ea_club_id?: SortOrderInput | SortOrder
     platform?: SortOrder
     budget?: SortOrder
+    xp?: SortOrder
+    prestige_level?: SortOrder
     members?: TeamMemberOrderByRelationAggregateInput
     homeMatches?: MatchOrderByRelationAggregateInput
     awayMatches?: MatchOrderByRelationAggregateInput
@@ -19269,6 +19387,8 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Team"> | Date | string
     platform?: EnumPlatformFilter<"Team"> | $Enums.Platform
     budget?: FloatFilter<"Team"> | number
+    xp?: IntFilter<"Team"> | number
+    prestige_level?: IntFilter<"Team"> | number
     members?: TeamMemberListRelationFilter
     homeMatches?: MatchListRelationFilter
     awayMatches?: MatchListRelationFilter
@@ -19291,6 +19411,8 @@ export namespace Prisma {
     ea_club_id?: SortOrderInput | SortOrder
     platform?: SortOrder
     budget?: SortOrder
+    xp?: SortOrder
+    prestige_level?: SortOrder
     _count?: TeamCountOrderByAggregateInput
     _avg?: TeamAvgOrderByAggregateInput
     _max?: TeamMaxOrderByAggregateInput
@@ -19310,6 +19432,8 @@ export namespace Prisma {
     ea_club_id?: StringNullableWithAggregatesFilter<"Team"> | string | null
     platform?: EnumPlatformWithAggregatesFilter<"Team"> | $Enums.Platform
     budget?: FloatWithAggregatesFilter<"Team"> | number
+    xp?: IntWithAggregatesFilter<"Team"> | number
+    prestige_level?: IntWithAggregatesFilter<"Team"> | number
   }
 
   export type TeamMemberWhereInput = {
@@ -20125,6 +20249,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
@@ -20148,6 +20274,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
@@ -20171,6 +20299,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
@@ -20194,6 +20324,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
@@ -20217,6 +20349,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
   }
 
   export type UserUpdateManyMutationInput = {
@@ -20231,6 +20365,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -20245,6 +20381,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
   }
 
   export type TeamCreateInput = {
@@ -20256,6 +20394,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -20278,6 +20418,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -20300,6 +20442,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -20322,6 +20466,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -20344,6 +20490,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
   }
 
   export type TeamUpdateManyMutationInput = {
@@ -20355,6 +20503,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
   }
 
   export type TeamUncheckedUpdateManyInput = {
@@ -20366,6 +20516,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
   }
 
   export type TeamMemberCreateInput = {
@@ -21215,6 +21367,17 @@ export namespace Prisma {
     not?: NestedEnumPositionNullableFilter<$PrismaModel> | $Enums.Position | null
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type TeamMemberListRelationFilter = {
     every?: TeamMemberWhereInput
     some?: TeamMemberWhereInput
@@ -21307,6 +21470,13 @@ export namespace Prisma {
     gamertag_xbox?: SortOrder
     preferred_position?: SortOrder
     nationality?: SortOrder
+    xp?: SortOrder
+    level?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    xp?: SortOrder
+    level?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -21321,6 +21491,8 @@ export namespace Prisma {
     gamertag_xbox?: SortOrder
     preferred_position?: SortOrder
     nationality?: SortOrder
+    xp?: SortOrder
+    level?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -21335,6 +21507,13 @@ export namespace Prisma {
     gamertag_xbox?: SortOrder
     preferred_position?: SortOrder
     nationality?: SortOrder
+    xp?: SortOrder
+    level?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    xp?: SortOrder
+    level?: SortOrder
   }
 
   export type UuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -21422,6 +21601,22 @@ export namespace Prisma {
     _max?: NestedEnumPositionNullableFilter<$PrismaModel>
   }
 
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type EnumPlatformFilter<$PrismaModel = never> = {
     equals?: $Enums.Platform | EnumPlatformFieldRefInput<$PrismaModel>
     in?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
@@ -21479,10 +21674,14 @@ export namespace Prisma {
     ea_club_id?: SortOrder
     platform?: SortOrder
     budget?: SortOrder
+    xp?: SortOrder
+    prestige_level?: SortOrder
   }
 
   export type TeamAvgOrderByAggregateInput = {
     budget?: SortOrder
+    xp?: SortOrder
+    prestige_level?: SortOrder
   }
 
   export type TeamMaxOrderByAggregateInput = {
@@ -21494,6 +21693,8 @@ export namespace Prisma {
     ea_club_id?: SortOrder
     platform?: SortOrder
     budget?: SortOrder
+    xp?: SortOrder
+    prestige_level?: SortOrder
   }
 
   export type TeamMinOrderByAggregateInput = {
@@ -21505,10 +21706,14 @@ export namespace Prisma {
     ea_club_id?: SortOrder
     platform?: SortOrder
     budget?: SortOrder
+    xp?: SortOrder
+    prestige_level?: SortOrder
   }
 
   export type TeamSumOrderByAggregateInput = {
     budget?: SortOrder
+    xp?: SortOrder
+    prestige_level?: SortOrder
   }
 
   export type EnumPlatformWithAggregatesFilter<$PrismaModel = never> = {
@@ -21590,17 +21795,6 @@ export namespace Prisma {
     _max?: NestedEnumClubRoleFilter<$PrismaModel>
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type PlayerStatsCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
@@ -21650,22 +21844,6 @@ export namespace Prisma {
     clean_sheets?: SortOrder
     motm?: SortOrder
     average_rating?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumCompetitionTypeFilter<$PrismaModel = never> = {
@@ -22424,6 +22602,14 @@ export namespace Prisma {
     set?: $Enums.Position | null
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type TeamMemberUpdateManyWithoutUserNestedInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -23180,14 +23366,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type UserUpdateOneRequiredWithoutStatsNestedInput = {
     create?: XOR<UserCreateWithoutStatsInput, UserUncheckedCreateWithoutStatsInput>
     connectOrCreate?: UserCreateOrConnectWithoutStatsInput
@@ -23714,6 +23892,17 @@ export namespace Prisma {
     not?: NestedEnumPositionNullableFilter<$PrismaModel> | $Enums.Position | null
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -23726,17 +23915,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -23818,11 +23996,20 @@ export namespace Prisma {
     _max?: NestedEnumPositionNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumPlatformFilter<$PrismaModel = never> = {
-    equals?: $Enums.Platform | EnumPlatformFieldRefInput<$PrismaModel>
-    in?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
-    not?: NestedEnumPlatformFilter<$PrismaModel> | $Enums.Platform
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -23834,6 +24021,13 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumPlatformFilter<$PrismaModel = never> = {
+    equals?: $Enums.Platform | EnumPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlatformFilter<$PrismaModel> | $Enums.Platform
   }
 
   export type NestedEnumPlatformWithAggregatesFilter<$PrismaModel = never> = {
@@ -23877,22 +24071,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumClubRoleFilter<$PrismaModel>
     _max?: NestedEnumClubRoleFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NestedEnumCompetitionTypeFilter<$PrismaModel = never> = {
@@ -25137,6 +25315,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -25159,6 +25339,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -25183,6 +25365,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
@@ -25204,6 +25388,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
@@ -25244,6 +25430,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -25266,6 +25454,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -25296,6 +25486,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
@@ -25317,6 +25509,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
@@ -25341,6 +25535,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -25363,6 +25559,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -25401,6 +25599,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -25423,6 +25623,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -25557,6 +25759,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -25578,6 +25782,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -25648,6 +25854,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -25669,6 +25877,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -25717,6 +25927,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
@@ -25738,6 +25950,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
@@ -25764,6 +25978,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
@@ -25785,6 +26001,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
@@ -25881,6 +26099,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
@@ -25902,6 +26122,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
@@ -25934,6 +26156,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
@@ -25955,6 +26179,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
@@ -26026,6 +26252,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
@@ -26048,6 +26276,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
@@ -26072,6 +26302,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -26093,6 +26325,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -26170,6 +26404,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
@@ -26192,6 +26428,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
@@ -26222,6 +26460,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -26243,6 +26483,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -26267,6 +26509,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -26289,6 +26533,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -26313,6 +26559,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -26334,6 +26582,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -26374,6 +26624,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -26396,6 +26648,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -26426,6 +26680,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -26447,6 +26703,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -26468,6 +26726,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -26489,6 +26749,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -26518,6 +26780,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
@@ -26540,6 +26804,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
@@ -26567,6 +26833,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
@@ -26589,6 +26857,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
@@ -26624,6 +26894,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -26645,6 +26917,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -26680,6 +26954,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
@@ -26702,6 +26978,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
@@ -26735,6 +27013,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
@@ -26757,6 +27037,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
@@ -26776,6 +27058,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -26797,6 +27081,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -26826,6 +27112,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
@@ -26848,6 +27136,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
@@ -26883,6 +27173,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -26904,6 +27196,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -26939,6 +27233,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
@@ -26961,6 +27257,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
@@ -26980,6 +27278,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -27001,6 +27301,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -27038,6 +27340,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -27059,6 +27363,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -27083,6 +27389,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
@@ -27105,6 +27413,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
@@ -27129,6 +27439,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -27150,6 +27462,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -27176,6 +27490,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -27197,6 +27513,8 @@ export namespace Prisma {
     ea_club_id?: string | null
     platform?: $Enums.Platform
     budget?: number
+    xp?: number
+    prestige_level?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -27237,6 +27555,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
@@ -27259,6 +27579,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
@@ -27289,6 +27611,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -27310,6 +27634,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -27342,6 +27668,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -27363,6 +27691,8 @@ export namespace Prisma {
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     budget?: FloatFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -27387,6 +27717,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
@@ -27409,6 +27741,8 @@ export namespace Prisma {
     gamertag_xbox?: string | null
     preferred_position?: $Enums.Position | null
     nationality?: string | null
+    xp?: number
+    level?: number
     teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
@@ -27447,6 +27781,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
@@ -27469,6 +27805,8 @@ export namespace Prisma {
     gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
     preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
     nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    xp?: IntFieldUpdateOperationsInput | number
+    level?: IntFieldUpdateOperationsInput | number
     teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput

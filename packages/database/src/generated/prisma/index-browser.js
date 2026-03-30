@@ -132,7 +132,9 @@ exports.Prisma.UserScalarFieldEnum = {
   gamertag_psn: 'gamertag_psn',
   gamertag_xbox: 'gamertag_xbox',
   preferred_position: 'preferred_position',
-  nationality: 'nationality'
+  nationality: 'nationality',
+  xp: 'xp',
+  level: 'level'
 };
 
 exports.Prisma.TeamScalarFieldEnum = {
@@ -143,7 +145,9 @@ exports.Prisma.TeamScalarFieldEnum = {
   created_at: 'created_at',
   ea_club_id: 'ea_club_id',
   platform: 'platform',
-  budget: 'budget'
+  budget: 'budget',
+  xp: 'xp',
+  prestige_level: 'prestige_level'
 };
 
 exports.Prisma.TeamMemberScalarFieldEnum = {

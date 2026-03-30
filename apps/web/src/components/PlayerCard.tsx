@@ -1,3 +1,5 @@
+import { xpProgress } from '@/lib/leveling';
+
 interface PlayerCardProps {
   rating: number;
   position: string;
@@ -9,12 +11,85 @@ interface PlayerCardProps {
   clubName?: string;
   clubLogoUrl?: string | null;
   marketValue?: number | null;
+  level?: number;
+  xp?: number;
 }
 
 function formatValue(v: number): string {
   if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
   if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K`;
   return v.toString();
+}
+
+function HexBadge({ level }: { level: number }) {
+  return (
+    <div className="absolute -top-2 -left-2 z-20 w-[46px] h-[52px] flex items-center justify-center drop-shadow-lg">
+      <svg
+        viewBox="0 0 46 52"
+        className="absolute inset-0 w-full h-full"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="hexGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFD700" />
+            <stop offset="50%" stopColor="#FFA500" />
+            <stop offset="100%" stopColor="#B8860B" />
+          </linearGradient>
+          <filter id="hexGlow">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <polygon
+          points="23,1 44,14 44,38 23,51 2,38 2,14"
+          fill="url(#hexGold)"
+          stroke="#FFD700"
+          strokeWidth="1.5"
+          filter="url(#hexGlow)"
+          opacity="0.95"
+        />
+        <polygon
+          points="23,5 40,16 40,36 23,47 6,36 6,16"
+          fill="rgba(0,0,0,0.5)"
+          stroke="rgba(255,215,0,0.3)"
+          strokeWidth="0.5"
+        />
+      </svg>
+      <div className="relative z-10 flex flex-col items-center leading-none">
+        <span className="text-[7px] font-bold uppercase tracking-wider text-amber-300/80">
+          Lvl
+        </span>
+        <span className="text-sm font-black text-white tabular-nums" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+          {level}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function XpBar({ xp, level }: { xp: number; level: number }) {
+  const progress = xpProgress(xp, level);
+
+  return (
+    <div className="w-full mt-1.5 px-2">
+      <div className="relative h-[5px] rounded-full bg-white/10 overflow-hidden">
+        <div
+          className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-out"
+          style={{
+            width: `${progress.percentage}%`,
+            background: 'linear-gradient(90deg, #B8860B 0%, #FFD700 50%, #FFF8DC 100%)',
+            boxShadow: '0 0 8px rgba(255, 215, 0, 0.6), 0 0 2px rgba(255, 215, 0, 0.8)',
+          }}
+        />
+      </div>
+      <p className="text-[8px] text-amber-500/50 text-center mt-0.5 tabular-nums font-semibold tracking-wide">
+        {progress.current} / {progress.needed} XP
+      </p>
+    </div>
+  );
 }
 
 export default function PlayerCard({
@@ -28,6 +103,8 @@ export default function PlayerCard({
   clubName,
   clubLogoUrl,
   marketValue,
+  level,
+  xp,
 }: PlayerCardProps) {
   const ratingColor =
     rating >= 85
@@ -37,6 +114,9 @@ export default function PlayerCard({
         : rating >= 65
           ? 'text-blue-400'
           : 'text-slate-300';
+
+  const showLevel = level != null && level > 0;
+  const showXp = xp != null && level != null;
 
   return (
     <div className="relative w-[260px] h-[380px] select-none">
@@ -120,8 +200,9 @@ export default function PlayerCard({
 
           {/* ── Center: Player Avatar placeholder + Name ── */}
           <div className="flex-1 flex flex-col items-center justify-center -mt-2">
-            {/* Hexagonal avatar frame */}
+            {/* Hexagonal avatar frame with Level badge */}
             <div className="relative w-[90px] h-[90px] mb-4">
+              {showLevel && <HexBadge level={level} />}
               <div
                 className="absolute inset-0 rounded-full border-2 border-amber-500/30"
                 style={{
@@ -143,6 +224,9 @@ export default function PlayerCard({
             >
               {name}
             </h2>
+
+            {/* XP progress bar */}
+            {showXp && <XpBar xp={xp} level={level} />}
           </div>
 
           {/* ── Bottom: Stat block ── */}

@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import {
   UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2,
   CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
-  FileText, TrendingUp, TrendingDown, Banknote, Trophy, Repeat,
+  FileText, TrendingUp, TrendingDown, Banknote, Trophy, Repeat, Gem, Info,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import api from '../../lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import InvitePlayerModal from '@/components/InvitePlayerModal';
+import { xpProgress } from '@/lib/leveling';
 
 // ─── Types (miroir du payload Prisma) ────────────────────────────────────────
 
@@ -44,6 +46,8 @@ interface MyTeamData {
   logo_url: string | null;
   proclubs_url: string | null;
   budget: number;
+  xp: number;
+  prestige_level: number;
   members: TeamMember[];
 }
 
@@ -143,6 +147,101 @@ function SkeletonRow() {
         </td>
       ))}
     </tr>
+  );
+}
+
+// ─── Prestige du Club ─────────────────────────────────────────────────────────
+
+function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: number }) {
+  const progress = xpProgress(xp, prestigeLevel);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <div className="rounded-2xl border border-cyan-500/15 bg-gradient-to-br from-[#0D1221] to-[#0C1631] overflow-hidden">
+      <div className="px-5 py-3.5 border-b border-cyan-500/10 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Gem className="w-4 h-4 text-cyan-400" />
+          <h3 className="text-sm font-bold text-white tracking-wide">Prestige du Club</h3>
+        </div>
+        <div className="relative">
+          <button
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+            onClick={() => setShowTooltip(!showTooltip)}
+            className="w-5 h-5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+          >
+            <Info className="w-3 h-3 text-slate-500" />
+          </button>
+          {showTooltip && (
+            <div className="absolute right-0 top-7 z-50 w-64 px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 shadow-xl text-xs text-slate-300 leading-relaxed">
+              <p className="font-semibold text-cyan-400 mb-1">Bonus de Prestige</p>
+              <p>
+                Le Prestige augmente à chaque victoire et performance du club.
+                Plus le niveau est élevé, plus les <span className="text-white font-medium">bonus de sponsoring</span> sont importants.
+              </p>
+              <div className="absolute -top-1.5 right-3 w-3 h-3 bg-slate-800 border-t border-l border-slate-700 rotate-45" />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="px-5 py-5">
+        <div className="flex items-center gap-4">
+          {/* Prestige level badge */}
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="shrink-0"
+          >
+            <div
+              className="w-16 h-16 rounded-xl flex flex-col items-center justify-center shadow-lg border border-cyan-400/20"
+              style={{
+                background: 'linear-gradient(135deg, #164e63 0%, #0e7490 40%, #67e8f9 100%)',
+                boxShadow: '0 4px 20px rgba(6,182,212,0.2)',
+              }}
+            >
+              <span className="text-[9px] font-bold uppercase tracking-widest text-cyan-200/70">Prstg</span>
+              <span
+                className="text-2xl font-black text-white leading-none tabular-nums"
+                style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
+              >
+                {prestigeLevel}
+              </span>
+            </div>
+          </motion.div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline justify-between mb-1.5">
+              <span className="text-xs font-semibold text-slate-400">
+                {progress.current.toLocaleString('fr-FR')} / {progress.needed.toLocaleString('fr-FR')} XP
+              </span>
+              <span className="text-xs font-bold text-cyan-400">
+                Niv. {progress.nextLevel}
+              </span>
+            </div>
+
+            {/* Progress bar - electric blue to silver */}
+            <div className="relative h-2.5 rounded-full bg-white/5 overflow-hidden border border-white/5">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progress.percentage}%` }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
+                className="absolute inset-y-0 left-0 rounded-full"
+                style={{
+                  background: 'linear-gradient(90deg, #0e7490 0%, #22d3ee 50%, #e2e8f0 100%)',
+                  boxShadow: '0 0 12px rgba(34,211,238,0.4)',
+                }}
+              />
+            </div>
+
+            <p className="text-[10px] text-slate-600 mt-1.5">
+              <span className="text-cyan-400/80 font-semibold">{xp.toLocaleString('fr-FR')}</span> XP Club totale
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -299,6 +398,11 @@ export default function MyTeam() {
           </div>
         ))}
       </div>
+
+      {/* Prestige du Club */}
+      {team && !isLoading && (
+        <PrestigeSection xp={team.xp} prestigeLevel={team.prestige_level} />
+      )}
 
       {/* Erreur */}
       {error && !isLoading && (

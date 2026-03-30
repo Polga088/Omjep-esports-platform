@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { LevelingService } from '../leveling/leveling.service';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
@@ -39,7 +40,14 @@ export interface SyncFromUrlResult {
 export class ProClubsService {
   private readonly logger = new Logger(ProClubsService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  private static readonly XP_GOAL = 25;
+  private static readonly XP_ASSIST = 15;
+  private static readonly XP_MATCH_PARTICIPATION = 50;
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly leveling: LevelingService,
+  ) {}
 
   /**
    * Main entry point: scrapes a ProClubs.io URL, extracts the latest match
@@ -159,6 +167,9 @@ export class ProClubsService {
       `[ProClubs] Match synced: ${updated.homeTeam.name} ${updated.home_score}–${updated.away_score} ${updated.awayTeam.name} (${events.length} events)`,
     );
 
+    // ─── Award XP ──────────────────────────────────────────────────
+    await this.awardXpForMatch(matchedPlayers);
+
     return {
       synced: true,
       scraped,
@@ -166,6 +177,35 @@ export class ProClubsService {
       createdEventsCount: events.length,
       updatedMatch: updated as unknown as Record<string, unknown>,
     };
+  }
+
+  // ─── XP awarding ──────────────────────────────────────────────────
+
+  /**
+   * Awards XP to every matched player based on the barème:
+   *   Goal = 25 XP, Assist = 15 XP, Match participation = 50 XP.
+   * Also grants cumulative XP to each player's team.
+   */
+  private async awardXpForMatch(matchedPlayers: PersonaMatch[]): Promise<void> {
+    const teamXpAccumulator = new Map<string, number>();
+
+    for (const pm of matchedPlayers) {
+      if (!pm.matched) continue;
+
+      const playerXp =
+        ProClubsService.XP_MATCH_PARTICIPATION +
+        pm.goals * ProClubsService.XP_GOAL +
+        pm.assists * ProClubsService.XP_ASSIST;
+
+      await this.leveling.addPlayerXp(pm.matched.userId, playerXp);
+
+      const prev = teamXpAccumulator.get(pm.matched.teamId) ?? 0;
+      teamXpAccumulator.set(pm.matched.teamId, prev + playerXp);
+    }
+
+    for (const [teamId, totalXp] of teamXpAccumulator) {
+      await this.leveling.addTeamXp(teamId, totalXp);
+    }
   }
 
   // ─── Scraping logic ────────────────────────────────────────────────
