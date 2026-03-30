@@ -7,8 +7,11 @@ import {
   Param,
   Body,
   ParseUUIDPipe,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Prisma } from '@omjep/database';
 
 @Controller('teams')
@@ -18,6 +21,18 @@ export class TeamsController {
   @Get()
   findAll() {
     return this.teamsService.findAll();
+  }
+
+  @Get('my-team')
+  @UseGuards(JwtAuthGuard)
+  findMyTeam(@Request() req: { user: { id: string } }) {
+    return this.teamsService.findMyTeam(req.user.id);
+  }
+
+  @Get('my-team/overview')
+  @UseGuards(JwtAuthGuard)
+  getMyTeamOverview(@Request() req: { user: { id: string } }) {
+    return this.teamsService.getMyTeamOverview(req.user.id);
   }
 
   @Get(':id')

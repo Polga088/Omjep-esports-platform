@@ -1,78 +1,78 @@
-import { UserPlus, Star, Gamepad2, Shield, Swords } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users } from 'lucide-react';
+import api from '../../lib/api';
 
-type PlayerRole = 'Manager' | 'Joueur';
-type Position = 'BU' | 'MOC' | 'MDC' | 'DC' | 'GB' | 'MOD' | 'MG' | 'MD';
+// ─── Types (miroir du payload Prisma) ────────────────────────────────────────
 
-interface Player {
-  id: string;
-  pseudo: string;
-  position: Position;
-  role: PlayerRole;
-  matchesPlayed: number;
-  averageRating: number;
-  country: string;
+type ClubRole = 'FOUNDER' | 'MANAGER' | 'CO_MANAGER' | 'PLAYER';
+type Position = 'GK' | 'DC' | 'LAT' | 'RAT' | 'MDC' | 'MOC' | 'MG' | 'MD' | 'BU' | 'ATT';
+
+interface PlayerStats {
+  matches_played: number;
+  goals: number;
+  assists: number;
+  clean_sheets: number;
+  motm: number;
+  average_rating: number;
 }
 
-const MOCK_PLAYERS: Player[] = [
-  {
-    id: '1',
-    pseudo: 'xX_EagleSniper_Xx',
-    position: 'BU',
-    role: 'Manager',
-    matchesPlayed: 42,
-    averageRating: 8.4,
-    country: 'MA',
-  },
-  {
-    id: '2',
-    pseudo: 'ShadowPlaymaker',
-    position: 'MOC',
-    role: 'Joueur',
-    matchesPlayed: 38,
-    averageRating: 7.9,
-    country: 'DZ',
-  },
-  {
-    id: '3',
-    pseudo: 'IronWall_FC',
-    position: 'DC',
-    role: 'Joueur',
-    matchesPlayed: 35,
-    averageRating: 7.2,
-    country: 'TN',
-  },
-];
+interface TeamMemberUser {
+  id: string;
+  ea_persona_name: string | null;
+  preferred_position: Position | null;
+  nationality: string | null;
+  stats: PlayerStats | null;
+}
+
+interface TeamMember {
+  user_id: string;
+  club_role: ClubRole;
+  joined_at: string;
+  user: TeamMemberUser;
+}
+
+interface MyTeamData {
+  id: string;
+  name: string;
+  logo_url: string | null;
+  members: TeamMember[];
+}
+
+// ─── Config visuels ──────────────────────────────────────────────────────────
 
 const positionColors: Record<Position, string> = {
-  BU:  'bg-orange-500/15 text-orange-400 border-orange-500/30',
-  MOC: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
-  MDC: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+  GK:  'bg-yellow-500/15 text-yellow-400 border-yellow-500/30',
   DC:  'bg-sky-500/15 text-sky-400 border-sky-500/30',
-  GB:  'bg-yellow-500/15 text-yellow-400 border-yellow-500/30',
-  MOD: 'bg-teal-500/15 text-teal-400 border-teal-500/30',
-  MG:  'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',
-  MD:  'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+  LAT: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',
+  RAT: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+  MDC: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+  MOC: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
+  MG:  'bg-teal-500/15 text-teal-400 border-teal-500/30',
+  MD:  'bg-purple-500/15 text-purple-400 border-purple-500/30',
+  BU:  'bg-orange-500/15 text-orange-400 border-orange-500/30',
+  ATT: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
 };
 
-const roleConfig: Record<PlayerRole, { label: string; className: string; icon: React.ElementType }> = {
-  Manager: {
-    label: 'Manager',
-    className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-    icon: Shield,
-  },
-  Joueur: {
-    label: 'Joueur',
-    className: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
-    icon: Swords,
-  },
+const positionLabel: Record<Position, string> = {
+  GK: 'GB', DC: 'DC', LAT: 'LAT', RAT: 'RAT',
+  MDC: 'MDC', MOC: 'MOC', MG: 'MG', MD: 'MD', BU: 'BU', ATT: 'ATT',
 };
+
+const roleConfig: Record<ClubRole, { label: string; className: string; icon: React.ElementType }> = {
+  FOUNDER:    { label: 'Fondateur',   className: 'bg-amber-500/15 text-amber-400 border-amber-500/30',   icon: Crown },
+  MANAGER:    { label: 'Manager',     className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30', icon: Shield },
+  CO_MANAGER: { label: 'Co-Manager',  className: 'bg-teal-500/15 text-teal-400 border-teal-500/30',       icon: Users },
+  PLAYER:     { label: 'Joueur',      className: 'bg-blue-500/15 text-blue-400 border-blue-500/30',       icon: Swords },
+};
+
+// ─── Composants utilitaires ──────────────────────────────────────────────────
 
 function RatingBar({ value }: { value: number }) {
   const percentage = (value / 10) * 100;
   const color =
-    value >= 8 ? 'from-emerald-500 to-emerald-400' :
+    value >= 8   ? 'from-emerald-500 to-emerald-400' :
     value >= 6.5 ? 'from-blue-500 to-blue-400' :
-    'from-amber-500 to-amber-400';
+                   'from-amber-500 to-amber-400';
 
   return (
     <div className="flex items-center gap-3">
@@ -85,13 +85,62 @@ function RatingBar({ value }: { value: number }) {
       <span className={`text-sm font-bold tabular-nums w-8 text-right ${
         value >= 8 ? 'text-emerald-400' : value >= 6.5 ? 'text-blue-400' : 'text-amber-400'
       }`}>
-        {value.toFixed(1)}
+        {value > 0 ? value.toFixed(1) : 'N/A'}
       </span>
     </div>
   );
 }
 
+function SkeletonRow() {
+  return (
+    <tr className="border-b border-white/5">
+      {[...Array(5)].map((_, i) => (
+        <td key={i} className="px-6 py-4">
+          <div className="h-4 rounded-md bg-white/5 animate-pulse" style={{ width: i === 0 ? '60%' : '40%' }} />
+        </td>
+      ))}
+    </tr>
+  );
+}
+
+// ─── Page principale ─────────────────────────────────────────────────────────
+
 export default function MyTeam() {
+  const [team, setTeam] = useState<MyTeamData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api.get<MyTeamData>('/teams/my-team')
+      .then(({ data }) => {
+        if (!cancelled) setTeam(data);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          const msg: string =
+            err?.response?.data?.message ??
+            "Impossible de charger les données de l'équipe.";
+          setError(msg);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, []);
+
+  const players = team?.members.filter((m) => m.club_role === 'PLAYER') ?? [];
+  const staff   = team?.members.filter((m) => m.club_role !== 'PLAYER') ?? [];
+  const allMembers = team?.members ?? [];
+
+  const avgRating =
+    allMembers.length > 0
+      ? allMembers.reduce((sum, m) => sum + (m.user.stats?.average_rating ?? 0), 0) / allMembers.length
+      : 0;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -104,10 +153,14 @@ export default function MyTeam() {
             <span className="text-xs font-semibold uppercase tracking-widest text-[#00D4FF]/70">Gestion du Club</span>
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight">
-            Effectif du Club
+            {isLoading ? (
+              <span className="inline-block w-48 h-8 rounded-lg bg-white/5 animate-pulse" />
+            ) : (
+              team?.name ?? 'Effectif du Club'
+            )}
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            {MOCK_PLAYERS.length} membres enregistrés dans le système
+            {isLoading ? '\u00a0' : `${allMembers.length} membres enregistrés dans le système`}
           </p>
         </div>
 
@@ -120,9 +173,9 @@ export default function MyTeam() {
       {/* Stats strip */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Total joueurs', value: MOCK_PLAYERS.filter(p => p.role === 'Joueur').length, accent: 'text-blue-400' },
-          { label: 'Managers', value: MOCK_PLAYERS.filter(p => p.role === 'Manager').length, accent: 'text-emerald-400' },
-          { label: 'Note moy. équipe', value: (MOCK_PLAYERS.reduce((s, p) => s + p.averageRating, 0) / MOCK_PLAYERS.length).toFixed(1), accent: 'text-[#00D4FF]' },
+          { label: 'Total joueurs', value: isLoading ? '—' : players.length, accent: 'text-blue-400' },
+          { label: 'Staff / Managers', value: isLoading ? '—' : staff.length, accent: 'text-emerald-400' },
+          { label: 'Note moy. équipe', value: isLoading ? '—' : avgRating > 0 ? avgRating.toFixed(1) : 'N/A', accent: 'text-[#00D4FF]' },
         ].map(({ label, value, accent }) => (
           <div key={label} className="rounded-xl bg-[#0D1221] border border-white/5 p-4 flex flex-col items-center">
             <span className={`text-2xl font-black tabular-nums ${accent}`}>{value}</span>
@@ -131,9 +184,15 @@ export default function MyTeam() {
         ))}
       </div>
 
+      {/* Erreur */}
+      {error && !isLoading && (
+        <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-4 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
       {/* Table */}
       <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-        {/* Table header */}
         <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Star className="w-4 h-4 text-[#00D4FF]" />
@@ -144,7 +203,6 @@ export default function MyTeam() {
           </span>
         </div>
 
-        {/* Desktop table */}
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -160,67 +218,86 @@ export default function MyTeam() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {MOCK_PLAYERS.map((player) => {
-                const role = roleConfig[player.role];
-                const RoleIcon = role.icon;
-                return (
-                  <tr
-                    key={player.id}
-                    className="group hover:bg-white/[0.03] transition-colors duration-150 cursor-pointer"
-                  >
-                    {/* Player */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00D4FF]/20 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-sm font-bold text-[#00D4FF] uppercase shrink-0 group-hover:border-[#00D4FF]/30 transition-colors">
-                          {player.pseudo.charAt(0)}
+              {isLoading ? (
+                [...Array(3)].map((_, i) => <SkeletonRow key={i} />)
+              ) : allMembers.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-600">
+                    Aucun membre dans cette équipe.
+                  </td>
+                </tr>
+              ) : (
+                allMembers.map((member) => {
+                  const { user, club_role } = member;
+                  const role = roleConfig[club_role];
+                  const RoleIcon = role.icon;
+                  const position = user.preferred_position;
+                  const posColor = position ? positionColors[position] : 'bg-slate-500/15 text-slate-400 border-slate-500/30';
+                  const posLabel = position ? positionLabel[position] : '—';
+                  const matchesPlayed = user.stats?.matches_played ?? 0;
+                  const avgRatingPlayer = user.stats?.average_rating ?? 0;
+                  const pseudo = user.ea_persona_name ?? `Joueur #${user.id.slice(0, 6)}`;
+
+                  return (
+                    <tr
+                      key={user.id}
+                      className="group hover:bg-white/[0.03] transition-colors duration-150 cursor-pointer"
+                    >
+                      {/* Player */}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00D4FF]/20 to-[#FF6B35]/10 border border-white/10 flex items-center justify-center text-sm font-bold text-[#00D4FF] uppercase shrink-0 group-hover:border-[#00D4FF]/30 transition-colors">
+                            {pseudo.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors">
+                              {pseudo}
+                            </p>
+                            <p className="text-xs text-slate-600">{user.nationality ?? '—'}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white group-hover:text-[#00D4FF] transition-colors">
-                            {player.pseudo}
-                          </p>
-                          <p className="text-xs text-slate-600">{player.country}</p>
-                        </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Position */}
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border tracking-wide ${positionColors[player.position]}`}>
-                        {player.position}
-                      </span>
-                    </td>
+                      {/* Position */}
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border tracking-wide ${posColor}`}>
+                          {posLabel}
+                        </span>
+                      </td>
 
-                    {/* Role */}
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${role.className}`}>
-                        <RoleIcon className="w-3 h-3" />
-                        {role.label}
-                      </span>
-                    </td>
+                      {/* Role */}
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${role.className}`}>
+                          <RoleIcon className="w-3 h-3" />
+                          {role.label}
+                        </span>
+                      </td>
 
-                    {/* Matches */}
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-bold text-white tabular-nums">
-                        {player.matchesPlayed}
-                      </span>
-                      <span className="text-xs text-slate-600 ml-1">matchs</span>
-                    </td>
+                      {/* Matches */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-bold text-white tabular-nums">
+                          {matchesPlayed}
+                        </span>
+                        <span className="text-xs text-slate-600 ml-1">matchs</span>
+                      </td>
 
-                    {/* Rating */}
-                    <td className="px-6 py-4 min-w-[160px]">
-                      <RatingBar value={player.averageRating} />
-                    </td>
-                  </tr>
-                );
-              })}
+                      {/* Rating */}
+                      <td className="px-6 py-4 min-w-[160px]">
+                        <RatingBar value={avgRatingPlayer} />
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-3 border-t border-white/5 flex items-center justify-between">
-          <span className="text-xs text-slate-600">{MOCK_PLAYERS.length} joueurs au total</span>
-          <span className="text-xs text-slate-700">Données mock — v0.1</span>
+          <span className="text-xs text-slate-600">
+            {isLoading ? '…' : `${allMembers.length} membre${allMembers.length > 1 ? 's' : ''} au total`}
+          </span>
+          <span className="text-xs text-slate-700">Données live — v1.0</span>
         </div>
       </div>
     </div>
