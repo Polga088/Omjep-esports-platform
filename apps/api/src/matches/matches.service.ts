@@ -1,6 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MatchStatus } from '@omjep/database';
+
+const CLUB_STAFF_ROLES = ['FOUNDER', 'MANAGER', 'CO_MANAGER'] as const;
 
 const MATCH_INCLUDE = {
   competition: { select: { id: true, name: true, type: true } },
@@ -70,5 +77,76 @@ export class MatchesService {
     });
 
     return sortMatchesCalendar(matches);
+  }
+
+  async submitScoreReport(
+    userId: string,
+    matchId: string,
+    homeScore: number,
+    awayScore: number,
+  ) {
+    const match = await this.prisma.match.findUnique({
+      where: { id: matchId },
+      select: {
+        id: true,
+        status: true,
+        home_team_id: true,
+        away_team_id: true,
+      },
+    });
+
+    if (!match) {
+      throw new NotFoundException('Match introuvable.');
+    }
+
+    if (match.status !== 'SCHEDULED') {
+      throw new BadRequestException(
+        'Vous ne pouvez déclarer un score que pour un match programmé.',
+      );
+    }
+
+    const membership = await this.prisma.teamMember.findFirst({
+      where: {
+        user_id: userId,
+        team_id: { in: [match.home_team_id, match.away_team_id] },
+        club_role: { in: [...CLUB_STAFF_ROLES] },
+      },
+      select: { team_id: true },
+    });
+
+    if (!membership) {
+      throw new ForbiddenException(
+        'Seuls les dirigeants du club (domicile ou extérieur) peuvent déclarer le score.',
+      );
+    }
+
+    const reportingTeamId = membership.team_id;
+
+    return this.prisma.matchScoreReport.upsert({
+      where: {
+        match_id_reporting_team_id: {
+          match_id: matchId,
+          reporting_team_id: reportingTeamId,
+        },
+      },
+      create: {
+        match_id: matchId,
+        reporting_team_id: reportingTeamId,
+        submitted_by_id: userId,
+        home_score: homeScore,
+        away_score: awayScore,
+      },
+      update: {
+        home_score: homeScore,
+        away_score: awayScore,
+        submitted_by_id: userId,
+      },
+      include: {
+        reportingTeam: { select: { id: true, name: true } },
+        submittedBy: {
+          select: { id: true, email: true, ea_persona_name: true },
+        },
+      },
+    });
   }
 }

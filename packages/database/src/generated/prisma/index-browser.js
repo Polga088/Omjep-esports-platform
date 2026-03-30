@@ -197,6 +197,17 @@ exports.Prisma.MatchScalarFieldEnum = {
   played_at: 'played_at'
 };
 
+exports.Prisma.MatchScoreReportScalarFieldEnum = {
+  id: 'id',
+  match_id: 'match_id',
+  reporting_team_id: 'reporting_team_id',
+  submitted_by_id: 'submitted_by_id',
+  home_score: 'home_score',
+  away_score: 'away_score',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.MatchEventScalarFieldEnum = {
   id: 'id',
   match_id: 'match_id',
@@ -290,6 +301,7 @@ exports.Prisma.JsonNullValueFilter = {
 };
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
+  MODERATOR: 'MODERATOR',
   MANAGER: 'MANAGER',
   PLAYER: 'PLAYER'
 };
@@ -373,6 +385,7 @@ exports.Prisma.ModelName = {
   Competition: 'Competition',
   CompetitionTeam: 'CompetitionTeam',
   Match: 'Match',
+  MatchScoreReport: 'MatchScoreReport',
   MatchEvent: 'MatchEvent',
   TransferRequest: 'TransferRequest',
   Invitation: 'Invitation',

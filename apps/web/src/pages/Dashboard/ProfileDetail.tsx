@@ -277,7 +277,7 @@ export default function ProfileDetail() {
     !isInMyTeam &&
     myTeam &&
     data?.team &&
-    (authUser?.role === 'manager' || authUser?.role === 'admin');
+    (authUser?.role === 'MANAGER' || authUser?.role === 'ADMIN');
 
   return (
     <div className="space-y-8">

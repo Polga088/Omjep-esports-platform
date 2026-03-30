@@ -6,14 +6,18 @@ import {
   Param,
   ParseUUIDPipe,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { FinanceService } from './finance.service';
 import { TransferService } from './transfer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { AddMatchRewardDto } from './dto/add-match-reward.dto';
 import { InitiateTransferDto } from './dto/initiate-transfer.dto';
 import { CreateContractDto } from './dto/create-contract.dto';
-import { PrismaService } from '../prisma/prisma.service';
+
+type AuthedRequest = { user: { id: string; role: string } };
 
 @Controller('finance')
 @UseGuards(JwtAuthGuard)
@@ -21,37 +25,46 @@ export class FinanceController {
   constructor(
     private readonly financeService: FinanceService,
     private readonly transferService: TransferService,
-    private readonly prisma: PrismaService,
   ) {}
 
   @Get(':teamId')
-  getTeamFinances(@Param('teamId', ParseUUIDPipe) teamId: string) {
-    return this.financeService.getTeamFinances(teamId);
+  getTeamFinances(
+    @Param('teamId', ParseUUIDPipe) teamId: string,
+    @Req() req: AuthedRequest,
+  ) {
+    return this.financeService.getTeamFinances(
+      teamId,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   @Post('match-reward')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   addMatchReward(@Body() dto: AddMatchRewardDto) {
     return this.financeService.addMatchReward(dto.team_id, dto.result);
   }
 
   @Post('transfer')
-  initiateTransfer(@Body() dto: InitiateTransferDto) {
+  initiateTransfer(
+    @Body() dto: InitiateTransferDto,
+    @Req() req: AuthedRequest,
+  ) {
     return this.transferService.initiateTransfer(
+      req.user.id,
+      req.user.role,
       dto.buying_team_id,
       dto.player_id,
     );
   }
 
   @Post('contracts')
-  createContract(@Body() dto: CreateContractDto) {
-    return this.prisma.contract.create({
-      data: {
-        team_id: dto.team_id,
-        user_id: dto.user_id,
-        salary: dto.salary,
-        release_clause: dto.release_clause,
-        expires_at: new Date(dto.expires_at),
-      },
-    });
+  createContract(@Body() dto: CreateContractDto, @Req() req: AuthedRequest) {
+    return this.financeService.createContract(
+      req.user.id,
+      req.user.role,
+      dto,
+    );
   }
 }

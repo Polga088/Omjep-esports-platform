@@ -8,7 +8,6 @@ import {
 
 const POSITIONS = ['GK', 'DC', 'LAT', 'RAT', 'MDC', 'MOC', 'MG', 'MD', 'BU', 'ATT'] as const;
 const PLATFORMS = ['CROSSPLAY', 'PS5', 'XBOX', 'PC'] as const;
-const ROLES = ['ADMIN', 'MANAGER', 'PLAYER'] as const;
 
 export class RegisterDto {
   @IsEmail()
@@ -17,11 +16,6 @@ export class RegisterDto {
   @IsString()
   @MinLength(8)
   password!: string;
-
-  @IsOptional()
-  @IsString()
-  @IsIn(ROLES)
-  role?: (typeof ROLES)[number];
 
   @IsOptional()
   @IsString()

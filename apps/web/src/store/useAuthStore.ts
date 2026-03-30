@@ -5,7 +5,7 @@ export interface User {
   id: string;
   email: string;
   ea_persona_name: string;
-  role: 'player' | 'manager' | 'admin';
+  role: 'PLAYER' | 'MANAGER' | 'ADMIN' | 'MODERATOR';
 }
 
 interface AuthState {

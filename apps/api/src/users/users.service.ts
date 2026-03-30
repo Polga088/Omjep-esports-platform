@@ -1,11 +1,24 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@omjep/database';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { AdminCreateUserDto } from './dto/admin-create-user.dto';
+import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
+import { LevelingService } from '../leveling/leveling.service';
+
+const SALT_ROUNDS = 10;
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly leveling: LevelingService,
+  ) {}
 
   async findAll() {
     return this.prisma.user.findMany({
@@ -27,7 +40,19 @@ export class UsersService {
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        external_id: true,
+        email: true,
+        role: true,
+        created_at: true,
+        ea_persona_name: true,
+        gamertag_psn: true,
+        gamertag_xbox: true,
+        preferred_position: true,
+        nationality: true,
+        xp: true,
+        level: true,
         stats: true,
         teamMemberships: {
           include: { team: true },
@@ -39,13 +64,111 @@ export class UsersService {
     return user;
   }
 
-  async create(data: Prisma.UserCreateInput) {
-    return this.prisma.user.create({ data });
+  async adminCreate(dto: AdminCreateUserDto) {
+    const existingByEmail = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (existingByEmail) {
+      throw new ConflictException('Cet email est déjà utilisé.');
+    }
+
+    if (dto.ea_persona_name) {
+      const existing = await this.prisma.user.findUnique({
+        where: { ea_persona_name: dto.ea_persona_name },
+      });
+      if (existing) {
+        throw new ConflictException('Ce ea_persona_name est déjà pris.');
+      }
+    }
+
+    const password_hash = await bcrypt.hash(dto.password, SALT_ROUNDS);
+
+    return this.prisma.user.create({
+      data: {
+        email: dto.email,
+        password_hash,
+        role: dto.role ?? 'PLAYER',
+        ea_persona_name: dto.ea_persona_name,
+        gamertag_psn: dto.gamertag_psn,
+        gamertag_xbox: dto.gamertag_xbox,
+        preferred_position: dto.preferred_position,
+        nationality: dto.nationality,
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        ea_persona_name: true,
+        gamertag_psn: true,
+        gamertag_xbox: true,
+        preferred_position: true,
+        nationality: true,
+        created_at: true,
+      },
+    });
   }
 
-  async update(id: string, data: Prisma.UserUpdateInput) {
+  async adminUpdate(id: string, dto: AdminUpdateUserDto) {
     await this.findOne(id);
-    return this.prisma.user.update({ where: { id }, data });
+
+    if (dto.email) {
+      const existing = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+      if (existing && existing.id !== id) {
+        throw new ConflictException('Cet email est déjà utilisé.');
+      }
+    }
+
+    if (dto.ea_persona_name) {
+      const existing = await this.prisma.user.findUnique({
+        where: { ea_persona_name: dto.ea_persona_name },
+      });
+      if (existing && existing.id !== id) {
+        throw new ConflictException('Ce ea_persona_name est déjà pris.');
+      }
+    }
+
+    const data: Prisma.UserUpdateInput = {};
+
+    if (dto.email !== undefined) data.email = dto.email;
+    if (dto.role !== undefined) data.role = dto.role;
+    if (dto.ea_persona_name !== undefined) data.ea_persona_name = dto.ea_persona_name;
+    if (dto.gamertag_psn !== undefined) data.gamertag_psn = dto.gamertag_psn;
+    if (dto.gamertag_xbox !== undefined) data.gamertag_xbox = dto.gamertag_xbox;
+    if (dto.preferred_position !== undefined) {
+      data.preferred_position = dto.preferred_position;
+    }
+    if (dto.nationality !== undefined) data.nationality = dto.nationality;
+
+    if (dto.password !== undefined) {
+      data.password_hash = await bcrypt.hash(dto.password, SALT_ROUNDS);
+    }
+
+    if (dto.xp !== undefined) {
+      data.xp = dto.xp;
+      data.level = this.leveling.calculateLevel(dto.xp);
+    } else if (dto.level !== undefined) {
+      data.level = dto.level;
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        ea_persona_name: true,
+        gamertag_psn: true,
+        gamertag_xbox: true,
+        preferred_position: true,
+        nationality: true,
+        xp: true,
+        level: true,
+        created_at: true,
+      },
+    });
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {

@@ -42,6 +42,7 @@ export class AuthService {
       data: {
         ...profileData,
         password_hash,
+        role: 'PLAYER',
       },
       select: {
         id: true,

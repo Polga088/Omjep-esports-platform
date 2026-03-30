@@ -3,8 +3,10 @@ import { Toaster } from 'sonner';
 import MainLayout from '@/layouts/MainLayout';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import AdminLayout from '@/layouts/AdminLayout';
+import ModeratorLayout from '@/layouts/ModeratorLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminRoute from '@/components/AdminRoute';
+import ModeratorRoute from '@/components/ModeratorRoute';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -19,8 +21,16 @@ import ProfileDetail from '@/pages/Dashboard/ProfileDetail';
 import Settings from '@/pages/Dashboard/Settings';
 import Store from '@/pages/Dashboard/Store';
 import TransferMarket from '@/pages/Dashboard/TransferMarket';
+import Gamification from '@/pages/Dashboard/Gamification';
+import AdminDashboard from '@/pages/Admin/Dashboard';
 import AdminCompetitions from '@/pages/Admin/Competitions';
 import AdminMatches from '@/pages/Admin/Matches';
+import AdminUsers from '@/pages/Admin/Users';
+import AdminClubs from '@/pages/Admin/Clubs';
+import LeagueHome from '@/pages/Admin/league/LeagueHome';
+import LeagueCompetitions from '@/pages/Admin/league/LeagueCompetitions';
+import LeagueMatches from '@/pages/Admin/league/LeagueMatches';
+import LeagueStandings from '@/pages/Admin/league/LeagueStandings';
 
 export default function App() {
   return (
@@ -63,6 +73,7 @@ export default function App() {
           <Route path="/dashboard/settings" element={<Settings />} />
           <Route path="/dashboard/store" element={<Store />} />
           <Route path="/dashboard/transfers" element={<TransferMarket />} />
+          <Route path="/dashboard/gamification" element={<Gamification />} />
         </Route>
 
         {/* Admin routes */}
@@ -73,9 +84,24 @@ export default function App() {
             </AdminRoute>
           }
         >
-          <Route path="/admin" element={<AdminCompetitions />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/competitions" element={<AdminCompetitions />} />
           <Route path="/admin/matches" element={<AdminMatches />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/clubs" element={<AdminClubs />} />
+        </Route>
+
+        <Route
+          element={
+            <ModeratorRoute>
+              <ModeratorLayout />
+            </ModeratorRoute>
+          }
+        >
+          <Route path="/moderator" element={<LeagueHome />} />
+          <Route path="/moderator/competitions" element={<LeagueCompetitions />} />
+          <Route path="/moderator/matches" element={<LeagueMatches />} />
+          <Route path="/moderator/competitions/:id/standings" element={<LeagueStandings />} />
         </Route>
       </Routes>
     </BrowserRouter>

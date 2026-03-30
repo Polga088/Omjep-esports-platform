@@ -27,6 +27,14 @@ export default {
           dark: '#0A0E1A',
           surface: '#111827',
         },
+        /** OMJEP premium gold — align with @omjep/ui */
+        gold: {
+          DEFAULT: '#D4AF37',
+          light: '#E8C547',
+          dark: '#9A7B1A',
+          muted: 'rgba(212, 175, 55, 0.35)',
+          fg: '#F5E6A3',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

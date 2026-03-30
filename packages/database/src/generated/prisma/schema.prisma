@@ -18,6 +18,7 @@ datasource db {
 
 enum UserRole {
   ADMIN
+  MODERATOR
   MANAGER
   PLAYER
 }
@@ -122,12 +123,13 @@ model User {
   teamMemberships     TeamMember[]
   stats               PlayerStats?
   transferRequests    TransferRequest[]
-  sentInvitations     Invitation[]      @relation("InvitationInviter")
-  receivedInvitations Invitation[]      @relation("InvitationInvitee")
+  sentInvitations     Invitation[]       @relation("InvitationInviter")
+  receivedInvitations Invitation[]       @relation("InvitationInvitee")
   matchEvents         MatchEvent[]
   contracts           Contract[]
-  transferOffers      TransferOffer[]   @relation("TransferOfferPlayer")
+  transferOffers      TransferOffer[]    @relation("TransferOfferPlayer")
   notifications       Notification[]
+  matchScoreReports   MatchScoreReport[]
 
   @@map("users")
 }
@@ -151,17 +153,18 @@ model Team {
   prestige_level Int @default(1)
 
   // Relations
-  members          TeamMember[]
-  homeMatches      Match[]           @relation("HomeTeam")
-  awayMatches      Match[]           @relation("AwayTeam")
-  competitions     CompetitionTeam[]
-  transferRequests TransferRequest[]
-  invitations      Invitation[]
-  matchEvents      MatchEvent[]
-  contracts        Contract[]
-  transactions     Transaction[]
-  sentOffers       TransferOffer[]   @relation("OfferFromTeam")
-  receivedOffers   TransferOffer[]   @relation("OfferToTeam")
+  members           TeamMember[]
+  homeMatches       Match[]            @relation("HomeTeam")
+  awayMatches       Match[]            @relation("AwayTeam")
+  competitions      CompetitionTeam[]
+  transferRequests  TransferRequest[]
+  invitations       Invitation[]
+  matchEvents       MatchEvent[]
+  contracts         Contract[]
+  transactions      Transaction[]
+  sentOffers        TransferOffer[]    @relation("OfferFromTeam")
+  receivedOffers    TransferOffer[]    @relation("OfferToTeam")
+  matchScoreReports MatchScoreReport[]
 
   @@map("teams")
 }
@@ -241,12 +244,32 @@ model Match {
   status         MatchStatus @default(SCHEDULED)
   played_at      DateTime?
 
-  competition Competition? @relation(fields: [competition_id], references: [id], onDelete: SetNull)
-  homeTeam    Team         @relation("HomeTeam", fields: [home_team_id], references: [id])
-  awayTeam    Team         @relation("AwayTeam", fields: [away_team_id], references: [id])
-  events      MatchEvent[]
+  competition  Competition?       @relation(fields: [competition_id], references: [id], onDelete: SetNull)
+  homeTeam     Team               @relation("HomeTeam", fields: [home_team_id], references: [id])
+  awayTeam     Team               @relation("AwayTeam", fields: [away_team_id], references: [id])
+  events       MatchEvent[]
+  scoreReports MatchScoreReport[]
 
   @@map("matches")
+}
+
+// Déclaration de score par club (double validation côté modérateur)
+model MatchScoreReport {
+  id                String   @id @default(uuid()) @db.Uuid
+  match_id          String   @db.Uuid
+  reporting_team_id String   @db.Uuid
+  submitted_by_id   String   @db.Uuid
+  home_score        Int
+  away_score        Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  match         Match @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  reportingTeam Team  @relation(fields: [reporting_team_id], references: [id], onDelete: Cascade)
+  submittedBy   User  @relation(fields: [submitted_by_id], references: [id], onDelete: Cascade)
+
+  @@unique([match_id, reporting_team_id])
+  @@map("match_score_reports")
 }
 
 model MatchEvent {

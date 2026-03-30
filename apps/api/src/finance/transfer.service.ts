@@ -2,14 +2,40 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+
+const STAFF_CLUB_ROLES = ['FOUNDER', 'MANAGER', 'CO_MANAGER'] as const;
 
 @Injectable()
 export class TransferService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async initiateTransfer(buyingTeamId: string, playerId: string) {
+  async initiateTransfer(
+    actorUserId: string,
+    actorRole: string,
+    buyingTeamId: string,
+    playerId: string,
+  ) {
+    if (actorRole !== 'ADMIN') {
+      const membership = await this.prisma.teamMember.findUnique({
+        where: {
+          user_id_team_id: { user_id: actorUserId, team_id: buyingTeamId },
+        },
+      });
+      if (
+        !membership ||
+        !STAFF_CLUB_ROLES.includes(
+          membership.club_role as (typeof STAFF_CLUB_ROLES)[number],
+        )
+      ) {
+        throw new ForbiddenException(
+          'Seuls les dirigeants du club acheteur peuvent lancer un transfert.',
+        );
+      }
+    }
+
     const contract = await this.prisma.contract.findFirst({
       where: { user_id: playerId, expires_at: { gt: new Date() } },
     });

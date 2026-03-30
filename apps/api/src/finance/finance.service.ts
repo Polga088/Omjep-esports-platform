@@ -1,4 +1,10 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { CreateContractDto } from './dto/create-contract.dto';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -71,7 +77,44 @@ export class FinanceService {
     );
   }
 
-  async getTeamFinances(teamId: string) {
+  private static readonly STAFF_CLUB_ROLES = [
+    'FOUNDER',
+    'MANAGER',
+    'CO_MANAGER',
+  ] as const;
+
+  async assertStaffOrAdminForTeam(
+    actorUserId: string,
+    actorRole: string,
+    teamId: string,
+  ) {
+    if (actorRole === 'ADMIN') return;
+
+    const membership = await this.prisma.teamMember.findUnique({
+      where: {
+        user_id_team_id: { user_id: actorUserId, team_id: teamId },
+      },
+    });
+
+    if (
+      !membership ||
+      !FinanceService.STAFF_CLUB_ROLES.includes(
+        membership.club_role as (typeof FinanceService.STAFF_CLUB_ROLES)[number],
+      )
+    ) {
+      throw new ForbiddenException(
+        'Accès refusé : seuls les dirigeants du club ou un administrateur peuvent accéder à cette ressource.',
+      );
+    }
+  }
+
+  async getTeamFinances(
+    teamId: string,
+    actorUserId: string,
+    actorRole: string,
+  ) {
+    await this.assertStaffOrAdminForTeam(actorUserId, actorRole, teamId);
+
     const team = await this.prisma.team.findUnique({
       where: { id: teamId },
       select: { id: true, name: true, budget: true },
@@ -92,5 +135,23 @@ export class FinanceService {
     });
 
     return { budget: team.budget, transactions, contracts };
+  }
+
+  async createContract(
+    actorUserId: string,
+    actorRole: string,
+    dto: CreateContractDto,
+  ) {
+    await this.assertStaffOrAdminForTeam(actorUserId, actorRole, dto.team_id);
+
+    return this.prisma.contract.create({
+      data: {
+        team_id: dto.team_id,
+        user_id: dto.user_id,
+        salary: dto.salary,
+        release_clause: dto.release_clause,
+        expires_at: new Date(dto.expires_at),
+      },
+    });
   }
 }

@@ -145,8 +145,14 @@ export default function DashboardIndex() {
             Centre de commandement — OMJEP
           </p>
           {user?.role && (
-            <span className="inline-block mt-3 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-medium capitalize">
-              {user.role === 'manager' ? 'Manager de Club' : 'Joueur'}
+            <span className="inline-block mt-3 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-medium">
+              {user.role === 'MANAGER'
+                ? 'Manager de Club'
+                : user.role === 'MODERATOR'
+                  ? 'Commissaire de ligue'
+                  : user.role === 'ADMIN'
+                    ? 'Administrateur'
+                    : 'Joueur'}
             </span>
           )}
         </div>

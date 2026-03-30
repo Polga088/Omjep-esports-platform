@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
-  LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings, Wallet, Repeat,
+  LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings, Wallet, Repeat, Scale, Gamepad2,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
@@ -15,6 +15,7 @@ const sidebarLinks = [
   { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
   { to: '/dashboard/ladder', label: 'Classement', icon: Trophy },
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
+  { to: '/dashboard/gamification', label: 'Mon Parcours', icon: Gamepad2 },
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
   { to: '/dashboard/transfers', label: 'Mercato Live', icon: Repeat },
   { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
@@ -26,6 +27,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/team': 'Mon Équipe',
   '/dashboard/ladder': 'Classement',
   '/dashboard/matches': 'Matchs',
+  '/dashboard/gamification': 'Mon Parcours',
   '/dashboard/store': 'Market Place',
   '/dashboard/transfers': 'Mercato Live',
   '/dashboard/profile': 'Mon Profil',
@@ -96,7 +98,15 @@ export default function DashboardLayout() {
           </div>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-white truncate">{user?.ea_persona_name ?? 'Joueur'}</p>
-            <p className="text-xs text-slate-500 capitalize">{user?.role ?? 'manager'}</p>
+            <p className="text-xs text-slate-500">
+              {user?.role === 'MODERATOR'
+                ? 'Commissaire'
+                : user?.role === 'ADMIN'
+                  ? 'Admin'
+                  : user?.role === 'MANAGER'
+                    ? 'Manager'
+                    : 'Joueur'}
+            </p>
           </div>
         </div>
       </div>
@@ -122,6 +132,24 @@ export default function DashboardLayout() {
             </Link>
           );
         })}
+
+        {user?.role === 'MODERATOR' && (
+          <Link
+            to="/moderator"
+            onClick={() => setSidebarOpen(false)}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group mt-2 border ${
+              location.pathname.startsWith('/moderator')
+                ? 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20'
+                : 'text-slate-400 hover:text-cyan-300 hover:bg-cyan-400/5 border-transparent'
+            }`}
+          >
+            <Scale className="w-4 h-4 shrink-0" />
+            <span className="flex-1">Commissaire de ligue</span>
+            {location.pathname.startsWith('/moderator') && (
+              <ChevronRight className="w-3.5 h-3.5 text-cyan-400/60" />
+            )}
+          </Link>
+        )}
       </nav>
 
       {/* Logout */}

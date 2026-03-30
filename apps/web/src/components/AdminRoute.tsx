@@ -6,15 +6,16 @@ interface AdminRouteProps {
 }
 
 export default function AdminRoute({ children }: AdminRouteProps) {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
 
   if (!isAuthenticated()) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Commentez temporairement la sécurité
-//if (user?.role?.toLowerCase() !== 'admin') {return <Navigate to="/dashboard" replace />;}
+  if (user?.role !== 'ADMIN') {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return <>{children}</>;
 }
