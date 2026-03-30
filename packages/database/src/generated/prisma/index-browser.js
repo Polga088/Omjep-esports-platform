@@ -161,9 +161,27 @@ exports.Prisma.PlayerStatsScalarFieldEnum = {
   average_rating: 'average_rating'
 };
 
+exports.Prisma.CompetitionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  status: 'status',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  created_at: 'created_at'
+};
+
+exports.Prisma.CompetitionTeamScalarFieldEnum = {
+  competition_id: 'competition_id',
+  team_id: 'team_id',
+  joined_at: 'joined_at'
+};
+
 exports.Prisma.MatchScalarFieldEnum = {
   id: 'id',
   ea_match_id: 'ea_match_id',
+  competition_id: 'competition_id',
+  round: 'round',
   home_team_id: 'home_team_id',
   away_team_id: 'away_team_id',
   home_score: 'home_score',
@@ -227,10 +245,23 @@ exports.ClubRole = exports.$Enums.ClubRole = {
   PLAYER: 'PLAYER'
 };
 
+exports.CompetitionType = exports.$Enums.CompetitionType = {
+  LEAGUE: 'LEAGUE',
+  CUP: 'CUP'
+};
+
+exports.CompetitionStatus = exports.$Enums.CompetitionStatus = {
+  DRAFT: 'DRAFT',
+  ONGOING: 'ONGOING',
+  FINISHED: 'FINISHED'
+};
+
 exports.MatchStatus = exports.$Enums.MatchStatus = {
   SCHEDULED: 'SCHEDULED',
   LIVE: 'LIVE',
+  PLAYED: 'PLAYED',
   FINISHED: 'FINISHED',
+  CANCELLED: 'CANCELLED',
   DISPUTED: 'DISPUTED'
 };
 
@@ -245,6 +276,8 @@ exports.Prisma.ModelName = {
   Team: 'Team',
   TeamMember: 'TeamMember',
   PlayerStats: 'PlayerStats',
+  Competition: 'Competition',
+  CompetitionTeam: 'CompetitionTeam',
   Match: 'Match',
   TransferRequest: 'TransferRequest'
 };

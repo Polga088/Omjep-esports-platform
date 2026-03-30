@@ -52,8 +52,21 @@ enum ClubRole {
 enum MatchStatus {
   SCHEDULED
   LIVE
+  PLAYED
   FINISHED
+  CANCELLED
   DISPUTED
+}
+
+enum CompetitionType {
+  LEAGUE
+  CUP
+}
+
+enum CompetitionStatus {
+  DRAFT
+  ONGOING
+  FINISHED
 }
 
 enum TransferStatus {
@@ -102,8 +115,9 @@ model Team {
 
   // Relations
   members          TeamMember[]
-  homeMatches      Match[]          @relation("HomeTeam")
-  awayMatches      Match[]          @relation("AwayTeam")
+  homeMatches      Match[]            @relation("HomeTeam")
+  awayMatches      Match[]            @relation("AwayTeam")
+  competitions     CompetitionTeam[]
   transferRequests TransferRequest[]
 
   @@map("teams")
@@ -140,18 +154,53 @@ model PlayerStats {
   @@map("player_stats")
 }
 
-model Match {
-  id           String      @id @default(uuid()) @db.Uuid
-  ea_match_id  String?     @unique // Identifiant optionnel pour l'API proclubs.io
-  home_team_id String      @db.Uuid
-  away_team_id String      @db.Uuid
-  home_score   Int?
-  away_score   Int?
-  status       MatchStatus @default(SCHEDULED)
-  played_at    DateTime?
+// ============================================================
+// COMPÉTITIONS
+// ============================================================
 
-  homeTeam Team @relation("HomeTeam", fields: [home_team_id], references: [id])
-  awayTeam Team @relation("AwayTeam", fields: [away_team_id], references: [id])
+model Competition {
+  id         String            @id @default(uuid()) @db.Uuid
+  name       String            @unique
+  type       CompetitionType
+  status     CompetitionStatus @default(DRAFT)
+  start_date DateTime?
+  end_date   DateTime?
+  created_at DateTime          @default(now())
+
+  teams   CompetitionTeam[]
+  matches Match[]
+
+  @@map("competitions")
+}
+
+// Table de liaison Many-to-Many Competition <-> Team
+model CompetitionTeam {
+  competition_id String @db.Uuid
+  team_id        String @db.Uuid
+  joined_at      DateTime @default(now())
+
+  competition Competition @relation(fields: [competition_id], references: [id], onDelete: Cascade)
+  team        Team        @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@id([competition_id, team_id])
+  @@map("competition_teams")
+}
+
+model Match {
+  id             String      @id @default(uuid()) @db.Uuid
+  ea_match_id    String?     @unique
+  competition_id String?     @db.Uuid
+  round          String?
+  home_team_id   String      @db.Uuid
+  away_team_id   String      @db.Uuid
+  home_score     Int?
+  away_score     Int?
+  status         MatchStatus @default(SCHEDULED)
+  played_at      DateTime?
+
+  competition Competition? @relation(fields: [competition_id], references: [id], onDelete: SetNull)
+  homeTeam    Team         @relation("HomeTeam", fields: [home_team_id], references: [id])
+  awayTeam    Team         @relation("AwayTeam", fields: [away_team_id], references: [id])
 
   @@map("matches")
 }

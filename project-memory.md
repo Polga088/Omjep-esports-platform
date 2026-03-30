@@ -12,8 +12,9 @@ Plateforme de gestion e-sport pour les clubs EA FC (Pro Clubs), permettant le su
 
 ## 📊 État actuel du Système
 - **Auth :** Système Login/Register fonctionnel (JWT).
-- **Database :** - Modèles `User`, `Team`, `TeamMember`, `PlayerStats` opérationnels.
+- **Database :** - Modèles `User`, `Team`, `TeamMember`, `PlayerStats`, `Competition`, `CompetitionTeam`, `Match`, `TransferRequest` opérationnels.
   - Relation : 1 User peut appartenir à 1 Team via `TeamMember`.
+  - Compétitions : Many-to-Many `Competition` <-> `Team` via `CompetitionTeam`. Matchs liés à une compétition avec `round`.
 - **Sync Engine (Cron Job) :** - Un service `SyncService` tourne toutes les 5 minutes.
   - Récupère les stats via un Mock (dev) ou l'API proclubs.io.
   - Met à jour les `PlayerStats` automatiquement via `upsert`.

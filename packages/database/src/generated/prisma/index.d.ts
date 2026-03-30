@@ -34,6 +34,16 @@ export type TeamMember = $Result.DefaultSelection<Prisma.$TeamMemberPayload>
  */
 export type PlayerStats = $Result.DefaultSelection<Prisma.$PlayerStatsPayload>
 /**
+ * Model Competition
+ * 
+ */
+export type Competition = $Result.DefaultSelection<Prisma.$CompetitionPayload>
+/**
+ * Model CompetitionTeam
+ * 
+ */
+export type CompetitionTeam = $Result.DefaultSelection<Prisma.$CompetitionTeamPayload>
+/**
  * Model Match
  * 
  */
@@ -96,11 +106,30 @@ export type ClubRole = (typeof ClubRole)[keyof typeof ClubRole]
 export const MatchStatus: {
   SCHEDULED: 'SCHEDULED',
   LIVE: 'LIVE',
+  PLAYED: 'PLAYED',
   FINISHED: 'FINISHED',
+  CANCELLED: 'CANCELLED',
   DISPUTED: 'DISPUTED'
 };
 
 export type MatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus]
+
+
+export const CompetitionType: {
+  LEAGUE: 'LEAGUE',
+  CUP: 'CUP'
+};
+
+export type CompetitionType = (typeof CompetitionType)[keyof typeof CompetitionType]
+
+
+export const CompetitionStatus: {
+  DRAFT: 'DRAFT',
+  ONGOING: 'ONGOING',
+  FINISHED: 'FINISHED'
+};
+
+export type CompetitionStatus = (typeof CompetitionStatus)[keyof typeof CompetitionStatus]
 
 
 export const TransferStatus: {
@@ -132,6 +161,14 @@ export const ClubRole: typeof $Enums.ClubRole
 export type MatchStatus = $Enums.MatchStatus
 
 export const MatchStatus: typeof $Enums.MatchStatus
+
+export type CompetitionType = $Enums.CompetitionType
+
+export const CompetitionType: typeof $Enums.CompetitionType
+
+export type CompetitionStatus = $Enums.CompetitionStatus
+
+export const CompetitionStatus: typeof $Enums.CompetitionStatus
 
 export type TransferStatus = $Enums.TransferStatus
 
@@ -294,6 +331,26 @@ export class PrismaClient<
     * ```
     */
   get playerStats(): Prisma.PlayerStatsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.competition`: Exposes CRUD operations for the **Competition** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Competitions
+    * const competitions = await prisma.competition.findMany()
+    * ```
+    */
+  get competition(): Prisma.CompetitionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.competitionTeam`: Exposes CRUD operations for the **CompetitionTeam** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompetitionTeams
+    * const competitionTeams = await prisma.competitionTeam.findMany()
+    * ```
+    */
+  get competitionTeam(): Prisma.CompetitionTeamDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.match`: Exposes CRUD operations for the **Match** model.
@@ -759,6 +816,8 @@ export namespace Prisma {
     Team: 'Team',
     TeamMember: 'TeamMember',
     PlayerStats: 'PlayerStats',
+    Competition: 'Competition',
+    CompetitionTeam: 'CompetitionTeam',
     Match: 'Match',
     TransferRequest: 'TransferRequest'
   };
@@ -779,7 +838,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "team" | "teamMember" | "playerStats" | "match" | "transferRequest"
+      modelProps: "user" | "team" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "transferRequest"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1079,6 +1138,154 @@ export namespace Prisma {
           }
         }
       }
+      Competition: {
+        payload: Prisma.$CompetitionPayload<ExtArgs>
+        fields: Prisma.CompetitionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompetitionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompetitionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>
+          }
+          findFirst: {
+            args: Prisma.CompetitionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompetitionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>
+          }
+          findMany: {
+            args: Prisma.CompetitionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>[]
+          }
+          create: {
+            args: Prisma.CompetitionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>
+          }
+          createMany: {
+            args: Prisma.CompetitionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompetitionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>[]
+          }
+          delete: {
+            args: Prisma.CompetitionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>
+          }
+          update: {
+            args: Prisma.CompetitionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompetitionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompetitionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompetitionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompetitionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionPayload>
+          }
+          aggregate: {
+            args: Prisma.CompetitionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompetition>
+          }
+          groupBy: {
+            args: Prisma.CompetitionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompetitionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompetitionCountArgs<ExtArgs>
+            result: $Utils.Optional<CompetitionCountAggregateOutputType> | number
+          }
+        }
+      }
+      CompetitionTeam: {
+        payload: Prisma.$CompetitionTeamPayload<ExtArgs>
+        fields: Prisma.CompetitionTeamFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompetitionTeamFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompetitionTeamFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>
+          }
+          findFirst: {
+            args: Prisma.CompetitionTeamFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompetitionTeamFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>
+          }
+          findMany: {
+            args: Prisma.CompetitionTeamFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>[]
+          }
+          create: {
+            args: Prisma.CompetitionTeamCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>
+          }
+          createMany: {
+            args: Prisma.CompetitionTeamCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompetitionTeamCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>[]
+          }
+          delete: {
+            args: Prisma.CompetitionTeamDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>
+          }
+          update: {
+            args: Prisma.CompetitionTeamUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompetitionTeamDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompetitionTeamUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompetitionTeamUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompetitionTeamUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompetitionTeamPayload>
+          }
+          aggregate: {
+            args: Prisma.CompetitionTeamAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompetitionTeam>
+          }
+          groupBy: {
+            args: Prisma.CompetitionTeamGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompetitionTeamGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompetitionTeamCountArgs<ExtArgs>
+            result: $Utils.Optional<CompetitionTeamCountAggregateOutputType> | number
+          }
+        }
+      }
       Match: {
         payload: Prisma.$MatchPayload<ExtArgs>
         fields: Prisma.MatchFieldRefs
@@ -1327,6 +1534,8 @@ export namespace Prisma {
     team?: TeamOmit
     teamMember?: TeamMemberOmit
     playerStats?: PlayerStatsOmit
+    competition?: CompetitionOmit
+    competitionTeam?: CompetitionTeamOmit
     match?: MatchOmit
     transferRequest?: TransferRequestOmit
   }
@@ -1452,6 +1661,7 @@ export namespace Prisma {
     members: number
     homeMatches: number
     awayMatches: number
+    competitions: number
     transferRequests: number
   }
 
@@ -1459,6 +1669,7 @@ export namespace Prisma {
     members?: boolean | TeamCountOutputTypeCountMembersArgs
     homeMatches?: boolean | TeamCountOutputTypeCountHomeMatchesArgs
     awayMatches?: boolean | TeamCountOutputTypeCountAwayMatchesArgs
+    competitions?: boolean | TeamCountOutputTypeCountCompetitionsArgs
     transferRequests?: boolean | TeamCountOutputTypeCountTransferRequestsArgs
   }
 
@@ -1497,8 +1708,55 @@ export namespace Prisma {
   /**
    * TeamCountOutputType without action
    */
+  export type TeamCountOutputTypeCountCompetitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompetitionTeamWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
   export type TeamCountOutputTypeCountTransferRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransferRequestWhereInput
+  }
+
+
+  /**
+   * Count Type CompetitionCountOutputType
+   */
+
+  export type CompetitionCountOutputType = {
+    teams: number
+    matches: number
+  }
+
+  export type CompetitionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    teams?: boolean | CompetitionCountOutputTypeCountTeamsArgs
+    matches?: boolean | CompetitionCountOutputTypeCountMatchesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CompetitionCountOutputType without action
+   */
+  export type CompetitionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionCountOutputType
+     */
+    select?: CompetitionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CompetitionCountOutputType without action
+   */
+  export type CompetitionCountOutputTypeCountTeamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompetitionTeamWhereInput
+  }
+
+  /**
+   * CompetitionCountOutputType without action
+   */
+  export type CompetitionCountOutputTypeCountMatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchWhereInput
   }
 
 
@@ -2867,6 +3125,7 @@ export namespace Prisma {
     members?: boolean | Team$membersArgs<ExtArgs>
     homeMatches?: boolean | Team$homeMatchesArgs<ExtArgs>
     awayMatches?: boolean | Team$awayMatchesArgs<ExtArgs>
+    competitions?: boolean | Team$competitionsArgs<ExtArgs>
     transferRequests?: boolean | Team$transferRequestsArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
@@ -2903,6 +3162,7 @@ export namespace Prisma {
     members?: boolean | Team$membersArgs<ExtArgs>
     homeMatches?: boolean | Team$homeMatchesArgs<ExtArgs>
     awayMatches?: boolean | Team$awayMatchesArgs<ExtArgs>
+    competitions?: boolean | Team$competitionsArgs<ExtArgs>
     transferRequests?: boolean | Team$transferRequestsArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2915,6 +3175,7 @@ export namespace Prisma {
       members: Prisma.$TeamMemberPayload<ExtArgs>[]
       homeMatches: Prisma.$MatchPayload<ExtArgs>[]
       awayMatches: Prisma.$MatchPayload<ExtArgs>[]
+      competitions: Prisma.$CompetitionTeamPayload<ExtArgs>[]
       transferRequests: Prisma.$TransferRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3321,6 +3582,7 @@ export namespace Prisma {
     members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     homeMatches<T extends Team$homeMatchesArgs<ExtArgs> = {}>(args?: Subset<T, Team$homeMatchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     awayMatches<T extends Team$awayMatchesArgs<ExtArgs> = {}>(args?: Subset<T, Team$awayMatchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    competitions<T extends Team$competitionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$competitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transferRequests<T extends Team$transferRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Team$transferRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3814,6 +4076,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MatchScalarFieldEnum | MatchScalarFieldEnum[]
+  }
+
+  /**
+   * Team.competitions
+   */
+  export type Team$competitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    where?: CompetitionTeamWhereInput
+    orderBy?: CompetitionTeamOrderByWithRelationInput | CompetitionTeamOrderByWithRelationInput[]
+    cursor?: CompetitionTeamWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompetitionTeamScalarFieldEnum | CompetitionTeamScalarFieldEnum[]
   }
 
   /**
@@ -6064,6 +6350,2170 @@ export namespace Prisma {
 
 
   /**
+   * Model Competition
+   */
+
+  export type AggregateCompetition = {
+    _count: CompetitionCountAggregateOutputType | null
+    _min: CompetitionMinAggregateOutputType | null
+    _max: CompetitionMaxAggregateOutputType | null
+  }
+
+  export type CompetitionMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: $Enums.CompetitionType | null
+    status: $Enums.CompetitionStatus | null
+    start_date: Date | null
+    end_date: Date | null
+    created_at: Date | null
+  }
+
+  export type CompetitionMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: $Enums.CompetitionType | null
+    status: $Enums.CompetitionStatus | null
+    start_date: Date | null
+    end_date: Date | null
+    created_at: Date | null
+  }
+
+  export type CompetitionCountAggregateOutputType = {
+    id: number
+    name: number
+    type: number
+    status: number
+    start_date: number
+    end_date: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type CompetitionMinAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    status?: true
+    start_date?: true
+    end_date?: true
+    created_at?: true
+  }
+
+  export type CompetitionMaxAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    status?: true
+    start_date?: true
+    end_date?: true
+    created_at?: true
+  }
+
+  export type CompetitionCountAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    status?: true
+    start_date?: true
+    end_date?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type CompetitionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Competition to aggregate.
+     */
+    where?: CompetitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Competitions to fetch.
+     */
+    orderBy?: CompetitionOrderByWithRelationInput | CompetitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompetitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Competitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Competitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Competitions
+    **/
+    _count?: true | CompetitionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompetitionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompetitionMaxAggregateInputType
+  }
+
+  export type GetCompetitionAggregateType<T extends CompetitionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompetition]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompetition[P]>
+      : GetScalarType<T[P], AggregateCompetition[P]>
+  }
+
+
+
+
+  export type CompetitionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompetitionWhereInput
+    orderBy?: CompetitionOrderByWithAggregationInput | CompetitionOrderByWithAggregationInput[]
+    by: CompetitionScalarFieldEnum[] | CompetitionScalarFieldEnum
+    having?: CompetitionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompetitionCountAggregateInputType | true
+    _min?: CompetitionMinAggregateInputType
+    _max?: CompetitionMaxAggregateInputType
+  }
+
+  export type CompetitionGroupByOutputType = {
+    id: string
+    name: string
+    type: $Enums.CompetitionType
+    status: $Enums.CompetitionStatus
+    start_date: Date | null
+    end_date: Date | null
+    created_at: Date
+    _count: CompetitionCountAggregateOutputType | null
+    _min: CompetitionMinAggregateOutputType | null
+    _max: CompetitionMaxAggregateOutputType | null
+  }
+
+  type GetCompetitionGroupByPayload<T extends CompetitionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompetitionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompetitionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompetitionGroupByOutputType[P]>
+            : GetScalarType<T[P], CompetitionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompetitionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    status?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    created_at?: boolean
+    teams?: boolean | Competition$teamsArgs<ExtArgs>
+    matches?: boolean | Competition$matchesArgs<ExtArgs>
+    _count?: boolean | CompetitionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["competition"]>
+
+  export type CompetitionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    status?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["competition"]>
+
+  export type CompetitionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    status?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["competition"]>
+
+  export type CompetitionSelectScalar = {
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    status?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    created_at?: boolean
+  }
+
+  export type CompetitionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "status" | "start_date" | "end_date" | "created_at", ExtArgs["result"]["competition"]>
+  export type CompetitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    teams?: boolean | Competition$teamsArgs<ExtArgs>
+    matches?: boolean | Competition$matchesArgs<ExtArgs>
+    _count?: boolean | CompetitionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CompetitionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type CompetitionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $CompetitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Competition"
+    objects: {
+      teams: Prisma.$CompetitionTeamPayload<ExtArgs>[]
+      matches: Prisma.$MatchPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      type: $Enums.CompetitionType
+      status: $Enums.CompetitionStatus
+      start_date: Date | null
+      end_date: Date | null
+      created_at: Date
+    }, ExtArgs["result"]["competition"]>
+    composites: {}
+  }
+
+  type CompetitionGetPayload<S extends boolean | null | undefined | CompetitionDefaultArgs> = $Result.GetResult<Prisma.$CompetitionPayload, S>
+
+  type CompetitionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompetitionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompetitionCountAggregateInputType | true
+    }
+
+  export interface CompetitionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Competition'], meta: { name: 'Competition' } }
+    /**
+     * Find zero or one Competition that matches the filter.
+     * @param {CompetitionFindUniqueArgs} args - Arguments to find a Competition
+     * @example
+     * // Get one Competition
+     * const competition = await prisma.competition.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompetitionFindUniqueArgs>(args: SelectSubset<T, CompetitionFindUniqueArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Competition that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompetitionFindUniqueOrThrowArgs} args - Arguments to find a Competition
+     * @example
+     * // Get one Competition
+     * const competition = await prisma.competition.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompetitionFindUniqueOrThrowArgs>(args: SelectSubset<T, CompetitionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Competition that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionFindFirstArgs} args - Arguments to find a Competition
+     * @example
+     * // Get one Competition
+     * const competition = await prisma.competition.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompetitionFindFirstArgs>(args?: SelectSubset<T, CompetitionFindFirstArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Competition that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionFindFirstOrThrowArgs} args - Arguments to find a Competition
+     * @example
+     * // Get one Competition
+     * const competition = await prisma.competition.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompetitionFindFirstOrThrowArgs>(args?: SelectSubset<T, CompetitionFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Competitions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Competitions
+     * const competitions = await prisma.competition.findMany()
+     * 
+     * // Get first 10 Competitions
+     * const competitions = await prisma.competition.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const competitionWithIdOnly = await prisma.competition.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompetitionFindManyArgs>(args?: SelectSubset<T, CompetitionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Competition.
+     * @param {CompetitionCreateArgs} args - Arguments to create a Competition.
+     * @example
+     * // Create one Competition
+     * const Competition = await prisma.competition.create({
+     *   data: {
+     *     // ... data to create a Competition
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompetitionCreateArgs>(args: SelectSubset<T, CompetitionCreateArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Competitions.
+     * @param {CompetitionCreateManyArgs} args - Arguments to create many Competitions.
+     * @example
+     * // Create many Competitions
+     * const competition = await prisma.competition.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompetitionCreateManyArgs>(args?: SelectSubset<T, CompetitionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Competitions and returns the data saved in the database.
+     * @param {CompetitionCreateManyAndReturnArgs} args - Arguments to create many Competitions.
+     * @example
+     * // Create many Competitions
+     * const competition = await prisma.competition.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Competitions and only return the `id`
+     * const competitionWithIdOnly = await prisma.competition.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompetitionCreateManyAndReturnArgs>(args?: SelectSubset<T, CompetitionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Competition.
+     * @param {CompetitionDeleteArgs} args - Arguments to delete one Competition.
+     * @example
+     * // Delete one Competition
+     * const Competition = await prisma.competition.delete({
+     *   where: {
+     *     // ... filter to delete one Competition
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompetitionDeleteArgs>(args: SelectSubset<T, CompetitionDeleteArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Competition.
+     * @param {CompetitionUpdateArgs} args - Arguments to update one Competition.
+     * @example
+     * // Update one Competition
+     * const competition = await prisma.competition.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompetitionUpdateArgs>(args: SelectSubset<T, CompetitionUpdateArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Competitions.
+     * @param {CompetitionDeleteManyArgs} args - Arguments to filter Competitions to delete.
+     * @example
+     * // Delete a few Competitions
+     * const { count } = await prisma.competition.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompetitionDeleteManyArgs>(args?: SelectSubset<T, CompetitionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Competitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Competitions
+     * const competition = await prisma.competition.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompetitionUpdateManyArgs>(args: SelectSubset<T, CompetitionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Competitions and returns the data updated in the database.
+     * @param {CompetitionUpdateManyAndReturnArgs} args - Arguments to update many Competitions.
+     * @example
+     * // Update many Competitions
+     * const competition = await prisma.competition.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Competitions and only return the `id`
+     * const competitionWithIdOnly = await prisma.competition.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompetitionUpdateManyAndReturnArgs>(args: SelectSubset<T, CompetitionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Competition.
+     * @param {CompetitionUpsertArgs} args - Arguments to update or create a Competition.
+     * @example
+     * // Update or create a Competition
+     * const competition = await prisma.competition.upsert({
+     *   create: {
+     *     // ... data to create a Competition
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Competition we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompetitionUpsertArgs>(args: SelectSubset<T, CompetitionUpsertArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Competitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionCountArgs} args - Arguments to filter Competitions to count.
+     * @example
+     * // Count the number of Competitions
+     * const count = await prisma.competition.count({
+     *   where: {
+     *     // ... the filter for the Competitions we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompetitionCountArgs>(
+      args?: Subset<T, CompetitionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompetitionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Competition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompetitionAggregateArgs>(args: Subset<T, CompetitionAggregateArgs>): Prisma.PrismaPromise<GetCompetitionAggregateType<T>>
+
+    /**
+     * Group by Competition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompetitionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompetitionGroupByArgs['orderBy'] }
+        : { orderBy?: CompetitionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompetitionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompetitionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Competition model
+   */
+  readonly fields: CompetitionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Competition.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompetitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    teams<T extends Competition$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Competition$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    matches<T extends Competition$matchesArgs<ExtArgs> = {}>(args?: Subset<T, Competition$matchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Competition model
+   */
+  interface CompetitionFieldRefs {
+    readonly id: FieldRef<"Competition", 'String'>
+    readonly name: FieldRef<"Competition", 'String'>
+    readonly type: FieldRef<"Competition", 'CompetitionType'>
+    readonly status: FieldRef<"Competition", 'CompetitionStatus'>
+    readonly start_date: FieldRef<"Competition", 'DateTime'>
+    readonly end_date: FieldRef<"Competition", 'DateTime'>
+    readonly created_at: FieldRef<"Competition", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Competition findUnique
+   */
+  export type CompetitionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Competition to fetch.
+     */
+    where: CompetitionWhereUniqueInput
+  }
+
+  /**
+   * Competition findUniqueOrThrow
+   */
+  export type CompetitionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Competition to fetch.
+     */
+    where: CompetitionWhereUniqueInput
+  }
+
+  /**
+   * Competition findFirst
+   */
+  export type CompetitionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Competition to fetch.
+     */
+    where?: CompetitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Competitions to fetch.
+     */
+    orderBy?: CompetitionOrderByWithRelationInput | CompetitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Competitions.
+     */
+    cursor?: CompetitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Competitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Competitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Competitions.
+     */
+    distinct?: CompetitionScalarFieldEnum | CompetitionScalarFieldEnum[]
+  }
+
+  /**
+   * Competition findFirstOrThrow
+   */
+  export type CompetitionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Competition to fetch.
+     */
+    where?: CompetitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Competitions to fetch.
+     */
+    orderBy?: CompetitionOrderByWithRelationInput | CompetitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Competitions.
+     */
+    cursor?: CompetitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Competitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Competitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Competitions.
+     */
+    distinct?: CompetitionScalarFieldEnum | CompetitionScalarFieldEnum[]
+  }
+
+  /**
+   * Competition findMany
+   */
+  export type CompetitionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Competitions to fetch.
+     */
+    where?: CompetitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Competitions to fetch.
+     */
+    orderBy?: CompetitionOrderByWithRelationInput | CompetitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Competitions.
+     */
+    cursor?: CompetitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Competitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Competitions.
+     */
+    skip?: number
+    distinct?: CompetitionScalarFieldEnum | CompetitionScalarFieldEnum[]
+  }
+
+  /**
+   * Competition create
+   */
+  export type CompetitionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Competition.
+     */
+    data: XOR<CompetitionCreateInput, CompetitionUncheckedCreateInput>
+  }
+
+  /**
+   * Competition createMany
+   */
+  export type CompetitionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Competitions.
+     */
+    data: CompetitionCreateManyInput | CompetitionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Competition createManyAndReturn
+   */
+  export type CompetitionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Competitions.
+     */
+    data: CompetitionCreateManyInput | CompetitionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Competition update
+   */
+  export type CompetitionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Competition.
+     */
+    data: XOR<CompetitionUpdateInput, CompetitionUncheckedUpdateInput>
+    /**
+     * Choose, which Competition to update.
+     */
+    where: CompetitionWhereUniqueInput
+  }
+
+  /**
+   * Competition updateMany
+   */
+  export type CompetitionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Competitions.
+     */
+    data: XOR<CompetitionUpdateManyMutationInput, CompetitionUncheckedUpdateManyInput>
+    /**
+     * Filter which Competitions to update
+     */
+    where?: CompetitionWhereInput
+    /**
+     * Limit how many Competitions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Competition updateManyAndReturn
+   */
+  export type CompetitionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * The data used to update Competitions.
+     */
+    data: XOR<CompetitionUpdateManyMutationInput, CompetitionUncheckedUpdateManyInput>
+    /**
+     * Filter which Competitions to update
+     */
+    where?: CompetitionWhereInput
+    /**
+     * Limit how many Competitions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Competition upsert
+   */
+  export type CompetitionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Competition to update in case it exists.
+     */
+    where: CompetitionWhereUniqueInput
+    /**
+     * In case the Competition found by the `where` argument doesn't exist, create a new Competition with this data.
+     */
+    create: XOR<CompetitionCreateInput, CompetitionUncheckedCreateInput>
+    /**
+     * In case the Competition was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompetitionUpdateInput, CompetitionUncheckedUpdateInput>
+  }
+
+  /**
+   * Competition delete
+   */
+  export type CompetitionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    /**
+     * Filter which Competition to delete.
+     */
+    where: CompetitionWhereUniqueInput
+  }
+
+  /**
+   * Competition deleteMany
+   */
+  export type CompetitionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Competitions to delete
+     */
+    where?: CompetitionWhereInput
+    /**
+     * Limit how many Competitions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Competition.teams
+   */
+  export type Competition$teamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    where?: CompetitionTeamWhereInput
+    orderBy?: CompetitionTeamOrderByWithRelationInput | CompetitionTeamOrderByWithRelationInput[]
+    cursor?: CompetitionTeamWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompetitionTeamScalarFieldEnum | CompetitionTeamScalarFieldEnum[]
+  }
+
+  /**
+   * Competition.matches
+   */
+  export type Competition$matchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Match
+     */
+    select?: MatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Match
+     */
+    omit?: MatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchInclude<ExtArgs> | null
+    where?: MatchWhereInput
+    orderBy?: MatchOrderByWithRelationInput | MatchOrderByWithRelationInput[]
+    cursor?: MatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MatchScalarFieldEnum | MatchScalarFieldEnum[]
+  }
+
+  /**
+   * Competition without action
+   */
+  export type CompetitionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CompetitionTeam
+   */
+
+  export type AggregateCompetitionTeam = {
+    _count: CompetitionTeamCountAggregateOutputType | null
+    _min: CompetitionTeamMinAggregateOutputType | null
+    _max: CompetitionTeamMaxAggregateOutputType | null
+  }
+
+  export type CompetitionTeamMinAggregateOutputType = {
+    competition_id: string | null
+    team_id: string | null
+    joined_at: Date | null
+  }
+
+  export type CompetitionTeamMaxAggregateOutputType = {
+    competition_id: string | null
+    team_id: string | null
+    joined_at: Date | null
+  }
+
+  export type CompetitionTeamCountAggregateOutputType = {
+    competition_id: number
+    team_id: number
+    joined_at: number
+    _all: number
+  }
+
+
+  export type CompetitionTeamMinAggregateInputType = {
+    competition_id?: true
+    team_id?: true
+    joined_at?: true
+  }
+
+  export type CompetitionTeamMaxAggregateInputType = {
+    competition_id?: true
+    team_id?: true
+    joined_at?: true
+  }
+
+  export type CompetitionTeamCountAggregateInputType = {
+    competition_id?: true
+    team_id?: true
+    joined_at?: true
+    _all?: true
+  }
+
+  export type CompetitionTeamAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompetitionTeam to aggregate.
+     */
+    where?: CompetitionTeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompetitionTeams to fetch.
+     */
+    orderBy?: CompetitionTeamOrderByWithRelationInput | CompetitionTeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompetitionTeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompetitionTeams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompetitionTeams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompetitionTeams
+    **/
+    _count?: true | CompetitionTeamCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompetitionTeamMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompetitionTeamMaxAggregateInputType
+  }
+
+  export type GetCompetitionTeamAggregateType<T extends CompetitionTeamAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompetitionTeam]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompetitionTeam[P]>
+      : GetScalarType<T[P], AggregateCompetitionTeam[P]>
+  }
+
+
+
+
+  export type CompetitionTeamGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompetitionTeamWhereInput
+    orderBy?: CompetitionTeamOrderByWithAggregationInput | CompetitionTeamOrderByWithAggregationInput[]
+    by: CompetitionTeamScalarFieldEnum[] | CompetitionTeamScalarFieldEnum
+    having?: CompetitionTeamScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompetitionTeamCountAggregateInputType | true
+    _min?: CompetitionTeamMinAggregateInputType
+    _max?: CompetitionTeamMaxAggregateInputType
+  }
+
+  export type CompetitionTeamGroupByOutputType = {
+    competition_id: string
+    team_id: string
+    joined_at: Date
+    _count: CompetitionTeamCountAggregateOutputType | null
+    _min: CompetitionTeamMinAggregateOutputType | null
+    _max: CompetitionTeamMaxAggregateOutputType | null
+  }
+
+  type GetCompetitionTeamGroupByPayload<T extends CompetitionTeamGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompetitionTeamGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompetitionTeamGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompetitionTeamGroupByOutputType[P]>
+            : GetScalarType<T[P], CompetitionTeamGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompetitionTeamSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    competition_id?: boolean
+    team_id?: boolean
+    joined_at?: boolean
+    competition?: boolean | CompetitionDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["competitionTeam"]>
+
+  export type CompetitionTeamSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    competition_id?: boolean
+    team_id?: boolean
+    joined_at?: boolean
+    competition?: boolean | CompetitionDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["competitionTeam"]>
+
+  export type CompetitionTeamSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    competition_id?: boolean
+    team_id?: boolean
+    joined_at?: boolean
+    competition?: boolean | CompetitionDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["competitionTeam"]>
+
+  export type CompetitionTeamSelectScalar = {
+    competition_id?: boolean
+    team_id?: boolean
+    joined_at?: boolean
+  }
+
+  export type CompetitionTeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"competition_id" | "team_id" | "joined_at", ExtArgs["result"]["competitionTeam"]>
+  export type CompetitionTeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    competition?: boolean | CompetitionDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type CompetitionTeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    competition?: boolean | CompetitionDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type CompetitionTeamIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    competition?: boolean | CompetitionDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+
+  export type $CompetitionTeamPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompetitionTeam"
+    objects: {
+      competition: Prisma.$CompetitionPayload<ExtArgs>
+      team: Prisma.$TeamPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      competition_id: string
+      team_id: string
+      joined_at: Date
+    }, ExtArgs["result"]["competitionTeam"]>
+    composites: {}
+  }
+
+  type CompetitionTeamGetPayload<S extends boolean | null | undefined | CompetitionTeamDefaultArgs> = $Result.GetResult<Prisma.$CompetitionTeamPayload, S>
+
+  type CompetitionTeamCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompetitionTeamFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompetitionTeamCountAggregateInputType | true
+    }
+
+  export interface CompetitionTeamDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompetitionTeam'], meta: { name: 'CompetitionTeam' } }
+    /**
+     * Find zero or one CompetitionTeam that matches the filter.
+     * @param {CompetitionTeamFindUniqueArgs} args - Arguments to find a CompetitionTeam
+     * @example
+     * // Get one CompetitionTeam
+     * const competitionTeam = await prisma.competitionTeam.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompetitionTeamFindUniqueArgs>(args: SelectSubset<T, CompetitionTeamFindUniqueArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompetitionTeam that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompetitionTeamFindUniqueOrThrowArgs} args - Arguments to find a CompetitionTeam
+     * @example
+     * // Get one CompetitionTeam
+     * const competitionTeam = await prisma.competitionTeam.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompetitionTeamFindUniqueOrThrowArgs>(args: SelectSubset<T, CompetitionTeamFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompetitionTeam that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionTeamFindFirstArgs} args - Arguments to find a CompetitionTeam
+     * @example
+     * // Get one CompetitionTeam
+     * const competitionTeam = await prisma.competitionTeam.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompetitionTeamFindFirstArgs>(args?: SelectSubset<T, CompetitionTeamFindFirstArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompetitionTeam that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionTeamFindFirstOrThrowArgs} args - Arguments to find a CompetitionTeam
+     * @example
+     * // Get one CompetitionTeam
+     * const competitionTeam = await prisma.competitionTeam.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompetitionTeamFindFirstOrThrowArgs>(args?: SelectSubset<T, CompetitionTeamFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompetitionTeams that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionTeamFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompetitionTeams
+     * const competitionTeams = await prisma.competitionTeam.findMany()
+     * 
+     * // Get first 10 CompetitionTeams
+     * const competitionTeams = await prisma.competitionTeam.findMany({ take: 10 })
+     * 
+     * // Only select the `competition_id`
+     * const competitionTeamWithCompetition_idOnly = await prisma.competitionTeam.findMany({ select: { competition_id: true } })
+     * 
+     */
+    findMany<T extends CompetitionTeamFindManyArgs>(args?: SelectSubset<T, CompetitionTeamFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompetitionTeam.
+     * @param {CompetitionTeamCreateArgs} args - Arguments to create a CompetitionTeam.
+     * @example
+     * // Create one CompetitionTeam
+     * const CompetitionTeam = await prisma.competitionTeam.create({
+     *   data: {
+     *     // ... data to create a CompetitionTeam
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompetitionTeamCreateArgs>(args: SelectSubset<T, CompetitionTeamCreateArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompetitionTeams.
+     * @param {CompetitionTeamCreateManyArgs} args - Arguments to create many CompetitionTeams.
+     * @example
+     * // Create many CompetitionTeams
+     * const competitionTeam = await prisma.competitionTeam.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompetitionTeamCreateManyArgs>(args?: SelectSubset<T, CompetitionTeamCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompetitionTeams and returns the data saved in the database.
+     * @param {CompetitionTeamCreateManyAndReturnArgs} args - Arguments to create many CompetitionTeams.
+     * @example
+     * // Create many CompetitionTeams
+     * const competitionTeam = await prisma.competitionTeam.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompetitionTeams and only return the `competition_id`
+     * const competitionTeamWithCompetition_idOnly = await prisma.competitionTeam.createManyAndReturn({
+     *   select: { competition_id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompetitionTeamCreateManyAndReturnArgs>(args?: SelectSubset<T, CompetitionTeamCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompetitionTeam.
+     * @param {CompetitionTeamDeleteArgs} args - Arguments to delete one CompetitionTeam.
+     * @example
+     * // Delete one CompetitionTeam
+     * const CompetitionTeam = await prisma.competitionTeam.delete({
+     *   where: {
+     *     // ... filter to delete one CompetitionTeam
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompetitionTeamDeleteArgs>(args: SelectSubset<T, CompetitionTeamDeleteArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompetitionTeam.
+     * @param {CompetitionTeamUpdateArgs} args - Arguments to update one CompetitionTeam.
+     * @example
+     * // Update one CompetitionTeam
+     * const competitionTeam = await prisma.competitionTeam.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompetitionTeamUpdateArgs>(args: SelectSubset<T, CompetitionTeamUpdateArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompetitionTeams.
+     * @param {CompetitionTeamDeleteManyArgs} args - Arguments to filter CompetitionTeams to delete.
+     * @example
+     * // Delete a few CompetitionTeams
+     * const { count } = await prisma.competitionTeam.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompetitionTeamDeleteManyArgs>(args?: SelectSubset<T, CompetitionTeamDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompetitionTeams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionTeamUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompetitionTeams
+     * const competitionTeam = await prisma.competitionTeam.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompetitionTeamUpdateManyArgs>(args: SelectSubset<T, CompetitionTeamUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompetitionTeams and returns the data updated in the database.
+     * @param {CompetitionTeamUpdateManyAndReturnArgs} args - Arguments to update many CompetitionTeams.
+     * @example
+     * // Update many CompetitionTeams
+     * const competitionTeam = await prisma.competitionTeam.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompetitionTeams and only return the `competition_id`
+     * const competitionTeamWithCompetition_idOnly = await prisma.competitionTeam.updateManyAndReturn({
+     *   select: { competition_id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompetitionTeamUpdateManyAndReturnArgs>(args: SelectSubset<T, CompetitionTeamUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompetitionTeam.
+     * @param {CompetitionTeamUpsertArgs} args - Arguments to update or create a CompetitionTeam.
+     * @example
+     * // Update or create a CompetitionTeam
+     * const competitionTeam = await prisma.competitionTeam.upsert({
+     *   create: {
+     *     // ... data to create a CompetitionTeam
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompetitionTeam we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompetitionTeamUpsertArgs>(args: SelectSubset<T, CompetitionTeamUpsertArgs<ExtArgs>>): Prisma__CompetitionTeamClient<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompetitionTeams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionTeamCountArgs} args - Arguments to filter CompetitionTeams to count.
+     * @example
+     * // Count the number of CompetitionTeams
+     * const count = await prisma.competitionTeam.count({
+     *   where: {
+     *     // ... the filter for the CompetitionTeams we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompetitionTeamCountArgs>(
+      args?: Subset<T, CompetitionTeamCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompetitionTeamCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompetitionTeam.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionTeamAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompetitionTeamAggregateArgs>(args: Subset<T, CompetitionTeamAggregateArgs>): Prisma.PrismaPromise<GetCompetitionTeamAggregateType<T>>
+
+    /**
+     * Group by CompetitionTeam.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompetitionTeamGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompetitionTeamGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompetitionTeamGroupByArgs['orderBy'] }
+        : { orderBy?: CompetitionTeamGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompetitionTeamGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompetitionTeamGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompetitionTeam model
+   */
+  readonly fields: CompetitionTeamFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompetitionTeam.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompetitionTeamClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    competition<T extends CompetitionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompetitionDefaultArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompetitionTeam model
+   */
+  interface CompetitionTeamFieldRefs {
+    readonly competition_id: FieldRef<"CompetitionTeam", 'String'>
+    readonly team_id: FieldRef<"CompetitionTeam", 'String'>
+    readonly joined_at: FieldRef<"CompetitionTeam", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompetitionTeam findUnique
+   */
+  export type CompetitionTeamFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * Filter, which CompetitionTeam to fetch.
+     */
+    where: CompetitionTeamWhereUniqueInput
+  }
+
+  /**
+   * CompetitionTeam findUniqueOrThrow
+   */
+  export type CompetitionTeamFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * Filter, which CompetitionTeam to fetch.
+     */
+    where: CompetitionTeamWhereUniqueInput
+  }
+
+  /**
+   * CompetitionTeam findFirst
+   */
+  export type CompetitionTeamFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * Filter, which CompetitionTeam to fetch.
+     */
+    where?: CompetitionTeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompetitionTeams to fetch.
+     */
+    orderBy?: CompetitionTeamOrderByWithRelationInput | CompetitionTeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompetitionTeams.
+     */
+    cursor?: CompetitionTeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompetitionTeams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompetitionTeams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompetitionTeams.
+     */
+    distinct?: CompetitionTeamScalarFieldEnum | CompetitionTeamScalarFieldEnum[]
+  }
+
+  /**
+   * CompetitionTeam findFirstOrThrow
+   */
+  export type CompetitionTeamFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * Filter, which CompetitionTeam to fetch.
+     */
+    where?: CompetitionTeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompetitionTeams to fetch.
+     */
+    orderBy?: CompetitionTeamOrderByWithRelationInput | CompetitionTeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompetitionTeams.
+     */
+    cursor?: CompetitionTeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompetitionTeams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompetitionTeams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompetitionTeams.
+     */
+    distinct?: CompetitionTeamScalarFieldEnum | CompetitionTeamScalarFieldEnum[]
+  }
+
+  /**
+   * CompetitionTeam findMany
+   */
+  export type CompetitionTeamFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * Filter, which CompetitionTeams to fetch.
+     */
+    where?: CompetitionTeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompetitionTeams to fetch.
+     */
+    orderBy?: CompetitionTeamOrderByWithRelationInput | CompetitionTeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompetitionTeams.
+     */
+    cursor?: CompetitionTeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompetitionTeams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompetitionTeams.
+     */
+    skip?: number
+    distinct?: CompetitionTeamScalarFieldEnum | CompetitionTeamScalarFieldEnum[]
+  }
+
+  /**
+   * CompetitionTeam create
+   */
+  export type CompetitionTeamCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompetitionTeam.
+     */
+    data: XOR<CompetitionTeamCreateInput, CompetitionTeamUncheckedCreateInput>
+  }
+
+  /**
+   * CompetitionTeam createMany
+   */
+  export type CompetitionTeamCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompetitionTeams.
+     */
+    data: CompetitionTeamCreateManyInput | CompetitionTeamCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CompetitionTeam createManyAndReturn
+   */
+  export type CompetitionTeamCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompetitionTeams.
+     */
+    data: CompetitionTeamCreateManyInput | CompetitionTeamCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompetitionTeam update
+   */
+  export type CompetitionTeamUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompetitionTeam.
+     */
+    data: XOR<CompetitionTeamUpdateInput, CompetitionTeamUncheckedUpdateInput>
+    /**
+     * Choose, which CompetitionTeam to update.
+     */
+    where: CompetitionTeamWhereUniqueInput
+  }
+
+  /**
+   * CompetitionTeam updateMany
+   */
+  export type CompetitionTeamUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompetitionTeams.
+     */
+    data: XOR<CompetitionTeamUpdateManyMutationInput, CompetitionTeamUncheckedUpdateManyInput>
+    /**
+     * Filter which CompetitionTeams to update
+     */
+    where?: CompetitionTeamWhereInput
+    /**
+     * Limit how many CompetitionTeams to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompetitionTeam updateManyAndReturn
+   */
+  export type CompetitionTeamUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * The data used to update CompetitionTeams.
+     */
+    data: XOR<CompetitionTeamUpdateManyMutationInput, CompetitionTeamUncheckedUpdateManyInput>
+    /**
+     * Filter which CompetitionTeams to update
+     */
+    where?: CompetitionTeamWhereInput
+    /**
+     * Limit how many CompetitionTeams to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompetitionTeam upsert
+   */
+  export type CompetitionTeamUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompetitionTeam to update in case it exists.
+     */
+    where: CompetitionTeamWhereUniqueInput
+    /**
+     * In case the CompetitionTeam found by the `where` argument doesn't exist, create a new CompetitionTeam with this data.
+     */
+    create: XOR<CompetitionTeamCreateInput, CompetitionTeamUncheckedCreateInput>
+    /**
+     * In case the CompetitionTeam was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompetitionTeamUpdateInput, CompetitionTeamUncheckedUpdateInput>
+  }
+
+  /**
+   * CompetitionTeam delete
+   */
+  export type CompetitionTeamDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+    /**
+     * Filter which CompetitionTeam to delete.
+     */
+    where: CompetitionTeamWhereUniqueInput
+  }
+
+  /**
+   * CompetitionTeam deleteMany
+   */
+  export type CompetitionTeamDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompetitionTeams to delete
+     */
+    where?: CompetitionTeamWhereInput
+    /**
+     * Limit how many CompetitionTeams to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompetitionTeam without action
+   */
+  export type CompetitionTeamDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompetitionTeam
+     */
+    select?: CompetitionTeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompetitionTeam
+     */
+    omit?: CompetitionTeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionTeamInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Match
    */
 
@@ -6088,6 +8538,8 @@ export namespace Prisma {
   export type MatchMinAggregateOutputType = {
     id: string | null
     ea_match_id: string | null
+    competition_id: string | null
+    round: string | null
     home_team_id: string | null
     away_team_id: string | null
     home_score: number | null
@@ -6099,6 +8551,8 @@ export namespace Prisma {
   export type MatchMaxAggregateOutputType = {
     id: string | null
     ea_match_id: string | null
+    competition_id: string | null
+    round: string | null
     home_team_id: string | null
     away_team_id: string | null
     home_score: number | null
@@ -6110,6 +8564,8 @@ export namespace Prisma {
   export type MatchCountAggregateOutputType = {
     id: number
     ea_match_id: number
+    competition_id: number
+    round: number
     home_team_id: number
     away_team_id: number
     home_score: number
@@ -6133,6 +8589,8 @@ export namespace Prisma {
   export type MatchMinAggregateInputType = {
     id?: true
     ea_match_id?: true
+    competition_id?: true
+    round?: true
     home_team_id?: true
     away_team_id?: true
     home_score?: true
@@ -6144,6 +8602,8 @@ export namespace Prisma {
   export type MatchMaxAggregateInputType = {
     id?: true
     ea_match_id?: true
+    competition_id?: true
+    round?: true
     home_team_id?: true
     away_team_id?: true
     home_score?: true
@@ -6155,6 +8615,8 @@ export namespace Prisma {
   export type MatchCountAggregateInputType = {
     id?: true
     ea_match_id?: true
+    competition_id?: true
+    round?: true
     home_team_id?: true
     away_team_id?: true
     home_score?: true
@@ -6253,6 +8715,8 @@ export namespace Prisma {
   export type MatchGroupByOutputType = {
     id: string
     ea_match_id: string | null
+    competition_id: string | null
+    round: string | null
     home_team_id: string
     away_team_id: string
     home_score: number | null
@@ -6283,12 +8747,15 @@ export namespace Prisma {
   export type MatchSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     ea_match_id?: boolean
+    competition_id?: boolean
+    round?: boolean
     home_team_id?: boolean
     away_team_id?: boolean
     home_score?: boolean
     away_score?: boolean
     status?: boolean
     played_at?: boolean
+    competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["match"]>
@@ -6296,12 +8763,15 @@ export namespace Prisma {
   export type MatchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     ea_match_id?: boolean
+    competition_id?: boolean
+    round?: boolean
     home_team_id?: boolean
     away_team_id?: boolean
     home_score?: boolean
     away_score?: boolean
     status?: boolean
     played_at?: boolean
+    competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["match"]>
@@ -6309,12 +8779,15 @@ export namespace Prisma {
   export type MatchSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     ea_match_id?: boolean
+    competition_id?: boolean
+    round?: boolean
     home_team_id?: boolean
     away_team_id?: boolean
     home_score?: boolean
     away_score?: boolean
     status?: boolean
     played_at?: boolean
+    competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["match"]>
@@ -6322,6 +8795,8 @@ export namespace Prisma {
   export type MatchSelectScalar = {
     id?: boolean
     ea_match_id?: boolean
+    competition_id?: boolean
+    round?: boolean
     home_team_id?: boolean
     away_team_id?: boolean
     home_score?: boolean
@@ -6330,16 +8805,19 @@ export namespace Prisma {
     played_at?: boolean
   }
 
-  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at", ExtArgs["result"]["match"]>
+  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "competition_id" | "round" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at", ExtArgs["result"]["match"]>
   export type MatchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
   }
   export type MatchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
   }
   export type MatchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
   }
@@ -6347,12 +8825,15 @@ export namespace Prisma {
   export type $MatchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Match"
     objects: {
+      competition: Prisma.$CompetitionPayload<ExtArgs> | null
       homeTeam: Prisma.$TeamPayload<ExtArgs>
       awayTeam: Prisma.$TeamPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       ea_match_id: string | null
+      competition_id: string | null
+      round: string | null
       home_team_id: string
       away_team_id: string
       home_score: number | null
@@ -6753,6 +9234,7 @@ export namespace Prisma {
    */
   export interface Prisma__MatchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    competition<T extends Match$competitionArgs<ExtArgs> = {}>(args?: Subset<T, Match$competitionArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     homeTeam<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     awayTeam<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -6786,6 +9268,8 @@ export namespace Prisma {
   interface MatchFieldRefs {
     readonly id: FieldRef<"Match", 'String'>
     readonly ea_match_id: FieldRef<"Match", 'String'>
+    readonly competition_id: FieldRef<"Match", 'String'>
+    readonly round: FieldRef<"Match", 'String'>
     readonly home_team_id: FieldRef<"Match", 'String'>
     readonly away_team_id: FieldRef<"Match", 'String'>
     readonly home_score: FieldRef<"Match", 'Int'>
@@ -7185,6 +9669,25 @@ export namespace Prisma {
      * Limit how many Matches to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Match.competition
+   */
+  export type Match$competitionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Competition
+     */
+    select?: CompetitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Competition
+     */
+    omit?: CompetitionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompetitionInclude<ExtArgs> | null
+    where?: CompetitionWhereInput
   }
 
   /**
@@ -8338,9 +10841,33 @@ export namespace Prisma {
   export type PlayerStatsScalarFieldEnum = (typeof PlayerStatsScalarFieldEnum)[keyof typeof PlayerStatsScalarFieldEnum]
 
 
+  export const CompetitionScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    type: 'type',
+    status: 'status',
+    start_date: 'start_date',
+    end_date: 'end_date',
+    created_at: 'created_at'
+  };
+
+  export type CompetitionScalarFieldEnum = (typeof CompetitionScalarFieldEnum)[keyof typeof CompetitionScalarFieldEnum]
+
+
+  export const CompetitionTeamScalarFieldEnum: {
+    competition_id: 'competition_id',
+    team_id: 'team_id',
+    joined_at: 'joined_at'
+  };
+
+  export type CompetitionTeamScalarFieldEnum = (typeof CompetitionTeamScalarFieldEnum)[keyof typeof CompetitionTeamScalarFieldEnum]
+
+
   export const MatchScalarFieldEnum: {
     id: 'id',
     ea_match_id: 'ea_match_id',
+    competition_id: 'competition_id',
+    round: 'round',
     home_team_id: 'home_team_id',
     away_team_id: 'away_team_id',
     home_score: 'home_score',
@@ -8505,6 +11032,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'CompetitionType'
+   */
+  export type EnumCompetitionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompetitionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'CompetitionType[]'
+   */
+  export type ListEnumCompetitionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompetitionType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CompetitionStatus'
+   */
+  export type EnumCompetitionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompetitionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'CompetitionStatus[]'
+   */
+  export type ListEnumCompetitionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompetitionStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'MatchStatus'
    */
   export type EnumMatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MatchStatus'>
@@ -8634,6 +11189,7 @@ export namespace Prisma {
     members?: TeamMemberListRelationFilter
     homeMatches?: MatchListRelationFilter
     awayMatches?: MatchListRelationFilter
+    competitions?: CompetitionTeamListRelationFilter
     transferRequests?: TransferRequestListRelationFilter
   }
 
@@ -8647,6 +11203,7 @@ export namespace Prisma {
     members?: TeamMemberOrderByRelationAggregateInput
     homeMatches?: MatchOrderByRelationAggregateInput
     awayMatches?: MatchOrderByRelationAggregateInput
+    competitions?: CompetitionTeamOrderByRelationAggregateInput
     transferRequests?: TransferRequestOrderByRelationAggregateInput
   }
 
@@ -8663,6 +11220,7 @@ export namespace Prisma {
     members?: TeamMemberListRelationFilter
     homeMatches?: MatchListRelationFilter
     awayMatches?: MatchListRelationFilter
+    competitions?: CompetitionTeamListRelationFilter
     transferRequests?: TransferRequestListRelationFilter
   }, "id" | "name" | "ea_club_id">
 
@@ -8816,18 +11374,138 @@ export namespace Prisma {
     average_rating?: FloatWithAggregatesFilter<"PlayerStats"> | number
   }
 
+  export type CompetitionWhereInput = {
+    AND?: CompetitionWhereInput | CompetitionWhereInput[]
+    OR?: CompetitionWhereInput[]
+    NOT?: CompetitionWhereInput | CompetitionWhereInput[]
+    id?: UuidFilter<"Competition"> | string
+    name?: StringFilter<"Competition"> | string
+    type?: EnumCompetitionTypeFilter<"Competition"> | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFilter<"Competition"> | $Enums.CompetitionStatus
+    start_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
+    end_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
+    created_at?: DateTimeFilter<"Competition"> | Date | string
+    teams?: CompetitionTeamListRelationFilter
+    matches?: MatchListRelationFilter
+  }
+
+  export type CompetitionOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    start_date?: SortOrderInput | SortOrder
+    end_date?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    teams?: CompetitionTeamOrderByRelationAggregateInput
+    matches?: MatchOrderByRelationAggregateInput
+  }
+
+  export type CompetitionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: CompetitionWhereInput | CompetitionWhereInput[]
+    OR?: CompetitionWhereInput[]
+    NOT?: CompetitionWhereInput | CompetitionWhereInput[]
+    type?: EnumCompetitionTypeFilter<"Competition"> | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFilter<"Competition"> | $Enums.CompetitionStatus
+    start_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
+    end_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
+    created_at?: DateTimeFilter<"Competition"> | Date | string
+    teams?: CompetitionTeamListRelationFilter
+    matches?: MatchListRelationFilter
+  }, "id" | "name">
+
+  export type CompetitionOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    start_date?: SortOrderInput | SortOrder
+    end_date?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: CompetitionCountOrderByAggregateInput
+    _max?: CompetitionMaxOrderByAggregateInput
+    _min?: CompetitionMinOrderByAggregateInput
+  }
+
+  export type CompetitionScalarWhereWithAggregatesInput = {
+    AND?: CompetitionScalarWhereWithAggregatesInput | CompetitionScalarWhereWithAggregatesInput[]
+    OR?: CompetitionScalarWhereWithAggregatesInput[]
+    NOT?: CompetitionScalarWhereWithAggregatesInput | CompetitionScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Competition"> | string
+    name?: StringWithAggregatesFilter<"Competition"> | string
+    type?: EnumCompetitionTypeWithAggregatesFilter<"Competition"> | $Enums.CompetitionType
+    status?: EnumCompetitionStatusWithAggregatesFilter<"Competition"> | $Enums.CompetitionStatus
+    start_date?: DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+    end_date?: DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"Competition"> | Date | string
+  }
+
+  export type CompetitionTeamWhereInput = {
+    AND?: CompetitionTeamWhereInput | CompetitionTeamWhereInput[]
+    OR?: CompetitionTeamWhereInput[]
+    NOT?: CompetitionTeamWhereInput | CompetitionTeamWhereInput[]
+    competition_id?: UuidFilter<"CompetitionTeam"> | string
+    team_id?: UuidFilter<"CompetitionTeam"> | string
+    joined_at?: DateTimeFilter<"CompetitionTeam"> | Date | string
+    competition?: XOR<CompetitionScalarRelationFilter, CompetitionWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }
+
+  export type CompetitionTeamOrderByWithRelationInput = {
+    competition_id?: SortOrder
+    team_id?: SortOrder
+    joined_at?: SortOrder
+    competition?: CompetitionOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
+  }
+
+  export type CompetitionTeamWhereUniqueInput = Prisma.AtLeast<{
+    competition_id_team_id?: CompetitionTeamCompetition_idTeam_idCompoundUniqueInput
+    AND?: CompetitionTeamWhereInput | CompetitionTeamWhereInput[]
+    OR?: CompetitionTeamWhereInput[]
+    NOT?: CompetitionTeamWhereInput | CompetitionTeamWhereInput[]
+    competition_id?: UuidFilter<"CompetitionTeam"> | string
+    team_id?: UuidFilter<"CompetitionTeam"> | string
+    joined_at?: DateTimeFilter<"CompetitionTeam"> | Date | string
+    competition?: XOR<CompetitionScalarRelationFilter, CompetitionWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }, "competition_id_team_id">
+
+  export type CompetitionTeamOrderByWithAggregationInput = {
+    competition_id?: SortOrder
+    team_id?: SortOrder
+    joined_at?: SortOrder
+    _count?: CompetitionTeamCountOrderByAggregateInput
+    _max?: CompetitionTeamMaxOrderByAggregateInput
+    _min?: CompetitionTeamMinOrderByAggregateInput
+  }
+
+  export type CompetitionTeamScalarWhereWithAggregatesInput = {
+    AND?: CompetitionTeamScalarWhereWithAggregatesInput | CompetitionTeamScalarWhereWithAggregatesInput[]
+    OR?: CompetitionTeamScalarWhereWithAggregatesInput[]
+    NOT?: CompetitionTeamScalarWhereWithAggregatesInput | CompetitionTeamScalarWhereWithAggregatesInput[]
+    competition_id?: UuidWithAggregatesFilter<"CompetitionTeam"> | string
+    team_id?: UuidWithAggregatesFilter<"CompetitionTeam"> | string
+    joined_at?: DateTimeWithAggregatesFilter<"CompetitionTeam"> | Date | string
+  }
+
   export type MatchWhereInput = {
     AND?: MatchWhereInput | MatchWhereInput[]
     OR?: MatchWhereInput[]
     NOT?: MatchWhereInput | MatchWhereInput[]
     id?: UuidFilter<"Match"> | string
     ea_match_id?: StringNullableFilter<"Match"> | string | null
+    competition_id?: UuidNullableFilter<"Match"> | string | null
+    round?: StringNullableFilter<"Match"> | string | null
     home_team_id?: UuidFilter<"Match"> | string
     away_team_id?: UuidFilter<"Match"> | string
     home_score?: IntNullableFilter<"Match"> | number | null
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    competition?: XOR<CompetitionNullableScalarRelationFilter, CompetitionWhereInput> | null
     homeTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     awayTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }
@@ -8835,12 +11513,15 @@ export namespace Prisma {
   export type MatchOrderByWithRelationInput = {
     id?: SortOrder
     ea_match_id?: SortOrderInput | SortOrder
+    competition_id?: SortOrderInput | SortOrder
+    round?: SortOrderInput | SortOrder
     home_team_id?: SortOrder
     away_team_id?: SortOrder
     home_score?: SortOrderInput | SortOrder
     away_score?: SortOrderInput | SortOrder
     status?: SortOrder
     played_at?: SortOrderInput | SortOrder
+    competition?: CompetitionOrderByWithRelationInput
     homeTeam?: TeamOrderByWithRelationInput
     awayTeam?: TeamOrderByWithRelationInput
   }
@@ -8851,12 +11532,15 @@ export namespace Prisma {
     AND?: MatchWhereInput | MatchWhereInput[]
     OR?: MatchWhereInput[]
     NOT?: MatchWhereInput | MatchWhereInput[]
+    competition_id?: UuidNullableFilter<"Match"> | string | null
+    round?: StringNullableFilter<"Match"> | string | null
     home_team_id?: UuidFilter<"Match"> | string
     away_team_id?: UuidFilter<"Match"> | string
     home_score?: IntNullableFilter<"Match"> | number | null
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    competition?: XOR<CompetitionNullableScalarRelationFilter, CompetitionWhereInput> | null
     homeTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     awayTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }, "id" | "ea_match_id">
@@ -8864,6 +11548,8 @@ export namespace Prisma {
   export type MatchOrderByWithAggregationInput = {
     id?: SortOrder
     ea_match_id?: SortOrderInput | SortOrder
+    competition_id?: SortOrderInput | SortOrder
+    round?: SortOrderInput | SortOrder
     home_team_id?: SortOrder
     away_team_id?: SortOrder
     home_score?: SortOrderInput | SortOrder
@@ -8883,6 +11569,8 @@ export namespace Prisma {
     NOT?: MatchScalarWhereWithAggregatesInput | MatchScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Match"> | string
     ea_match_id?: StringNullableWithAggregatesFilter<"Match"> | string | null
+    competition_id?: UuidNullableWithAggregatesFilter<"Match"> | string | null
+    round?: StringNullableWithAggregatesFilter<"Match"> | string | null
     home_team_id?: UuidWithAggregatesFilter<"Match"> | string
     away_team_id?: UuidWithAggregatesFilter<"Match"> | string
     home_score?: IntNullableWithAggregatesFilter<"Match"> | number | null
@@ -9062,6 +11750,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
   }
 
@@ -9075,6 +11764,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -9088,6 +11778,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
   }
 
@@ -9101,6 +11792,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -9254,13 +11946,133 @@ export namespace Prisma {
     average_rating?: FloatFieldUpdateOperationsInput | number
   }
 
+  export type CompetitionCreateInput = {
+    id?: string
+    name: string
+    type: $Enums.CompetitionType
+    status?: $Enums.CompetitionStatus
+    start_date?: Date | string | null
+    end_date?: Date | string | null
+    created_at?: Date | string
+    teams?: CompetitionTeamCreateNestedManyWithoutCompetitionInput
+    matches?: MatchCreateNestedManyWithoutCompetitionInput
+  }
+
+  export type CompetitionUncheckedCreateInput = {
+    id?: string
+    name: string
+    type: $Enums.CompetitionType
+    status?: $Enums.CompetitionStatus
+    start_date?: Date | string | null
+    end_date?: Date | string | null
+    created_at?: Date | string
+    teams?: CompetitionTeamUncheckedCreateNestedManyWithoutCompetitionInput
+    matches?: MatchUncheckedCreateNestedManyWithoutCompetitionInput
+  }
+
+  export type CompetitionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: CompetitionTeamUpdateManyWithoutCompetitionNestedInput
+    matches?: MatchUpdateManyWithoutCompetitionNestedInput
+  }
+
+  export type CompetitionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: CompetitionTeamUncheckedUpdateManyWithoutCompetitionNestedInput
+    matches?: MatchUncheckedUpdateManyWithoutCompetitionNestedInput
+  }
+
+  export type CompetitionCreateManyInput = {
+    id?: string
+    name: string
+    type: $Enums.CompetitionType
+    status?: $Enums.CompetitionStatus
+    start_date?: Date | string | null
+    end_date?: Date | string | null
+    created_at?: Date | string
+  }
+
+  export type CompetitionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompetitionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompetitionTeamCreateInput = {
+    joined_at?: Date | string
+    competition: CompetitionCreateNestedOneWithoutTeamsInput
+    team: TeamCreateNestedOneWithoutCompetitionsInput
+  }
+
+  export type CompetitionTeamUncheckedCreateInput = {
+    competition_id: string
+    team_id: string
+    joined_at?: Date | string
+  }
+
+  export type CompetitionTeamUpdateInput = {
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    competition?: CompetitionUpdateOneRequiredWithoutTeamsNestedInput
+    team?: TeamUpdateOneRequiredWithoutCompetitionsNestedInput
+  }
+
+  export type CompetitionTeamUncheckedUpdateInput = {
+    competition_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompetitionTeamCreateManyInput = {
+    competition_id: string
+    team_id: string
+    joined_at?: Date | string
+  }
+
+  export type CompetitionTeamUpdateManyMutationInput = {
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompetitionTeamUncheckedUpdateManyInput = {
+    competition_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MatchCreateInput = {
     id?: string
     ea_match_id?: string | null
+    round?: string | null
     home_score?: number | null
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: TeamCreateNestedOneWithoutHomeMatchesInput
     awayTeam: TeamCreateNestedOneWithoutAwayMatchesInput
   }
@@ -9268,6 +12080,8 @@ export namespace Prisma {
   export type MatchUncheckedCreateInput = {
     id?: string
     ea_match_id?: string | null
+    competition_id?: string | null
+    round?: string | null
     home_team_id: string
     away_team_id: string
     home_score?: number | null
@@ -9279,10 +12093,12 @@ export namespace Prisma {
   export type MatchUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: TeamUpdateOneRequiredWithoutHomeMatchesNestedInput
     awayTeam?: TeamUpdateOneRequiredWithoutAwayMatchesNestedInput
   }
@@ -9290,6 +12106,8 @@ export namespace Prisma {
   export type MatchUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_team_id?: StringFieldUpdateOperationsInput | string
     away_team_id?: StringFieldUpdateOperationsInput | string
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
@@ -9301,6 +12119,8 @@ export namespace Prisma {
   export type MatchCreateManyInput = {
     id?: string
     ea_match_id?: string | null
+    competition_id?: string | null
+    round?: string | null
     home_team_id: string
     away_team_id: string
     home_score?: number | null
@@ -9312,6 +12132,7 @@ export namespace Prisma {
   export type MatchUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
@@ -9321,6 +12142,8 @@ export namespace Prisma {
   export type MatchUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_team_id?: StringFieldUpdateOperationsInput | string
     away_team_id?: StringFieldUpdateOperationsInput | string
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
@@ -9617,7 +12440,17 @@ export namespace Prisma {
     none?: MatchWhereInput
   }
 
+  export type CompetitionTeamListRelationFilter = {
+    every?: CompetitionTeamWhereInput
+    some?: CompetitionTeamWhereInput
+    none?: CompetitionTeamWhereInput
+  }
+
   export type MatchOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CompetitionTeamOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9816,6 +12649,135 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type EnumCompetitionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionType | EnumCompetitionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionTypeFilter<$PrismaModel> | $Enums.CompetitionType
+  }
+
+  export type EnumCompetitionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionStatus | EnumCompetitionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionStatusFilter<$PrismaModel> | $Enums.CompetitionStatus
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type CompetitionCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type CompetitionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type CompetitionMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type EnumCompetitionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionType | EnumCompetitionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionTypeWithAggregatesFilter<$PrismaModel> | $Enums.CompetitionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCompetitionTypeFilter<$PrismaModel>
+    _max?: NestedEnumCompetitionTypeFilter<$PrismaModel>
+  }
+
+  export type EnumCompetitionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionStatus | EnumCompetitionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionStatusWithAggregatesFilter<$PrismaModel> | $Enums.CompetitionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCompetitionStatusFilter<$PrismaModel>
+    _max?: NestedEnumCompetitionStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type CompetitionScalarRelationFilter = {
+    is?: CompetitionWhereInput
+    isNot?: CompetitionWhereInput
+  }
+
+  export type CompetitionTeamCompetition_idTeam_idCompoundUniqueInput = {
+    competition_id: string
+    team_id: string
+  }
+
+  export type CompetitionTeamCountOrderByAggregateInput = {
+    competition_id?: SortOrder
+    team_id?: SortOrder
+    joined_at?: SortOrder
+  }
+
+  export type CompetitionTeamMaxOrderByAggregateInput = {
+    competition_id?: SortOrder
+    team_id?: SortOrder
+    joined_at?: SortOrder
+  }
+
+  export type CompetitionTeamMinOrderByAggregateInput = {
+    competition_id?: SortOrder
+    team_id?: SortOrder
+    joined_at?: SortOrder
+  }
+
+  export type UuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -9834,20 +12796,16 @@ export namespace Prisma {
     not?: NestedEnumMatchStatusFilter<$PrismaModel> | $Enums.MatchStatus
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type CompetitionNullableScalarRelationFilter = {
+    is?: CompetitionWhereInput | null
+    isNot?: CompetitionWhereInput | null
   }
 
   export type MatchCountOrderByAggregateInput = {
     id?: SortOrder
     ea_match_id?: SortOrder
+    competition_id?: SortOrder
+    round?: SortOrder
     home_team_id?: SortOrder
     away_team_id?: SortOrder
     home_score?: SortOrder
@@ -9864,6 +12822,8 @@ export namespace Prisma {
   export type MatchMaxOrderByAggregateInput = {
     id?: SortOrder
     ea_match_id?: SortOrder
+    competition_id?: SortOrder
+    round?: SortOrder
     home_team_id?: SortOrder
     away_team_id?: SortOrder
     home_score?: SortOrder
@@ -9875,6 +12835,8 @@ export namespace Prisma {
   export type MatchMinOrderByAggregateInput = {
     id?: SortOrder
     ea_match_id?: SortOrder
+    competition_id?: SortOrder
+    round?: SortOrder
     home_team_id?: SortOrder
     away_team_id?: SortOrder
     home_score?: SortOrder
@@ -9886,6 +12848,21 @@ export namespace Prisma {
   export type MatchSumOrderByAggregateInput = {
     home_score?: SortOrder
     away_score?: SortOrder
+  }
+
+  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -9912,20 +12889,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMatchStatusFilter<$PrismaModel>
     _max?: NestedEnumMatchStatusFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumTransferStatusFilter<$PrismaModel = never> = {
@@ -10126,6 +13089,13 @@ export namespace Prisma {
     connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
   }
 
+  export type CompetitionTeamCreateNestedManyWithoutTeamInput = {
+    create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
+    createMany?: CompetitionTeamCreateManyTeamInputEnvelope
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+  }
+
   export type TransferRequestCreateNestedManyWithoutTeamInput = {
     create?: XOR<TransferRequestCreateWithoutTeamInput, TransferRequestUncheckedCreateWithoutTeamInput> | TransferRequestCreateWithoutTeamInput[] | TransferRequestUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TransferRequestCreateOrConnectWithoutTeamInput | TransferRequestCreateOrConnectWithoutTeamInput[]
@@ -10152,6 +13122,13 @@ export namespace Prisma {
     connectOrCreate?: MatchCreateOrConnectWithoutAwayTeamInput | MatchCreateOrConnectWithoutAwayTeamInput[]
     createMany?: MatchCreateManyAwayTeamInputEnvelope
     connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+  }
+
+  export type CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
+    createMany?: CompetitionTeamCreateManyTeamInputEnvelope
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
   }
 
   export type TransferRequestUncheckedCreateNestedManyWithoutTeamInput = {
@@ -10205,6 +13182,20 @@ export namespace Prisma {
     update?: MatchUpdateWithWhereUniqueWithoutAwayTeamInput | MatchUpdateWithWhereUniqueWithoutAwayTeamInput[]
     updateMany?: MatchUpdateManyWithWhereWithoutAwayTeamInput | MatchUpdateManyWithWhereWithoutAwayTeamInput[]
     deleteMany?: MatchScalarWhereInput | MatchScalarWhereInput[]
+  }
+
+  export type CompetitionTeamUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
+    upsert?: CompetitionTeamUpsertWithWhereUniqueWithoutTeamInput | CompetitionTeamUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: CompetitionTeamCreateManyTeamInputEnvelope
+    set?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    disconnect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    delete?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    update?: CompetitionTeamUpdateWithWhereUniqueWithoutTeamInput | CompetitionTeamUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: CompetitionTeamUpdateManyWithWhereWithoutTeamInput | CompetitionTeamUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: CompetitionTeamScalarWhereInput | CompetitionTeamScalarWhereInput[]
   }
 
   export type TransferRequestUpdateManyWithoutTeamNestedInput = {
@@ -10261,6 +13252,20 @@ export namespace Prisma {
     update?: MatchUpdateWithWhereUniqueWithoutAwayTeamInput | MatchUpdateWithWhereUniqueWithoutAwayTeamInput[]
     updateMany?: MatchUpdateManyWithWhereWithoutAwayTeamInput | MatchUpdateManyWithWhereWithoutAwayTeamInput[]
     deleteMany?: MatchScalarWhereInput | MatchScalarWhereInput[]
+  }
+
+  export type CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
+    upsert?: CompetitionTeamUpsertWithWhereUniqueWithoutTeamInput | CompetitionTeamUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: CompetitionTeamCreateManyTeamInputEnvelope
+    set?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    disconnect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    delete?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    update?: CompetitionTeamUpdateWithWhereUniqueWithoutTeamInput | CompetitionTeamUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: CompetitionTeamUpdateManyWithWhereWithoutTeamInput | CompetitionTeamUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: CompetitionTeamScalarWhereInput | CompetitionTeamScalarWhereInput[]
   }
 
   export type TransferRequestUncheckedUpdateManyWithoutTeamNestedInput = {
@@ -10339,6 +13344,136 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutStatsInput, UserUpdateWithoutStatsInput>, UserUncheckedUpdateWithoutStatsInput>
   }
 
+  export type CompetitionTeamCreateNestedManyWithoutCompetitionInput = {
+    create?: XOR<CompetitionTeamCreateWithoutCompetitionInput, CompetitionTeamUncheckedCreateWithoutCompetitionInput> | CompetitionTeamCreateWithoutCompetitionInput[] | CompetitionTeamUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutCompetitionInput | CompetitionTeamCreateOrConnectWithoutCompetitionInput[]
+    createMany?: CompetitionTeamCreateManyCompetitionInputEnvelope
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+  }
+
+  export type MatchCreateNestedManyWithoutCompetitionInput = {
+    create?: XOR<MatchCreateWithoutCompetitionInput, MatchUncheckedCreateWithoutCompetitionInput> | MatchCreateWithoutCompetitionInput[] | MatchUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutCompetitionInput | MatchCreateOrConnectWithoutCompetitionInput[]
+    createMany?: MatchCreateManyCompetitionInputEnvelope
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+  }
+
+  export type CompetitionTeamUncheckedCreateNestedManyWithoutCompetitionInput = {
+    create?: XOR<CompetitionTeamCreateWithoutCompetitionInput, CompetitionTeamUncheckedCreateWithoutCompetitionInput> | CompetitionTeamCreateWithoutCompetitionInput[] | CompetitionTeamUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutCompetitionInput | CompetitionTeamCreateOrConnectWithoutCompetitionInput[]
+    createMany?: CompetitionTeamCreateManyCompetitionInputEnvelope
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+  }
+
+  export type MatchUncheckedCreateNestedManyWithoutCompetitionInput = {
+    create?: XOR<MatchCreateWithoutCompetitionInput, MatchUncheckedCreateWithoutCompetitionInput> | MatchCreateWithoutCompetitionInput[] | MatchUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutCompetitionInput | MatchCreateOrConnectWithoutCompetitionInput[]
+    createMany?: MatchCreateManyCompetitionInputEnvelope
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+  }
+
+  export type EnumCompetitionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.CompetitionType
+  }
+
+  export type EnumCompetitionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.CompetitionStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type CompetitionTeamUpdateManyWithoutCompetitionNestedInput = {
+    create?: XOR<CompetitionTeamCreateWithoutCompetitionInput, CompetitionTeamUncheckedCreateWithoutCompetitionInput> | CompetitionTeamCreateWithoutCompetitionInput[] | CompetitionTeamUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutCompetitionInput | CompetitionTeamCreateOrConnectWithoutCompetitionInput[]
+    upsert?: CompetitionTeamUpsertWithWhereUniqueWithoutCompetitionInput | CompetitionTeamUpsertWithWhereUniqueWithoutCompetitionInput[]
+    createMany?: CompetitionTeamCreateManyCompetitionInputEnvelope
+    set?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    disconnect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    delete?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    update?: CompetitionTeamUpdateWithWhereUniqueWithoutCompetitionInput | CompetitionTeamUpdateWithWhereUniqueWithoutCompetitionInput[]
+    updateMany?: CompetitionTeamUpdateManyWithWhereWithoutCompetitionInput | CompetitionTeamUpdateManyWithWhereWithoutCompetitionInput[]
+    deleteMany?: CompetitionTeamScalarWhereInput | CompetitionTeamScalarWhereInput[]
+  }
+
+  export type MatchUpdateManyWithoutCompetitionNestedInput = {
+    create?: XOR<MatchCreateWithoutCompetitionInput, MatchUncheckedCreateWithoutCompetitionInput> | MatchCreateWithoutCompetitionInput[] | MatchUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutCompetitionInput | MatchCreateOrConnectWithoutCompetitionInput[]
+    upsert?: MatchUpsertWithWhereUniqueWithoutCompetitionInput | MatchUpsertWithWhereUniqueWithoutCompetitionInput[]
+    createMany?: MatchCreateManyCompetitionInputEnvelope
+    set?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    disconnect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    delete?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    update?: MatchUpdateWithWhereUniqueWithoutCompetitionInput | MatchUpdateWithWhereUniqueWithoutCompetitionInput[]
+    updateMany?: MatchUpdateManyWithWhereWithoutCompetitionInput | MatchUpdateManyWithWhereWithoutCompetitionInput[]
+    deleteMany?: MatchScalarWhereInput | MatchScalarWhereInput[]
+  }
+
+  export type CompetitionTeamUncheckedUpdateManyWithoutCompetitionNestedInput = {
+    create?: XOR<CompetitionTeamCreateWithoutCompetitionInput, CompetitionTeamUncheckedCreateWithoutCompetitionInput> | CompetitionTeamCreateWithoutCompetitionInput[] | CompetitionTeamUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: CompetitionTeamCreateOrConnectWithoutCompetitionInput | CompetitionTeamCreateOrConnectWithoutCompetitionInput[]
+    upsert?: CompetitionTeamUpsertWithWhereUniqueWithoutCompetitionInput | CompetitionTeamUpsertWithWhereUniqueWithoutCompetitionInput[]
+    createMany?: CompetitionTeamCreateManyCompetitionInputEnvelope
+    set?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    disconnect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    delete?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    connect?: CompetitionTeamWhereUniqueInput | CompetitionTeamWhereUniqueInput[]
+    update?: CompetitionTeamUpdateWithWhereUniqueWithoutCompetitionInput | CompetitionTeamUpdateWithWhereUniqueWithoutCompetitionInput[]
+    updateMany?: CompetitionTeamUpdateManyWithWhereWithoutCompetitionInput | CompetitionTeamUpdateManyWithWhereWithoutCompetitionInput[]
+    deleteMany?: CompetitionTeamScalarWhereInput | CompetitionTeamScalarWhereInput[]
+  }
+
+  export type MatchUncheckedUpdateManyWithoutCompetitionNestedInput = {
+    create?: XOR<MatchCreateWithoutCompetitionInput, MatchUncheckedCreateWithoutCompetitionInput> | MatchCreateWithoutCompetitionInput[] | MatchUncheckedCreateWithoutCompetitionInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutCompetitionInput | MatchCreateOrConnectWithoutCompetitionInput[]
+    upsert?: MatchUpsertWithWhereUniqueWithoutCompetitionInput | MatchUpsertWithWhereUniqueWithoutCompetitionInput[]
+    createMany?: MatchCreateManyCompetitionInputEnvelope
+    set?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    disconnect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    delete?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    update?: MatchUpdateWithWhereUniqueWithoutCompetitionInput | MatchUpdateWithWhereUniqueWithoutCompetitionInput[]
+    updateMany?: MatchUpdateManyWithWhereWithoutCompetitionInput | MatchUpdateManyWithWhereWithoutCompetitionInput[]
+    deleteMany?: MatchScalarWhereInput | MatchScalarWhereInput[]
+  }
+
+  export type CompetitionCreateNestedOneWithoutTeamsInput = {
+    create?: XOR<CompetitionCreateWithoutTeamsInput, CompetitionUncheckedCreateWithoutTeamsInput>
+    connectOrCreate?: CompetitionCreateOrConnectWithoutTeamsInput
+    connect?: CompetitionWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutCompetitionsInput = {
+    create?: XOR<TeamCreateWithoutCompetitionsInput, TeamUncheckedCreateWithoutCompetitionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutCompetitionsInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type CompetitionUpdateOneRequiredWithoutTeamsNestedInput = {
+    create?: XOR<CompetitionCreateWithoutTeamsInput, CompetitionUncheckedCreateWithoutTeamsInput>
+    connectOrCreate?: CompetitionCreateOrConnectWithoutTeamsInput
+    upsert?: CompetitionUpsertWithoutTeamsInput
+    connect?: CompetitionWhereUniqueInput
+    update?: XOR<XOR<CompetitionUpdateToOneWithWhereWithoutTeamsInput, CompetitionUpdateWithoutTeamsInput>, CompetitionUncheckedUpdateWithoutTeamsInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutCompetitionsNestedInput = {
+    create?: XOR<TeamCreateWithoutCompetitionsInput, TeamUncheckedCreateWithoutCompetitionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutCompetitionsInput
+    upsert?: TeamUpsertWithoutCompetitionsInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutCompetitionsInput, TeamUpdateWithoutCompetitionsInput>, TeamUncheckedUpdateWithoutCompetitionsInput>
+  }
+
+  export type CompetitionCreateNestedOneWithoutMatchesInput = {
+    create?: XOR<CompetitionCreateWithoutMatchesInput, CompetitionUncheckedCreateWithoutMatchesInput>
+    connectOrCreate?: CompetitionCreateOrConnectWithoutMatchesInput
+    connect?: CompetitionWhereUniqueInput
+  }
+
   export type TeamCreateNestedOneWithoutHomeMatchesInput = {
     create?: XOR<TeamCreateWithoutHomeMatchesInput, TeamUncheckedCreateWithoutHomeMatchesInput>
     connectOrCreate?: TeamCreateOrConnectWithoutHomeMatchesInput
@@ -10363,8 +13498,14 @@ export namespace Prisma {
     set?: $Enums.MatchStatus
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
+  export type CompetitionUpdateOneWithoutMatchesNestedInput = {
+    create?: XOR<CompetitionCreateWithoutMatchesInput, CompetitionUncheckedCreateWithoutMatchesInput>
+    connectOrCreate?: CompetitionCreateOrConnectWithoutMatchesInput
+    upsert?: CompetitionUpsertWithoutMatchesInput
+    disconnect?: CompetitionWhereInput | boolean
+    delete?: CompetitionWhereInput | boolean
+    connect?: CompetitionWhereUniqueInput
+    update?: XOR<XOR<CompetitionUpdateToOneWithWhereWithoutMatchesInput, CompetitionUpdateWithoutMatchesInput>, CompetitionUncheckedUpdateWithoutMatchesInput>
   }
 
   export type TeamUpdateOneRequiredWithoutHomeMatchesNestedInput = {
@@ -10660,11 +13801,18 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedEnumMatchStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.MatchStatus | EnumMatchStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumMatchStatusFilter<$PrismaModel> | $Enums.MatchStatus
+  export type NestedEnumCompetitionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionType | EnumCompetitionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionTypeFilter<$PrismaModel> | $Enums.CompetitionType
+  }
+
+  export type NestedEnumCompetitionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionStatus | EnumCompetitionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionStatusFilter<$PrismaModel> | $Enums.CompetitionStatus
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -10676,6 +13824,72 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumCompetitionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionType | EnumCompetitionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionTypeWithAggregatesFilter<$PrismaModel> | $Enums.CompetitionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCompetitionTypeFilter<$PrismaModel>
+    _max?: NestedEnumCompetitionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCompetitionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CompetitionStatus | EnumCompetitionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CompetitionStatus[] | ListEnumCompetitionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCompetitionStatusWithAggregatesFilter<$PrismaModel> | $Enums.CompetitionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCompetitionStatusFilter<$PrismaModel>
+    _max?: NestedEnumCompetitionStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedUuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumMatchStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MatchStatus | EnumMatchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMatchStatusFilter<$PrismaModel> | $Enums.MatchStatus
+  }
+
+  export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10713,20 +13927,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMatchStatusFilter<$PrismaModel>
     _max?: NestedEnumMatchStatusFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumTransferStatusFilter<$PrismaModel = never> = {
@@ -10926,16 +14126,20 @@ export namespace Prisma {
   export type MatchCreateWithoutHomeTeamInput = {
     id?: string
     ea_match_id?: string | null
+    round?: string | null
     home_score?: number | null
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
     awayTeam: TeamCreateNestedOneWithoutAwayMatchesInput
   }
 
   export type MatchUncheckedCreateWithoutHomeTeamInput = {
     id?: string
     ea_match_id?: string | null
+    competition_id?: string | null
+    round?: string | null
     away_team_id: string
     home_score?: number | null
     away_score?: number | null
@@ -10956,16 +14160,20 @@ export namespace Prisma {
   export type MatchCreateWithoutAwayTeamInput = {
     id?: string
     ea_match_id?: string | null
+    round?: string | null
     home_score?: number | null
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: TeamCreateNestedOneWithoutHomeMatchesInput
   }
 
   export type MatchUncheckedCreateWithoutAwayTeamInput = {
     id?: string
     ea_match_id?: string | null
+    competition_id?: string | null
+    round?: string | null
     home_team_id: string
     home_score?: number | null
     away_score?: number | null
@@ -10980,6 +14188,26 @@ export namespace Prisma {
 
   export type MatchCreateManyAwayTeamInputEnvelope = {
     data: MatchCreateManyAwayTeamInput | MatchCreateManyAwayTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompetitionTeamCreateWithoutTeamInput = {
+    joined_at?: Date | string
+    competition: CompetitionCreateNestedOneWithoutTeamsInput
+  }
+
+  export type CompetitionTeamUncheckedCreateWithoutTeamInput = {
+    competition_id: string
+    joined_at?: Date | string
+  }
+
+  export type CompetitionTeamCreateOrConnectWithoutTeamInput = {
+    where: CompetitionTeamWhereUniqueInput
+    create: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput>
+  }
+
+  export type CompetitionTeamCreateManyTeamInputEnvelope = {
+    data: CompetitionTeamCreateManyTeamInput | CompetitionTeamCreateManyTeamInput[]
     skipDuplicates?: boolean
   }
 
@@ -11045,6 +14273,8 @@ export namespace Prisma {
     NOT?: MatchScalarWhereInput | MatchScalarWhereInput[]
     id?: UuidFilter<"Match"> | string
     ea_match_id?: StringNullableFilter<"Match"> | string | null
+    competition_id?: UuidNullableFilter<"Match"> | string | null
+    round?: StringNullableFilter<"Match"> | string | null
     home_team_id?: UuidFilter<"Match"> | string
     away_team_id?: UuidFilter<"Match"> | string
     home_score?: IntNullableFilter<"Match"> | number | null
@@ -11067,6 +14297,31 @@ export namespace Prisma {
   export type MatchUpdateManyWithWhereWithoutAwayTeamInput = {
     where: MatchScalarWhereInput
     data: XOR<MatchUpdateManyMutationInput, MatchUncheckedUpdateManyWithoutAwayTeamInput>
+  }
+
+  export type CompetitionTeamUpsertWithWhereUniqueWithoutTeamInput = {
+    where: CompetitionTeamWhereUniqueInput
+    update: XOR<CompetitionTeamUpdateWithoutTeamInput, CompetitionTeamUncheckedUpdateWithoutTeamInput>
+    create: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput>
+  }
+
+  export type CompetitionTeamUpdateWithWhereUniqueWithoutTeamInput = {
+    where: CompetitionTeamWhereUniqueInput
+    data: XOR<CompetitionTeamUpdateWithoutTeamInput, CompetitionTeamUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type CompetitionTeamUpdateManyWithWhereWithoutTeamInput = {
+    where: CompetitionTeamScalarWhereInput
+    data: XOR<CompetitionTeamUpdateManyMutationInput, CompetitionTeamUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type CompetitionTeamScalarWhereInput = {
+    AND?: CompetitionTeamScalarWhereInput | CompetitionTeamScalarWhereInput[]
+    OR?: CompetitionTeamScalarWhereInput[]
+    NOT?: CompetitionTeamScalarWhereInput | CompetitionTeamScalarWhereInput[]
+    competition_id?: UuidFilter<"CompetitionTeam"> | string
+    team_id?: UuidFilter<"CompetitionTeam"> | string
+    joined_at?: DateTimeFilter<"CompetitionTeam"> | Date | string
   }
 
   export type TransferRequestUpsertWithWhereUniqueWithoutTeamInput = {
@@ -11129,6 +14384,7 @@ export namespace Prisma {
     platform?: $Enums.Platform
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
   }
 
@@ -11141,6 +14397,7 @@ export namespace Prisma {
     platform?: $Enums.Platform
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -11210,6 +14467,7 @@ export namespace Prisma {
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
   }
 
@@ -11222,6 +14480,7 @@ export namespace Prisma {
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -11301,6 +14560,247 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
+  export type CompetitionTeamCreateWithoutCompetitionInput = {
+    joined_at?: Date | string
+    team: TeamCreateNestedOneWithoutCompetitionsInput
+  }
+
+  export type CompetitionTeamUncheckedCreateWithoutCompetitionInput = {
+    team_id: string
+    joined_at?: Date | string
+  }
+
+  export type CompetitionTeamCreateOrConnectWithoutCompetitionInput = {
+    where: CompetitionTeamWhereUniqueInput
+    create: XOR<CompetitionTeamCreateWithoutCompetitionInput, CompetitionTeamUncheckedCreateWithoutCompetitionInput>
+  }
+
+  export type CompetitionTeamCreateManyCompetitionInputEnvelope = {
+    data: CompetitionTeamCreateManyCompetitionInput | CompetitionTeamCreateManyCompetitionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MatchCreateWithoutCompetitionInput = {
+    id?: string
+    ea_match_id?: string | null
+    round?: string | null
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    homeTeam: TeamCreateNestedOneWithoutHomeMatchesInput
+    awayTeam: TeamCreateNestedOneWithoutAwayMatchesInput
+  }
+
+  export type MatchUncheckedCreateWithoutCompetitionInput = {
+    id?: string
+    ea_match_id?: string | null
+    round?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+  }
+
+  export type MatchCreateOrConnectWithoutCompetitionInput = {
+    where: MatchWhereUniqueInput
+    create: XOR<MatchCreateWithoutCompetitionInput, MatchUncheckedCreateWithoutCompetitionInput>
+  }
+
+  export type MatchCreateManyCompetitionInputEnvelope = {
+    data: MatchCreateManyCompetitionInput | MatchCreateManyCompetitionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompetitionTeamUpsertWithWhereUniqueWithoutCompetitionInput = {
+    where: CompetitionTeamWhereUniqueInput
+    update: XOR<CompetitionTeamUpdateWithoutCompetitionInput, CompetitionTeamUncheckedUpdateWithoutCompetitionInput>
+    create: XOR<CompetitionTeamCreateWithoutCompetitionInput, CompetitionTeamUncheckedCreateWithoutCompetitionInput>
+  }
+
+  export type CompetitionTeamUpdateWithWhereUniqueWithoutCompetitionInput = {
+    where: CompetitionTeamWhereUniqueInput
+    data: XOR<CompetitionTeamUpdateWithoutCompetitionInput, CompetitionTeamUncheckedUpdateWithoutCompetitionInput>
+  }
+
+  export type CompetitionTeamUpdateManyWithWhereWithoutCompetitionInput = {
+    where: CompetitionTeamScalarWhereInput
+    data: XOR<CompetitionTeamUpdateManyMutationInput, CompetitionTeamUncheckedUpdateManyWithoutCompetitionInput>
+  }
+
+  export type MatchUpsertWithWhereUniqueWithoutCompetitionInput = {
+    where: MatchWhereUniqueInput
+    update: XOR<MatchUpdateWithoutCompetitionInput, MatchUncheckedUpdateWithoutCompetitionInput>
+    create: XOR<MatchCreateWithoutCompetitionInput, MatchUncheckedCreateWithoutCompetitionInput>
+  }
+
+  export type MatchUpdateWithWhereUniqueWithoutCompetitionInput = {
+    where: MatchWhereUniqueInput
+    data: XOR<MatchUpdateWithoutCompetitionInput, MatchUncheckedUpdateWithoutCompetitionInput>
+  }
+
+  export type MatchUpdateManyWithWhereWithoutCompetitionInput = {
+    where: MatchScalarWhereInput
+    data: XOR<MatchUpdateManyMutationInput, MatchUncheckedUpdateManyWithoutCompetitionInput>
+  }
+
+  export type CompetitionCreateWithoutTeamsInput = {
+    id?: string
+    name: string
+    type: $Enums.CompetitionType
+    status?: $Enums.CompetitionStatus
+    start_date?: Date | string | null
+    end_date?: Date | string | null
+    created_at?: Date | string
+    matches?: MatchCreateNestedManyWithoutCompetitionInput
+  }
+
+  export type CompetitionUncheckedCreateWithoutTeamsInput = {
+    id?: string
+    name: string
+    type: $Enums.CompetitionType
+    status?: $Enums.CompetitionStatus
+    start_date?: Date | string | null
+    end_date?: Date | string | null
+    created_at?: Date | string
+    matches?: MatchUncheckedCreateNestedManyWithoutCompetitionInput
+  }
+
+  export type CompetitionCreateOrConnectWithoutTeamsInput = {
+    where: CompetitionWhereUniqueInput
+    create: XOR<CompetitionCreateWithoutTeamsInput, CompetitionUncheckedCreateWithoutTeamsInput>
+  }
+
+  export type TeamCreateWithoutCompetitionsInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutCompetitionsInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutCompetitionsInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutCompetitionsInput, TeamUncheckedCreateWithoutCompetitionsInput>
+  }
+
+  export type CompetitionUpsertWithoutTeamsInput = {
+    update: XOR<CompetitionUpdateWithoutTeamsInput, CompetitionUncheckedUpdateWithoutTeamsInput>
+    create: XOR<CompetitionCreateWithoutTeamsInput, CompetitionUncheckedCreateWithoutTeamsInput>
+    where?: CompetitionWhereInput
+  }
+
+  export type CompetitionUpdateToOneWithWhereWithoutTeamsInput = {
+    where?: CompetitionWhereInput
+    data: XOR<CompetitionUpdateWithoutTeamsInput, CompetitionUncheckedUpdateWithoutTeamsInput>
+  }
+
+  export type CompetitionUpdateWithoutTeamsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    matches?: MatchUpdateManyWithoutCompetitionNestedInput
+  }
+
+  export type CompetitionUncheckedUpdateWithoutTeamsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    matches?: MatchUncheckedUpdateManyWithoutCompetitionNestedInput
+  }
+
+  export type TeamUpsertWithoutCompetitionsInput = {
+    update: XOR<TeamUpdateWithoutCompetitionsInput, TeamUncheckedUpdateWithoutCompetitionsInput>
+    create: XOR<TeamCreateWithoutCompetitionsInput, TeamUncheckedCreateWithoutCompetitionsInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutCompetitionsInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutCompetitionsInput, TeamUncheckedUpdateWithoutCompetitionsInput>
+  }
+
+  export type TeamUpdateWithoutCompetitionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutCompetitionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type CompetitionCreateWithoutMatchesInput = {
+    id?: string
+    name: string
+    type: $Enums.CompetitionType
+    status?: $Enums.CompetitionStatus
+    start_date?: Date | string | null
+    end_date?: Date | string | null
+    created_at?: Date | string
+    teams?: CompetitionTeamCreateNestedManyWithoutCompetitionInput
+  }
+
+  export type CompetitionUncheckedCreateWithoutMatchesInput = {
+    id?: string
+    name: string
+    type: $Enums.CompetitionType
+    status?: $Enums.CompetitionStatus
+    start_date?: Date | string | null
+    end_date?: Date | string | null
+    created_at?: Date | string
+    teams?: CompetitionTeamUncheckedCreateNestedManyWithoutCompetitionInput
+  }
+
+  export type CompetitionCreateOrConnectWithoutMatchesInput = {
+    where: CompetitionWhereUniqueInput
+    create: XOR<CompetitionCreateWithoutMatchesInput, CompetitionUncheckedCreateWithoutMatchesInput>
+  }
+
   export type TeamCreateWithoutHomeMatchesInput = {
     id?: string
     name: string
@@ -11310,6 +14810,7 @@ export namespace Prisma {
     platform?: $Enums.Platform
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
   }
 
@@ -11322,6 +14823,7 @@ export namespace Prisma {
     platform?: $Enums.Platform
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -11339,6 +14841,7 @@ export namespace Prisma {
     platform?: $Enums.Platform
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
   }
 
@@ -11351,12 +14854,46 @@ export namespace Prisma {
     platform?: $Enums.Platform
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutAwayMatchesInput = {
     where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutAwayMatchesInput, TeamUncheckedCreateWithoutAwayMatchesInput>
+  }
+
+  export type CompetitionUpsertWithoutMatchesInput = {
+    update: XOR<CompetitionUpdateWithoutMatchesInput, CompetitionUncheckedUpdateWithoutMatchesInput>
+    create: XOR<CompetitionCreateWithoutMatchesInput, CompetitionUncheckedCreateWithoutMatchesInput>
+    where?: CompetitionWhereInput
+  }
+
+  export type CompetitionUpdateToOneWithWhereWithoutMatchesInput = {
+    where?: CompetitionWhereInput
+    data: XOR<CompetitionUpdateWithoutMatchesInput, CompetitionUncheckedUpdateWithoutMatchesInput>
+  }
+
+  export type CompetitionUpdateWithoutMatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: CompetitionTeamUpdateManyWithoutCompetitionNestedInput
+  }
+
+  export type CompetitionUncheckedUpdateWithoutMatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
+    status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: CompetitionTeamUncheckedUpdateManyWithoutCompetitionNestedInput
   }
 
   export type TeamUpsertWithoutHomeMatchesInput = {
@@ -11379,6 +14916,7 @@ export namespace Prisma {
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
   }
 
@@ -11391,6 +14929,7 @@ export namespace Prisma {
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -11414,6 +14953,7 @@ export namespace Prisma {
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
   }
 
@@ -11426,6 +14966,7 @@ export namespace Prisma {
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -11474,6 +15015,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutTransferRequestsInput = {
@@ -11486,6 +15028,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutTransferRequestsInput = {
@@ -11555,6 +15098,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutTransferRequestsInput = {
@@ -11567,6 +15111,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamMemberCreateManyUserInput = {
@@ -11630,6 +15175,8 @@ export namespace Prisma {
   export type MatchCreateManyHomeTeamInput = {
     id?: string
     ea_match_id?: string | null
+    competition_id?: string | null
+    round?: string | null
     away_team_id: string
     home_score?: number | null
     away_score?: number | null
@@ -11640,11 +15187,18 @@ export namespace Prisma {
   export type MatchCreateManyAwayTeamInput = {
     id?: string
     ea_match_id?: string | null
+    competition_id?: string | null
+    round?: string | null
     home_team_id: string
     home_score?: number | null
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+  }
+
+  export type CompetitionTeamCreateManyTeamInput = {
+    competition_id: string
+    joined_at?: Date | string
   }
 
   export type TransferRequestCreateManyTeamInput = {
@@ -11675,16 +15229,20 @@ export namespace Prisma {
   export type MatchUpdateWithoutHomeTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     awayTeam?: TeamUpdateOneRequiredWithoutAwayMatchesNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutHomeTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     away_team_id?: StringFieldUpdateOperationsInput | string
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
@@ -11695,6 +15253,8 @@ export namespace Prisma {
   export type MatchUncheckedUpdateManyWithoutHomeTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     away_team_id?: StringFieldUpdateOperationsInput | string
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
@@ -11705,16 +15265,20 @@ export namespace Prisma {
   export type MatchUpdateWithoutAwayTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: TeamUpdateOneRequiredWithoutHomeMatchesNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutAwayTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_team_id?: StringFieldUpdateOperationsInput | string
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
@@ -11725,11 +15289,28 @@ export namespace Prisma {
   export type MatchUncheckedUpdateManyWithoutAwayTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
     home_team_id?: StringFieldUpdateOperationsInput | string
     home_score?: NullableIntFieldUpdateOperationsInput | number | null
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type CompetitionTeamUpdateWithoutTeamInput = {
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    competition?: CompetitionUpdateOneRequiredWithoutTeamsNestedInput
+  }
+
+  export type CompetitionTeamUncheckedUpdateWithoutTeamInput = {
+    competition_id?: StringFieldUpdateOperationsInput | string
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompetitionTeamUncheckedUpdateManyWithoutTeamInput = {
+    competition_id?: StringFieldUpdateOperationsInput | string
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TransferRequestUpdateWithoutTeamInput = {
@@ -11751,6 +15332,74 @@ export namespace Prisma {
     player_id?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompetitionTeamCreateManyCompetitionInput = {
+    team_id: string
+    joined_at?: Date | string
+  }
+
+  export type MatchCreateManyCompetitionInput = {
+    id?: string
+    ea_match_id?: string | null
+    round?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+  }
+
+  export type CompetitionTeamUpdateWithoutCompetitionInput = {
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutCompetitionsNestedInput
+  }
+
+  export type CompetitionTeamUncheckedUpdateWithoutCompetitionInput = {
+    team_id?: StringFieldUpdateOperationsInput | string
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompetitionTeamUncheckedUpdateManyWithoutCompetitionInput = {
+    team_id?: StringFieldUpdateOperationsInput | string
+    joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MatchUpdateWithoutCompetitionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    homeTeam?: TeamUpdateOneRequiredWithoutHomeMatchesNestedInput
+    awayTeam?: TeamUpdateOneRequiredWithoutAwayMatchesNestedInput
+  }
+
+  export type MatchUncheckedUpdateWithoutCompetitionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MatchUncheckedUpdateManyWithoutCompetitionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 
