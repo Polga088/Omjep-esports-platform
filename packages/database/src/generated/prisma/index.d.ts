@@ -49,6 +49,11 @@ export type CompetitionTeam = $Result.DefaultSelection<Prisma.$CompetitionTeamPa
  */
 export type Match = $Result.DefaultSelection<Prisma.$MatchPayload>
 /**
+ * Model MatchEvent
+ * 
+ */
+export type MatchEvent = $Result.DefaultSelection<Prisma.$MatchEventPayload>
+/**
  * Model TransferRequest
  * 
  */
@@ -154,6 +159,14 @@ export const InvitationStatus: {
 
 export type InvitationStatus = (typeof InvitationStatus)[keyof typeof InvitationStatus]
 
+
+export const EventType: {
+  GOAL: 'GOAL',
+  ASSIST: 'ASSIST'
+};
+
+export type EventType = (typeof EventType)[keyof typeof EventType]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -191,6 +204,10 @@ export const TransferStatus: typeof $Enums.TransferStatus
 export type InvitationStatus = $Enums.InvitationStatus
 
 export const InvitationStatus: typeof $Enums.InvitationStatus
+
+export type EventType = $Enums.EventType
+
+export const EventType: typeof $Enums.EventType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -379,6 +396,16 @@ export class PrismaClient<
     * ```
     */
   get match(): Prisma.MatchDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.matchEvent`: Exposes CRUD operations for the **MatchEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MatchEvents
+    * const matchEvents = await prisma.matchEvent.findMany()
+    * ```
+    */
+  get matchEvent(): Prisma.MatchEventDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.transferRequest`: Exposes CRUD operations for the **TransferRequest** model.
@@ -847,6 +874,7 @@ export namespace Prisma {
     Competition: 'Competition',
     CompetitionTeam: 'CompetitionTeam',
     Match: 'Match',
+    MatchEvent: 'MatchEvent',
     TransferRequest: 'TransferRequest',
     Invitation: 'Invitation'
   };
@@ -867,7 +895,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "team" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "transferRequest" | "invitation"
+      modelProps: "user" | "team" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "matchEvent" | "transferRequest" | "invitation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1389,6 +1417,80 @@ export namespace Prisma {
           }
         }
       }
+      MatchEvent: {
+        payload: Prisma.$MatchEventPayload<ExtArgs>
+        fields: Prisma.MatchEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MatchEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MatchEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>
+          }
+          findFirst: {
+            args: Prisma.MatchEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MatchEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>
+          }
+          findMany: {
+            args: Prisma.MatchEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>[]
+          }
+          create: {
+            args: Prisma.MatchEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>
+          }
+          createMany: {
+            args: Prisma.MatchEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MatchEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>[]
+          }
+          delete: {
+            args: Prisma.MatchEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>
+          }
+          update: {
+            args: Prisma.MatchEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.MatchEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MatchEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MatchEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.MatchEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchEventPayload>
+          }
+          aggregate: {
+            args: Prisma.MatchEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMatchEvent>
+          }
+          groupBy: {
+            args: Prisma.MatchEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MatchEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MatchEventCountArgs<ExtArgs>
+            result: $Utils.Optional<MatchEventCountAggregateOutputType> | number
+          }
+        }
+      }
       TransferRequest: {
         payload: Prisma.$TransferRequestPayload<ExtArgs>
         fields: Prisma.TransferRequestFieldRefs
@@ -1640,6 +1742,7 @@ export namespace Prisma {
     competition?: CompetitionOmit
     competitionTeam?: CompetitionTeamOmit
     match?: MatchOmit
+    matchEvent?: MatchEventOmit
     transferRequest?: TransferRequestOmit
     invitation?: InvitationOmit
   }
@@ -1726,6 +1829,7 @@ export namespace Prisma {
     transferRequests: number
     sentInvitations: number
     receivedInvitations: number
+    matchEvents: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1733,6 +1837,7 @@ export namespace Prisma {
     transferRequests?: boolean | UserCountOutputTypeCountTransferRequestsArgs
     sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
     receivedInvitations?: boolean | UserCountOutputTypeCountReceivedInvitationsArgs
+    matchEvents?: boolean | UserCountOutputTypeCountMatchEventsArgs
   }
 
   // Custom InputTypes
@@ -1774,6 +1879,13 @@ export namespace Prisma {
     where?: InvitationWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMatchEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchEventWhereInput
+  }
+
 
   /**
    * Count Type TeamCountOutputType
@@ -1786,6 +1898,7 @@ export namespace Prisma {
     competitions: number
     transferRequests: number
     invitations: number
+    matchEvents: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1795,6 +1908,7 @@ export namespace Prisma {
     competitions?: boolean | TeamCountOutputTypeCountCompetitionsArgs
     transferRequests?: boolean | TeamCountOutputTypeCountTransferRequestsArgs
     invitations?: boolean | TeamCountOutputTypeCountInvitationsArgs
+    matchEvents?: boolean | TeamCountOutputTypeCountMatchEventsArgs
   }
 
   // Custom InputTypes
@@ -1850,6 +1964,13 @@ export namespace Prisma {
     where?: InvitationWhereInput
   }
 
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountMatchEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchEventWhereInput
+  }
+
 
   /**
    * Count Type CompetitionCountOutputType
@@ -1888,6 +2009,37 @@ export namespace Prisma {
    */
   export type CompetitionCountOutputTypeCountMatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MatchWhereInput
+  }
+
+
+  /**
+   * Count Type MatchCountOutputType
+   */
+
+  export type MatchCountOutputType = {
+    events: number
+  }
+
+  export type MatchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    events?: boolean | MatchCountOutputTypeCountEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * MatchCountOutputType without action
+   */
+  export type MatchCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchCountOutputType
+     */
+    select?: MatchCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MatchCountOutputType without action
+   */
+  export type MatchCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchEventWhereInput
   }
 
 
@@ -2104,6 +2256,7 @@ export namespace Prisma {
     transferRequests?: boolean | User$transferRequestsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
+    matchEvents?: boolean | User$matchEventsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2153,6 +2306,7 @@ export namespace Prisma {
     transferRequests?: boolean | User$transferRequestsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
+    matchEvents?: boolean | User$matchEventsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2166,6 +2320,7 @@ export namespace Prisma {
       transferRequests: Prisma.$TransferRequestPayload<ExtArgs>[]
       sentInvitations: Prisma.$InvitationPayload<ExtArgs>[]
       receivedInvitations: Prisma.$InvitationPayload<ExtArgs>[]
+      matchEvents: Prisma.$MatchEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2577,6 +2732,7 @@ export namespace Prisma {
     transferRequests<T extends User$transferRequestsArgs<ExtArgs> = {}>(args?: Subset<T, User$transferRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedInvitations<T extends User$receivedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    matchEvents<T extends User$matchEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$matchEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3119,6 +3275,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.matchEvents
+   */
+  export type User$matchEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    where?: MatchEventWhereInput
+    orderBy?: MatchEventOrderByWithRelationInput | MatchEventOrderByWithRelationInput[]
+    cursor?: MatchEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MatchEventScalarFieldEnum | MatchEventScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3315,6 +3495,7 @@ export namespace Prisma {
     competitions?: boolean | Team$competitionsArgs<ExtArgs>
     transferRequests?: boolean | Team$transferRequestsArgs<ExtArgs>
     invitations?: boolean | Team$invitationsArgs<ExtArgs>
+    matchEvents?: boolean | Team$matchEventsArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -3353,6 +3534,7 @@ export namespace Prisma {
     competitions?: boolean | Team$competitionsArgs<ExtArgs>
     transferRequests?: boolean | Team$transferRequestsArgs<ExtArgs>
     invitations?: boolean | Team$invitationsArgs<ExtArgs>
+    matchEvents?: boolean | Team$matchEventsArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3367,6 +3549,7 @@ export namespace Prisma {
       competitions: Prisma.$CompetitionTeamPayload<ExtArgs>[]
       transferRequests: Prisma.$TransferRequestPayload<ExtArgs>[]
       invitations: Prisma.$InvitationPayload<ExtArgs>[]
+      matchEvents: Prisma.$MatchEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3775,6 +3958,7 @@ export namespace Prisma {
     competitions<T extends Team$competitionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$competitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transferRequests<T extends Team$transferRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Team$transferRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invitations<T extends Team$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, Team$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    matchEvents<T extends Team$matchEventsArgs<ExtArgs> = {}>(args?: Subset<T, Team$matchEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4339,6 +4523,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InvitationScalarFieldEnum | InvitationScalarFieldEnum[]
+  }
+
+  /**
+   * Team.matchEvents
+   */
+  export type Team$matchEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    where?: MatchEventWhereInput
+    orderBy?: MatchEventOrderByWithRelationInput | MatchEventOrderByWithRelationInput[]
+    cursor?: MatchEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MatchEventScalarFieldEnum | MatchEventScalarFieldEnum[]
   }
 
   /**
@@ -8973,6 +9181,8 @@ export namespace Prisma {
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    events?: boolean | Match$eventsArgs<ExtArgs>
+    _count?: boolean | MatchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["match"]>
 
   export type MatchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9025,6 +9235,8 @@ export namespace Prisma {
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | TeamDefaultArgs<ExtArgs>
     awayTeam?: boolean | TeamDefaultArgs<ExtArgs>
+    events?: boolean | Match$eventsArgs<ExtArgs>
+    _count?: boolean | MatchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MatchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     competition?: boolean | Match$competitionArgs<ExtArgs>
@@ -9043,6 +9255,7 @@ export namespace Prisma {
       competition: Prisma.$CompetitionPayload<ExtArgs> | null
       homeTeam: Prisma.$TeamPayload<ExtArgs>
       awayTeam: Prisma.$TeamPayload<ExtArgs>
+      events: Prisma.$MatchEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9452,6 +9665,7 @@ export namespace Prisma {
     competition<T extends Match$competitionArgs<ExtArgs> = {}>(args?: Subset<T, Match$competitionArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     homeTeam<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     awayTeam<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    events<T extends Match$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Match$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9906,6 +10120,30 @@ export namespace Prisma {
   }
 
   /**
+   * Match.events
+   */
+  export type Match$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    where?: MatchEventWhereInput
+    orderBy?: MatchEventOrderByWithRelationInput | MatchEventOrderByWithRelationInput[]
+    cursor?: MatchEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MatchEventScalarFieldEnum | MatchEventScalarFieldEnum[]
+  }
+
+  /**
    * Match without action
    */
   export type MatchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9921,6 +10159,1127 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MatchInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MatchEvent
+   */
+
+  export type AggregateMatchEvent = {
+    _count: MatchEventCountAggregateOutputType | null
+    _avg: MatchEventAvgAggregateOutputType | null
+    _sum: MatchEventSumAggregateOutputType | null
+    _min: MatchEventMinAggregateOutputType | null
+    _max: MatchEventMaxAggregateOutputType | null
+  }
+
+  export type MatchEventAvgAggregateOutputType = {
+    minute: number | null
+  }
+
+  export type MatchEventSumAggregateOutputType = {
+    minute: number | null
+  }
+
+  export type MatchEventMinAggregateOutputType = {
+    id: string | null
+    match_id: string | null
+    player_id: string | null
+    team_id: string | null
+    type: $Enums.EventType | null
+    minute: number | null
+  }
+
+  export type MatchEventMaxAggregateOutputType = {
+    id: string | null
+    match_id: string | null
+    player_id: string | null
+    team_id: string | null
+    type: $Enums.EventType | null
+    minute: number | null
+  }
+
+  export type MatchEventCountAggregateOutputType = {
+    id: number
+    match_id: number
+    player_id: number
+    team_id: number
+    type: number
+    minute: number
+    _all: number
+  }
+
+
+  export type MatchEventAvgAggregateInputType = {
+    minute?: true
+  }
+
+  export type MatchEventSumAggregateInputType = {
+    minute?: true
+  }
+
+  export type MatchEventMinAggregateInputType = {
+    id?: true
+    match_id?: true
+    player_id?: true
+    team_id?: true
+    type?: true
+    minute?: true
+  }
+
+  export type MatchEventMaxAggregateInputType = {
+    id?: true
+    match_id?: true
+    player_id?: true
+    team_id?: true
+    type?: true
+    minute?: true
+  }
+
+  export type MatchEventCountAggregateInputType = {
+    id?: true
+    match_id?: true
+    player_id?: true
+    team_id?: true
+    type?: true
+    minute?: true
+    _all?: true
+  }
+
+  export type MatchEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MatchEvent to aggregate.
+     */
+    where?: MatchEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchEvents to fetch.
+     */
+    orderBy?: MatchEventOrderByWithRelationInput | MatchEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MatchEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MatchEvents
+    **/
+    _count?: true | MatchEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MatchEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MatchEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MatchEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MatchEventMaxAggregateInputType
+  }
+
+  export type GetMatchEventAggregateType<T extends MatchEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateMatchEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMatchEvent[P]>
+      : GetScalarType<T[P], AggregateMatchEvent[P]>
+  }
+
+
+
+
+  export type MatchEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchEventWhereInput
+    orderBy?: MatchEventOrderByWithAggregationInput | MatchEventOrderByWithAggregationInput[]
+    by: MatchEventScalarFieldEnum[] | MatchEventScalarFieldEnum
+    having?: MatchEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MatchEventCountAggregateInputType | true
+    _avg?: MatchEventAvgAggregateInputType
+    _sum?: MatchEventSumAggregateInputType
+    _min?: MatchEventMinAggregateInputType
+    _max?: MatchEventMaxAggregateInputType
+  }
+
+  export type MatchEventGroupByOutputType = {
+    id: string
+    match_id: string
+    player_id: string
+    team_id: string
+    type: $Enums.EventType
+    minute: number | null
+    _count: MatchEventCountAggregateOutputType | null
+    _avg: MatchEventAvgAggregateOutputType | null
+    _sum: MatchEventSumAggregateOutputType | null
+    _min: MatchEventMinAggregateOutputType | null
+    _max: MatchEventMaxAggregateOutputType | null
+  }
+
+  type GetMatchEventGroupByPayload<T extends MatchEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MatchEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MatchEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MatchEventGroupByOutputType[P]>
+            : GetScalarType<T[P], MatchEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MatchEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    match_id?: boolean
+    player_id?: boolean
+    team_id?: boolean
+    type?: boolean
+    minute?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["matchEvent"]>
+
+  export type MatchEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    match_id?: boolean
+    player_id?: boolean
+    team_id?: boolean
+    type?: boolean
+    minute?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["matchEvent"]>
+
+  export type MatchEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    match_id?: boolean
+    player_id?: boolean
+    team_id?: boolean
+    type?: boolean
+    minute?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["matchEvent"]>
+
+  export type MatchEventSelectScalar = {
+    id?: boolean
+    match_id?: boolean
+    player_id?: boolean
+    team_id?: boolean
+    type?: boolean
+    minute?: boolean
+  }
+
+  export type MatchEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "match_id" | "player_id" | "team_id" | "type" | "minute", ExtArgs["result"]["matchEvent"]>
+  export type MatchEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type MatchEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type MatchEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+
+  export type $MatchEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MatchEvent"
+    objects: {
+      match: Prisma.$MatchPayload<ExtArgs>
+      player: Prisma.$UserPayload<ExtArgs>
+      team: Prisma.$TeamPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      match_id: string
+      player_id: string
+      team_id: string
+      type: $Enums.EventType
+      minute: number | null
+    }, ExtArgs["result"]["matchEvent"]>
+    composites: {}
+  }
+
+  type MatchEventGetPayload<S extends boolean | null | undefined | MatchEventDefaultArgs> = $Result.GetResult<Prisma.$MatchEventPayload, S>
+
+  type MatchEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MatchEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MatchEventCountAggregateInputType | true
+    }
+
+  export interface MatchEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MatchEvent'], meta: { name: 'MatchEvent' } }
+    /**
+     * Find zero or one MatchEvent that matches the filter.
+     * @param {MatchEventFindUniqueArgs} args - Arguments to find a MatchEvent
+     * @example
+     * // Get one MatchEvent
+     * const matchEvent = await prisma.matchEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MatchEventFindUniqueArgs>(args: SelectSubset<T, MatchEventFindUniqueArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MatchEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MatchEventFindUniqueOrThrowArgs} args - Arguments to find a MatchEvent
+     * @example
+     * // Get one MatchEvent
+     * const matchEvent = await prisma.matchEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MatchEventFindUniqueOrThrowArgs>(args: SelectSubset<T, MatchEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MatchEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchEventFindFirstArgs} args - Arguments to find a MatchEvent
+     * @example
+     * // Get one MatchEvent
+     * const matchEvent = await prisma.matchEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MatchEventFindFirstArgs>(args?: SelectSubset<T, MatchEventFindFirstArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MatchEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchEventFindFirstOrThrowArgs} args - Arguments to find a MatchEvent
+     * @example
+     * // Get one MatchEvent
+     * const matchEvent = await prisma.matchEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MatchEventFindFirstOrThrowArgs>(args?: SelectSubset<T, MatchEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MatchEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MatchEvents
+     * const matchEvents = await prisma.matchEvent.findMany()
+     * 
+     * // Get first 10 MatchEvents
+     * const matchEvents = await prisma.matchEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const matchEventWithIdOnly = await prisma.matchEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MatchEventFindManyArgs>(args?: SelectSubset<T, MatchEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MatchEvent.
+     * @param {MatchEventCreateArgs} args - Arguments to create a MatchEvent.
+     * @example
+     * // Create one MatchEvent
+     * const MatchEvent = await prisma.matchEvent.create({
+     *   data: {
+     *     // ... data to create a MatchEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends MatchEventCreateArgs>(args: SelectSubset<T, MatchEventCreateArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MatchEvents.
+     * @param {MatchEventCreateManyArgs} args - Arguments to create many MatchEvents.
+     * @example
+     * // Create many MatchEvents
+     * const matchEvent = await prisma.matchEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MatchEventCreateManyArgs>(args?: SelectSubset<T, MatchEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MatchEvents and returns the data saved in the database.
+     * @param {MatchEventCreateManyAndReturnArgs} args - Arguments to create many MatchEvents.
+     * @example
+     * // Create many MatchEvents
+     * const matchEvent = await prisma.matchEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MatchEvents and only return the `id`
+     * const matchEventWithIdOnly = await prisma.matchEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MatchEventCreateManyAndReturnArgs>(args?: SelectSubset<T, MatchEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MatchEvent.
+     * @param {MatchEventDeleteArgs} args - Arguments to delete one MatchEvent.
+     * @example
+     * // Delete one MatchEvent
+     * const MatchEvent = await prisma.matchEvent.delete({
+     *   where: {
+     *     // ... filter to delete one MatchEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MatchEventDeleteArgs>(args: SelectSubset<T, MatchEventDeleteArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MatchEvent.
+     * @param {MatchEventUpdateArgs} args - Arguments to update one MatchEvent.
+     * @example
+     * // Update one MatchEvent
+     * const matchEvent = await prisma.matchEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MatchEventUpdateArgs>(args: SelectSubset<T, MatchEventUpdateArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MatchEvents.
+     * @param {MatchEventDeleteManyArgs} args - Arguments to filter MatchEvents to delete.
+     * @example
+     * // Delete a few MatchEvents
+     * const { count } = await prisma.matchEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MatchEventDeleteManyArgs>(args?: SelectSubset<T, MatchEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MatchEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MatchEvents
+     * const matchEvent = await prisma.matchEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MatchEventUpdateManyArgs>(args: SelectSubset<T, MatchEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MatchEvents and returns the data updated in the database.
+     * @param {MatchEventUpdateManyAndReturnArgs} args - Arguments to update many MatchEvents.
+     * @example
+     * // Update many MatchEvents
+     * const matchEvent = await prisma.matchEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MatchEvents and only return the `id`
+     * const matchEventWithIdOnly = await prisma.matchEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MatchEventUpdateManyAndReturnArgs>(args: SelectSubset<T, MatchEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MatchEvent.
+     * @param {MatchEventUpsertArgs} args - Arguments to update or create a MatchEvent.
+     * @example
+     * // Update or create a MatchEvent
+     * const matchEvent = await prisma.matchEvent.upsert({
+     *   create: {
+     *     // ... data to create a MatchEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MatchEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MatchEventUpsertArgs>(args: SelectSubset<T, MatchEventUpsertArgs<ExtArgs>>): Prisma__MatchEventClient<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MatchEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchEventCountArgs} args - Arguments to filter MatchEvents to count.
+     * @example
+     * // Count the number of MatchEvents
+     * const count = await prisma.matchEvent.count({
+     *   where: {
+     *     // ... the filter for the MatchEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends MatchEventCountArgs>(
+      args?: Subset<T, MatchEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MatchEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MatchEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MatchEventAggregateArgs>(args: Subset<T, MatchEventAggregateArgs>): Prisma.PrismaPromise<GetMatchEventAggregateType<T>>
+
+    /**
+     * Group by MatchEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MatchEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MatchEventGroupByArgs['orderBy'] }
+        : { orderBy?: MatchEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MatchEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMatchEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MatchEvent model
+   */
+  readonly fields: MatchEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MatchEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MatchEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    match<T extends MatchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MatchDefaultArgs<ExtArgs>>): Prisma__MatchClient<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    player<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MatchEvent model
+   */
+  interface MatchEventFieldRefs {
+    readonly id: FieldRef<"MatchEvent", 'String'>
+    readonly match_id: FieldRef<"MatchEvent", 'String'>
+    readonly player_id: FieldRef<"MatchEvent", 'String'>
+    readonly team_id: FieldRef<"MatchEvent", 'String'>
+    readonly type: FieldRef<"MatchEvent", 'EventType'>
+    readonly minute: FieldRef<"MatchEvent", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MatchEvent findUnique
+   */
+  export type MatchEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchEvent to fetch.
+     */
+    where: MatchEventWhereUniqueInput
+  }
+
+  /**
+   * MatchEvent findUniqueOrThrow
+   */
+  export type MatchEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchEvent to fetch.
+     */
+    where: MatchEventWhereUniqueInput
+  }
+
+  /**
+   * MatchEvent findFirst
+   */
+  export type MatchEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchEvent to fetch.
+     */
+    where?: MatchEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchEvents to fetch.
+     */
+    orderBy?: MatchEventOrderByWithRelationInput | MatchEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MatchEvents.
+     */
+    cursor?: MatchEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MatchEvents.
+     */
+    distinct?: MatchEventScalarFieldEnum | MatchEventScalarFieldEnum[]
+  }
+
+  /**
+   * MatchEvent findFirstOrThrow
+   */
+  export type MatchEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchEvent to fetch.
+     */
+    where?: MatchEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchEvents to fetch.
+     */
+    orderBy?: MatchEventOrderByWithRelationInput | MatchEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MatchEvents.
+     */
+    cursor?: MatchEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MatchEvents.
+     */
+    distinct?: MatchEventScalarFieldEnum | MatchEventScalarFieldEnum[]
+  }
+
+  /**
+   * MatchEvent findMany
+   */
+  export type MatchEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchEvents to fetch.
+     */
+    where?: MatchEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchEvents to fetch.
+     */
+    orderBy?: MatchEventOrderByWithRelationInput | MatchEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MatchEvents.
+     */
+    cursor?: MatchEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchEvents.
+     */
+    skip?: number
+    distinct?: MatchEventScalarFieldEnum | MatchEventScalarFieldEnum[]
+  }
+
+  /**
+   * MatchEvent create
+   */
+  export type MatchEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MatchEvent.
+     */
+    data: XOR<MatchEventCreateInput, MatchEventUncheckedCreateInput>
+  }
+
+  /**
+   * MatchEvent createMany
+   */
+  export type MatchEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MatchEvents.
+     */
+    data: MatchEventCreateManyInput | MatchEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MatchEvent createManyAndReturn
+   */
+  export type MatchEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many MatchEvents.
+     */
+    data: MatchEventCreateManyInput | MatchEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MatchEvent update
+   */
+  export type MatchEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MatchEvent.
+     */
+    data: XOR<MatchEventUpdateInput, MatchEventUncheckedUpdateInput>
+    /**
+     * Choose, which MatchEvent to update.
+     */
+    where: MatchEventWhereUniqueInput
+  }
+
+  /**
+   * MatchEvent updateMany
+   */
+  export type MatchEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MatchEvents.
+     */
+    data: XOR<MatchEventUpdateManyMutationInput, MatchEventUncheckedUpdateManyInput>
+    /**
+     * Filter which MatchEvents to update
+     */
+    where?: MatchEventWhereInput
+    /**
+     * Limit how many MatchEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MatchEvent updateManyAndReturn
+   */
+  export type MatchEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * The data used to update MatchEvents.
+     */
+    data: XOR<MatchEventUpdateManyMutationInput, MatchEventUncheckedUpdateManyInput>
+    /**
+     * Filter which MatchEvents to update
+     */
+    where?: MatchEventWhereInput
+    /**
+     * Limit how many MatchEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MatchEvent upsert
+   */
+  export type MatchEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MatchEvent to update in case it exists.
+     */
+    where: MatchEventWhereUniqueInput
+    /**
+     * In case the MatchEvent found by the `where` argument doesn't exist, create a new MatchEvent with this data.
+     */
+    create: XOR<MatchEventCreateInput, MatchEventUncheckedCreateInput>
+    /**
+     * In case the MatchEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MatchEventUpdateInput, MatchEventUncheckedUpdateInput>
+  }
+
+  /**
+   * MatchEvent delete
+   */
+  export type MatchEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
+    /**
+     * Filter which MatchEvent to delete.
+     */
+    where: MatchEventWhereUniqueInput
+  }
+
+  /**
+   * MatchEvent deleteMany
+   */
+  export type MatchEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MatchEvents to delete
+     */
+    where?: MatchEventWhereInput
+    /**
+     * Limit how many MatchEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MatchEvent without action
+   */
+  export type MatchEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchEvent
+     */
+    select?: MatchEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchEvent
+     */
+    omit?: MatchEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchEventInclude<ExtArgs> | null
   }
 
 
@@ -12213,6 +13572,18 @@ export namespace Prisma {
   export type MatchScalarFieldEnum = (typeof MatchScalarFieldEnum)[keyof typeof MatchScalarFieldEnum]
 
 
+  export const MatchEventScalarFieldEnum: {
+    id: 'id',
+    match_id: 'match_id',
+    player_id: 'player_id',
+    team_id: 'team_id',
+    type: 'type',
+    minute: 'minute'
+  };
+
+  export type MatchEventScalarFieldEnum = (typeof MatchEventScalarFieldEnum)[keyof typeof MatchEventScalarFieldEnum]
+
+
   export const TransferRequestScalarFieldEnum: {
     id: 'id',
     player_id: 'player_id',
@@ -12421,6 +13792,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'EventType'
+   */
+  export type EnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventType'>
+    
+
+
+  /**
+   * Reference to a field of type 'EventType[]'
+   */
+  export type ListEnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'TransferStatus'
    */
   export type EnumTransferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferStatus'>
@@ -12470,6 +13855,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestListRelationFilter
     sentInvitations?: InvitationListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
+    matchEvents?: MatchEventListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -12488,6 +13874,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestOrderByRelationAggregateInput
     sentInvitations?: InvitationOrderByRelationAggregateInput
     receivedInvitations?: InvitationOrderByRelationAggregateInput
+    matchEvents?: MatchEventOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -12509,6 +13896,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestListRelationFilter
     sentInvitations?: InvitationListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
+    matchEvents?: MatchEventListRelationFilter
   }, "id" | "email" | "ea_persona_name">
 
   export type UserOrderByWithAggregationInput = {
@@ -12559,6 +13947,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamListRelationFilter
     transferRequests?: TransferRequestListRelationFilter
     invitations?: InvitationListRelationFilter
+    matchEvents?: MatchEventListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
@@ -12574,6 +13963,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamOrderByRelationAggregateInput
     transferRequests?: TransferRequestOrderByRelationAggregateInput
     invitations?: InvitationOrderByRelationAggregateInput
+    matchEvents?: MatchEventOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -12592,6 +13982,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamListRelationFilter
     transferRequests?: TransferRequestListRelationFilter
     invitations?: InvitationListRelationFilter
+    matchEvents?: MatchEventListRelationFilter
   }, "id" | "name" | "ea_club_id">
 
   export type TeamOrderByWithAggregationInput = {
@@ -12878,6 +14269,7 @@ export namespace Prisma {
     competition?: XOR<CompetitionNullableScalarRelationFilter, CompetitionWhereInput> | null
     homeTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     awayTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    events?: MatchEventListRelationFilter
   }
 
   export type MatchOrderByWithRelationInput = {
@@ -12894,6 +14286,7 @@ export namespace Prisma {
     competition?: CompetitionOrderByWithRelationInput
     homeTeam?: TeamOrderByWithRelationInput
     awayTeam?: TeamOrderByWithRelationInput
+    events?: MatchEventOrderByRelationAggregateInput
   }
 
   export type MatchWhereUniqueInput = Prisma.AtLeast<{
@@ -12913,6 +14306,7 @@ export namespace Prisma {
     competition?: XOR<CompetitionNullableScalarRelationFilter, CompetitionWhereInput> | null
     homeTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     awayTeam?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    events?: MatchEventListRelationFilter
   }, "id" | "ea_match_id">
 
   export type MatchOrderByWithAggregationInput = {
@@ -12947,6 +14341,74 @@ export namespace Prisma {
     away_score?: IntNullableWithAggregatesFilter<"Match"> | number | null
     status?: EnumMatchStatusWithAggregatesFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableWithAggregatesFilter<"Match"> | Date | string | null
+  }
+
+  export type MatchEventWhereInput = {
+    AND?: MatchEventWhereInput | MatchEventWhereInput[]
+    OR?: MatchEventWhereInput[]
+    NOT?: MatchEventWhereInput | MatchEventWhereInput[]
+    id?: UuidFilter<"MatchEvent"> | string
+    match_id?: UuidFilter<"MatchEvent"> | string
+    player_id?: UuidFilter<"MatchEvent"> | string
+    team_id?: UuidFilter<"MatchEvent"> | string
+    type?: EnumEventTypeFilter<"MatchEvent"> | $Enums.EventType
+    minute?: IntNullableFilter<"MatchEvent"> | number | null
+    match?: XOR<MatchScalarRelationFilter, MatchWhereInput>
+    player?: XOR<UserScalarRelationFilter, UserWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }
+
+  export type MatchEventOrderByWithRelationInput = {
+    id?: SortOrder
+    match_id?: SortOrder
+    player_id?: SortOrder
+    team_id?: SortOrder
+    type?: SortOrder
+    minute?: SortOrderInput | SortOrder
+    match?: MatchOrderByWithRelationInput
+    player?: UserOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
+  }
+
+  export type MatchEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MatchEventWhereInput | MatchEventWhereInput[]
+    OR?: MatchEventWhereInput[]
+    NOT?: MatchEventWhereInput | MatchEventWhereInput[]
+    match_id?: UuidFilter<"MatchEvent"> | string
+    player_id?: UuidFilter<"MatchEvent"> | string
+    team_id?: UuidFilter<"MatchEvent"> | string
+    type?: EnumEventTypeFilter<"MatchEvent"> | $Enums.EventType
+    minute?: IntNullableFilter<"MatchEvent"> | number | null
+    match?: XOR<MatchScalarRelationFilter, MatchWhereInput>
+    player?: XOR<UserScalarRelationFilter, UserWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }, "id">
+
+  export type MatchEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    match_id?: SortOrder
+    player_id?: SortOrder
+    team_id?: SortOrder
+    type?: SortOrder
+    minute?: SortOrderInput | SortOrder
+    _count?: MatchEventCountOrderByAggregateInput
+    _avg?: MatchEventAvgOrderByAggregateInput
+    _max?: MatchEventMaxOrderByAggregateInput
+    _min?: MatchEventMinOrderByAggregateInput
+    _sum?: MatchEventSumOrderByAggregateInput
+  }
+
+  export type MatchEventScalarWhereWithAggregatesInput = {
+    AND?: MatchEventScalarWhereWithAggregatesInput | MatchEventScalarWhereWithAggregatesInput[]
+    OR?: MatchEventScalarWhereWithAggregatesInput[]
+    NOT?: MatchEventScalarWhereWithAggregatesInput | MatchEventScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"MatchEvent"> | string
+    match_id?: UuidWithAggregatesFilter<"MatchEvent"> | string
+    player_id?: UuidWithAggregatesFilter<"MatchEvent"> | string
+    team_id?: UuidWithAggregatesFilter<"MatchEvent"> | string
+    type?: EnumEventTypeWithAggregatesFilter<"MatchEvent"> | $Enums.EventType
+    minute?: IntNullableWithAggregatesFilter<"MatchEvent"> | number | null
   }
 
   export type TransferRequestWhereInput = {
@@ -13094,6 +14556,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -13112,6 +14575,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type UserUpdateInput = {
@@ -13130,6 +14594,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -13148,6 +14613,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -13202,6 +14668,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
@@ -13217,6 +14684,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUpdateInput = {
@@ -13232,6 +14700,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
@@ -13247,6 +14716,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
@@ -13528,6 +14998,7 @@ export namespace Prisma {
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: TeamCreateNestedOneWithoutHomeMatchesInput
     awayTeam: TeamCreateNestedOneWithoutAwayMatchesInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateInput = {
@@ -13541,6 +15012,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUpdateInput = {
@@ -13554,6 +15026,7 @@ export namespace Prisma {
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: TeamUpdateOneRequiredWithoutHomeMatchesNestedInput
     awayTeam?: TeamUpdateOneRequiredWithoutAwayMatchesNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateInput = {
@@ -13567,6 +15040,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchCreateManyInput = {
@@ -13603,6 +15077,66 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MatchEventCreateInput = {
+    id?: string
+    type: $Enums.EventType
+    minute?: number | null
+    match: MatchCreateNestedOneWithoutEventsInput
+    player: UserCreateNestedOneWithoutMatchEventsInput
+    team: TeamCreateNestedOneWithoutMatchEventsInput
+  }
+
+  export type MatchEventUncheckedCreateInput = {
+    id?: string
+    match_id: string
+    player_id: string
+    team_id: string
+    type: $Enums.EventType
+    minute?: number | null
+  }
+
+  export type MatchEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+    match?: MatchUpdateOneRequiredWithoutEventsNestedInput
+    player?: UserUpdateOneRequiredWithoutMatchEventsNestedInput
+    team?: TeamUpdateOneRequiredWithoutMatchEventsNestedInput
+  }
+
+  export type MatchEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    match_id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type MatchEventCreateManyInput = {
+    id?: string
+    match_id: string
+    player_id: string
+    team_id: string
+    type: $Enums.EventType
+    minute?: number | null
+  }
+
+  export type MatchEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type MatchEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    match_id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TransferRequestCreateInput = {
@@ -13816,6 +15350,12 @@ export namespace Prisma {
     none?: InvitationWhereInput
   }
 
+  export type MatchEventListRelationFilter = {
+    every?: MatchEventWhereInput
+    some?: MatchEventWhereInput
+    none?: MatchEventWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -13830,6 +15370,10 @@ export namespace Prisma {
   }
 
   export type InvitationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MatchEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14421,6 +15965,63 @@ export namespace Prisma {
     _max?: NestedEnumMatchStatusFilter<$PrismaModel>
   }
 
+  export type EnumEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventType | EnumEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventTypeFilter<$PrismaModel> | $Enums.EventType
+  }
+
+  export type MatchScalarRelationFilter = {
+    is?: MatchWhereInput
+    isNot?: MatchWhereInput
+  }
+
+  export type MatchEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    match_id?: SortOrder
+    player_id?: SortOrder
+    team_id?: SortOrder
+    type?: SortOrder
+    minute?: SortOrder
+  }
+
+  export type MatchEventAvgOrderByAggregateInput = {
+    minute?: SortOrder
+  }
+
+  export type MatchEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    match_id?: SortOrder
+    player_id?: SortOrder
+    team_id?: SortOrder
+    type?: SortOrder
+    minute?: SortOrder
+  }
+
+  export type MatchEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    match_id?: SortOrder
+    player_id?: SortOrder
+    team_id?: SortOrder
+    type?: SortOrder
+    minute?: SortOrder
+  }
+
+  export type MatchEventSumOrderByAggregateInput = {
+    minute?: SortOrder
+  }
+
+  export type EnumEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventType | EnumEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.EventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumEventTypeFilter<$PrismaModel>
+  }
+
   export type EnumTransferStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferStatus | EnumTransferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
@@ -14548,6 +16149,13 @@ export namespace Prisma {
     connect?: InvitationWhereUniqueInput | InvitationWhereUniqueInput[]
   }
 
+  export type MatchEventCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<MatchEventCreateWithoutPlayerInput, MatchEventUncheckedCreateWithoutPlayerInput> | MatchEventCreateWithoutPlayerInput[] | MatchEventUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutPlayerInput | MatchEventCreateOrConnectWithoutPlayerInput[]
+    createMany?: MatchEventCreateManyPlayerInputEnvelope
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+  }
+
   export type TeamMemberUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -14580,6 +16188,13 @@ export namespace Prisma {
     connectOrCreate?: InvitationCreateOrConnectWithoutInviteeInput | InvitationCreateOrConnectWithoutInviteeInput[]
     createMany?: InvitationCreateManyInviteeInputEnvelope
     connect?: InvitationWhereUniqueInput | InvitationWhereUniqueInput[]
+  }
+
+  export type MatchEventUncheckedCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<MatchEventCreateWithoutPlayerInput, MatchEventUncheckedCreateWithoutPlayerInput> | MatchEventCreateWithoutPlayerInput[] | MatchEventUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutPlayerInput | MatchEventCreateOrConnectWithoutPlayerInput[]
+    createMany?: MatchEventCreateManyPlayerInputEnvelope
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -14668,6 +16283,20 @@ export namespace Prisma {
     deleteMany?: InvitationScalarWhereInput | InvitationScalarWhereInput[]
   }
 
+  export type MatchEventUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<MatchEventCreateWithoutPlayerInput, MatchEventUncheckedCreateWithoutPlayerInput> | MatchEventCreateWithoutPlayerInput[] | MatchEventUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutPlayerInput | MatchEventCreateOrConnectWithoutPlayerInput[]
+    upsert?: MatchEventUpsertWithWhereUniqueWithoutPlayerInput | MatchEventUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: MatchEventCreateManyPlayerInputEnvelope
+    set?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    disconnect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    delete?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    update?: MatchEventUpdateWithWhereUniqueWithoutPlayerInput | MatchEventUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: MatchEventUpdateManyWithWhereWithoutPlayerInput | MatchEventUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
+  }
+
   export type TeamMemberUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -14734,6 +16363,20 @@ export namespace Prisma {
     deleteMany?: InvitationScalarWhereInput | InvitationScalarWhereInput[]
   }
 
+  export type MatchEventUncheckedUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<MatchEventCreateWithoutPlayerInput, MatchEventUncheckedCreateWithoutPlayerInput> | MatchEventCreateWithoutPlayerInput[] | MatchEventUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutPlayerInput | MatchEventCreateOrConnectWithoutPlayerInput[]
+    upsert?: MatchEventUpsertWithWhereUniqueWithoutPlayerInput | MatchEventUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: MatchEventCreateManyPlayerInputEnvelope
+    set?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    disconnect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    delete?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    update?: MatchEventUpdateWithWhereUniqueWithoutPlayerInput | MatchEventUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: MatchEventUpdateManyWithWhereWithoutPlayerInput | MatchEventUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
+  }
+
   export type TeamMemberCreateNestedManyWithoutTeamInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -14776,6 +16419,13 @@ export namespace Prisma {
     connect?: InvitationWhereUniqueInput | InvitationWhereUniqueInput[]
   }
 
+  export type MatchEventCreateNestedManyWithoutTeamInput = {
+    create?: XOR<MatchEventCreateWithoutTeamInput, MatchEventUncheckedCreateWithoutTeamInput> | MatchEventCreateWithoutTeamInput[] | MatchEventUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutTeamInput | MatchEventCreateOrConnectWithoutTeamInput[]
+    createMany?: MatchEventCreateManyTeamInputEnvelope
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+  }
+
   export type TeamMemberUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -14816,6 +16466,13 @@ export namespace Prisma {
     connectOrCreate?: InvitationCreateOrConnectWithoutTeamInput | InvitationCreateOrConnectWithoutTeamInput[]
     createMany?: InvitationCreateManyTeamInputEnvelope
     connect?: InvitationWhereUniqueInput | InvitationWhereUniqueInput[]
+  }
+
+  export type MatchEventUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<MatchEventCreateWithoutTeamInput, MatchEventUncheckedCreateWithoutTeamInput> | MatchEventCreateWithoutTeamInput[] | MatchEventUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutTeamInput | MatchEventCreateOrConnectWithoutTeamInput[]
+    createMany?: MatchEventCreateManyTeamInputEnvelope
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
   }
 
   export type EnumPlatformFieldUpdateOperationsInput = {
@@ -14906,6 +16563,20 @@ export namespace Prisma {
     deleteMany?: InvitationScalarWhereInput | InvitationScalarWhereInput[]
   }
 
+  export type MatchEventUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<MatchEventCreateWithoutTeamInput, MatchEventUncheckedCreateWithoutTeamInput> | MatchEventCreateWithoutTeamInput[] | MatchEventUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutTeamInput | MatchEventCreateOrConnectWithoutTeamInput[]
+    upsert?: MatchEventUpsertWithWhereUniqueWithoutTeamInput | MatchEventUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: MatchEventCreateManyTeamInputEnvelope
+    set?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    disconnect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    delete?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    update?: MatchEventUpdateWithWhereUniqueWithoutTeamInput | MatchEventUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: MatchEventUpdateManyWithWhereWithoutTeamInput | MatchEventUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
+  }
+
   export type TeamMemberUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -14988,6 +16659,20 @@ export namespace Prisma {
     update?: InvitationUpdateWithWhereUniqueWithoutTeamInput | InvitationUpdateWithWhereUniqueWithoutTeamInput[]
     updateMany?: InvitationUpdateManyWithWhereWithoutTeamInput | InvitationUpdateManyWithWhereWithoutTeamInput[]
     deleteMany?: InvitationScalarWhereInput | InvitationScalarWhereInput[]
+  }
+
+  export type MatchEventUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<MatchEventCreateWithoutTeamInput, MatchEventUncheckedCreateWithoutTeamInput> | MatchEventCreateWithoutTeamInput[] | MatchEventUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutTeamInput | MatchEventCreateOrConnectWithoutTeamInput[]
+    upsert?: MatchEventUpsertWithWhereUniqueWithoutTeamInput | MatchEventUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: MatchEventCreateManyTeamInputEnvelope
+    set?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    disconnect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    delete?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    update?: MatchEventUpdateWithWhereUniqueWithoutTeamInput | MatchEventUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: MatchEventUpdateManyWithWhereWithoutTeamInput | MatchEventUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutTeamMembershipsInput = {
@@ -15194,6 +16879,20 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
+  export type MatchEventCreateNestedManyWithoutMatchInput = {
+    create?: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput> | MatchEventCreateWithoutMatchInput[] | MatchEventUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutMatchInput | MatchEventCreateOrConnectWithoutMatchInput[]
+    createMany?: MatchEventCreateManyMatchInputEnvelope
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+  }
+
+  export type MatchEventUncheckedCreateNestedManyWithoutMatchInput = {
+    create?: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput> | MatchEventCreateWithoutMatchInput[] | MatchEventUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutMatchInput | MatchEventCreateOrConnectWithoutMatchInput[]
+    createMany?: MatchEventCreateManyMatchInputEnvelope
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+  }
+
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -15230,6 +16929,80 @@ export namespace Prisma {
     upsert?: TeamUpsertWithoutAwayMatchesInput
     connect?: TeamWhereUniqueInput
     update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutAwayMatchesInput, TeamUpdateWithoutAwayMatchesInput>, TeamUncheckedUpdateWithoutAwayMatchesInput>
+  }
+
+  export type MatchEventUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput> | MatchEventCreateWithoutMatchInput[] | MatchEventUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutMatchInput | MatchEventCreateOrConnectWithoutMatchInput[]
+    upsert?: MatchEventUpsertWithWhereUniqueWithoutMatchInput | MatchEventUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: MatchEventCreateManyMatchInputEnvelope
+    set?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    disconnect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    delete?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    update?: MatchEventUpdateWithWhereUniqueWithoutMatchInput | MatchEventUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: MatchEventUpdateManyWithWhereWithoutMatchInput | MatchEventUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
+  }
+
+  export type MatchEventUncheckedUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput> | MatchEventCreateWithoutMatchInput[] | MatchEventUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchEventCreateOrConnectWithoutMatchInput | MatchEventCreateOrConnectWithoutMatchInput[]
+    upsert?: MatchEventUpsertWithWhereUniqueWithoutMatchInput | MatchEventUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: MatchEventCreateManyMatchInputEnvelope
+    set?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    disconnect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    delete?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+    update?: MatchEventUpdateWithWhereUniqueWithoutMatchInput | MatchEventUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: MatchEventUpdateManyWithWhereWithoutMatchInput | MatchEventUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
+  }
+
+  export type MatchCreateNestedOneWithoutEventsInput = {
+    create?: XOR<MatchCreateWithoutEventsInput, MatchUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutEventsInput
+    connect?: MatchWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutMatchEventsInput = {
+    create?: XOR<UserCreateWithoutMatchEventsInput, UserUncheckedCreateWithoutMatchEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMatchEventsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutMatchEventsInput = {
+    create?: XOR<TeamCreateWithoutMatchEventsInput, TeamUncheckedCreateWithoutMatchEventsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMatchEventsInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type EnumEventTypeFieldUpdateOperationsInput = {
+    set?: $Enums.EventType
+  }
+
+  export type MatchUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<MatchCreateWithoutEventsInput, MatchUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutEventsInput
+    upsert?: MatchUpsertWithoutEventsInput
+    connect?: MatchWhereUniqueInput
+    update?: XOR<XOR<MatchUpdateToOneWithWhereWithoutEventsInput, MatchUpdateWithoutEventsInput>, MatchUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutMatchEventsNestedInput = {
+    create?: XOR<UserCreateWithoutMatchEventsInput, UserUncheckedCreateWithoutMatchEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMatchEventsInput
+    upsert?: UserUpsertWithoutMatchEventsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMatchEventsInput, UserUpdateWithoutMatchEventsInput>, UserUncheckedUpdateWithoutMatchEventsInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutMatchEventsNestedInput = {
+    create?: XOR<TeamCreateWithoutMatchEventsInput, TeamUncheckedCreateWithoutMatchEventsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMatchEventsInput
+    upsert?: TeamUpsertWithoutMatchEventsInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMatchEventsInput, TeamUpdateWithoutMatchEventsInput>, TeamUncheckedUpdateWithoutMatchEventsInput>
   }
 
   export type UserCreateNestedOneWithoutTransferRequestsInput = {
@@ -15685,6 +17458,23 @@ export namespace Prisma {
     _max?: NestedEnumMatchStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventType | EnumEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventTypeFilter<$PrismaModel> | $Enums.EventType
+  }
+
+  export type NestedEnumEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventType | EnumEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventType[] | ListEnumEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.EventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumEventTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumTransferStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferStatus | EnumTransferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
@@ -15846,6 +17636,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MatchEventCreateWithoutPlayerInput = {
+    id?: string
+    type: $Enums.EventType
+    minute?: number | null
+    match: MatchCreateNestedOneWithoutEventsInput
+    team: TeamCreateNestedOneWithoutMatchEventsInput
+  }
+
+  export type MatchEventUncheckedCreateWithoutPlayerInput = {
+    id?: string
+    match_id: string
+    team_id: string
+    type: $Enums.EventType
+    minute?: number | null
+  }
+
+  export type MatchEventCreateOrConnectWithoutPlayerInput = {
+    where: MatchEventWhereUniqueInput
+    create: XOR<MatchEventCreateWithoutPlayerInput, MatchEventUncheckedCreateWithoutPlayerInput>
+  }
+
+  export type MatchEventCreateManyPlayerInputEnvelope = {
+    data: MatchEventCreateManyPlayerInput | MatchEventCreateManyPlayerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TeamMemberUpsertWithWhereUniqueWithoutUserInput = {
     where: TeamMemberWhereUniqueInput
     update: XOR<TeamMemberUpdateWithoutUserInput, TeamMemberUncheckedUpdateWithoutUserInput>
@@ -15975,6 +17791,34 @@ export namespace Prisma {
     data: XOR<InvitationUpdateManyMutationInput, InvitationUncheckedUpdateManyWithoutInviteeInput>
   }
 
+  export type MatchEventUpsertWithWhereUniqueWithoutPlayerInput = {
+    where: MatchEventWhereUniqueInput
+    update: XOR<MatchEventUpdateWithoutPlayerInput, MatchEventUncheckedUpdateWithoutPlayerInput>
+    create: XOR<MatchEventCreateWithoutPlayerInput, MatchEventUncheckedCreateWithoutPlayerInput>
+  }
+
+  export type MatchEventUpdateWithWhereUniqueWithoutPlayerInput = {
+    where: MatchEventWhereUniqueInput
+    data: XOR<MatchEventUpdateWithoutPlayerInput, MatchEventUncheckedUpdateWithoutPlayerInput>
+  }
+
+  export type MatchEventUpdateManyWithWhereWithoutPlayerInput = {
+    where: MatchEventScalarWhereInput
+    data: XOR<MatchEventUpdateManyMutationInput, MatchEventUncheckedUpdateManyWithoutPlayerInput>
+  }
+
+  export type MatchEventScalarWhereInput = {
+    AND?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
+    OR?: MatchEventScalarWhereInput[]
+    NOT?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
+    id?: UuidFilter<"MatchEvent"> | string
+    match_id?: UuidFilter<"MatchEvent"> | string
+    player_id?: UuidFilter<"MatchEvent"> | string
+    team_id?: UuidFilter<"MatchEvent"> | string
+    type?: EnumEventTypeFilter<"MatchEvent"> | $Enums.EventType
+    minute?: IntNullableFilter<"MatchEvent"> | number | null
+  }
+
   export type TeamMemberCreateWithoutTeamInput = {
     club_role?: $Enums.ClubRole
     joined_at?: Date | string
@@ -16007,6 +17851,7 @@ export namespace Prisma {
     played_at?: Date | string | null
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     awayTeam: TeamCreateNestedOneWithoutAwayMatchesInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutHomeTeamInput = {
@@ -16019,6 +17864,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutHomeTeamInput = {
@@ -16041,6 +17887,7 @@ export namespace Prisma {
     played_at?: Date | string | null
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: TeamCreateNestedOneWithoutHomeMatchesInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutAwayTeamInput = {
@@ -16053,6 +17900,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutAwayTeamInput = {
@@ -16134,6 +17982,32 @@ export namespace Prisma {
 
   export type InvitationCreateManyTeamInputEnvelope = {
     data: InvitationCreateManyTeamInput | InvitationCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MatchEventCreateWithoutTeamInput = {
+    id?: string
+    type: $Enums.EventType
+    minute?: number | null
+    match: MatchCreateNestedOneWithoutEventsInput
+    player: UserCreateNestedOneWithoutMatchEventsInput
+  }
+
+  export type MatchEventUncheckedCreateWithoutTeamInput = {
+    id?: string
+    match_id: string
+    player_id: string
+    type: $Enums.EventType
+    minute?: number | null
+  }
+
+  export type MatchEventCreateOrConnectWithoutTeamInput = {
+    where: MatchEventWhereUniqueInput
+    create: XOR<MatchEventCreateWithoutTeamInput, MatchEventUncheckedCreateWithoutTeamInput>
+  }
+
+  export type MatchEventCreateManyTeamInputEnvelope = {
+    data: MatchEventCreateManyTeamInput | MatchEventCreateManyTeamInput[]
     skipDuplicates?: boolean
   }
 
@@ -16258,6 +18132,22 @@ export namespace Prisma {
     data: XOR<InvitationUpdateManyMutationInput, InvitationUncheckedUpdateManyWithoutTeamInput>
   }
 
+  export type MatchEventUpsertWithWhereUniqueWithoutTeamInput = {
+    where: MatchEventWhereUniqueInput
+    update: XOR<MatchEventUpdateWithoutTeamInput, MatchEventUncheckedUpdateWithoutTeamInput>
+    create: XOR<MatchEventCreateWithoutTeamInput, MatchEventUncheckedCreateWithoutTeamInput>
+  }
+
+  export type MatchEventUpdateWithWhereUniqueWithoutTeamInput = {
+    where: MatchEventWhereUniqueInput
+    data: XOR<MatchEventUpdateWithoutTeamInput, MatchEventUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type MatchEventUpdateManyWithWhereWithoutTeamInput = {
+    where: MatchEventScalarWhereInput
+    data: XOR<MatchEventUpdateManyMutationInput, MatchEventUncheckedUpdateManyWithoutTeamInput>
+  }
+
   export type UserCreateWithoutTeamMembershipsInput = {
     id?: string
     email: string
@@ -16273,6 +18163,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
   }
 
   export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -16290,6 +18181,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -16309,6 +18201,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
@@ -16323,6 +18216,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -16356,6 +18250,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -16373,6 +18268,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type TeamUpsertWithoutMembersInput = {
@@ -16398,6 +18294,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
@@ -16412,6 +18309,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutStatsInput = {
@@ -16429,6 +18327,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
   }
 
   export type UserUncheckedCreateWithoutStatsInput = {
@@ -16446,6 +18345,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type UserCreateOrConnectWithoutStatsInput = {
@@ -16479,6 +18379,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatsInput = {
@@ -16496,6 +18397,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type CompetitionTeamCreateWithoutCompetitionInput = {
@@ -16528,6 +18430,7 @@ export namespace Prisma {
     played_at?: Date | string | null
     homeTeam: TeamCreateNestedOneWithoutHomeMatchesInput
     awayTeam: TeamCreateNestedOneWithoutAwayMatchesInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutCompetitionInput = {
@@ -16540,6 +18443,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutCompetitionInput = {
@@ -16623,6 +18527,7 @@ export namespace Prisma {
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutCompetitionsInput = {
@@ -16637,6 +18542,7 @@ export namespace Prisma {
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutCompetitionsInput = {
@@ -16700,6 +18606,7 @@ export namespace Prisma {
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutCompetitionsInput = {
@@ -16714,6 +18621,7 @@ export namespace Prisma {
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CompetitionCreateWithoutMatchesInput = {
@@ -16755,6 +18663,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutHomeMatchesInput = {
@@ -16769,6 +18678,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutHomeMatchesInput = {
@@ -16788,6 +18698,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutAwayMatchesInput = {
@@ -16802,11 +18713,38 @@ export namespace Prisma {
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutAwayMatchesInput = {
     where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutAwayMatchesInput, TeamUncheckedCreateWithoutAwayMatchesInput>
+  }
+
+  export type MatchEventCreateWithoutMatchInput = {
+    id?: string
+    type: $Enums.EventType
+    minute?: number | null
+    player: UserCreateNestedOneWithoutMatchEventsInput
+    team: TeamCreateNestedOneWithoutMatchEventsInput
+  }
+
+  export type MatchEventUncheckedCreateWithoutMatchInput = {
+    id?: string
+    player_id: string
+    team_id: string
+    type: $Enums.EventType
+    minute?: number | null
+  }
+
+  export type MatchEventCreateOrConnectWithoutMatchInput = {
+    where: MatchEventWhereUniqueInput
+    create: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput>
+  }
+
+  export type MatchEventCreateManyMatchInputEnvelope = {
+    data: MatchEventCreateManyMatchInput | MatchEventCreateManyMatchInput[]
+    skipDuplicates?: boolean
   }
 
   export type CompetitionUpsertWithoutMatchesInput = {
@@ -16865,6 +18803,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutHomeMatchesInput = {
@@ -16879,6 +18818,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUpsertWithoutAwayMatchesInput = {
@@ -16904,6 +18844,7 @@ export namespace Prisma {
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutAwayMatchesInput = {
@@ -16915,6 +18856,255 @@ export namespace Prisma {
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type MatchEventUpsertWithWhereUniqueWithoutMatchInput = {
+    where: MatchEventWhereUniqueInput
+    update: XOR<MatchEventUpdateWithoutMatchInput, MatchEventUncheckedUpdateWithoutMatchInput>
+    create: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput>
+  }
+
+  export type MatchEventUpdateWithWhereUniqueWithoutMatchInput = {
+    where: MatchEventWhereUniqueInput
+    data: XOR<MatchEventUpdateWithoutMatchInput, MatchEventUncheckedUpdateWithoutMatchInput>
+  }
+
+  export type MatchEventUpdateManyWithWhereWithoutMatchInput = {
+    where: MatchEventScalarWhereInput
+    data: XOR<MatchEventUpdateManyMutationInput, MatchEventUncheckedUpdateManyWithoutMatchInput>
+  }
+
+  export type MatchCreateWithoutEventsInput = {
+    id?: string
+    ea_match_id?: string | null
+    round?: string | null
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
+    homeTeam: TeamCreateNestedOneWithoutHomeMatchesInput
+    awayTeam: TeamCreateNestedOneWithoutAwayMatchesInput
+  }
+
+  export type MatchUncheckedCreateWithoutEventsInput = {
+    id?: string
+    ea_match_id?: string | null
+    competition_id?: string | null
+    round?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+  }
+
+  export type MatchCreateOrConnectWithoutEventsInput = {
+    where: MatchWhereUniqueInput
+    create: XOR<MatchCreateWithoutEventsInput, MatchUncheckedCreateWithoutEventsInput>
+  }
+
+  export type UserCreateWithoutMatchEventsInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+  }
+
+  export type UserUncheckedCreateWithoutMatchEventsInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+  }
+
+  export type UserCreateOrConnectWithoutMatchEventsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMatchEventsInput, UserUncheckedCreateWithoutMatchEventsInput>
+  }
+
+  export type TeamCreateWithoutMatchEventsInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutMatchEventsInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutMatchEventsInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutMatchEventsInput, TeamUncheckedCreateWithoutMatchEventsInput>
+  }
+
+  export type MatchUpsertWithoutEventsInput = {
+    update: XOR<MatchUpdateWithoutEventsInput, MatchUncheckedUpdateWithoutEventsInput>
+    create: XOR<MatchCreateWithoutEventsInput, MatchUncheckedCreateWithoutEventsInput>
+    where?: MatchWhereInput
+  }
+
+  export type MatchUpdateToOneWithWhereWithoutEventsInput = {
+    where?: MatchWhereInput
+    data: XOR<MatchUpdateWithoutEventsInput, MatchUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type MatchUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
+    homeTeam?: TeamUpdateOneRequiredWithoutHomeMatchesNestedInput
+    awayTeam?: TeamUpdateOneRequiredWithoutAwayMatchesNestedInput
+  }
+
+  export type MatchUncheckedUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpsertWithoutMatchEventsInput = {
+    update: XOR<UserUpdateWithoutMatchEventsInput, UserUncheckedUpdateWithoutMatchEventsInput>
+    create: XOR<UserCreateWithoutMatchEventsInput, UserUncheckedCreateWithoutMatchEventsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMatchEventsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMatchEventsInput, UserUncheckedUpdateWithoutMatchEventsInput>
+  }
+
+  export type UserUpdateWithoutMatchEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMatchEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+  }
+
+  export type TeamUpsertWithoutMatchEventsInput = {
+    update: XOR<TeamUpdateWithoutMatchEventsInput, TeamUncheckedUpdateWithoutMatchEventsInput>
+    create: XOR<TeamCreateWithoutMatchEventsInput, TeamUncheckedCreateWithoutMatchEventsInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutMatchEventsInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutMatchEventsInput, TeamUncheckedUpdateWithoutMatchEventsInput>
+  }
+
+  export type TeamUpdateWithoutMatchEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutMatchEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -16935,6 +19125,7 @@ export namespace Prisma {
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
   }
 
   export type UserUncheckedCreateWithoutTransferRequestsInput = {
@@ -16952,6 +19143,7 @@ export namespace Prisma {
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type UserCreateOrConnectWithoutTransferRequestsInput = {
@@ -16971,6 +19163,7 @@ export namespace Prisma {
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutTransferRequestsInput = {
@@ -16985,6 +19178,7 @@ export namespace Prisma {
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutTransferRequestsInput = {
@@ -17018,6 +19212,7 @@ export namespace Prisma {
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferRequestsInput = {
@@ -17035,6 +19230,7 @@ export namespace Prisma {
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type TeamUpsertWithoutTransferRequestsInput = {
@@ -17060,6 +19256,7 @@ export namespace Prisma {
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutTransferRequestsInput = {
@@ -17074,6 +19271,7 @@ export namespace Prisma {
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateWithoutInvitationsInput = {
@@ -17088,6 +19286,7 @@ export namespace Prisma {
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutInvitationsInput = {
@@ -17102,6 +19301,7 @@ export namespace Prisma {
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutInvitationsInput = {
@@ -17124,6 +19324,7 @@ export namespace Prisma {
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -17141,6 +19342,7 @@ export namespace Prisma {
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -17163,6 +19365,7 @@ export namespace Prisma {
     stats?: PlayerStatsCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -17180,6 +19383,7 @@ export namespace Prisma {
     stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -17210,6 +19414,7 @@ export namespace Prisma {
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutInvitationsInput = {
@@ -17224,6 +19429,7 @@ export namespace Prisma {
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutSentInvitationsInput = {
@@ -17252,6 +19458,7 @@ export namespace Prisma {
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -17269,6 +19476,7 @@ export namespace Prisma {
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserUpsertWithoutReceivedInvitationsInput = {
@@ -17297,6 +19505,7 @@ export namespace Prisma {
     stats?: PlayerStatsUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -17314,6 +19523,7 @@ export namespace Prisma {
     stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type TeamMemberCreateManyUserInput = {
@@ -17345,6 +19555,14 @@ export namespace Prisma {
     invitee_email: string
     status?: $Enums.InvitationStatus
     created_at?: Date | string
+  }
+
+  export type MatchEventCreateManyPlayerInput = {
+    id?: string
+    match_id: string
+    team_id: string
+    type: $Enums.EventType
+    minute?: number | null
   }
 
   export type TeamMemberUpdateWithoutUserInput = {
@@ -17440,6 +19658,30 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MatchEventUpdateWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+    match?: MatchUpdateOneRequiredWithoutEventsNestedInput
+    team?: TeamUpdateOneRequiredWithoutMatchEventsNestedInput
+  }
+
+  export type MatchEventUncheckedUpdateWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    match_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type MatchEventUncheckedUpdateManyWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    match_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type TeamMemberCreateManyTeamInput = {
     user_id: string
     club_role?: $Enums.ClubRole
@@ -17491,6 +19733,14 @@ export namespace Prisma {
     created_at?: Date | string
   }
 
+  export type MatchEventCreateManyTeamInput = {
+    id?: string
+    match_id: string
+    player_id: string
+    type: $Enums.EventType
+    minute?: number | null
+  }
+
   export type TeamMemberUpdateWithoutTeamInput = {
     club_role?: EnumClubRoleFieldUpdateOperationsInput | $Enums.ClubRole
     joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17519,6 +19769,7 @@ export namespace Prisma {
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     awayTeam?: TeamUpdateOneRequiredWithoutAwayMatchesNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutHomeTeamInput = {
@@ -17531,6 +19782,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateManyWithoutHomeTeamInput = {
@@ -17555,6 +19807,7 @@ export namespace Prisma {
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: TeamUpdateOneRequiredWithoutHomeMatchesNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutAwayTeamInput = {
@@ -17567,6 +19820,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateManyWithoutAwayTeamInput = {
@@ -17644,6 +19898,30 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MatchEventUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+    match?: MatchUpdateOneRequiredWithoutEventsNestedInput
+    player?: UserUpdateOneRequiredWithoutMatchEventsNestedInput
+  }
+
+  export type MatchEventUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    match_id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type MatchEventUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    match_id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type CompetitionTeamCreateManyCompetitionInput = {
     team_id: string
     joined_at?: Date | string
@@ -17686,6 +19964,7 @@ export namespace Prisma {
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     homeTeam?: TeamUpdateOneRequiredWithoutHomeMatchesNestedInput
     awayTeam?: TeamUpdateOneRequiredWithoutAwayMatchesNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutCompetitionInput = {
@@ -17698,6 +19977,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateManyWithoutCompetitionInput = {
@@ -17710,6 +19990,38 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MatchEventCreateManyMatchInput = {
+    id?: string
+    player_id: string
+    team_id: string
+    type: $Enums.EventType
+    minute?: number | null
+  }
+
+  export type MatchEventUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+    player?: UserUpdateOneRequiredWithoutMatchEventsNestedInput
+    team?: TeamUpdateOneRequiredWithoutMatchEventsNestedInput
+  }
+
+  export type MatchEventUncheckedUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type MatchEventUncheckedUpdateManyWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
+    minute?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
 

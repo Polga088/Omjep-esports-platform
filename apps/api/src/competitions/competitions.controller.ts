@@ -9,4 +9,9 @@ export class CompetitionsController {
   getStandings(@Param('id', ParseUUIDPipe) id: string) {
     return this.competitionsService.getStandings(id);
   }
+
+  @Get(':id/top-stats')
+  getTopStats(@Param('id', ParseUUIDPipe) id: string) {
+    return this.competitionsService.getTopStats(id);
+  }
 }

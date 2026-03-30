@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import {
   Swords, Loader2, X, CheckCircle2, AlertCircle,
-  Filter, ChevronDown, Trophy, Clock, Award,
+  Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal,
 } from 'lucide-react';
 import api from '@/lib/api';
 
@@ -17,6 +17,12 @@ interface Competition {
   type: string;
 }
 
+interface MatchEvent {
+  player: { id: string; ea_persona_name: string | null };
+  team: { id: string; name: string };
+  type: 'GOAL' | 'ASSIST';
+}
+
 interface Match {
   id: string;
   round: string | null;
@@ -27,6 +33,20 @@ interface Match {
   competition: Competition | null;
   homeTeam: Team;
   awayTeam: Team;
+  events?: MatchEvent[];
+}
+
+interface TeamMember {
+  user_id: string;
+  ea_persona_name: string | null;
+}
+
+interface EventDraft {
+  player_id: string;
+  player_name: string;
+  team_id: string;
+  team_name: string;
+  type: 'GOAL' | 'ASSIST';
 }
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; border: string; text: string; dot: string }> = {
@@ -87,6 +107,11 @@ export default function AdminMatches() {
   const [awayScore, setAwayScore] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  const [events, setEvents] = useState<EventDraft[]>([]);
+  const [homeMembers, setHomeMembers] = useState<TeamMember[]>([]);
+  const [awayMembers, setAwayMembers] = useState<TeamMember[]>([]);
+  const [addEventSide, setAddEventSide] = useState<'home' | 'away' | null>(null);
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -135,11 +160,55 @@ export default function AdminMatches() {
     return m.status !== 'SCHEDULED' && m.status !== 'LIVE';
   });
 
-  const openScoreModal = (match: Match) => {
+  const openScoreModal = async (match: Match) => {
     setScoreModal(match);
     setHomeScore('');
     setAwayScore('');
+    setEvents([]);
+    setAddEventSide(null);
     setError('');
+
+    try {
+      const [homeRes, awayRes] = await Promise.allSettled([
+        api.get(`/teams/${match.homeTeam.id}`),
+        api.get(`/teams/${match.awayTeam.id}`),
+      ]);
+
+      const extractMembers = (res: PromiseSettledResult<any>): TeamMember[] => {
+        if (res.status !== 'fulfilled') return [];
+        const team = res.value.data;
+        return (team.members ?? []).map((m: any) => ({
+          user_id: m.user?.id ?? m.user_id,
+          ea_persona_name: m.user?.ea_persona_name ?? null,
+        }));
+      };
+
+      setHomeMembers(extractMembers(homeRes));
+      setAwayMembers(extractMembers(awayRes));
+    } catch {
+      setHomeMembers([]);
+      setAwayMembers([]);
+    }
+  };
+
+  const addEvent = (member: TeamMember, side: 'home' | 'away', type: 'GOAL' | 'ASSIST') => {
+    if (!scoreModal) return;
+    const team = side === 'home' ? scoreModal.homeTeam : scoreModal.awayTeam;
+    setEvents((prev) => [
+      ...prev,
+      {
+        player_id: member.user_id,
+        player_name: member.ea_persona_name ?? 'Joueur',
+        team_id: team.id,
+        team_name: team.name,
+        type,
+      },
+    ]);
+    setAddEventSide(null);
+  };
+
+  const removeEvent = (index: number) => {
+    setEvents((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmitScore = async (e: React.FormEvent) => {
@@ -159,6 +228,11 @@ export default function AdminMatches() {
       await api.patch(`/admin/matches/${scoreModal.id}/score`, {
         home_score: hs,
         away_score: as,
+        events: events.map((ev) => ({
+          player_id: ev.player_id,
+          team_id: ev.team_id,
+          type: ev.type,
+        })),
       });
       setSuccess('Résultat enregistré avec succès !');
       setScoreModal(null);
@@ -477,6 +551,121 @@ export default function AdminMatches() {
                     className="w-full text-center text-3xl font-black py-4 rounded-xl bg-white/[0.04] border border-amber-400/10 text-white placeholder:text-slate-700 focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200 tabular-nums"
                   />
                 </div>
+              </div>
+
+              {/* Events section */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                    Buteurs & Passeurs
+                  </h3>
+                  <div className="flex gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setAddEventSide(addEventSide === 'home' ? null : 'home')}
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                        addEventSide === 'home'
+                          ? 'bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/25'
+                          : 'bg-white/[0.04] text-slate-500 border border-white/[0.06] hover:text-slate-300 hover:border-white/10'
+                      }`}
+                    >
+                      <Plus className="w-3 h-3" />
+                      {scoreModal.homeTeam.name.slice(0, 10)}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAddEventSide(addEventSide === 'away' ? null : 'away')}
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                        addEventSide === 'away'
+                          ? 'bg-[#FF6B35]/15 text-[#FF6B35] border border-[#FF6B35]/25'
+                          : 'bg-white/[0.04] text-slate-500 border border-white/[0.06] hover:text-slate-300 hover:border-white/10'
+                      }`}
+                    >
+                      <Plus className="w-3 h-3" />
+                      {scoreModal.awayTeam.name.slice(0, 10)}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Player picker dropdown */}
+                {addEventSide && (
+                  <div className="rounded-xl border border-amber-400/10 bg-[#080c18] overflow-hidden animate-[fadeIn_0.15s_ease-out]">
+                    <div className="px-3 py-2 border-b border-white/[0.04] text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                      Sélectionner un joueur — {addEventSide === 'home' ? scoreModal.homeTeam.name : scoreModal.awayTeam.name}
+                    </div>
+                    <div className="max-h-36 overflow-y-auto divide-y divide-white/[0.03]">
+                      {(addEventSide === 'home' ? homeMembers : awayMembers).length === 0 ? (
+                        <div className="px-3 py-4 text-xs text-slate-600 text-center">
+                          Aucun joueur trouvé
+                        </div>
+                      ) : (
+                        (addEventSide === 'home' ? homeMembers : awayMembers).map((member) => (
+                          <div key={member.user_id} className="flex items-center justify-between px-3 py-2 hover:bg-white/[0.03] transition-colors">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-bold text-slate-400 shrink-0">
+                                {(member.ea_persona_name ?? '?').charAt(0).toUpperCase()}
+                              </div>
+                              <span className="text-xs text-slate-300 font-medium truncate">
+                                {member.ea_persona_name ?? 'Joueur'}
+                              </span>
+                            </div>
+                            <div className="flex gap-1 shrink-0 ml-2">
+                              <button
+                                type="button"
+                                onClick={() => addEvent(member, addEventSide, 'GOAL')}
+                                className="flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold hover:bg-amber-500/20 transition-all"
+                              >
+                                <Goal className="w-3 h-3" />
+                                But
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => addEvent(member, addEventSide, 'ASSIST')}
+                                className="flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold hover:bg-blue-500/20 transition-all"
+                              >
+                                <Swords className="w-3 h-3" />
+                                Passe
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Event list */}
+                {events.length > 0 && (
+                  <div className="space-y-1.5">
+                    {events.map((ev, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05] animate-[fadeIn_0.15s_ease-out]"
+                      >
+                        <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-black ${
+                          ev.type === 'GOAL'
+                            ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20'
+                            : 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
+                        }`}>
+                          {ev.type === 'GOAL' ? 'B' : 'P'}
+                        </span>
+                        <span className="text-xs text-white font-medium truncate flex-1">
+                          {ev.player_name}
+                        </span>
+                        <span className="text-[10px] text-slate-600 truncate max-w-[80px]">
+                          {ev.team_name}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => removeEvent(i)}
+                          className="p-1 rounded text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all shrink-0"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Actions */}

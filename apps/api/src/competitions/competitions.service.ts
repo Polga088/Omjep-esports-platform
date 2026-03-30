@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EventType } from '@omjep/database';
 
 interface StandingRow {
   team: { id: string; name: string; logo_url: string | null };
@@ -13,9 +14,64 @@ interface StandingRow {
   diff: number;
 }
 
+interface TopPlayerRow {
+  player: { id: string; ea_persona_name: string | null };
+  team: { id: string; name: string; logo_url: string | null };
+  count: number;
+}
+
 @Injectable()
 export class CompetitionsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async getTopStats(competitionId: string) {
+    const competition = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      select: { id: true },
+    });
+
+    if (!competition) {
+      throw new NotFoundException('Compétition introuvable.');
+    }
+
+    const events = await this.prisma.matchEvent.findMany({
+      where: {
+        match: { competition_id: competitionId, status: 'PLAYED' },
+      },
+      include: {
+        player: { select: { id: true, ea_persona_name: true } },
+        team: { select: { id: true, name: true, logo_url: true } },
+      },
+    });
+
+    const aggregate = (type: EventType): TopPlayerRow[] => {
+      const map = new Map<string, TopPlayerRow>();
+
+      for (const event of events) {
+        if (event.type !== type) continue;
+
+        const existing = map.get(event.player_id);
+        if (existing) {
+          existing.count++;
+        } else {
+          map.set(event.player_id, {
+            player: event.player,
+            team: event.team,
+            count: 1,
+          });
+        }
+      }
+
+      return Array.from(map.values())
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+    };
+
+    return {
+      topScorers: aggregate('GOAL'),
+      topAssisters: aggregate('ASSIST'),
+    };
+  }
 
   async getStandings(competitionId: string): Promise<StandingRow[]> {
     const competition = await this.prisma.competition.findUnique({

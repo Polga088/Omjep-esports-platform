@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Trophy, ArrowLeft, Crown, ShieldAlert, TrendingUp } from 'lucide-react';
+import { Trophy, ArrowLeft, Crown, ShieldAlert, TrendingUp, BarChart3 } from 'lucide-react';
 import api from '@/lib/api';
 
 interface StandingTeam {
@@ -133,6 +133,16 @@ export default function Standings() {
         <p className="mt-1 text-sm text-slate-500">
           {loading ? '\u00a0' : `${standings.length} club${standings.length > 1 ? 's' : ''} en lice`}
         </p>
+
+        {id && (
+          <Link
+            to={`/dashboard/stats/${id}`}
+            className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm font-semibold hover:bg-amber-500/20 transition-all"
+          >
+            <BarChart3 className="w-4 h-4" />
+            Buteurs & Passeurs
+          </Link>
+        )}
       </div>
 
       {/* Error */}

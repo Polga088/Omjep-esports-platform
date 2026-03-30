@@ -190,6 +190,15 @@ exports.Prisma.MatchScalarFieldEnum = {
   played_at: 'played_at'
 };
 
+exports.Prisma.MatchEventScalarFieldEnum = {
+  id: 'id',
+  match_id: 'match_id',
+  player_id: 'player_id',
+  team_id: 'team_id',
+  type: 'type',
+  minute: 'minute'
+};
+
 exports.Prisma.TransferRequestScalarFieldEnum = {
   id: 'id',
   player_id: 'player_id',
@@ -275,6 +284,11 @@ exports.MatchStatus = exports.$Enums.MatchStatus = {
   DISPUTED: 'DISPUTED'
 };
 
+exports.EventType = exports.$Enums.EventType = {
+  GOAL: 'GOAL',
+  ASSIST: 'ASSIST'
+};
+
 exports.TransferStatus = exports.$Enums.TransferStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -295,6 +309,7 @@ exports.Prisma.ModelName = {
   Competition: 'Competition',
   CompetitionTeam: 'CompetitionTeam',
   Match: 'Match',
+  MatchEvent: 'MatchEvent',
   TransferRequest: 'TransferRequest',
   Invitation: 'Invitation'
 };

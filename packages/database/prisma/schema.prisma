@@ -81,6 +81,11 @@ enum InvitationStatus {
   REJECTED
 }
 
+enum EventType {
+  GOAL
+  ASSIST
+}
+
 // ============================================================
 // MODELS
 // ============================================================
@@ -107,6 +112,7 @@ model User {
   transferRequests   TransferRequest[]
   sentInvitations    Invitation[]      @relation("InvitationInviter")
   receivedInvitations Invitation[]     @relation("InvitationInvitee")
+  matchEvents        MatchEvent[]
 
   @@map("users")
 }
@@ -128,6 +134,7 @@ model Team {
   competitions     CompetitionTeam[]
   transferRequests TransferRequest[]
   invitations      Invitation[]
+  matchEvents      MatchEvent[]
 
   @@map("teams")
 }
@@ -210,8 +217,24 @@ model Match {
   competition Competition? @relation(fields: [competition_id], references: [id], onDelete: SetNull)
   homeTeam    Team         @relation("HomeTeam", fields: [home_team_id], references: [id])
   awayTeam    Team         @relation("AwayTeam", fields: [away_team_id], references: [id])
+  events      MatchEvent[]
 
   @@map("matches")
+}
+
+model MatchEvent {
+  id        String    @id @default(uuid()) @db.Uuid
+  match_id  String    @db.Uuid
+  player_id String    @db.Uuid
+  team_id   String    @db.Uuid
+  type      EventType
+  minute    Int?
+
+  match  Match @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  player User  @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  team   Team  @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("match_events")
 }
 
 // Mercato — demandes de transfert
