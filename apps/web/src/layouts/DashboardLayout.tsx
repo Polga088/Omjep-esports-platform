@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
-  LogOut, ChevronRight, Menu, X, UserCog, Swords,
+  LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
@@ -14,6 +14,7 @@ const sidebarLinks = [
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
   { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
+  { to: '/dashboard/settings', label: 'Paramètres', icon: Settings },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -23,6 +24,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/matches': 'Matchs',
   '/dashboard/store': 'Boutique',
   '/dashboard/profile': 'Mon Profil',
+  '/dashboard/settings': 'Paramètres',
 };
 
 export default function DashboardLayout() {
