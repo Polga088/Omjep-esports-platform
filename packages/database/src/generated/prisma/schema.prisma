@@ -86,6 +86,12 @@ enum EventType {
   ASSIST
 }
 
+enum TransactionType {
+  MATCH_REWARD
+  TRANSFER
+  WAGE
+}
+
 // ============================================================
 // MODELS
 // ============================================================
@@ -114,6 +120,7 @@ model User {
   sentInvitations     Invitation[]      @relation("InvitationInviter")
   receivedInvitations Invitation[]      @relation("InvitationInvitee")
   matchEvents         MatchEvent[]
+  contracts           Contract[]
 
   @@map("users")
 }
@@ -129,6 +136,9 @@ model Team {
   ea_club_id String?  @unique
   platform   Platform @default(CROSSPLAY)
 
+  // Finances
+  budget Float @default(1000000)
+
   // Relations
   members          TeamMember[]
   homeMatches      Match[]           @relation("HomeTeam")
@@ -137,6 +147,8 @@ model Team {
   transferRequests TransferRequest[]
   invitations      Invitation[]
   matchEvents      MatchEvent[]
+  contracts        Contract[]
+  transactions     Transaction[]
 
   @@map("teams")
 }
@@ -268,4 +280,35 @@ model Invitation {
   invitee User? @relation("InvitationInvitee", fields: [invitee_id], references: [id], onDelete: SetNull)
 
   @@map("invitations")
+}
+
+// ============================================================
+// FINANCES
+// ============================================================
+
+model Contract {
+  id             String   @id @default(uuid()) @db.Uuid
+  team_id        String   @db.Uuid
+  user_id        String   @db.Uuid
+  salary         Float
+  release_clause Float
+  expires_at     DateTime
+
+  team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("contracts")
+}
+
+model Transaction {
+  id          String          @id @default(uuid()) @db.Uuid
+  team_id     String          @db.Uuid
+  amount      Float
+  type        TransactionType
+  description String?
+  created_at  DateTime        @default(now())
+
+  team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
 }

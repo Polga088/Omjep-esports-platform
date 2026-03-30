@@ -63,6 +63,16 @@ export type TransferRequest = $Result.DefaultSelection<Prisma.$TransferRequestPa
  * 
  */
 export type Invitation = $Result.DefaultSelection<Prisma.$InvitationPayload>
+/**
+ * Model Contract
+ * 
+ */
+export type Contract = $Result.DefaultSelection<Prisma.$ContractPayload>
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
 
 /**
  * Enums
@@ -167,6 +177,15 @@ export const EventType: {
 
 export type EventType = (typeof EventType)[keyof typeof EventType]
 
+
+export const TransactionType: {
+  MATCH_REWARD: 'MATCH_REWARD',
+  TRANSFER: 'TRANSFER',
+  WAGE: 'WAGE'
+};
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -208,6 +227,10 @@ export const InvitationStatus: typeof $Enums.InvitationStatus
 export type EventType = $Enums.EventType
 
 export const EventType: typeof $Enums.EventType
+
+export type TransactionType = $Enums.TransactionType
+
+export const TransactionType: typeof $Enums.TransactionType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -426,6 +449,26 @@ export class PrismaClient<
     * ```
     */
   get invitation(): Prisma.InvitationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.contract`: Exposes CRUD operations for the **Contract** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Contracts
+    * const contracts = await prisma.contract.findMany()
+    * ```
+    */
+  get contract(): Prisma.ContractDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transactions
+    * const transactions = await prisma.transaction.findMany()
+    * ```
+    */
+  get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -876,7 +919,9 @@ export namespace Prisma {
     Match: 'Match',
     MatchEvent: 'MatchEvent',
     TransferRequest: 'TransferRequest',
-    Invitation: 'Invitation'
+    Invitation: 'Invitation',
+    Contract: 'Contract',
+    Transaction: 'Transaction'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -895,7 +940,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "team" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "matchEvent" | "transferRequest" | "invitation"
+      modelProps: "user" | "team" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1639,6 +1684,154 @@ export namespace Prisma {
           }
         }
       }
+      Contract: {
+        payload: Prisma.$ContractPayload<ExtArgs>
+        fields: Prisma.ContractFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ContractFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ContractFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          findFirst: {
+            args: Prisma.ContractFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ContractFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          findMany: {
+            args: Prisma.ContractFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>[]
+          }
+          create: {
+            args: Prisma.ContractCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          createMany: {
+            args: Prisma.ContractCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ContractCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>[]
+          }
+          delete: {
+            args: Prisma.ContractDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          update: {
+            args: Prisma.ContractUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          deleteMany: {
+            args: Prisma.ContractDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ContractUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ContractUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>[]
+          }
+          upsert: {
+            args: Prisma.ContractUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          aggregate: {
+            args: Prisma.ContractAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContract>
+          }
+          groupBy: {
+            args: Prisma.ContractGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContractGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ContractCountArgs<ExtArgs>
+            result: $Utils.Optional<ContractCountAggregateOutputType> | number
+          }
+        }
+      }
+      Transaction: {
+        payload: Prisma.$TransactionPayload<ExtArgs>
+        fields: Prisma.TransactionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransactionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransactionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findFirst: {
+            args: Prisma.TransactionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransactionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findMany: {
+            args: Prisma.TransactionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          create: {
+            args: Prisma.TransactionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          createMany: {
+            args: Prisma.TransactionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransactionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          delete: {
+            args: Prisma.TransactionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          update: {
+            args: Prisma.TransactionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransactionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransactionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransactionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransactionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          aggregate: {
+            args: Prisma.TransactionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransaction>
+          }
+          groupBy: {
+            args: Prisma.TransactionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransactionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransactionCountArgs<ExtArgs>
+            result: $Utils.Optional<TransactionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1745,6 +1938,8 @@ export namespace Prisma {
     matchEvent?: MatchEventOmit
     transferRequest?: TransferRequestOmit
     invitation?: InvitationOmit
+    contract?: ContractOmit
+    transaction?: TransactionOmit
   }
 
   /* Types for Logging */
@@ -1830,6 +2025,7 @@ export namespace Prisma {
     sentInvitations: number
     receivedInvitations: number
     matchEvents: number
+    contracts: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1838,6 +2034,7 @@ export namespace Prisma {
     sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
     receivedInvitations?: boolean | UserCountOutputTypeCountReceivedInvitationsArgs
     matchEvents?: boolean | UserCountOutputTypeCountMatchEventsArgs
+    contracts?: boolean | UserCountOutputTypeCountContractsArgs
   }
 
   // Custom InputTypes
@@ -1886,6 +2083,13 @@ export namespace Prisma {
     where?: MatchEventWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountContractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+  }
+
 
   /**
    * Count Type TeamCountOutputType
@@ -1899,6 +2103,8 @@ export namespace Prisma {
     transferRequests: number
     invitations: number
     matchEvents: number
+    contracts: number
+    transactions: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1909,6 +2115,8 @@ export namespace Prisma {
     transferRequests?: boolean | TeamCountOutputTypeCountTransferRequestsArgs
     invitations?: boolean | TeamCountOutputTypeCountInvitationsArgs
     matchEvents?: boolean | TeamCountOutputTypeCountMatchEventsArgs
+    contracts?: boolean | TeamCountOutputTypeCountContractsArgs
+    transactions?: boolean | TeamCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -1969,6 +2177,20 @@ export namespace Prisma {
    */
   export type TeamCountOutputTypeCountMatchEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MatchEventWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountContractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -2265,6 +2487,7 @@ export namespace Prisma {
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     matchEvents?: boolean | User$matchEventsArgs<ExtArgs>
+    contracts?: boolean | User$contractsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2318,6 +2541,7 @@ export namespace Prisma {
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     matchEvents?: boolean | User$matchEventsArgs<ExtArgs>
+    contracts?: boolean | User$contractsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2332,6 +2556,7 @@ export namespace Prisma {
       sentInvitations: Prisma.$InvitationPayload<ExtArgs>[]
       receivedInvitations: Prisma.$InvitationPayload<ExtArgs>[]
       matchEvents: Prisma.$MatchEventPayload<ExtArgs>[]
+      contracts: Prisma.$ContractPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2745,6 +2970,7 @@ export namespace Prisma {
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedInvitations<T extends User$receivedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     matchEvents<T extends User$matchEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$matchEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    contracts<T extends User$contractsArgs<ExtArgs> = {}>(args?: Subset<T, User$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3312,6 +3538,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.contracts
+   */
+  export type User$contractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    cursor?: ContractWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3336,8 +3586,18 @@ export namespace Prisma {
 
   export type AggregateTeam = {
     _count: TeamCountAggregateOutputType | null
+    _avg: TeamAvgAggregateOutputType | null
+    _sum: TeamSumAggregateOutputType | null
     _min: TeamMinAggregateOutputType | null
     _max: TeamMaxAggregateOutputType | null
+  }
+
+  export type TeamAvgAggregateOutputType = {
+    budget: number | null
+  }
+
+  export type TeamSumAggregateOutputType = {
+    budget: number | null
   }
 
   export type TeamMinAggregateOutputType = {
@@ -3348,6 +3608,7 @@ export namespace Prisma {
     created_at: Date | null
     ea_club_id: string | null
     platform: $Enums.Platform | null
+    budget: number | null
   }
 
   export type TeamMaxAggregateOutputType = {
@@ -3358,6 +3619,7 @@ export namespace Prisma {
     created_at: Date | null
     ea_club_id: string | null
     platform: $Enums.Platform | null
+    budget: number | null
   }
 
   export type TeamCountAggregateOutputType = {
@@ -3368,9 +3630,18 @@ export namespace Prisma {
     created_at: number
     ea_club_id: number
     platform: number
+    budget: number
     _all: number
   }
 
+
+  export type TeamAvgAggregateInputType = {
+    budget?: true
+  }
+
+  export type TeamSumAggregateInputType = {
+    budget?: true
+  }
 
   export type TeamMinAggregateInputType = {
     id?: true
@@ -3380,6 +3651,7 @@ export namespace Prisma {
     created_at?: true
     ea_club_id?: true
     platform?: true
+    budget?: true
   }
 
   export type TeamMaxAggregateInputType = {
@@ -3390,6 +3662,7 @@ export namespace Prisma {
     created_at?: true
     ea_club_id?: true
     platform?: true
+    budget?: true
   }
 
   export type TeamCountAggregateInputType = {
@@ -3400,6 +3673,7 @@ export namespace Prisma {
     created_at?: true
     ea_club_id?: true
     platform?: true
+    budget?: true
     _all?: true
   }
 
@@ -3441,6 +3715,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: TeamAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TeamSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: TeamMinAggregateInputType
@@ -3471,6 +3757,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: TeamCountAggregateInputType | true
+    _avg?: TeamAvgAggregateInputType
+    _sum?: TeamSumAggregateInputType
     _min?: TeamMinAggregateInputType
     _max?: TeamMaxAggregateInputType
   }
@@ -3483,7 +3771,10 @@ export namespace Prisma {
     created_at: Date
     ea_club_id: string | null
     platform: $Enums.Platform
+    budget: number
     _count: TeamCountAggregateOutputType | null
+    _avg: TeamAvgAggregateOutputType | null
+    _sum: TeamSumAggregateOutputType | null
     _min: TeamMinAggregateOutputType | null
     _max: TeamMaxAggregateOutputType | null
   }
@@ -3510,6 +3801,7 @@ export namespace Prisma {
     created_at?: boolean
     ea_club_id?: boolean
     platform?: boolean
+    budget?: boolean
     members?: boolean | Team$membersArgs<ExtArgs>
     homeMatches?: boolean | Team$homeMatchesArgs<ExtArgs>
     awayMatches?: boolean | Team$awayMatchesArgs<ExtArgs>
@@ -3517,6 +3809,8 @@ export namespace Prisma {
     transferRequests?: boolean | Team$transferRequestsArgs<ExtArgs>
     invitations?: boolean | Team$invitationsArgs<ExtArgs>
     matchEvents?: boolean | Team$matchEventsArgs<ExtArgs>
+    contracts?: boolean | Team$contractsArgs<ExtArgs>
+    transactions?: boolean | Team$transactionsArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -3528,6 +3822,7 @@ export namespace Prisma {
     created_at?: boolean
     ea_club_id?: boolean
     platform?: boolean
+    budget?: boolean
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3538,6 +3833,7 @@ export namespace Prisma {
     created_at?: boolean
     ea_club_id?: boolean
     platform?: boolean
+    budget?: boolean
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectScalar = {
@@ -3548,9 +3844,10 @@ export namespace Prisma {
     created_at?: boolean
     ea_club_id?: boolean
     platform?: boolean
+    budget?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proclubs_url" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proclubs_url" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform" | "budget", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | Team$membersArgs<ExtArgs>
     homeMatches?: boolean | Team$homeMatchesArgs<ExtArgs>
@@ -3559,6 +3856,8 @@ export namespace Prisma {
     transferRequests?: boolean | Team$transferRequestsArgs<ExtArgs>
     invitations?: boolean | Team$invitationsArgs<ExtArgs>
     matchEvents?: boolean | Team$matchEventsArgs<ExtArgs>
+    contracts?: boolean | Team$contractsArgs<ExtArgs>
+    transactions?: boolean | Team$transactionsArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3574,6 +3873,8 @@ export namespace Prisma {
       transferRequests: Prisma.$TransferRequestPayload<ExtArgs>[]
       invitations: Prisma.$InvitationPayload<ExtArgs>[]
       matchEvents: Prisma.$MatchEventPayload<ExtArgs>[]
+      contracts: Prisma.$ContractPayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3583,6 +3884,7 @@ export namespace Prisma {
       created_at: Date
       ea_club_id: string | null
       platform: $Enums.Platform
+      budget: number
     }, ExtArgs["result"]["team"]>
     composites: {}
   }
@@ -3984,6 +4286,8 @@ export namespace Prisma {
     transferRequests<T extends Team$transferRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Team$transferRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invitations<T extends Team$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, Team$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     matchEvents<T extends Team$matchEventsArgs<ExtArgs> = {}>(args?: Subset<T, Team$matchEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    contracts<T extends Team$contractsArgs<ExtArgs> = {}>(args?: Subset<T, Team$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends Team$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4020,6 +4324,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"Team", 'DateTime'>
     readonly ea_club_id: FieldRef<"Team", 'String'>
     readonly platform: FieldRef<"Team", 'Platform'>
+    readonly budget: FieldRef<"Team", 'Float'>
   }
     
 
@@ -4573,6 +4878,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MatchEventScalarFieldEnum | MatchEventScalarFieldEnum[]
+  }
+
+  /**
+   * Team.contracts
+   */
+  export type Team$contractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    cursor?: ContractWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Team.transactions
+   */
+  export type Team$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -13495,6 +13848,2228 @@ export namespace Prisma {
 
 
   /**
+   * Model Contract
+   */
+
+  export type AggregateContract = {
+    _count: ContractCountAggregateOutputType | null
+    _avg: ContractAvgAggregateOutputType | null
+    _sum: ContractSumAggregateOutputType | null
+    _min: ContractMinAggregateOutputType | null
+    _max: ContractMaxAggregateOutputType | null
+  }
+
+  export type ContractAvgAggregateOutputType = {
+    salary: number | null
+    release_clause: number | null
+  }
+
+  export type ContractSumAggregateOutputType = {
+    salary: number | null
+    release_clause: number | null
+  }
+
+  export type ContractMinAggregateOutputType = {
+    id: string | null
+    team_id: string | null
+    user_id: string | null
+    salary: number | null
+    release_clause: number | null
+    expires_at: Date | null
+  }
+
+  export type ContractMaxAggregateOutputType = {
+    id: string | null
+    team_id: string | null
+    user_id: string | null
+    salary: number | null
+    release_clause: number | null
+    expires_at: Date | null
+  }
+
+  export type ContractCountAggregateOutputType = {
+    id: number
+    team_id: number
+    user_id: number
+    salary: number
+    release_clause: number
+    expires_at: number
+    _all: number
+  }
+
+
+  export type ContractAvgAggregateInputType = {
+    salary?: true
+    release_clause?: true
+  }
+
+  export type ContractSumAggregateInputType = {
+    salary?: true
+    release_clause?: true
+  }
+
+  export type ContractMinAggregateInputType = {
+    id?: true
+    team_id?: true
+    user_id?: true
+    salary?: true
+    release_clause?: true
+    expires_at?: true
+  }
+
+  export type ContractMaxAggregateInputType = {
+    id?: true
+    team_id?: true
+    user_id?: true
+    salary?: true
+    release_clause?: true
+    expires_at?: true
+  }
+
+  export type ContractCountAggregateInputType = {
+    id?: true
+    team_id?: true
+    user_id?: true
+    salary?: true
+    release_clause?: true
+    expires_at?: true
+    _all?: true
+  }
+
+  export type ContractAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contract to aggregate.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Contracts
+    **/
+    _count?: true | ContractCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ContractAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ContractSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContractMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContractMaxAggregateInputType
+  }
+
+  export type GetContractAggregateType<T extends ContractAggregateArgs> = {
+        [P in keyof T & keyof AggregateContract]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContract[P]>
+      : GetScalarType<T[P], AggregateContract[P]>
+  }
+
+
+
+
+  export type ContractGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithAggregationInput | ContractOrderByWithAggregationInput[]
+    by: ContractScalarFieldEnum[] | ContractScalarFieldEnum
+    having?: ContractScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContractCountAggregateInputType | true
+    _avg?: ContractAvgAggregateInputType
+    _sum?: ContractSumAggregateInputType
+    _min?: ContractMinAggregateInputType
+    _max?: ContractMaxAggregateInputType
+  }
+
+  export type ContractGroupByOutputType = {
+    id: string
+    team_id: string
+    user_id: string
+    salary: number
+    release_clause: number
+    expires_at: Date
+    _count: ContractCountAggregateOutputType | null
+    _avg: ContractAvgAggregateOutputType | null
+    _sum: ContractSumAggregateOutputType | null
+    _min: ContractMinAggregateOutputType | null
+    _max: ContractMaxAggregateOutputType | null
+  }
+
+  type GetContractGroupByPayload<T extends ContractGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContractGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContractGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContractGroupByOutputType[P]>
+            : GetScalarType<T[P], ContractGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContractSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    user_id?: boolean
+    salary?: boolean
+    release_clause?: boolean
+    expires_at?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contract"]>
+
+  export type ContractSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    user_id?: boolean
+    salary?: boolean
+    release_clause?: boolean
+    expires_at?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contract"]>
+
+  export type ContractSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    user_id?: boolean
+    salary?: boolean
+    release_clause?: boolean
+    expires_at?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contract"]>
+
+  export type ContractSelectScalar = {
+    id?: boolean
+    team_id?: boolean
+    user_id?: boolean
+    salary?: boolean
+    release_clause?: boolean
+    expires_at?: boolean
+  }
+
+  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "user_id" | "salary" | "release_clause" | "expires_at", ExtArgs["result"]["contract"]>
+  export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ContractIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ContractIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ContractPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Contract"
+    objects: {
+      team: Prisma.$TeamPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      team_id: string
+      user_id: string
+      salary: number
+      release_clause: number
+      expires_at: Date
+    }, ExtArgs["result"]["contract"]>
+    composites: {}
+  }
+
+  type ContractGetPayload<S extends boolean | null | undefined | ContractDefaultArgs> = $Result.GetResult<Prisma.$ContractPayload, S>
+
+  type ContractCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ContractFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ContractCountAggregateInputType | true
+    }
+
+  export interface ContractDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Contract'], meta: { name: 'Contract' } }
+    /**
+     * Find zero or one Contract that matches the filter.
+     * @param {ContractFindUniqueArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContractFindUniqueArgs>(args: SelectSubset<T, ContractFindUniqueArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Contract that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ContractFindUniqueOrThrowArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContractFindUniqueOrThrowArgs>(args: SelectSubset<T, ContractFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contract that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractFindFirstArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContractFindFirstArgs>(args?: SelectSubset<T, ContractFindFirstArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contract that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractFindFirstOrThrowArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContractFindFirstOrThrowArgs>(args?: SelectSubset<T, ContractFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Contracts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Contracts
+     * const contracts = await prisma.contract.findMany()
+     * 
+     * // Get first 10 Contracts
+     * const contracts = await prisma.contract.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contractWithIdOnly = await prisma.contract.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContractFindManyArgs>(args?: SelectSubset<T, ContractFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Contract.
+     * @param {ContractCreateArgs} args - Arguments to create a Contract.
+     * @example
+     * // Create one Contract
+     * const Contract = await prisma.contract.create({
+     *   data: {
+     *     // ... data to create a Contract
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContractCreateArgs>(args: SelectSubset<T, ContractCreateArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Contracts.
+     * @param {ContractCreateManyArgs} args - Arguments to create many Contracts.
+     * @example
+     * // Create many Contracts
+     * const contract = await prisma.contract.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContractCreateManyArgs>(args?: SelectSubset<T, ContractCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Contracts and returns the data saved in the database.
+     * @param {ContractCreateManyAndReturnArgs} args - Arguments to create many Contracts.
+     * @example
+     * // Create many Contracts
+     * const contract = await prisma.contract.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Contracts and only return the `id`
+     * const contractWithIdOnly = await prisma.contract.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContractCreateManyAndReturnArgs>(args?: SelectSubset<T, ContractCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Contract.
+     * @param {ContractDeleteArgs} args - Arguments to delete one Contract.
+     * @example
+     * // Delete one Contract
+     * const Contract = await prisma.contract.delete({
+     *   where: {
+     *     // ... filter to delete one Contract
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContractDeleteArgs>(args: SelectSubset<T, ContractDeleteArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Contract.
+     * @param {ContractUpdateArgs} args - Arguments to update one Contract.
+     * @example
+     * // Update one Contract
+     * const contract = await prisma.contract.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContractUpdateArgs>(args: SelectSubset<T, ContractUpdateArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Contracts.
+     * @param {ContractDeleteManyArgs} args - Arguments to filter Contracts to delete.
+     * @example
+     * // Delete a few Contracts
+     * const { count } = await prisma.contract.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContractDeleteManyArgs>(args?: SelectSubset<T, ContractDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Contracts
+     * const contract = await prisma.contract.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContractUpdateManyArgs>(args: SelectSubset<T, ContractUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contracts and returns the data updated in the database.
+     * @param {ContractUpdateManyAndReturnArgs} args - Arguments to update many Contracts.
+     * @example
+     * // Update many Contracts
+     * const contract = await prisma.contract.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Contracts and only return the `id`
+     * const contractWithIdOnly = await prisma.contract.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ContractUpdateManyAndReturnArgs>(args: SelectSubset<T, ContractUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Contract.
+     * @param {ContractUpsertArgs} args - Arguments to update or create a Contract.
+     * @example
+     * // Update or create a Contract
+     * const contract = await prisma.contract.upsert({
+     *   create: {
+     *     // ... data to create a Contract
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Contract we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContractUpsertArgs>(args: SelectSubset<T, ContractUpsertArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractCountArgs} args - Arguments to filter Contracts to count.
+     * @example
+     * // Count the number of Contracts
+     * const count = await prisma.contract.count({
+     *   where: {
+     *     // ... the filter for the Contracts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContractCountArgs>(
+      args?: Subset<T, ContractCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContractCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Contract.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContractAggregateArgs>(args: Subset<T, ContractAggregateArgs>): Prisma.PrismaPromise<GetContractAggregateType<T>>
+
+    /**
+     * Group by Contract.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContractGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContractGroupByArgs['orderBy'] }
+        : { orderBy?: ContractGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContractGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContractGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Contract model
+   */
+  readonly fields: ContractFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Contract.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContractClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Contract model
+   */
+  interface ContractFieldRefs {
+    readonly id: FieldRef<"Contract", 'String'>
+    readonly team_id: FieldRef<"Contract", 'String'>
+    readonly user_id: FieldRef<"Contract", 'String'>
+    readonly salary: FieldRef<"Contract", 'Float'>
+    readonly release_clause: FieldRef<"Contract", 'Float'>
+    readonly expires_at: FieldRef<"Contract", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Contract findUnique
+   */
+  export type ContractFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract findUniqueOrThrow
+   */
+  export type ContractFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract findFirst
+   */
+  export type ContractFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contracts.
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contracts.
+     */
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Contract findFirstOrThrow
+   */
+  export type ContractFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contracts.
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contracts.
+     */
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Contract findMany
+   */
+  export type ContractFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contracts to fetch.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Contracts.
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Contract create
+   */
+  export type ContractCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Contract.
+     */
+    data: XOR<ContractCreateInput, ContractUncheckedCreateInput>
+  }
+
+  /**
+   * Contract createMany
+   */
+  export type ContractCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Contracts.
+     */
+    data: ContractCreateManyInput | ContractCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Contract createManyAndReturn
+   */
+  export type ContractCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * The data used to create many Contracts.
+     */
+    data: ContractCreateManyInput | ContractCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Contract update
+   */
+  export type ContractUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Contract.
+     */
+    data: XOR<ContractUpdateInput, ContractUncheckedUpdateInput>
+    /**
+     * Choose, which Contract to update.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract updateMany
+   */
+  export type ContractUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Contracts.
+     */
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyInput>
+    /**
+     * Filter which Contracts to update
+     */
+    where?: ContractWhereInput
+    /**
+     * Limit how many Contracts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contract updateManyAndReturn
+   */
+  export type ContractUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * The data used to update Contracts.
+     */
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyInput>
+    /**
+     * Filter which Contracts to update
+     */
+    where?: ContractWhereInput
+    /**
+     * Limit how many Contracts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Contract upsert
+   */
+  export type ContractUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Contract to update in case it exists.
+     */
+    where: ContractWhereUniqueInput
+    /**
+     * In case the Contract found by the `where` argument doesn't exist, create a new Contract with this data.
+     */
+    create: XOR<ContractCreateInput, ContractUncheckedCreateInput>
+    /**
+     * In case the Contract was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContractUpdateInput, ContractUncheckedUpdateInput>
+  }
+
+  /**
+   * Contract delete
+   */
+  export type ContractDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter which Contract to delete.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract deleteMany
+   */
+  export type ContractDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contracts to delete
+     */
+    where?: ContractWhereInput
+    /**
+     * Limit how many Contracts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contract without action
+   */
+  export type ContractDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Transaction
+   */
+
+  export type AggregateTransaction = {
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  export type TransactionAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionMinAggregateOutputType = {
+    id: string | null
+    team_id: string | null
+    amount: number | null
+    type: $Enums.TransactionType | null
+    description: string | null
+    created_at: Date | null
+  }
+
+  export type TransactionMaxAggregateOutputType = {
+    id: string | null
+    team_id: string | null
+    amount: number | null
+    type: $Enums.TransactionType | null
+    description: string | null
+    created_at: Date | null
+  }
+
+  export type TransactionCountAggregateOutputType = {
+    id: number
+    team_id: number
+    amount: number
+    type: number
+    description: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type TransactionAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionMinAggregateInputType = {
+    id?: true
+    team_id?: true
+    amount?: true
+    type?: true
+    description?: true
+    created_at?: true
+  }
+
+  export type TransactionMaxAggregateInputType = {
+    id?: true
+    team_id?: true
+    amount?: true
+    type?: true
+    description?: true
+    created_at?: true
+  }
+
+  export type TransactionCountAggregateInputType = {
+    id?: true
+    team_id?: true
+    amount?: true
+    type?: true
+    description?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type TransactionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transaction to aggregate.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Transactions
+    **/
+    _count?: true | TransactionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransactionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransactionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransactionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type GetTransactionAggregateType<T extends TransactionAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransaction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransaction[P]>
+      : GetScalarType<T[P], AggregateTransaction[P]>
+  }
+
+
+
+
+  export type TransactionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithAggregationInput | TransactionOrderByWithAggregationInput[]
+    by: TransactionScalarFieldEnum[] | TransactionScalarFieldEnum
+    having?: TransactionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransactionCountAggregateInputType | true
+    _avg?: TransactionAvgAggregateInputType
+    _sum?: TransactionSumAggregateInputType
+    _min?: TransactionMinAggregateInputType
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type TransactionGroupByOutputType = {
+    id: string
+    team_id: string
+    amount: number
+    type: $Enums.TransactionType
+    description: string | null
+    created_at: Date
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  type GetTransactionGroupByPayload<T extends TransactionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransactionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransactionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+            : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    amount?: boolean
+    type?: boolean
+    description?: boolean
+    created_at?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    amount?: boolean
+    type?: boolean
+    description?: boolean
+    created_at?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    amount?: boolean
+    type?: boolean
+    description?: boolean
+    created_at?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectScalar = {
+    id?: boolean
+    team_id?: boolean
+    amount?: boolean
+    type?: boolean
+    description?: boolean
+    created_at?: boolean
+  }
+
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "amount" | "type" | "description" | "created_at", ExtArgs["result"]["transaction"]>
+  export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+
+  export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transaction"
+    objects: {
+      team: Prisma.$TeamPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      team_id: string
+      amount: number
+      type: $Enums.TransactionType
+      description: string | null
+      created_at: Date
+    }, ExtArgs["result"]["transaction"]>
+    composites: {}
+  }
+
+  type TransactionGetPayload<S extends boolean | null | undefined | TransactionDefaultArgs> = $Result.GetResult<Prisma.$TransactionPayload, S>
+
+  type TransactionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransactionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransactionCountAggregateInputType | true
+    }
+
+  export interface TransactionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transaction'], meta: { name: 'Transaction' } }
+    /**
+     * Find zero or one Transaction that matches the filter.
+     * @param {TransactionFindUniqueArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransactionFindUniqueArgs>(args: SelectSubset<T, TransactionFindUniqueArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Transaction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransactionFindUniqueOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransactionFindUniqueOrThrowArgs>(args: SelectSubset<T, TransactionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransactionFindFirstArgs>(args?: SelectSubset<T, TransactionFindFirstArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransactionFindFirstOrThrowArgs>(args?: SelectSubset<T, TransactionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transactions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Transactions
+     * const transactions = await prisma.transaction.findMany()
+     * 
+     * // Get first 10 Transactions
+     * const transactions = await prisma.transaction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transactionWithIdOnly = await prisma.transaction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransactionFindManyArgs>(args?: SelectSubset<T, TransactionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Transaction.
+     * @param {TransactionCreateArgs} args - Arguments to create a Transaction.
+     * @example
+     * // Create one Transaction
+     * const Transaction = await prisma.transaction.create({
+     *   data: {
+     *     // ... data to create a Transaction
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransactionCreateArgs>(args: SelectSubset<T, TransactionCreateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Transactions.
+     * @param {TransactionCreateManyArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransactionCreateManyArgs>(args?: SelectSubset<T, TransactionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Transactions and returns the data saved in the database.
+     * @param {TransactionCreateManyAndReturnArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransactionCreateManyAndReturnArgs>(args?: SelectSubset<T, TransactionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Transaction.
+     * @param {TransactionDeleteArgs} args - Arguments to delete one Transaction.
+     * @example
+     * // Delete one Transaction
+     * const Transaction = await prisma.transaction.delete({
+     *   where: {
+     *     // ... filter to delete one Transaction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransactionDeleteArgs>(args: SelectSubset<T, TransactionDeleteArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Transaction.
+     * @param {TransactionUpdateArgs} args - Arguments to update one Transaction.
+     * @example
+     * // Update one Transaction
+     * const transaction = await prisma.transaction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransactionUpdateArgs>(args: SelectSubset<T, TransactionUpdateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Transactions.
+     * @param {TransactionDeleteManyArgs} args - Arguments to filter Transactions to delete.
+     * @example
+     * // Delete a few Transactions
+     * const { count } = await prisma.transaction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransactionDeleteManyArgs>(args?: SelectSubset<T, TransactionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransactionUpdateManyArgs>(args: SelectSubset<T, TransactionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions and returns the data updated in the database.
+     * @param {TransactionUpdateManyAndReturnArgs} args - Arguments to update many Transactions.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransactionUpdateManyAndReturnArgs>(args: SelectSubset<T, TransactionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Transaction.
+     * @param {TransactionUpsertArgs} args - Arguments to update or create a Transaction.
+     * @example
+     * // Update or create a Transaction
+     * const transaction = await prisma.transaction.upsert({
+     *   create: {
+     *     // ... data to create a Transaction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Transaction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransactionUpsertArgs>(args: SelectSubset<T, TransactionUpsertArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionCountArgs} args - Arguments to filter Transactions to count.
+     * @example
+     * // Count the number of Transactions
+     * const count = await prisma.transaction.count({
+     *   where: {
+     *     // ... the filter for the Transactions we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransactionCountArgs>(
+      args?: Subset<T, TransactionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransactionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransactionAggregateArgs>(args: Subset<T, TransactionAggregateArgs>): Prisma.PrismaPromise<GetTransactionAggregateType<T>>
+
+    /**
+     * Group by Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransactionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransactionGroupByArgs['orderBy'] }
+        : { orderBy?: TransactionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransactionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransactionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Transaction model
+   */
+  readonly fields: TransactionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Transaction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Transaction model
+   */
+  interface TransactionFieldRefs {
+    readonly id: FieldRef<"Transaction", 'String'>
+    readonly team_id: FieldRef<"Transaction", 'String'>
+    readonly amount: FieldRef<"Transaction", 'Float'>
+    readonly type: FieldRef<"Transaction", 'TransactionType'>
+    readonly description: FieldRef<"Transaction", 'String'>
+    readonly created_at: FieldRef<"Transaction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Transaction findUnique
+   */
+  export type TransactionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findUniqueOrThrow
+   */
+  export type TransactionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findFirst
+   */
+  export type TransactionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findFirstOrThrow
+   */
+  export type TransactionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findMany
+   */
+  export type TransactionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transactions to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction create
+   */
+  export type TransactionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Transaction.
+     */
+    data: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+  }
+
+  /**
+   * Transaction createMany
+   */
+  export type TransactionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Transaction createManyAndReturn
+   */
+  export type TransactionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction update
+   */
+  export type TransactionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Transaction.
+     */
+    data: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+    /**
+     * Choose, which Transaction to update.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction updateMany
+   */
+  export type TransactionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction updateManyAndReturn
+   */
+  export type TransactionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction upsert
+   */
+  export type TransactionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Transaction to update in case it exists.
+     */
+    where: TransactionWhereUniqueInput
+    /**
+     * In case the Transaction found by the `where` argument doesn't exist, create a new Transaction with this data.
+     */
+    create: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+    /**
+     * In case the Transaction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+  }
+
+  /**
+   * Transaction delete
+   */
+  export type TransactionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter which Transaction to delete.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction deleteMany
+   */
+  export type TransactionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transactions to delete
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction without action
+   */
+  export type TransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -13532,7 +16107,8 @@ export namespace Prisma {
     logo_url: 'logo_url',
     created_at: 'created_at',
     ea_club_id: 'ea_club_id',
-    platform: 'platform'
+    platform: 'platform',
+    budget: 'budget'
   };
 
   export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
@@ -13636,6 +16212,30 @@ export namespace Prisma {
   export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
 
 
+  export const ContractScalarFieldEnum: {
+    id: 'id',
+    team_id: 'team_id',
+    user_id: 'user_id',
+    salary: 'salary',
+    release_clause: 'release_clause',
+    expires_at: 'expires_at'
+  };
+
+  export type ContractScalarFieldEnum = (typeof ContractScalarFieldEnum)[keyof typeof ContractScalarFieldEnum]
+
+
+  export const TransactionScalarFieldEnum: {
+    id: 'id',
+    team_id: 'team_id',
+    amount: 'amount',
+    type: 'type',
+    description: 'description',
+    created_at: 'created_at'
+  };
+
+  export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -13736,6 +16336,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ClubRole'
    */
   export type EnumClubRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClubRole'>
@@ -13760,20 +16374,6 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -13859,6 +16459,20 @@ export namespace Prisma {
    */
   export type ListEnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'TransactionType'
+   */
+  export type EnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionType[]'
+   */
+  export type ListEnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -13885,6 +16499,7 @@ export namespace Prisma {
     sentInvitations?: InvitationListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
     matchEvents?: MatchEventListRelationFilter
+    contracts?: ContractListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13905,6 +16520,7 @@ export namespace Prisma {
     sentInvitations?: InvitationOrderByRelationAggregateInput
     receivedInvitations?: InvitationOrderByRelationAggregateInput
     matchEvents?: MatchEventOrderByRelationAggregateInput
+    contracts?: ContractOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13928,6 +16544,7 @@ export namespace Prisma {
     sentInvitations?: InvitationListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
     matchEvents?: MatchEventListRelationFilter
+    contracts?: ContractListRelationFilter
   }, "id" | "external_id" | "email" | "ea_persona_name">
 
   export type UserOrderByWithAggregationInput = {
@@ -13975,6 +16592,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Team"> | Date | string
     ea_club_id?: StringNullableFilter<"Team"> | string | null
     platform?: EnumPlatformFilter<"Team"> | $Enums.Platform
+    budget?: FloatFilter<"Team"> | number
     members?: TeamMemberListRelationFilter
     homeMatches?: MatchListRelationFilter
     awayMatches?: MatchListRelationFilter
@@ -13982,6 +16600,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestListRelationFilter
     invitations?: InvitationListRelationFilter
     matchEvents?: MatchEventListRelationFilter
+    contracts?: ContractListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
@@ -13992,6 +16612,7 @@ export namespace Prisma {
     created_at?: SortOrder
     ea_club_id?: SortOrderInput | SortOrder
     platform?: SortOrder
+    budget?: SortOrder
     members?: TeamMemberOrderByRelationAggregateInput
     homeMatches?: MatchOrderByRelationAggregateInput
     awayMatches?: MatchOrderByRelationAggregateInput
@@ -13999,6 +16620,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestOrderByRelationAggregateInput
     invitations?: InvitationOrderByRelationAggregateInput
     matchEvents?: MatchEventOrderByRelationAggregateInput
+    contracts?: ContractOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -14012,6 +16635,7 @@ export namespace Prisma {
     logo_url?: StringNullableFilter<"Team"> | string | null
     created_at?: DateTimeFilter<"Team"> | Date | string
     platform?: EnumPlatformFilter<"Team"> | $Enums.Platform
+    budget?: FloatFilter<"Team"> | number
     members?: TeamMemberListRelationFilter
     homeMatches?: MatchListRelationFilter
     awayMatches?: MatchListRelationFilter
@@ -14019,6 +16643,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestListRelationFilter
     invitations?: InvitationListRelationFilter
     matchEvents?: MatchEventListRelationFilter
+    contracts?: ContractListRelationFilter
+    transactions?: TransactionListRelationFilter
   }, "id" | "proclubs_url" | "name" | "ea_club_id">
 
   export type TeamOrderByWithAggregationInput = {
@@ -14029,9 +16655,12 @@ export namespace Prisma {
     created_at?: SortOrder
     ea_club_id?: SortOrderInput | SortOrder
     platform?: SortOrder
+    budget?: SortOrder
     _count?: TeamCountOrderByAggregateInput
+    _avg?: TeamAvgOrderByAggregateInput
     _max?: TeamMaxOrderByAggregateInput
     _min?: TeamMinOrderByAggregateInput
+    _sum?: TeamSumOrderByAggregateInput
   }
 
   export type TeamScalarWhereWithAggregatesInput = {
@@ -14045,6 +16674,7 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"Team"> | Date | string
     ea_club_id?: StringNullableWithAggregatesFilter<"Team"> | string | null
     platform?: EnumPlatformWithAggregatesFilter<"Team"> | $Enums.Platform
+    budget?: FloatWithAggregatesFilter<"Team"> | number
   }
 
   export type TeamMemberWhereInput = {
@@ -14578,6 +17208,133 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"Invitation"> | Date | string
   }
 
+  export type ContractWhereInput = {
+    AND?: ContractWhereInput | ContractWhereInput[]
+    OR?: ContractWhereInput[]
+    NOT?: ContractWhereInput | ContractWhereInput[]
+    id?: UuidFilter<"Contract"> | string
+    team_id?: UuidFilter<"Contract"> | string
+    user_id?: UuidFilter<"Contract"> | string
+    salary?: FloatFilter<"Contract"> | number
+    release_clause?: FloatFilter<"Contract"> | number
+    expires_at?: DateTimeFilter<"Contract"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ContractOrderByWithRelationInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    user_id?: SortOrder
+    salary?: SortOrder
+    release_clause?: SortOrder
+    expires_at?: SortOrder
+    team?: TeamOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ContractWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ContractWhereInput | ContractWhereInput[]
+    OR?: ContractWhereInput[]
+    NOT?: ContractWhereInput | ContractWhereInput[]
+    team_id?: UuidFilter<"Contract"> | string
+    user_id?: UuidFilter<"Contract"> | string
+    salary?: FloatFilter<"Contract"> | number
+    release_clause?: FloatFilter<"Contract"> | number
+    expires_at?: DateTimeFilter<"Contract"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ContractOrderByWithAggregationInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    user_id?: SortOrder
+    salary?: SortOrder
+    release_clause?: SortOrder
+    expires_at?: SortOrder
+    _count?: ContractCountOrderByAggregateInput
+    _avg?: ContractAvgOrderByAggregateInput
+    _max?: ContractMaxOrderByAggregateInput
+    _min?: ContractMinOrderByAggregateInput
+    _sum?: ContractSumOrderByAggregateInput
+  }
+
+  export type ContractScalarWhereWithAggregatesInput = {
+    AND?: ContractScalarWhereWithAggregatesInput | ContractScalarWhereWithAggregatesInput[]
+    OR?: ContractScalarWhereWithAggregatesInput[]
+    NOT?: ContractScalarWhereWithAggregatesInput | ContractScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Contract"> | string
+    team_id?: UuidWithAggregatesFilter<"Contract"> | string
+    user_id?: UuidWithAggregatesFilter<"Contract"> | string
+    salary?: FloatWithAggregatesFilter<"Contract"> | number
+    release_clause?: FloatWithAggregatesFilter<"Contract"> | number
+    expires_at?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
+  }
+
+  export type TransactionWhereInput = {
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    id?: UuidFilter<"Transaction"> | string
+    team_id?: UuidFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    description?: StringNullableFilter<"Transaction"> | string | null
+    created_at?: DateTimeFilter<"Transaction"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }
+
+  export type TransactionOrderByWithRelationInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    amount?: SortOrder
+    type?: SortOrder
+    description?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    team?: TeamOrderByWithRelationInput
+  }
+
+  export type TransactionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    team_id?: UuidFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    description?: StringNullableFilter<"Transaction"> | string | null
+    created_at?: DateTimeFilter<"Transaction"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }, "id">
+
+  export type TransactionOrderByWithAggregationInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    amount?: SortOrder
+    type?: SortOrder
+    description?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: TransactionCountOrderByAggregateInput
+    _avg?: TransactionAvgOrderByAggregateInput
+    _max?: TransactionMaxOrderByAggregateInput
+    _min?: TransactionMinOrderByAggregateInput
+    _sum?: TransactionSumOrderByAggregateInput
+  }
+
+  export type TransactionScalarWhereWithAggregatesInput = {
+    AND?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    OR?: TransactionScalarWhereWithAggregatesInput[]
+    NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Transaction"> | string
+    team_id?: UuidWithAggregatesFilter<"Transaction"> | string
+    amount?: FloatWithAggregatesFilter<"Transaction"> | number
+    type?: EnumTransactionTypeWithAggregatesFilter<"Transaction"> | $Enums.TransactionType
+    description?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     external_id?: string | null
@@ -14596,6 +17353,7 @@ export namespace Prisma {
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -14616,6 +17374,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -14636,6 +17395,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -14656,6 +17416,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -14708,6 +17469,7 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
@@ -14715,6 +17477,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
@@ -14725,6 +17489,7 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
@@ -14732,6 +17497,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUpdateInput = {
@@ -14742,6 +17509,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
@@ -14749,6 +17517,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
@@ -14759,6 +17529,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
@@ -14766,6 +17537,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
@@ -14776,6 +17549,7 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
   }
 
   export type TeamUpdateManyMutationInput = {
@@ -14786,6 +17560,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
   }
 
   export type TeamUncheckedUpdateManyInput = {
@@ -14796,6 +17571,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
   }
 
   export type TeamMemberCreateInput = {
@@ -15312,6 +18088,129 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ContractCreateInput = {
+    id?: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+    team: TeamCreateNestedOneWithoutContractsInput
+    user: UserCreateNestedOneWithoutContractsInput
+  }
+
+  export type ContractUncheckedCreateInput = {
+    id?: string
+    team_id: string
+    user_id: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+  }
+
+  export type ContractUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutContractsNestedInput
+    user?: UserUpdateOneRequiredWithoutContractsNestedInput
+  }
+
+  export type ContractUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractCreateManyInput = {
+    id?: string
+    team_id: string
+    user_id: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+  }
+
+  export type ContractUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionCreateInput = {
+    id?: string
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
+    team: TeamCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateInput = {
+    id?: string
+    team_id: string
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
+  }
+
+  export type TransactionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionCreateManyInput = {
+    id?: string
+    team_id: string
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
+  }
+
+  export type TransactionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -15408,6 +18307,12 @@ export namespace Prisma {
     none?: MatchEventWhereInput
   }
 
+  export type ContractListRelationFilter = {
+    every?: ContractWhereInput
+    some?: ContractWhereInput
+    none?: ContractWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -15426,6 +18331,10 @@ export namespace Prisma {
   }
 
   export type MatchEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ContractOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15563,6 +18472,17 @@ export namespace Prisma {
     not?: NestedEnumPlatformFilter<$PrismaModel> | $Enums.Platform
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type MatchListRelationFilter = {
     every?: MatchWhereInput
     some?: MatchWhereInput
@@ -15575,11 +18495,21 @@ export namespace Prisma {
     none?: CompetitionTeamWhereInput
   }
 
+  export type TransactionListRelationFilter = {
+    every?: TransactionWhereInput
+    some?: TransactionWhereInput
+    none?: TransactionWhereInput
+  }
+
   export type MatchOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type CompetitionTeamOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransactionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15591,6 +18521,11 @@ export namespace Prisma {
     created_at?: SortOrder
     ea_club_id?: SortOrder
     platform?: SortOrder
+    budget?: SortOrder
+  }
+
+  export type TeamAvgOrderByAggregateInput = {
+    budget?: SortOrder
   }
 
   export type TeamMaxOrderByAggregateInput = {
@@ -15601,6 +18536,7 @@ export namespace Prisma {
     created_at?: SortOrder
     ea_club_id?: SortOrder
     platform?: SortOrder
+    budget?: SortOrder
   }
 
   export type TeamMinOrderByAggregateInput = {
@@ -15611,6 +18547,11 @@ export namespace Prisma {
     created_at?: SortOrder
     ea_club_id?: SortOrder
     platform?: SortOrder
+    budget?: SortOrder
+  }
+
+  export type TeamSumOrderByAggregateInput = {
+    budget?: SortOrder
   }
 
   export type EnumPlatformWithAggregatesFilter<$PrismaModel = never> = {
@@ -15621,6 +18562,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPlatformFilter<$PrismaModel>
     _max?: NestedEnumPlatformFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type EnumClubRoleFilter<$PrismaModel = never> = {
@@ -15685,17 +18642,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type PlayerStatsCountOrderByAggregateInput = {
@@ -15763,22 +18709,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type EnumCompetitionTypeFilter<$PrismaModel = never> = {
@@ -16173,6 +19103,95 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
+  export type ContractCountOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    user_id?: SortOrder
+    salary?: SortOrder
+    release_clause?: SortOrder
+    expires_at?: SortOrder
+  }
+
+  export type ContractAvgOrderByAggregateInput = {
+    salary?: SortOrder
+    release_clause?: SortOrder
+  }
+
+  export type ContractMaxOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    user_id?: SortOrder
+    salary?: SortOrder
+    release_clause?: SortOrder
+    expires_at?: SortOrder
+  }
+
+  export type ContractMinOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    user_id?: SortOrder
+    salary?: SortOrder
+    release_clause?: SortOrder
+    expires_at?: SortOrder
+  }
+
+  export type ContractSumOrderByAggregateInput = {
+    salary?: SortOrder
+    release_clause?: SortOrder
+  }
+
+  export type EnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type TransactionCountOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    amount?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type TransactionAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type TransactionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    amount?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type TransactionMinOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    amount?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type TransactionSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
   export type TeamMemberCreateNestedManyWithoutUserInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -16214,6 +19233,13 @@ export namespace Prisma {
     connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
   }
 
+  export type ContractCreateNestedManyWithoutUserInput = {
+    create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
+    createMany?: ContractCreateManyUserInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
   export type TeamMemberUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -16253,6 +19279,13 @@ export namespace Prisma {
     connectOrCreate?: MatchEventCreateOrConnectWithoutPlayerInput | MatchEventCreateOrConnectWithoutPlayerInput[]
     createMany?: MatchEventCreateManyPlayerInputEnvelope
     connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
+    createMany?: ContractCreateManyUserInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -16355,6 +19388,20 @@ export namespace Prisma {
     deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
   }
 
+  export type ContractUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutUserInput | ContractUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ContractCreateManyUserInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutUserInput | ContractUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutUserInput | ContractUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
   export type TeamMemberUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
@@ -16435,6 +19482,20 @@ export namespace Prisma {
     deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
   }
 
+  export type ContractUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutUserInput | ContractUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ContractCreateManyUserInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutUserInput | ContractUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutUserInput | ContractUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
   export type TeamMemberCreateNestedManyWithoutTeamInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -16482,6 +19543,20 @@ export namespace Prisma {
     connectOrCreate?: MatchEventCreateOrConnectWithoutTeamInput | MatchEventCreateOrConnectWithoutTeamInput[]
     createMany?: MatchEventCreateManyTeamInputEnvelope
     connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
+  }
+
+  export type ContractCreateNestedManyWithoutTeamInput = {
+    create?: XOR<ContractCreateWithoutTeamInput, ContractUncheckedCreateWithoutTeamInput> | ContractCreateWithoutTeamInput[] | ContractUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutTeamInput | ContractCreateOrConnectWithoutTeamInput[]
+    createMany?: ContractCreateManyTeamInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type TransactionCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TransactionCreateWithoutTeamInput, TransactionUncheckedCreateWithoutTeamInput> | TransactionCreateWithoutTeamInput[] | TransactionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTeamInput | TransactionCreateOrConnectWithoutTeamInput[]
+    createMany?: TransactionCreateManyTeamInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type TeamMemberUncheckedCreateNestedManyWithoutTeamInput = {
@@ -16533,8 +19608,30 @@ export namespace Prisma {
     connect?: MatchEventWhereUniqueInput | MatchEventWhereUniqueInput[]
   }
 
+  export type ContractUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<ContractCreateWithoutTeamInput, ContractUncheckedCreateWithoutTeamInput> | ContractCreateWithoutTeamInput[] | ContractUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutTeamInput | ContractCreateOrConnectWithoutTeamInput[]
+    createMany?: ContractCreateManyTeamInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TransactionCreateWithoutTeamInput, TransactionUncheckedCreateWithoutTeamInput> | TransactionCreateWithoutTeamInput[] | TransactionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTeamInput | TransactionCreateOrConnectWithoutTeamInput[]
+    createMany?: TransactionCreateManyTeamInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type EnumPlatformFieldUpdateOperationsInput = {
     set?: $Enums.Platform
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type TeamMemberUpdateManyWithoutTeamNestedInput = {
@@ -16635,6 +19732,34 @@ export namespace Prisma {
     deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
   }
 
+  export type ContractUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<ContractCreateWithoutTeamInput, ContractUncheckedCreateWithoutTeamInput> | ContractCreateWithoutTeamInput[] | ContractUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutTeamInput | ContractCreateOrConnectWithoutTeamInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutTeamInput | ContractUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: ContractCreateManyTeamInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutTeamInput | ContractUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutTeamInput | ContractUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type TransactionUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TransactionCreateWithoutTeamInput, TransactionUncheckedCreateWithoutTeamInput> | TransactionCreateWithoutTeamInput[] | TransactionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTeamInput | TransactionCreateOrConnectWithoutTeamInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutTeamInput | TransactionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TransactionCreateManyTeamInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutTeamInput | TransactionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutTeamInput | TransactionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type TeamMemberUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -16733,6 +19858,34 @@ export namespace Prisma {
     deleteMany?: MatchEventScalarWhereInput | MatchEventScalarWhereInput[]
   }
 
+  export type ContractUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<ContractCreateWithoutTeamInput, ContractUncheckedCreateWithoutTeamInput> | ContractCreateWithoutTeamInput[] | ContractUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutTeamInput | ContractCreateOrConnectWithoutTeamInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutTeamInput | ContractUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: ContractCreateManyTeamInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutTeamInput | ContractUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutTeamInput | ContractUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TransactionCreateWithoutTeamInput, TransactionUncheckedCreateWithoutTeamInput> | TransactionCreateWithoutTeamInput[] | TransactionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTeamInput | TransactionCreateOrConnectWithoutTeamInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutTeamInput | TransactionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TransactionCreateManyTeamInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutTeamInput | TransactionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutTeamInput | TransactionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutTeamMembershipsInput = {
     create?: XOR<UserCreateWithoutTeamMembershipsInput, UserUncheckedCreateWithoutTeamMembershipsInput>
     connectOrCreate?: UserCreateOrConnectWithoutTeamMembershipsInput
@@ -16772,14 +19925,6 @@ export namespace Prisma {
   }
 
   export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
@@ -17143,6 +20288,52 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceivedInvitationsInput, UserUpdateWithoutReceivedInvitationsInput>, UserUncheckedUpdateWithoutReceivedInvitationsInput>
   }
 
+  export type TeamCreateNestedOneWithoutContractsInput = {
+    create?: XOR<TeamCreateWithoutContractsInput, TeamUncheckedCreateWithoutContractsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutContractsInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutContractsInput = {
+    create?: XOR<UserCreateWithoutContractsInput, UserUncheckedCreateWithoutContractsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutContractsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TeamUpdateOneRequiredWithoutContractsNestedInput = {
+    create?: XOR<TeamCreateWithoutContractsInput, TeamUncheckedCreateWithoutContractsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutContractsInput
+    upsert?: TeamUpsertWithoutContractsInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutContractsInput, TeamUpdateWithoutContractsInput>, TeamUncheckedUpdateWithoutContractsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutContractsNestedInput = {
+    create?: XOR<UserCreateWithoutContractsInput, UserUncheckedCreateWithoutContractsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutContractsInput
+    upsert?: UserUpsertWithoutContractsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutContractsInput, UserUpdateWithoutContractsInput>, UserUncheckedUpdateWithoutContractsInput>
+  }
+
+  export type TeamCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<TeamCreateWithoutTransactionsInput, TeamUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutTransactionsInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type EnumTransactionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionType
+  }
+
+  export type TeamUpdateOneRequiredWithoutTransactionsNestedInput = {
+    create?: XOR<TeamCreateWithoutTransactionsInput, TeamUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutTransactionsInput
+    upsert?: TeamUpsertWithoutTransactionsInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutTransactionsInput, TeamUpdateWithoutTransactionsInput>, TeamUncheckedUpdateWithoutTransactionsInput>
+  }
+
   export type NestedUuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -17318,6 +20509,17 @@ export namespace Prisma {
     not?: NestedEnumPlatformFilter<$PrismaModel> | $Enums.Platform
   }
 
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedEnumPlatformWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Platform | EnumPlatformFieldRefInput<$PrismaModel>
     in?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
@@ -17326,6 +20528,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPlatformFilter<$PrismaModel>
     _max?: NestedEnumPlatformFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedEnumClubRoleFilter<$PrismaModel = never> = {
@@ -17345,17 +20563,6 @@ export namespace Prisma {
     _max?: NestedEnumClubRoleFilter<$PrismaModel>
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -17370,22 +20577,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedEnumCompetitionTypeFilter<$PrismaModel = never> = {
@@ -17567,6 +20758,23 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
   export type TeamMemberCreateWithoutUserInput = {
     club_role?: $Enums.ClubRole
     joined_at?: Date | string
@@ -17717,6 +20925,32 @@ export namespace Prisma {
 
   export type MatchEventCreateManyPlayerInputEnvelope = {
     data: MatchEventCreateManyPlayerInput | MatchEventCreateManyPlayerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContractCreateWithoutUserInput = {
+    id?: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+    team: TeamCreateNestedOneWithoutContractsInput
+  }
+
+  export type ContractUncheckedCreateWithoutUserInput = {
+    id?: string
+    team_id: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+  }
+
+  export type ContractCreateOrConnectWithoutUserInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput>
+  }
+
+  export type ContractCreateManyUserInputEnvelope = {
+    data: ContractCreateManyUserInput | ContractCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -17875,6 +21109,34 @@ export namespace Prisma {
     team_id?: UuidFilter<"MatchEvent"> | string
     type?: EnumEventTypeFilter<"MatchEvent"> | $Enums.EventType
     minute?: IntNullableFilter<"MatchEvent"> | number | null
+  }
+
+  export type ContractUpsertWithWhereUniqueWithoutUserInput = {
+    where: ContractWhereUniqueInput
+    update: XOR<ContractUpdateWithoutUserInput, ContractUncheckedUpdateWithoutUserInput>
+    create: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput>
+  }
+
+  export type ContractUpdateWithWhereUniqueWithoutUserInput = {
+    where: ContractWhereUniqueInput
+    data: XOR<ContractUpdateWithoutUserInput, ContractUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ContractUpdateManyWithWhereWithoutUserInput = {
+    where: ContractScalarWhereInput
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ContractScalarWhereInput = {
+    AND?: ContractScalarWhereInput | ContractScalarWhereInput[]
+    OR?: ContractScalarWhereInput[]
+    NOT?: ContractScalarWhereInput | ContractScalarWhereInput[]
+    id?: UuidFilter<"Contract"> | string
+    team_id?: UuidFilter<"Contract"> | string
+    user_id?: UuidFilter<"Contract"> | string
+    salary?: FloatFilter<"Contract"> | number
+    release_clause?: FloatFilter<"Contract"> | number
+    expires_at?: DateTimeFilter<"Contract"> | Date | string
   }
 
   export type TeamMemberCreateWithoutTeamInput = {
@@ -18069,6 +21331,58 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ContractCreateWithoutTeamInput = {
+    id?: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+    user: UserCreateNestedOneWithoutContractsInput
+  }
+
+  export type ContractUncheckedCreateWithoutTeamInput = {
+    id?: string
+    user_id: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+  }
+
+  export type ContractCreateOrConnectWithoutTeamInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutTeamInput, ContractUncheckedCreateWithoutTeamInput>
+  }
+
+  export type ContractCreateManyTeamInputEnvelope = {
+    data: ContractCreateManyTeamInput | ContractCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutTeamInput = {
+    id?: string
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
+  }
+
+  export type TransactionUncheckedCreateWithoutTeamInput = {
+    id?: string
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutTeamInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutTeamInput, TransactionUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TransactionCreateManyTeamInputEnvelope = {
+    data: TransactionCreateManyTeamInput | TransactionCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TeamMemberUpsertWithWhereUniqueWithoutTeamInput = {
     where: TeamMemberWhereUniqueInput
     update: XOR<TeamMemberUpdateWithoutTeamInput, TeamMemberUncheckedUpdateWithoutTeamInput>
@@ -18206,6 +21520,50 @@ export namespace Prisma {
     data: XOR<MatchEventUpdateManyMutationInput, MatchEventUncheckedUpdateManyWithoutTeamInput>
   }
 
+  export type ContractUpsertWithWhereUniqueWithoutTeamInput = {
+    where: ContractWhereUniqueInput
+    update: XOR<ContractUpdateWithoutTeamInput, ContractUncheckedUpdateWithoutTeamInput>
+    create: XOR<ContractCreateWithoutTeamInput, ContractUncheckedCreateWithoutTeamInput>
+  }
+
+  export type ContractUpdateWithWhereUniqueWithoutTeamInput = {
+    where: ContractWhereUniqueInput
+    data: XOR<ContractUpdateWithoutTeamInput, ContractUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type ContractUpdateManyWithWhereWithoutTeamInput = {
+    where: ContractScalarWhereInput
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutTeamInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutTeamInput, TransactionUncheckedUpdateWithoutTeamInput>
+    create: XOR<TransactionCreateWithoutTeamInput, TransactionUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutTeamInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutTeamInput, TransactionUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutTeamInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: UuidFilter<"Transaction"> | string
+    team_id?: UuidFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    description?: StringNullableFilter<"Transaction"> | string | null
+    created_at?: DateTimeFilter<"Transaction"> | Date | string
+  }
+
   export type UserCreateWithoutTeamMembershipsInput = {
     id?: string
     external_id?: string | null
@@ -18223,6 +21581,7 @@ export namespace Prisma {
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -18242,6 +21601,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -18257,12 +21617,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
@@ -18273,12 +21636,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -18314,6 +21680,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -18333,6 +21700,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutMembersInput = {
@@ -18354,12 +21722,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
@@ -18370,12 +21741,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutStatsInput = {
@@ -18395,6 +21769,7 @@ export namespace Prisma {
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutStatsInput = {
@@ -18414,6 +21789,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutStatsInput = {
@@ -18449,6 +21825,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatsInput = {
@@ -18468,6 +21845,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompetitionTeamCreateWithoutCompetitionInput = {
@@ -18593,12 +21971,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutCompetitionsInput = {
@@ -18609,12 +21990,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutCompetitionsInput = {
@@ -18674,12 +22058,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutCompetitionsInput = {
@@ -18690,12 +22077,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CompetitionCreateWithoutMatchesInput = {
@@ -18733,12 +22123,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutHomeMatchesInput = {
@@ -18749,12 +22142,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutHomeMatchesInput = {
@@ -18770,12 +22166,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutAwayMatchesInput = {
@@ -18786,12 +22185,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutAwayMatchesInput = {
@@ -18877,12 +22279,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutHomeMatchesInput = {
@@ -18893,12 +22298,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUpsertWithoutAwayMatchesInput = {
@@ -18920,12 +22328,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutAwayMatchesInput = {
@@ -18936,12 +22347,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type MatchEventUpsertWithWhereUniqueWithoutMatchInput = {
@@ -19008,6 +22422,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMatchEventsInput = {
@@ -19027,6 +22442,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMatchEventsInput = {
@@ -19042,12 +22458,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMatchEventsInput = {
@@ -19058,12 +22477,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMatchEventsInput = {
@@ -19136,6 +22558,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchEventsInput = {
@@ -19155,6 +22578,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutMatchEventsInput = {
@@ -19176,12 +22600,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMatchEventsInput = {
@@ -19192,12 +22619,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutTransferRequestsInput = {
@@ -19217,6 +22647,7 @@ export namespace Prisma {
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransferRequestsInput = {
@@ -19236,6 +22667,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransferRequestsInput = {
@@ -19251,12 +22683,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutTransferRequestsInput = {
@@ -19267,12 +22702,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutTransferRequestsInput = {
@@ -19308,6 +22746,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferRequestsInput = {
@@ -19327,6 +22766,7 @@ export namespace Prisma {
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutTransferRequestsInput = {
@@ -19348,12 +22788,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutTransferRequestsInput = {
@@ -19364,12 +22807,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateWithoutInvitationsInput = {
@@ -19380,12 +22826,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutInvitationsInput = {
@@ -19396,12 +22845,15 @@ export namespace Prisma {
     created_at?: Date | string
     ea_club_id?: string | null
     platform?: $Enums.Platform
+    budget?: number
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
     awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutInvitationsInput = {
@@ -19426,6 +22878,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -19445,6 +22898,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -19469,6 +22923,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -19488,6 +22943,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -19514,12 +22970,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutInvitationsInput = {
@@ -19530,12 +22989,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
     awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutSentInvitationsInput = {
@@ -19566,6 +23028,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -19585,6 +23048,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutReceivedInvitationsInput = {
@@ -19615,6 +23079,7 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -19634,6 +23099,287 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TeamCreateWithoutContractsInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutContractsInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutContractsInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutContractsInput, TeamUncheckedCreateWithoutContractsInput>
+  }
+
+  export type UserCreateWithoutContractsInput = {
+    id?: string
+    external_id?: string | null
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+  }
+
+  export type UserUncheckedCreateWithoutContractsInput = {
+    id?: string
+    external_id?: string | null
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+  }
+
+  export type UserCreateOrConnectWithoutContractsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutContractsInput, UserUncheckedCreateWithoutContractsInput>
+  }
+
+  export type TeamUpsertWithoutContractsInput = {
+    update: XOR<TeamUpdateWithoutContractsInput, TeamUncheckedUpdateWithoutContractsInput>
+    create: XOR<TeamCreateWithoutContractsInput, TeamUncheckedCreateWithoutContractsInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutContractsInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutContractsInput, TeamUncheckedUpdateWithoutContractsInput>
+  }
+
+  export type TeamUpdateWithoutContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type UserUpsertWithoutContractsInput = {
+    update: XOR<UserUpdateWithoutContractsInput, UserUncheckedUpdateWithoutContractsInput>
+    create: XOR<UserCreateWithoutContractsInput, UserUncheckedCreateWithoutContractsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutContractsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutContractsInput, UserUncheckedUpdateWithoutContractsInput>
+  }
+
+  export type UserUpdateWithoutContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+  }
+
+  export type TeamCreateWithoutTransactionsInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    proclubs_url?: string | null
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    budget?: number
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutTransactionsInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutTransactionsInput, TeamUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type TeamUpsertWithoutTransactionsInput = {
+    update: XOR<TeamUpdateWithoutTransactionsInput, TeamUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<TeamCreateWithoutTransactionsInput, TeamUncheckedCreateWithoutTransactionsInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutTransactionsInput, TeamUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type TeamUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    budget?: FloatFieldUpdateOperationsInput | number
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamMemberCreateManyUserInput = {
@@ -19673,6 +23419,14 @@ export namespace Prisma {
     team_id: string
     type: $Enums.EventType
     minute?: number | null
+  }
+
+  export type ContractCreateManyUserInput = {
+    id?: string
+    team_id: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
   }
 
   export type TeamMemberUpdateWithoutUserInput = {
@@ -19792,6 +23546,30 @@ export namespace Prisma {
     minute?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type ContractUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutContractsNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TeamMemberCreateManyTeamInput = {
     user_id: string
     club_role?: $Enums.ClubRole
@@ -19849,6 +23627,22 @@ export namespace Prisma {
     player_id: string
     type: $Enums.EventType
     minute?: number | null
+  }
+
+  export type ContractCreateManyTeamInput = {
+    id?: string
+    user_id: string
+    salary: number
+    release_clause: number
+    expires_at: Date | string
+  }
+
+  export type TransactionCreateManyTeamInput = {
+    id?: string
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
   }
 
   export type TeamMemberUpdateWithoutTeamInput = {
@@ -20030,6 +23824,54 @@ export namespace Prisma {
     player_id?: StringFieldUpdateOperationsInput | string
     type?: EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
     minute?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ContractUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutContractsNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CompetitionTeamCreateManyCompetitionInput = {

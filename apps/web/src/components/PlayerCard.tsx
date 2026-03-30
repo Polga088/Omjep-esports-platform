@@ -8,6 +8,13 @@ interface PlayerCardProps {
   nationality?: string;
   clubName?: string;
   clubLogoUrl?: string | null;
+  marketValue?: number | null;
+}
+
+function formatValue(v: number): string {
+  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K`;
+  return v.toString();
 }
 
 export default function PlayerCard({
@@ -20,6 +27,7 @@ export default function PlayerCard({
   nationality,
   clubName,
   clubLogoUrl,
+  marketValue,
 }: PlayerCardProps) {
   const ratingColor =
     rating >= 85
@@ -139,6 +147,16 @@ export default function PlayerCard({
 
           {/* ── Bottom: Stat block ── */}
           <div className="mt-auto">
+            {/* Market value badge */}
+            {marketValue != null && marketValue > 0 && (
+              <div className="flex justify-center mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-500/70">Val.</span>
+                  <span className="text-xs font-black text-emerald-400 tabular-nums">{formatValue(marketValue)} €</span>
+                </div>
+              </div>
+            )}
+
             {/* Separator */}
             <div className="h-[1px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent mb-3" />
 

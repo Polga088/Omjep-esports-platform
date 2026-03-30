@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2, CheckCircle2, Loader2 } from 'lucide-react';
+import {
+  UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2,
+  CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
+  FileText, TrendingUp, TrendingDown, Banknote, Trophy, Repeat,
+} from 'lucide-react';
 import api from '../../lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import InvitePlayerModal from '@/components/InvitePlayerModal';
@@ -39,8 +43,43 @@ interface MyTeamData {
   name: string;
   logo_url: string | null;
   proclubs_url: string | null;
+  budget: number;
   members: TeamMember[];
 }
+
+// ─── Types Finance ────────────────────────────────────────────────────────────
+
+type TransactionType = 'MATCH_REWARD' | 'TRANSFER' | 'WAGE';
+
+interface Transaction {
+  id: string;
+  amount: number;
+  type: TransactionType;
+  description: string | null;
+  created_at: string;
+}
+
+interface ContractUser {
+  id: string;
+  ea_persona_name: string | null;
+}
+
+interface Contract {
+  id: string;
+  user_id: string;
+  salary: number;
+  release_clause: number;
+  expires_at: string;
+  user: ContractUser;
+}
+
+interface FinanceData {
+  budget: number;
+  transactions: Transaction[];
+  contracts: Contract[];
+}
+
+type FinanceTab = 'roster' | 'finance';
 
 // ─── Config visuels ──────────────────────────────────────────────────────────
 
@@ -107,6 +146,21 @@ function SkeletonRow() {
   );
 }
 
+// ─── Finance config & helpers ─────────────────────────────────────────────────
+
+const txTypeConfig: Record<TransactionType, { label: string; icon: React.ElementType; color: string }> = {
+  MATCH_REWARD: { label: 'Récompense', icon: Trophy, color: 'text-emerald-400' },
+  TRANSFER:     { label: 'Transfert',  icon: Repeat, color: 'text-blue-400' },
+  WAGE:         { label: 'Salaire',    icon: Banknote, color: 'text-amber-400' },
+};
+
+function formatMoney(v: number): string {
+  const abs = Math.abs(v);
+  if (abs >= 1_000_000) return `${(v / 1_000_000).toFixed(2)}M`;
+  if (abs >= 1_000) return `${(v / 1_000).toFixed(0)}K`;
+  return v.toFixed(0);
+}
+
 // ─── Page principale ─────────────────────────────────────────────────────────
 
 export default function MyTeam() {
@@ -115,6 +169,10 @@ export default function MyTeam() {
   const [error, setError] = useState<string | null>(null);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const { user } = useAuthStore();
+
+  const [activeTab, setActiveTab] = useState<FinanceTab>('roster');
+  const [finance, setFinance] = useState<FinanceData | null>(null);
+  const [financeLoading, setFinanceLoading] = useState(false);
 
   const [externalIdInput, setExternalIdInput] = useState('');
   const [linkingClub, setLinkingClub] = useState(false);
@@ -142,6 +200,18 @@ export default function MyTeam() {
 
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'finance' || !team?.id || finance) return;
+    let cancelled = false;
+    setFinanceLoading(true);
+    api
+      .get<FinanceData>(`/finance/${team.id}`)
+      .then(({ data }) => { if (!cancelled) setFinance(data); })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setFinanceLoading(false); });
+    return () => { cancelled = true; };
+  }, [activeTab, team?.id]);
 
   const players = team?.members.filter((m) => m.club_role === 'PLAYER') ?? [];
   const staff   = team?.members.filter((m) => m.club_role !== 'PLAYER') ?? [];
@@ -237,118 +307,288 @@ export default function MyTeam() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-        <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-amber-400" />
-            <h2 className="text-sm font-semibold text-white">Roster actuel</h2>
+      {/* Tabs */}
+      <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/5 w-fit">
+        {([
+          { key: 'roster' as const, label: 'Effectif', icon: Users },
+          { key: 'finance' as const, label: 'Finance', icon: Wallet },
+        ]).map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setActiveTab(key)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              activeTab === key
+                ? 'bg-amber-400/15 text-amber-400 border border-amber-400/25 shadow-sm'
+                : 'text-slate-500 hover:text-slate-300 border border-transparent'
+            }`}
+          >
+            <Icon className="w-4 h-4" />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* ══════════ TAB: Effectif (Roster) ══════════ */}
+      {activeTab === 'roster' && (
+        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
+          <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Star className="w-4 h-4 text-amber-400" />
+              <h2 className="text-sm font-semibold text-white">Roster actuel</h2>
+            </div>
+            <span className="text-xs text-slate-600 bg-white/5 px-2.5 py-1 rounded-full">
+              Saison 2025
+            </span>
           </div>
-          <span className="text-xs text-slate-600 bg-white/5 px-2.5 py-1 rounded-full">
-            Saison 2025
-          </span>
-        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5">
-                {['Joueur (Pseudo EA)', 'Poste', 'Rôle', 'Matchs joués', 'Note Moy. (AMR)'].map((col) => (
-                  <th
-                    key={col}
-                    className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-600"
-                  >
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {isLoading ? (
-                [...Array(3)].map((_, i) => <SkeletonRow key={i} />)
-              ) : allMembers.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-600">
-                    Aucun membre dans cette équipe.
-                  </td>
-                </tr>
-              ) : (
-                allMembers.map((member) => {
-                  const { user, club_role } = member;
-                  const role = roleConfig[club_role];
-                  const RoleIcon = role.icon;
-                  const position = user.preferred_position;
-                  const posColor = position ? positionColors[position] : 'bg-slate-500/15 text-slate-400 border-slate-500/30';
-                  const posLabel = position ? positionLabel[position] : '—';
-                  const matchesPlayed = user.stats?.matches_played ?? 0;
-                  const avgRatingPlayer = user.stats?.average_rating ?? 0;
-                  const pseudo = user.ea_persona_name ?? `Joueur #${user.id.slice(0, 6)}`;
-
-                  return (
-                    <tr
-                      key={user.id}
-                      className="group hover:bg-white/[0.03] transition-colors duration-150 cursor-pointer"
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/5">
+                  {['Joueur (Pseudo EA)', 'Poste', 'Rôle', 'Matchs joués', 'Note Moy. (AMR)'].map((col) => (
+                    <th
+                      key={col}
+                      className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-600"
                     >
-                      {/* Player */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0 group-hover:border-amber-400/30 transition-colors">
-                            {pseudo.charAt(0)}
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {isLoading ? (
+                  [...Array(3)].map((_, i) => <SkeletonRow key={i} />)
+                ) : allMembers.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-600">
+                      Aucun membre dans cette équipe.
+                    </td>
+                  </tr>
+                ) : (
+                  allMembers.map((member) => {
+                    const { user, club_role } = member;
+                    const role = roleConfig[club_role];
+                    const RoleIcon = role.icon;
+                    const position = user.preferred_position;
+                    const posColor = position ? positionColors[position] : 'bg-slate-500/15 text-slate-400 border-slate-500/30';
+                    const posLabel = position ? positionLabel[position] : '—';
+                    const matchesPlayed = user.stats?.matches_played ?? 0;
+                    const avgRatingPlayer = user.stats?.average_rating ?? 0;
+                    const pseudo = user.ea_persona_name ?? `Joueur #${user.id.slice(0, 6)}`;
+
+                    return (
+                      <tr
+                        key={user.id}
+                        className="group hover:bg-white/[0.03] transition-colors duration-150 cursor-pointer"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0 group-hover:border-amber-400/30 transition-colors">
+                              {pseudo.charAt(0)}
+                            </div>
+                            <div>
+                              <Link
+                                to={`/dashboard/profile/${user.id}`}
+                                className="text-sm font-semibold text-white group-hover:text-amber-400 transition-colors hover:underline decoration-amber-400/40 underline-offset-2"
+                              >
+                                {pseudo}
+                              </Link>
+                              <p className="text-xs text-slate-600">{user.nationality ?? '—'}</p>
+                            </div>
                           </div>
-                          <div>
-                            <Link
-                              to={`/dashboard/profile/${user.id}`}
-                              className="text-sm font-semibold text-white group-hover:text-amber-400 transition-colors hover:underline decoration-amber-400/40 underline-offset-2"
-                            >
-                              {pseudo}
-                            </Link>
-                            <p className="text-xs text-slate-600">{user.nationality ?? '—'}</p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border tracking-wide ${posColor}`}>
+                            {posLabel}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${role.className}`}>
+                            <RoleIcon className="w-3 h-3" />
+                            {role.label}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-bold text-white tabular-nums">{matchesPlayed}</span>
+                          <span className="text-xs text-slate-600 ml-1">matchs</span>
+                        </td>
+                        <td className="px-6 py-4 min-w-[160px]">
+                          <RatingBar value={avgRatingPlayer} />
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="px-6 py-3 border-t border-white/5 flex items-center justify-between">
+            <span className="text-xs text-slate-600">
+              {isLoading ? '…' : `${allMembers.length} membre${allMembers.length > 1 ? 's' : ''} au total`}
+            </span>
+            <span className="text-xs text-slate-700">Données live — v1.0</span>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════ TAB: Finance ══════════ */}
+      {activeTab === 'finance' && (
+        <>
+          {/* Budget overview cards */}
+          {finance && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="rounded-xl bg-[#0D1221] border border-emerald-500/15 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                    <Wallet className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Budget</span>
+                </div>
+                <span className="text-2xl font-black tabular-nums text-emerald-400">{formatMoney(finance.budget)} €</span>
+              </div>
+              <div className="rounded-xl bg-[#0D1221] border border-blue-500/15 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Contrats</span>
+                </div>
+                <span className="text-2xl font-black tabular-nums text-blue-400">{finance.contracts.length}</span>
+              </div>
+              <div className="rounded-xl bg-[#0D1221] border border-amber-500/15 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                    <Banknote className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Masse salariale</span>
+                </div>
+                <span className="text-2xl font-black tabular-nums text-amber-400">
+                  {formatMoney(finance.contracts.reduce((s, c) => s + c.salary, 0))} €
+                  <span className="text-xs font-semibold text-slate-500 ml-1">/sem</span>
+                </span>
+              </div>
+            </div>
+          )}
+
+          {financeLoading && (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-6 h-6 text-amber-400 animate-spin" />
+            </div>
+          )}
+
+          {finance && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Transactions list */}
+              <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
+                <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-amber-400" />
+                  <h2 className="text-sm font-semibold text-white">Dernières transactions</h2>
+                </div>
+                <div className="divide-y divide-white/5 max-h-[420px] overflow-y-auto">
+                  {finance.transactions.length === 0 ? (
+                    <div className="px-6 py-12 text-center text-sm text-slate-600">
+                      Aucune transaction enregistrée.
+                    </div>
+                  ) : (
+                    finance.transactions.map((tx) => {
+                      const cfg = txTypeConfig[tx.type];
+                      const TxIcon = cfg.icon;
+                      const isPositive = tx.amount >= 0;
+                      return (
+                        <div key={tx.id} className="px-6 py-3.5 flex items-center gap-4 hover:bg-white/[0.02] transition-colors">
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                            isPositive ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-red-500/10 border border-red-500/20'
+                          }`}>
+                            <TxIcon className={`w-4 h-4 ${isPositive ? 'text-emerald-400' : 'text-red-400'}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-white truncate">
+                              {tx.description ?? cfg.label}
+                            </p>
+                            <p className="text-xs text-slate-600">
+                              {new Date(tx.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              {' · '}
+                              <span className={cfg.color}>{cfg.label}</span>
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {isPositive ? (
+                              <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
+                            ) : (
+                              <ArrowDownRight className="w-3.5 h-3.5 text-red-400" />
+                            )}
+                            <span className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                              {isPositive ? '+' : ''}{formatMoney(tx.amount)} €
+                            </span>
                           </div>
                         </div>
-                      </td>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
 
-                      {/* Position */}
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border tracking-wide ${posColor}`}>
-                          {posLabel}
-                        </span>
-                      </td>
-
-                      {/* Role */}
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${role.className}`}>
-                          <RoleIcon className="w-3 h-3" />
-                          {role.label}
-                        </span>
-                      </td>
-
-                      {/* Matches */}
-                      <td className="px-6 py-4">
-                        <span className="text-sm font-bold text-white tabular-nums">
-                          {matchesPlayed}
-                        </span>
-                        <span className="text-xs text-slate-600 ml-1">matchs</span>
-                      </td>
-
-                      {/* Rating */}
-                      <td className="px-6 py-4 min-w-[160px]">
-                        <RatingBar value={avgRatingPlayer} />
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="px-6 py-3 border-t border-white/5 flex items-center justify-between">
-          <span className="text-xs text-slate-600">
-            {isLoading ? '…' : `${allMembers.length} membre${allMembers.length > 1 ? 's' : ''} au total`}
-          </span>
-          <span className="text-xs text-slate-700">Données live — v1.0</span>
-        </div>
-      </div>
+              {/* Contracts table */}
+              <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
+                <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-amber-400" />
+                  <h2 className="text-sm font-semibold text-white">Contrats joueurs</h2>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-white/5">
+                        {['Joueur', 'Salaire /sem', 'Clause', 'Expiration'].map((col) => (
+                          <th key={col} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-600">
+                            {col}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {finance.contracts.length === 0 ? (
+                        <tr>
+                          <td colSpan={4} className="px-5 py-12 text-center text-sm text-slate-600">
+                            Aucun contrat actif.
+                          </td>
+                        </tr>
+                      ) : (
+                        finance.contracts.map((c) => {
+                          const expired = new Date(c.expires_at) < new Date();
+                          return (
+                            <tr key={c.id} className="hover:bg-white/[0.02] transition-colors">
+                              <td className="px-5 py-3.5">
+                                <Link
+                                  to={`/dashboard/profile/${c.user_id}`}
+                                  className="text-sm font-semibold text-white hover:text-amber-400 transition-colors"
+                                >
+                                  {c.user.ea_persona_name ?? `#${c.user_id.slice(0, 6)}`}
+                                </Link>
+                              </td>
+                              <td className="px-5 py-3.5">
+                                <span className="text-sm font-bold text-amber-400 tabular-nums">{formatMoney(c.salary)} €</span>
+                              </td>
+                              <td className="px-5 py-3.5">
+                                <span className="text-sm font-bold text-blue-400 tabular-nums">{formatMoney(c.release_clause)} €</span>
+                              </td>
+                              <td className="px-5 py-3.5">
+                                <span className={`text-xs font-semibold ${expired ? 'text-red-400' : 'text-slate-400'}`}>
+                                  {new Date(c.expires_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
       {/* Section Liaison EA Sports — visible pour Manager / Fondateur */}
       {isManager && team && (

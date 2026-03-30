@@ -12,12 +12,17 @@ Plateforme de gestion e-sport pour les clubs EA FC (Pro Clubs), permettant le su
 
 ## 📊 État actuel du Système
 - **Auth :** Système Login/Register fonctionnel (JWT).
-- **Database :** - Modèles `User`, `Team`, `TeamMember`, `PlayerStats`, `Competition`, `CompetitionTeam`, `Match`, `TransferRequest` opérationnels.
+- **Database :** - Modèles `User`, `Team`, `TeamMember`, `PlayerStats`, `Competition`, `CompetitionTeam`, `Match`, `TransferRequest`, `Contract`, `Transaction` opérationnels.
   - Relation : 1 User peut appartenir à 1 Team via `TeamMember`.
   - Compétitions : Many-to-Many `Competition` <-> `Team` via `CompetitionTeam`. Matchs liés à une compétition avec `round`.
+  - Finances : `Team.budget` (default 1M), `Contract` (salary, release_clause, expires_at), `Transaction` (MATCH_REWARD, TRANSFER, WAGE).
 - **Sync Engine (Cron Job) :** - Un service `SyncService` tourne toutes les 5 minutes.
   - Récupère les stats via un Mock (dev) ou l'API proclubs.io.
   - Met à jour les `PlayerStats` automatiquement via `upsert`.
+- **Finance System :**
+  - `FinanceService` : `addMatchReward(teamId, W/D/L)` crédite 100k/50k/10k. `processWeeklyWages()` Cron chaque lundi à 3h.
+  - `TransferService` : Vérifie `budget >= release_clause` avant tout transfert. Gère le débit/crédit entre clubs.
+  - Routes : `GET /finance/:teamId`, `POST /finance/match-reward`, `POST /finance/transfer`, `POST /finance/contracts`.
 - **UI Dashboard :**
   - Layout avec Sidebar responsive et logout fonctionnel.
   - Page `MyTeam` (/dashboard/team) : Affiche le vrai roster de l'utilisateur connecté avec ses stats réelles (Full-stack loop OK).

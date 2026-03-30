@@ -142,7 +142,8 @@ exports.Prisma.TeamScalarFieldEnum = {
   logo_url: 'logo_url',
   created_at: 'created_at',
   ea_club_id: 'ea_club_id',
-  platform: 'platform'
+  platform: 'platform',
+  budget: 'budget'
 };
 
 exports.Prisma.TeamMemberScalarFieldEnum = {
@@ -216,6 +217,24 @@ exports.Prisma.InvitationScalarFieldEnum = {
   invitee_email: 'invitee_email',
   invitee_id: 'invitee_id',
   status: 'status',
+  created_at: 'created_at'
+};
+
+exports.Prisma.ContractScalarFieldEnum = {
+  id: 'id',
+  team_id: 'team_id',
+  user_id: 'user_id',
+  salary: 'salary',
+  release_clause: 'release_clause',
+  expires_at: 'expires_at'
+};
+
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  team_id: 'team_id',
+  amount: 'amount',
+  type: 'type',
+  description: 'description',
   created_at: 'created_at'
 };
 
@@ -303,6 +322,12 @@ exports.InvitationStatus = exports.$Enums.InvitationStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.TransactionType = exports.$Enums.TransactionType = {
+  MATCH_REWARD: 'MATCH_REWARD',
+  TRANSFER: 'TRANSFER',
+  WAGE: 'WAGE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Team: 'Team',
@@ -313,7 +338,9 @@ exports.Prisma.ModelName = {
   Match: 'Match',
   MatchEvent: 'MatchEvent',
   TransferRequest: 'TransferRequest',
-  Invitation: 'Invitation'
+  Invitation: 'Invitation',
+  Contract: 'Contract',
+  Transaction: 'Transaction'
 };
 
 /**

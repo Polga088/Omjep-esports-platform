@@ -17,6 +17,8 @@ import Standings from '@/pages/Dashboard/Standings';
 import Stats from '@/pages/Dashboard/Stats';
 import ProfileDetail from '@/pages/Dashboard/ProfileDetail';
 import Settings from '@/pages/Dashboard/Settings';
+import Store from '@/pages/Dashboard/Store';
+import TransferMarket from '@/pages/Dashboard/TransferMarket';
 import AdminCompetitions from '@/pages/Admin/Competitions';
 import AdminMatches from '@/pages/Admin/Matches';
 
@@ -59,6 +61,8 @@ export default function App() {
           <Route path="/dashboard/profile" element={<Profile />} />
           <Route path="/dashboard/profile/:id" element={<ProfileDetail />} />
           <Route path="/dashboard/settings" element={<Settings />} />
+          <Route path="/dashboard/store" element={<Store />} />
+          <Route path="/dashboard/transfers" element={<TransferMarket />} />
         </Route>
 
         {/* Admin routes */}

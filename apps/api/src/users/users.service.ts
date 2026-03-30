@@ -130,10 +130,16 @@ export class UsersService {
         : Promise.resolve(0),
     ]);
 
+    const activeContract = await this.prisma.contract.findFirst({
+      where: { user_id: id, expires_at: { gt: new Date() } },
+      select: { salary: true, release_clause: true, expires_at: true },
+    });
+
     return {
       user,
       team: currentMembership?.team ?? null,
       stats: { goals, assists, matches },
+      contract: activeContract,
     };
   }
 

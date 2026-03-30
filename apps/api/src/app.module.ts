@@ -10,6 +10,9 @@ import { AdminModule } from './admin/admin.module';
 import { MatchesModule } from './matches/matches.module';
 import { CompetitionsModule } from './competitions/competitions.module';
 import { InvitationsModule } from './invitations/invitations.module';
+import { FinanceModule } from './finance/finance.module';
+import { TransfersModule } from './transfers/transfers.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { InvitationsModule } from './invitations/invitations.module';
     InvitationsModule,
     SyncModule,
     AdminModule,
+    FinanceModule,
+    NotificationsModule,
+    TransfersModule,
   ],
 })
 export class AppModule {}

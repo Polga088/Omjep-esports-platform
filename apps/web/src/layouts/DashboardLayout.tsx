@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
-  LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings,
+  LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings, Wallet, Repeat,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
+import GoldConfetti from '@/components/GoldConfetti';
+import { useTransferNotifications } from '@/hooks/useTransferNotifications';
+import api from '@/lib/api';
 
 const sidebarLinks = [
   { to: '/dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard, exact: true },
@@ -13,6 +16,7 @@ const sidebarLinks = [
   { to: '/dashboard/ladder', label: 'Classement', icon: Trophy },
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
+  { to: '/dashboard/transfers', label: 'Mercato Live', icon: Repeat },
   { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
   { to: '/dashboard/settings', label: 'Paramètres', icon: Settings },
 ];
@@ -22,16 +26,36 @@ const pageTitles: Record<string, string> = {
   '/dashboard/team': 'Mon Équipe',
   '/dashboard/ladder': 'Classement',
   '/dashboard/matches': 'Matchs',
-  '/dashboard/store': 'Boutique',
+  '/dashboard/store': 'Market Place',
+  '/dashboard/transfers': 'Mercato Live',
   '/dashboard/profile': 'Mon Profil',
   '/dashboard/settings': 'Paramètres',
 };
+
+function formatBudget(amount: number): string {
+  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(2)}M`;
+  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
+  return amount.toFixed(0);
+}
 
 export default function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [budget, setBudget] = useState<number | null>(null);
+  const { showConfetti } = useTransferNotifications();
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get<{ budget: number }>('/teams/my-team')
+      .then(({ data }) => {
+        if (!cancelled) setBudget(data.budget);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -115,6 +139,8 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-[#0A0E1A] text-slate-100 flex">
+      <GoldConfetti active={showConfetti} />
+
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -159,7 +185,15 @@ export default function DashboardLayout() {
             )}
           </div>
 
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            {budget !== null && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                <Wallet className="w-4 h-4 text-emerald-400" />
+                <span className="text-sm font-bold text-emerald-400 tabular-nums">
+                  {formatBudget(budget)} €
+                </span>
+              </div>
+            )}
             <NotificationBell />
           </div>
         </header>
