@@ -35,6 +35,11 @@ export class TeamsController {
     return this.teamsService.getMyTeamOverview(req.user.id);
   }
 
+  @Get('ladder')
+  getLadder() {
+    return this.teamsService.getLadder();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.teamsService.findOne(id);

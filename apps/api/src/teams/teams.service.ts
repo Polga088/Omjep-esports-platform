@@ -20,6 +20,18 @@ export type TeamStatsOverview = {
   mvp: TeamMemberStatSnapshot | null;
 };
 
+export type LadderEntry = {
+  rank: number;
+  teamId: string;
+  teamName: string;
+  logoUrl: string | null;
+  platform: string;
+  memberCount: number;
+  averageRating: number;
+  totalGoals: number;
+  totalAssists: number;
+};
+
 const TEAM_WITH_ROSTER = {
   members: {
     orderBy: { joined_at: 'asc' as const },
@@ -199,7 +211,66 @@ export class TeamsService {
     };
   }
 
-  /** Stats d’overview pour l’équipe de l’utilisateur (lookup léger du team_id). */
+  /**
+   * Classement général (Ladder) : toutes les équipes triées par note moyenne
+   * décroissante, avec buts et passes cumulés du roster.
+   */
+  async getLadder(): Promise<LadderEntry[]> {
+    const teams = await this.prisma.team.findMany({
+      include: {
+        members: {
+          include: {
+            user: {
+              select: { stats: true },
+            },
+          },
+        },
+      },
+    });
+
+    const entries: LadderEntry[] = teams.map((team) => {
+      const memberCount = team.members.length;
+
+      let totalGoals = 0;
+      let totalAssists = 0;
+      let sumRating = 0;
+
+      for (const m of team.members) {
+        const s = m.user.stats;
+        totalGoals += s?.goals ?? 0;
+        totalAssists += s?.assists ?? 0;
+        sumRating += s?.average_rating ?? 0;
+      }
+
+      const averageRating = memberCount > 0 ? sumRating / memberCount : 0;
+
+      return {
+        rank: 0,
+        teamId: team.id,
+        teamName: team.name,
+        logoUrl: team.logo_url,
+        platform: team.platform,
+        memberCount,
+        averageRating: Math.round(averageRating * 100) / 100,
+        totalGoals,
+        totalAssists,
+      };
+    });
+
+    entries.sort((a, b) => {
+      if (b.averageRating !== a.averageRating) return b.averageRating - a.averageRating;
+      if (b.totalGoals !== a.totalGoals) return b.totalGoals - a.totalGoals;
+      return a.teamName.localeCompare(b.teamName);
+    });
+
+    for (let i = 0; i < entries.length; i++) {
+      entries[i].rank = i + 1;
+    }
+
+    return entries;
+  }
+
+  /** Stats d'overview pour l'équipe de l'utilisateur (lookup léger du team_id). */
   async getMyTeamOverview(userId: string): Promise<TeamStatsOverview> {
     const membership = await this.prisma.teamMember.findFirst({
       where: { user_id: userId },
