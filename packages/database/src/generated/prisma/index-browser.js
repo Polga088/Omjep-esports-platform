@@ -123,7 +123,6 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  external_id: 'external_id',
   email: 'email',
   password_hash: 'password_hash',
   role: 'role',
@@ -133,24 +132,29 @@ exports.Prisma.UserScalarFieldEnum = {
   gamertag_xbox: 'gamertag_xbox',
   preferred_position: 'preferred_position',
   nationality: 'nationality',
+  external_id: 'external_id',
+  level: 'level',
   xp: 'xp',
-  level: 'level'
+  omjepCoins: 'omjepCoins',
+  jepyCoins: 'jepyCoins',
+  isPremium: 'isPremium'
 };
 
 exports.Prisma.ClubScalarFieldEnum = {
   id: 'id',
-  proclubs_url: 'proclubs_url',
   name: 'name',
-  description: 'description',
   logo_url: 'logo_url',
   created_at: 'created_at',
   ea_club_id: 'ea_club_id',
   platform: 'platform',
+  proclubs_url: 'proclubs_url',
   budget: 'budget',
-  xp: 'xp',
   prestige_level: 'prestige_level',
+  xp: 'xp',
+  description: 'description',
+  manager_id: 'manager_id',
   validation_status: 'validation_status',
-  manager_id: 'manager_id'
+  presidentPremium: 'presidentPremium'
 };
 
 exports.Prisma.TeamMemberScalarFieldEnum = {
@@ -190,14 +194,14 @@ exports.Prisma.CompetitionTeamScalarFieldEnum = {
 exports.Prisma.MatchScalarFieldEnum = {
   id: 'id',
   ea_match_id: 'ea_match_id',
-  competition_id: 'competition_id',
-  round: 'round',
   home_team_id: 'home_team_id',
   away_team_id: 'away_team_id',
   home_score: 'home_score',
   away_score: 'away_score',
   status: 'status',
-  played_at: 'played_at'
+  played_at: 'played_at',
+  competition_id: 'competition_id',
+  round: 'round'
 };
 
 exports.Prisma.MatchScoreReportScalarFieldEnum = {
@@ -277,6 +281,52 @@ exports.Prisma.NotificationScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.StoreItemScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  priceJepy: 'priceJepy',
+  category: 'category',
+  imageUrl: 'imageUrl',
+  isAvailable: 'isAvailable'
+};
+
+exports.Prisma.UserInventoryScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  item_id: 'item_id',
+  purchased_at: 'purchased_at'
+};
+
+exports.Prisma.PredictionScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  match_id: 'match_id',
+  homeScore: 'homeScore',
+  awayScore: 'awayScore',
+  betAmount: 'betAmount',
+  status: 'status',
+  created_at: 'created_at'
+};
+
+exports.Prisma.SubscriptionPlanScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  priceJepy: 'priceJepy',
+  durationDays: 'durationDays',
+  features: 'features'
+};
+
+exports.Prisma.UserSubscriptionScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  plan_id: 'plan_id',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  status: 'status'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -284,6 +334,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -304,9 +358,9 @@ exports.Prisma.JsonNullValueFilter = {
 };
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
-  MODERATOR: 'MODERATOR',
   MANAGER: 'MANAGER',
-  PLAYER: 'PLAYER'
+  PLAYER: 'PLAYER',
+  MODERATOR: 'MODERATOR'
 };
 
 exports.Position = exports.$Enums.Position = {
@@ -356,10 +410,10 @@ exports.CompetitionStatus = exports.$Enums.CompetitionStatus = {
 exports.MatchStatus = exports.$Enums.MatchStatus = {
   SCHEDULED: 'SCHEDULED',
   LIVE: 'LIVE',
-  PLAYED: 'PLAYED',
   FINISHED: 'FINISHED',
-  CANCELLED: 'CANCELLED',
-  DISPUTED: 'DISPUTED'
+  DISPUTED: 'DISPUTED',
+  PLAYED: 'PLAYED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.EventType = exports.$Enums.EventType = {
@@ -386,6 +440,28 @@ exports.TransactionType = exports.$Enums.TransactionType = {
   WAGE: 'WAGE'
 };
 
+exports.StoreItemCategory = exports.$Enums.StoreItemCategory = {
+  BANNER: 'BANNER',
+  AVATAR_FRAME: 'AVATAR_FRAME',
+  BADGE: 'BADGE'
+};
+
+exports.PredictionStatus = exports.$Enums.PredictionStatus = {
+  PENDING: 'PENDING',
+  WON: 'WON',
+  LOST: 'LOST'
+};
+
+exports.SubscriptionPlanCode = exports.$Enums.SubscriptionPlanCode = {
+  PLAYER: 'PLAYER',
+  PRESIDENT: 'PRESIDENT'
+};
+
+exports.UserSubscriptionStatus = exports.$Enums.UserSubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Club: 'Club',
@@ -401,7 +477,12 @@ exports.Prisma.ModelName = {
   Contract: 'Contract',
   Transaction: 'Transaction',
   TransferOffer: 'TransferOffer',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  StoreItem: 'StoreItem',
+  UserInventory: 'UserInventory',
+  Prediction: 'Prediction',
+  SubscriptionPlan: 'SubscriptionPlan',
+  UserSubscription: 'UserSubscription'
 };
 
 /**

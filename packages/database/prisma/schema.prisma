@@ -1,7 +1,3 @@
-// ============================================================
-// OMJEP — Schéma de base de données EA FC 26 E-Sport Platform
-// ============================================================
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,15 +8,305 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================================
-// ENUMS
-// ============================================================
+model User {
+  id                  String             @id @default(uuid()) @db.Uuid
+  email               String             @unique
+  password_hash       String
+  role                UserRole           @default(PLAYER)
+  created_at          DateTime           @default(now())
+  ea_persona_name     String?            @unique
+  gamertag_psn        String?
+  gamertag_xbox       String?
+  preferred_position  Position?
+  nationality         String?
+  external_id         String?            @unique
+  level               Int                @default(1)
+  xp                  Int                @default(0)
+  omjepCoins          Int                @default(1000) @map("omjep_coins")
+  jepyCoins           Int                @default(0) @map("jepy_coins")
+  isPremium           Boolean            @default(false) @map("is_premium")
+  contracts           Contract[]
+  receivedInvitations Invitation[]       @relation("InvitationInvitee")
+  sentInvitations     Invitation[]       @relation("InvitationInviter")
+  matchEvents         MatchEvent[]
+  matchScoreReports   MatchScoreReport[]
+  notifications       Notification[]
+  stats               PlayerStats?
+  teamMemberships     TeamMember[]
+  managedClubs        Club[]             @relation("ClubManager")
+  transferOffers      TransferOffer[]    @relation("TransferOfferPlayer")
+  transferRequests    TransferRequest[]
+  inventory           UserInventory[]
+  predictions         Prediction[]
+  subscriptions       UserSubscription[]
+
+  @@map("users")
+}
+
+/// Club Pro Clubs (table SQL `teams`).
+model Club {
+  id                String             @id @default(uuid()) @db.Uuid
+  name              String             @unique
+  logo_url          String?
+  created_at        DateTime           @default(now())
+  ea_club_id        String?            @unique
+  platform          Platform           @default(CROSSPLAY)
+  proclubs_url      String?            @unique
+  budget            Float              @default(1000000)
+  prestige_level    Int                @default(1)
+  xp                Int                @default(0)
+  description       String?
+  manager_id        String?            @db.Uuid
+  validation_status ValidationStatus   @default(PENDING)
+  presidentPremium  Boolean            @default(false) @map("president_premium")
+  competitions      CompetitionTeam[]
+  contracts         Contract[]
+  invitations       Invitation[]
+  matchEvents       MatchEvent[]
+  matchScoreReports MatchScoreReport[]
+  awayMatches       Match[]            @relation("AwayTeam")
+  homeMatches       Match[]            @relation("HomeTeam")
+  members           TeamMember[]
+  manager           User?              @relation("ClubManager", fields: [manager_id], references: [id])
+  transactions      Transaction[]
+  sentOffers        TransferOffer[]    @relation("OfferFromTeam")
+  receivedOffers    TransferOffer[]    @relation("OfferToTeam")
+  transferRequests  TransferRequest[]
+
+  @@map("teams")
+}
+
+model TeamMember {
+  user_id   String   @db.Uuid
+  team_id   String   @db.Uuid
+  club_role ClubRole @default(PLAYER)
+  joined_at DateTime @default(now())
+  team      Club     @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, team_id])
+  @@map("team_members")
+}
+
+model PlayerStats {
+  id             String @id @default(uuid()) @db.Uuid
+  user_id        String @unique @db.Uuid
+  matches_played Int    @default(0)
+  goals          Int    @default(0)
+  assists        Int    @default(0)
+  clean_sheets   Int    @default(0)
+  motm           Int    @default(0)
+  average_rating Float  @default(0.0)
+  user           User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("player_stats")
+}
+
+model Competition {
+  id         String            @id @default(uuid()) @db.Uuid
+  name       String            @unique
+  type       CompetitionType
+  status     CompetitionStatus @default(DRAFT)
+  start_date DateTime?
+  end_date   DateTime?
+  created_at DateTime          @default(now())
+  teams      CompetitionTeam[]
+  matches    Match[]
+
+  @@map("competitions")
+}
+
+model CompetitionTeam {
+  competition_id String      @db.Uuid
+  team_id        String      @db.Uuid
+  joined_at      DateTime    @default(now())
+  competition    Competition @relation(fields: [competition_id], references: [id], onDelete: Cascade)
+  team           Club        @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@id([competition_id, team_id])
+  @@map("competition_teams")
+}
+
+model Match {
+  id             String             @id @default(uuid()) @db.Uuid
+  ea_match_id    String?            @unique
+  home_team_id   String             @db.Uuid
+  away_team_id   String             @db.Uuid
+  home_score     Int?
+  away_score     Int?
+  status         MatchStatus        @default(SCHEDULED)
+  played_at      DateTime?
+  competition_id String?            @db.Uuid
+  round          String?
+  events         MatchEvent[]
+  scoreReports   MatchScoreReport[]
+  awayTeam       Club               @relation("AwayTeam", fields: [away_team_id], references: [id])
+  competition    Competition?       @relation(fields: [competition_id], references: [id])
+  homeTeam       Club               @relation("HomeTeam", fields: [home_team_id], references: [id])
+  predictions    Prediction[]
+
+  @@map("matches")
+}
+
+model MatchScoreReport {
+  id                String   @id @default(uuid()) @db.Uuid
+  match_id          String   @db.Uuid
+  reporting_team_id String   @db.Uuid
+  submitted_by_id   String   @db.Uuid
+  home_score        Int
+  away_score        Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  match             Match    @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  reportingTeam     Club     @relation(fields: [reporting_team_id], references: [id], onDelete: Cascade)
+  submittedBy       User     @relation(fields: [submitted_by_id], references: [id], onDelete: Cascade)
+
+  @@unique([match_id, reporting_team_id])
+  @@map("match_score_reports")
+}
+
+model MatchEvent {
+  id        String    @id @default(uuid()) @db.Uuid
+  match_id  String    @db.Uuid
+  player_id String    @db.Uuid
+  team_id   String    @db.Uuid
+  type      EventType
+  minute    Int?
+  match     Match     @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  player    User      @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  team      Club      @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("match_events")
+}
+
+model TransferRequest {
+  id         String         @id @default(uuid()) @db.Uuid
+  player_id  String         @db.Uuid
+  team_id    String         @db.Uuid
+  status     TransferStatus @default(PENDING)
+  created_at DateTime       @default(now())
+  player     User           @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  team       Club           @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("transfer_requests")
+}
+
+model Invitation {
+  id            String           @id @default(uuid()) @db.Uuid
+  team_id       String           @db.Uuid
+  inviter_id    String           @db.Uuid
+  invitee_email String
+  invitee_id    String?          @db.Uuid
+  status        InvitationStatus @default(PENDING)
+  created_at    DateTime         @default(now())
+  invitee       User?            @relation("InvitationInvitee", fields: [invitee_id], references: [id])
+  inviter       User             @relation("InvitationInviter", fields: [inviter_id], references: [id], onDelete: Cascade)
+  team          Club             @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("invitations")
+}
+
+model Contract {
+  id             String   @id @default(uuid()) @db.Uuid
+  team_id        String   @db.Uuid
+  user_id        String   @db.Uuid
+  salary         Float
+  release_clause Float
+  expires_at     DateTime
+  team           Club     @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("contracts")
+}
+
+model Transaction {
+  id          String          @id @default(uuid()) @db.Uuid
+  team_id     String          @db.Uuid
+  amount      Float
+  type        TransactionType
+  description String?
+  created_at  DateTime        @default(now())
+  team        Club            @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+model TransferOffer {
+  id           String         @id @default(uuid()) @db.Uuid
+  player_id    String         @db.Uuid
+  from_team_id String         @db.Uuid
+  to_team_id   String         @db.Uuid
+  amount       Float
+  status       TransferStatus @default(PENDING)
+  created_at   DateTime       @default(now())
+  responded_at DateTime?
+  fromTeam     Club           @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
+  player       User           @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
+  toTeam       Club           @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
+
+  @@map("transfer_offers")
+}
+
+model Notification {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  title      String
+  message    String
+  is_read    Boolean  @default(false)
+  metadata   Json?
+  created_at DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model StoreItem {
+  id          String            @id @default(uuid()) @db.Uuid
+  name        String
+  description String            @db.Text
+  priceJepy   Int               @map("price_jepy")
+  category    StoreItemCategory
+  imageUrl    String            @map("image_url")
+  isAvailable Boolean           @default(true) @map("is_available")
+
+  inventory UserInventory[]
+
+  @@map("store_items")
+}
+
+model UserInventory {
+  id           String    @id @default(uuid()) @db.Uuid
+  user_id      String    @db.Uuid
+  user         User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  item_id      String    @db.Uuid
+  item         StoreItem @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  purchased_at DateTime  @default(now()) @map("purchased_at")
+
+  @@unique([user_id, item_id])
+  @@map("user_inventory")
+}
+
+model Prediction {
+  id         String           @id @default(uuid()) @db.Uuid
+  user_id    String           @db.Uuid
+  user       User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  match_id   String           @db.Uuid
+  match      Match            @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  homeScore  Int              @map("home_score")
+  awayScore  Int              @map("away_score")
+  betAmount  Int              @map("bet_amount")
+  status     PredictionStatus @default(PENDING)
+  created_at DateTime         @default(now()) @map("created_at")
+
+  @@unique([user_id, match_id])
+  @@map("predictions")
+}
 
 enum UserRole {
   ADMIN
-  MODERATOR
   MANAGER
   PLAYER
+  MODERATOR
 }
 
 enum Position {
@@ -53,10 +339,10 @@ enum ClubRole {
 enum MatchStatus {
   SCHEDULED
   LIVE
-  PLAYED
   FINISHED
-  CANCELLED
   DISPUTED
+  PLAYED
+  CANCELLED
 }
 
 enum CompetitionType {
@@ -100,306 +386,51 @@ enum TransactionType {
   WAGE
 }
 
-// ============================================================
-// MODELS
-// ============================================================
-
-model User {
-  id            String    @id @default(uuid()) @db.Uuid
-  external_id   String?   @unique
-  email         String    @unique
-  password_hash String
-  role          UserRole  @default(PLAYER)
-  created_at    DateTime  @default(now())
-
-  // Identifiants de jeu
-  ea_persona_name String? @unique
-  gamertag_psn    String?
-  gamertag_xbox   String?
-
-  // Profil sportif
-  preferred_position Position?
-  nationality        String?
-
-  // Leveling
-  xp    Int @default(0)
-  level Int @default(1)
-
-  // Relations
-  teamMemberships     TeamMember[]
-  managedClubs        Club[]       @relation("ClubManager")
-  stats               PlayerStats?
-  transferRequests    TransferRequest[]
-  sentInvitations     Invitation[]      @relation("InvitationInviter")
-  receivedInvitations Invitation[]     @relation("InvitationInvitee")
-  matchEvents         MatchEvent[]
-  contracts           Contract[]
-  transferOffers      TransferOffer[]   @relation("TransferOfferPlayer")
-  notifications       Notification[]
-  matchScoreReports   MatchScoreReport[]
-
-  @@map("users")
+enum StoreItemCategory {
+  BANNER
+  AVATAR_FRAME
+  BADGE
 }
 
-/// Club Pro Clubs (table SQL `teams`).
-model Club {
-  id           String   @id @default(uuid()) @db.Uuid
-  proclubs_url String?  @unique
-  name         String   @unique
-  description  String?  @db.Text
-  logo_url     String?
-  created_at   DateTime @default(now())
-
-  // Identifiants proclubs.io
-  ea_club_id String?  @unique
-  platform   Platform @default(CROSSPLAY)
-
-  // Finances
-  budget Float @default(1000000)
-
-  // Leveling
-  xp             Int @default(0)
-  prestige_level Int @default(1)
-
-  // Validation modération / admin
-  validation_status ValidationStatus @default(PENDING)
-
-  manager_id String? @db.Uuid
-  manager    User?   @relation("ClubManager", fields: [manager_id], references: [id], onDelete: SetNull)
-
-  // Membres : une ligne TeamMember par joueur (User via members[].user)
-  members TeamMember[]
-
-  homeMatches       Match[]            @relation("HomeTeam")
-  awayMatches       Match[]            @relation("AwayTeam")
-  competitions      CompetitionTeam[]
-  transferRequests  TransferRequest[]
-  invitations       Invitation[]
-  matchEvents       MatchEvent[]
-  contracts         Contract[]
-  transactions      Transaction[]
-  sentOffers        TransferOffer[]    @relation("OfferFromTeam")
-  receivedOffers    TransferOffer[]    @relation("OfferToTeam")
-  matchScoreReports MatchScoreReport[]
-
-  @@map("teams")
+enum PredictionStatus {
+  PENDING
+  WON
+  LOST
 }
 
-// Table de liaison Roster (Many-to-Many explicite User <-> Club)
-model TeamMember {
-  user_id   String   @db.Uuid
-  team_id   String   @db.Uuid
-  club_role ClubRole @default(PLAYER)
-  joined_at DateTime @default(now())
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  team Club @relation(fields: [team_id], references: [id], onDelete: Cascade)
-
-  @@id([user_id, team_id])
-  @@map("team_members")
+enum SubscriptionPlanCode {
+  PLAYER
+  PRESIDENT
 }
 
-// Statistiques individuelles globales (One-to-One avec User)
-model PlayerStats {
-  id             String @id @default(uuid()) @db.Uuid
-  user_id        String @unique @db.Uuid
-
-  matches_played Int   @default(0)
-  goals          Int   @default(0)
-  assists        Int   @default(0)
-  clean_sheets   Int   @default(0)
-  motm           Int   @default(0) // Man of the Match count
-  average_rating Float @default(0.0)
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("player_stats")
+enum UserSubscriptionStatus {
+  ACTIVE
+  EXPIRED
 }
 
-// ============================================================
-// COMPÉTITIONS
-// ============================================================
+model SubscriptionPlan {
+  id           String               @id @default(uuid()) @db.Uuid
+  code         SubscriptionPlanCode @unique
+  name         String
+  priceJepy    Int                  @map("price_jepy")
+  durationDays Int                  @default(30) @map("duration_days")
+  features     Json
+  subscriptions UserSubscription[]
 
-model Competition {
-  id         String            @id @default(uuid()) @db.Uuid
-  name       String            @unique
-  type       CompetitionType
-  status     CompetitionStatus @default(DRAFT)
-  start_date DateTime?
-  end_date   DateTime?
-  created_at DateTime          @default(now())
-
-  teams   CompetitionTeam[]
-  matches Match[]
-
-  @@map("competitions")
+  @@map("subscription_plans")
 }
 
-// Table de liaison Many-to-Many Competition <-> Club
-model CompetitionTeam {
-  competition_id String @db.Uuid
-  team_id        String @db.Uuid
-  joined_at      DateTime @default(now())
+model UserSubscription {
+  id         String                 @id @default(uuid()) @db.Uuid
+  user_id    String                 @db.Uuid
+  user       User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  plan_id    String                 @db.Uuid
+  plan       SubscriptionPlan       @relation(fields: [plan_id], references: [id], onDelete: Restrict)
+  start_date DateTime               @map("start_date")
+  end_date   DateTime               @map("end_date")
+  status     UserSubscriptionStatus @default(ACTIVE)
 
-  competition Competition @relation(fields: [competition_id], references: [id], onDelete: Cascade)
-  team        Club        @relation(fields: [team_id], references: [id], onDelete: Cascade)
-
-  @@id([competition_id, team_id])
-  @@map("competition_teams")
-}
-
-model Match {
-  id             String      @id @default(uuid()) @db.Uuid
-  ea_match_id    String?     @unique
-  competition_id String?     @db.Uuid
-  round          String?
-  home_team_id   String      @db.Uuid
-  away_team_id   String      @db.Uuid
-  home_score     Int?
-  away_score     Int?
-  status         MatchStatus @default(SCHEDULED)
-  played_at      DateTime?
-
-  competition Competition? @relation(fields: [competition_id], references: [id], onDelete: SetNull)
-  homeTeam    Club         @relation("HomeTeam", fields: [home_team_id], references: [id])
-  awayTeam    Club         @relation("AwayTeam", fields: [away_team_id], references: [id])
-  events      MatchEvent[]
-  scoreReports MatchScoreReport[]
-
-  @@map("matches")
-}
-
-// Déclaration de score par club (double validation côté modérateur)
-model MatchScoreReport {
-  id                 String   @id @default(uuid()) @db.Uuid
-  match_id           String   @db.Uuid
-  reporting_team_id  String   @db.Uuid
-  submitted_by_id    String   @db.Uuid
-  home_score         Int
-  away_score         Int
-  created_at         DateTime @default(now())
-  updated_at         DateTime @updatedAt
-
-  match         Match @relation(fields: [match_id], references: [id], onDelete: Cascade)
-  reportingTeam Club  @relation(fields: [reporting_team_id], references: [id], onDelete: Cascade)
-  submittedBy   User  @relation(fields: [submitted_by_id], references: [id], onDelete: Cascade)
-
-  @@unique([match_id, reporting_team_id])
-  @@map("match_score_reports")
-}
-
-model MatchEvent {
-  id        String    @id @default(uuid()) @db.Uuid
-  match_id  String    @db.Uuid
-  player_id String    @db.Uuid
-  team_id   String    @db.Uuid
-  type      EventType
-  minute    Int?
-
-  match  Match @relation(fields: [match_id], references: [id], onDelete: Cascade)
-  player User  @relation(fields: [player_id], references: [id], onDelete: Cascade)
-  team   Club  @relation(fields: [team_id], references: [id], onDelete: Cascade)
-
-  @@map("match_events")
-}
-
-// Mercato — demandes de transfert
-model TransferRequest {
-  id         String         @id @default(uuid()) @db.Uuid
-  player_id  String         @db.Uuid
-  team_id    String         @db.Uuid
-  status     TransferStatus @default(PENDING)
-  created_at DateTime       @default(now())
-
-  player User @relation(fields: [player_id], references: [id], onDelete: Cascade)
-  team   Club @relation(fields: [team_id], references: [id], onDelete: Cascade)
-
-  @@map("transfer_requests")
-}
-
-// Mercato — invitations envoyées par un manager à un joueur
-model Invitation {
-  id             String           @id @default(uuid()) @db.Uuid
-  team_id        String           @db.Uuid
-  inviter_id     String           @db.Uuid
-  invitee_email  String
-  invitee_id     String?          @db.Uuid
-  status         InvitationStatus @default(PENDING)
-  created_at     DateTime         @default(now())
-
-  team    Club  @relation(fields: [team_id], references: [id], onDelete: Cascade)
-  inviter User  @relation("InvitationInviter", fields: [inviter_id], references: [id], onDelete: Cascade)
-  invitee User? @relation("InvitationInvitee", fields: [invitee_id], references: [id], onDelete: SetNull)
-
-  @@map("invitations")
-}
-
-// ============================================================
-// FINANCES
-// ============================================================
-
-model Contract {
-  id             String   @id @default(uuid()) @db.Uuid
-  team_id        String   @db.Uuid
-  user_id        String   @db.Uuid
-  salary         Float
-  release_clause Float
-  expires_at     DateTime
-
-  team Club @relation(fields: [team_id], references: [id], onDelete: Cascade)
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("contracts")
-}
-
-model Transaction {
-  id          String          @id @default(uuid()) @db.Uuid
-  team_id     String          @db.Uuid
-  amount      Float
-  type        TransactionType
-  description String?
-  created_at  DateTime        @default(now())
-
-  team Club @relation(fields: [team_id], references: [id], onDelete: Cascade)
-
-  @@map("transactions")
-}
-
-// ============================================================
-// MERCATO LIVE — Offres de transfert entre clubs
-// ============================================================
-
-model TransferOffer {
-  id           String         @id @default(uuid()) @db.Uuid
-  player_id    String         @db.Uuid
-  from_team_id String         @db.Uuid
-  to_team_id   String         @db.Uuid
-  amount       Float
-  status       TransferStatus @default(PENDING)
-  created_at   DateTime       @default(now())
-  responded_at DateTime?
-
-  player   User @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
-  fromTeam Club @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
-  toTeam   Club @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
-
-  @@map("transfer_offers")
-}
-
-// ============================================================
-// NOTIFICATIONS
-// ============================================================
-
-model Notification {
-  id         String   @id @default(uuid()) @db.Uuid
-  user_id    String   @db.Uuid
-  title      String
-  message    String
-  is_read    Boolean  @default(false)
-  metadata   Json?
-  created_at DateTime @default(now())
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("notifications")
+  @@index([user_id, status])
+  @@index([end_date, status])
+  @@map("user_subscriptions")
 }

@@ -96,7 +96,7 @@ export default function DashboardIndex() {
     ? [
         {
           label: 'Puissance de Feu',
-          value: data.totals.goals,
+          value: Number(data.totals?.goals ?? 0),
           icon: Swords,
           gradient: 'from-red-500/20 to-orange-500/10',
           border: 'border-red-500/20',
@@ -105,7 +105,7 @@ export default function DashboardIndex() {
         },
         {
           label: 'Maîtres du Jeu',
-          value: data.totals.assists,
+          value: Number(data.totals?.assists ?? 0),
           icon: Star,
           gradient: 'from-blue-500/20 to-cyan-500/10',
           border: 'border-blue-500/20',
@@ -114,7 +114,7 @@ export default function DashboardIndex() {
         },
         {
           label: 'Discipline Collective',
-          value: data.totals.averageAmr.toFixed(1),
+          value: Number(data.totals?.averageAmr ?? 0).toFixed(1),
           icon: Shield,
           gradient: 'from-emerald-500/20 to-teal-500/10',
           border: 'border-emerald-500/20',
@@ -266,7 +266,7 @@ export default function DashboardIndex() {
                         </h3>
                         <div className="flex items-baseline gap-1 mb-6">
                           <span className="font-display font-bold text-5xl bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                            {data.mvp.averageRating.toFixed(1)}
+                            {Number(data.mvp?.averageRating ?? 0).toFixed(1)}
                           </span>
                           <span className="text-blue-400/60 text-sm font-medium">AMR</span>
                         </div>
@@ -277,7 +277,9 @@ export default function DashboardIndex() {
                               <Swords className="w-4 h-4 text-slate-400" />
                             </div>
                             <div>
-                              <p className="font-display font-bold text-lg text-white">{data.mvp.goals}</p>
+                              <p className="font-display font-bold text-lg text-white">
+                                {Number(data.mvp?.goals ?? 0)}
+                              </p>
                               <p className="text-slate-500 text-[10px] uppercase tracking-wider">Buts</p>
                             </div>
                           </div>
@@ -286,7 +288,9 @@ export default function DashboardIndex() {
                               <Star className="w-4 h-4 text-slate-400" />
                             </div>
                             <div>
-                              <p className="font-display font-bold text-lg text-white">{data.mvp.assists}</p>
+                              <p className="font-display font-bold text-lg text-white">
+                                {Number(data.mvp?.assists ?? 0)}
+                              </p>
                               <p className="text-slate-500 text-[10px] uppercase tracking-wider">Passes D.</p>
                             </div>
                           </div>
@@ -330,7 +334,7 @@ export default function DashboardIndex() {
 
                     <div className="flex items-baseline gap-1 mb-4">
                       <span className="font-display font-bold text-4xl bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                        {data.topScorer.goals}
+                        {Number(data.topScorer?.goals ?? 0)}
                       </span>
                       <span className="text-amber-400/60 text-sm font-medium">buts</span>
                     </div>

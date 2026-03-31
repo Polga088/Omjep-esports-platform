@@ -20,9 +20,10 @@ import Standings from '@/pages/Dashboard/Standings';
 import Stats from '@/pages/Dashboard/Stats';
 import ProfileDetail from '@/pages/Dashboard/ProfileDetail';
 import Settings from '@/pages/Dashboard/Settings';
-import Store from '@/pages/Dashboard/Store';
+import Store from '@/pages/Store/Store';
 import TransferMarket from '@/pages/Dashboard/TransferMarket';
 import Gamification from '@/pages/Dashboard/Gamification';
+import Predictions from '@/pages/Predictions/Predictions';
 import ManagerClub from '@/pages/Dashboard/ManagerClub';
 import AdminDashboard from '@/pages/Admin/Dashboard';
 import AdminCompetitions from '@/pages/Admin/Competitions';
@@ -30,6 +31,7 @@ import AdminMatches from '@/pages/Admin/Matches';
 import AdminUsers from '@/pages/Admin/Users';
 import AdminClubs from '@/pages/Admin/Clubs';
 import AdminClubRequests from '@/pages/Admin/ClubRequests';
+import AdminStoreManagement from '@/pages/Admin/StoreManagement';
 import LeagueHome from '@/pages/Admin/league/LeagueHome';
 import LeagueCompetitions from '@/pages/Admin/league/LeagueCompetitions';
 import LeagueMatches from '@/pages/Admin/league/LeagueMatches';
@@ -77,6 +79,7 @@ export default function App() {
           <Route path="/dashboard/store" element={<Store />} />
           <Route path="/dashboard/transfers" element={<TransferMarket />} />
           <Route path="/dashboard/gamification" element={<Gamification />} />
+          <Route path="/dashboard/predictions" element={<Predictions />} />
           <Route
             path="/dashboard/manager/club"
             element={
@@ -101,6 +104,7 @@ export default function App() {
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/clubs" element={<AdminClubs />} />
           <Route path="/admin/club-requests" element={<AdminClubRequests />} />
+          <Route path="/admin/store" element={<AdminStoreManagement />} />
         </Route>
 
         <Route

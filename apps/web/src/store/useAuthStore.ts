@@ -6,12 +6,16 @@ export interface User {
   email: string;
   ea_persona_name: string;
   role: 'PLAYER' | 'MANAGER' | 'ADMIN' | 'MODERATOR';
+  omjepCoins?: number;
+  jepyCoins?: number;
+  isPremium?: boolean;
 }
 
 interface AuthState {
   user: User | null;
   token: string | null;
   login: (user: User, token: string) => void;
+  patchUser: (partial: Partial<User>) => void;
   logout: () => void;
   isAuthenticated: () => boolean;
 }
@@ -23,7 +27,36 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       login: (user, token) => {
         localStorage.setItem('token', token);
-        set({ user, token });
+        set({
+          user: {
+            ...user,
+            omjepCoins:
+              typeof user.omjepCoins === 'number' && Number.isFinite(user.omjepCoins)
+                ? user.omjepCoins
+                : 1000,
+            jepyCoins:
+              typeof user.jepyCoins === 'number' && Number.isFinite(user.jepyCoins)
+                ? user.jepyCoins
+                : 0,
+          },
+          token,
+        });
+      },
+      patchUser: (partial) => {
+        set((state) => {
+          if (!state.user) return { user: null };
+          const next = { ...state.user, ...partial };
+          if (next.omjepCoins !== undefined && !Number.isFinite(next.omjepCoins)) {
+            next.omjepCoins = 1000;
+          }
+          if (next.jepyCoins !== undefined && !Number.isFinite(next.jepyCoins)) {
+            next.jepyCoins = 0;
+          }
+          if (next.isPremium !== undefined && typeof next.isPremium !== 'boolean') {
+            next.isPremium = false;
+          }
+          return { user: next };
+        });
       },
       logout: () => {
         localStorage.removeItem('token');

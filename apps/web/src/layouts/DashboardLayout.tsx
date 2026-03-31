@@ -4,6 +4,7 @@ import {
   Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
   LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings, Wallet, Repeat, Scale, Gamepad2,
   Building2,
+  Dices,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
@@ -25,6 +26,7 @@ const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard/ladder', label: 'Classement', icon: Trophy },
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
   { to: '/dashboard/gamification', label: 'Mon Parcours', icon: Gamepad2 },
+  { to: '/dashboard/predictions', label: 'Predict & Win', icon: Dices },
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
   { to: '/dashboard/transfers', label: 'Mercato Live', icon: Repeat },
   { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
@@ -38,7 +40,8 @@ const pageTitles: Record<string, string> = {
   '/dashboard/ladder': 'Classement',
   '/dashboard/matches': 'Matchs',
   '/dashboard/gamification': 'Mon Parcours',
-  '/dashboard/store': 'Market Place',
+  '/dashboard/predictions': 'Predict & Win',
+  '/dashboard/store': 'Boutique',
   '/dashboard/transfers': 'Mercato Live',
   '/dashboard/profile': 'Mon Profil',
   '/dashboard/settings': 'Paramètres',
@@ -54,7 +57,7 @@ function formatBudget(amount: number): string {
 export default function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const { user, logout, patchUser } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [budget, setBudget] = useState<number | null>(null);
   const { showConfetti } = useTransferNotifications();
@@ -69,6 +72,27 @@ export default function DashboardLayout() {
       .catch(() => {});
     return () => { cancelled = true; };
   }, []);
+
+  /** Synchronise le wallet (OMJEP/JEPY) avec le JWT / DB — évite un state obsolète après ajout des colonnes. */
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get<{ omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }>('/auth/me')
+      .then(({ data }) => {
+        if (cancelled || !data) return;
+        const o = data.omjepCoins;
+        const j = data.jepyCoins;
+        patchUser({
+          omjepCoins:
+            typeof o === 'number' && Number.isFinite(o) ? o : 1000,
+          jepyCoins:
+            typeof j === 'number' && Number.isFinite(j) ? j : 0,
+          isPremium: data.isPremium === true,
+        });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [patchUser]);
 
   const handleLogout = () => {
     logout();
@@ -107,8 +131,19 @@ export default function DashboardLayout() {
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-600/30 flex items-center justify-center text-sm font-bold text-amber-400 uppercase border border-amber-400/20 shrink-0">
             {user?.ea_persona_name?.charAt(0) ?? 'U'}
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-white truncate">{user?.ea_persona_name ?? 'Joueur'}</p>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 min-w-0">
+              <p className="text-sm font-semibold text-white truncate">{user?.ea_persona_name ?? 'Joueur'}</p>
+              {user?.isPremium === true && (
+                <span
+                  className="inline-flex shrink-0 items-center justify-center rounded-md border border-amber-400/35 bg-gradient-to-br from-amber-400/20 to-amber-600/10 p-1 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.25)]"
+                  title="VIP"
+                  aria-label="Compte VIP"
+                >
+                  <Crown className="h-3.5 w-3.5" fill="currentColor" />
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-500">
               {user?.role === 'MODERATOR'
                 ? 'Commissaire'

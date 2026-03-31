@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Users, Loader2, Search, CheckCircle2, AlertCircle, ListChecks } from 'lucide-react';
+import {
+  Users,
+  Loader2,
+  Search,
+  CheckCircle2,
+  AlertCircle,
+  ListChecks,
+  Trash2,
+  X,
+} from 'lucide-react';
+import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -27,6 +37,8 @@ export default function AdminUsers() {
   const [rowSaving, setRowSaving] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [userToDelete, setUserToDelete] = useState<AdminUserRow | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -46,6 +58,39 @@ export default function AdminUsers() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    if (!userToDelete) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setUserToDelete(null);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [userToDelete]);
+
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+    setDeletingId(userToDelete.id);
+    try {
+      await api.delete(`/users/${userToDelete.id}`);
+      toast.success('Utilisateur supprimé.');
+      const removedId = userToDelete.id;
+      setUsers((prev) => prev.filter((u) => u.id !== removedId));
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(removedId);
+        return next;
+      });
+      setUserToDelete(null);
+    } catch (e: unknown) {
+      const raw = (e as { response?: { data?: { message?: string | string[] } } })?.response?.data
+        ?.message;
+      const text = Array.isArray(raw) ? raw.join(', ') : raw;
+      toast.error(typeof text === 'string' ? text : 'Suppression impossible.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -136,6 +181,64 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6">
+      {userToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <button
+            type="button"
+            aria-label="Fermer"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setUserToDelete(null)}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-user-title"
+            className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0B0D13]/90 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+          >
+            <div className="px-6 py-4 border-b border-white/5 flex items-start justify-between gap-3">
+              <div>
+                <h2 id="delete-user-title" className="text-lg font-bold text-white">
+                  Supprimer l&apos;utilisateur ?
+                </h2>
+                <p className="text-sm text-slate-400 mt-1">
+                  Cette action est définitive. Les données liées (équipes, stats…) seront supprimées ou
+                  détachées selon les règles du système.
+                </p>
+                <p className="text-sm text-amber-400/90 mt-3 font-medium truncate" title={userToDelete.email}>
+                  {userToDelete.email}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setUserToDelete(null)}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="px-6 py-4 flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
+              <button
+                type="button"
+                disabled={!!deletingId}
+                onClick={() => setUserToDelete(null)}
+                className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-300 border border-white/10 hover:bg-white/5 disabled:opacity-50"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                disabled={!!deletingId}
+                onClick={() => void confirmDeleteUser()}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-red-500/90 text-white hover:bg-red-500 disabled:opacity-50"
+              >
+                {deletingId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 flex items-center justify-center border border-amber-400/20">
@@ -212,7 +315,7 @@ export default function AdminUsers() {
       </div>
 
       <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
-        <table className="w-full text-sm min-w-[720px]">
+        <table className="w-full text-sm min-w-[800px]">
           <thead>
             <tr className="border-b border-white/[0.06] bg-white/[0.02]">
               <th className="text-left px-3 py-3 w-10">
@@ -240,12 +343,15 @@ export default function AdminUsers() {
               <th className="text-left px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Inscription
               </th>
+              <th className="text-right px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 w-[100px]">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-16 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-16 text-center text-slate-500">
                   Aucun utilisateur ne correspond aux critères.
                 </td>
               </tr>
@@ -289,6 +395,25 @@ export default function AdminUsers() {
                     </td>
                     <td className="px-3 py-3 text-slate-500 tabular-nums text-xs">
                       {u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '—'}
+                    </td>
+                    <td className="px-3 py-3 text-right align-middle">
+                      {isSelf ? (
+                        <span className="text-[10px] text-slate-600">—</span>
+                      ) : (
+                        <button
+                          type="button"
+                          title={"Supprimer l'utilisateur"}
+                          disabled={deletingId === u.id}
+                          onClick={() => setUserToDelete(u)}
+                          className="inline-flex items-center justify-center p-2 rounded-lg border border-red-500/20 text-red-400/90 hover:bg-red-500/10 hover:border-red-500/40 disabled:opacity-40 transition-colors"
+                        >
+                          {deletingId === u.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );

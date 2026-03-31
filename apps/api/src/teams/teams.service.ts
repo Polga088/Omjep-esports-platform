@@ -174,7 +174,9 @@ export class TeamsService {
       const s = m.user.stats;
       const goals = s?.goals ?? 0;
       const assists = s?.assists ?? 0;
-      const averageRating = s?.average_rating ?? 0;
+      const rawAmr = s?.average_rating ?? 0;
+      const averageRating =
+        typeof rawAmr === 'number' && Number.isFinite(rawAmr) ? rawAmr : 0;
       const displayName =
         m.user.ea_persona_name ?? m.user.gamertag_psn ?? m.user.gamertag_xbox ?? null;
       return {
@@ -190,7 +192,8 @@ export class TeamsService {
     const totalGoals = snapshots.reduce((acc, x) => acc + x.goals, 0);
     const totalAssists = snapshots.reduce((acc, x) => acc + x.assists, 0);
     const sumAmr = snapshots.reduce((acc, x) => acc + x.averageRating, 0);
-    const averageAmr = memberCount > 0 ? sumAmr / memberCount : 0;
+    const averageAmrRaw = memberCount > 0 ? sumAmr / memberCount : 0;
+    const averageAmr = Number.isFinite(averageAmrRaw) ? averageAmrRaw : 0;
 
     const compareIds = (a: string, b: string) => a.localeCompare(b);
 

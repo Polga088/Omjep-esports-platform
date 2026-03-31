@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { PrismaService } from '../prisma/prisma.service';
+import { PredictionsService } from '../predictions/predictions.service';
 import { EventType } from '@omjep/database';
 
 interface ScoreEventDto {
@@ -45,7 +46,10 @@ const MATCH_INCLUDE = {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
 export class AdminMatchesController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly predictionsService: PredictionsService,
+  ) {}
 
   @Get()
   async findAll(@Query('competition_id') competitionId?: string) {
@@ -105,6 +109,8 @@ export class AdminMatchesController {
         include: MATCH_INCLUDE,
       });
     });
+
+    await this.predictionsService.resolvePredictions(id);
 
     return { message: 'Résultat enregistré.', match: updated };
   }

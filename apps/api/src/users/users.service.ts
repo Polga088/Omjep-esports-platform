@@ -1,6 +1,7 @@
 import {
   Injectable,
   ConflictException,
+  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -10,6 +11,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AdminCreateUserDto } from './dto/admin-create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { LevelingService } from '../leveling/leveling.service';
+import { withWalletDefaults } from '../auth/wallet.util';
 
 const SALT_ROUNDS = 10;
 
@@ -21,7 +23,7 @@ export class UsersService {
   ) {}
 
   async findAll() {
-    return this.prisma.user.findMany({
+    const rows = await this.prisma.user.findMany({
       select: {
         id: true,
         email: true,
@@ -32,9 +34,12 @@ export class UsersService {
         preferred_position: true,
         nationality: true,
         created_at: true,
+        omjepCoins: true,
+        jepyCoins: true,
         stats: true,
       },
     });
+    return rows.map((u) => withWalletDefaults(u));
   }
 
   async findOne(id: string) {
@@ -53,6 +58,8 @@ export class UsersService {
         nationality: true,
         xp: true,
         level: true,
+        omjepCoins: true,
+        jepyCoins: true,
         stats: true,
         teamMemberships: {
           include: { team: true },
@@ -61,7 +68,7 @@ export class UsersService {
     });
 
     if (!user) throw new NotFoundException(`Joueur #${id} introuvable`);
-    return user;
+    return withWalletDefaults(user);
   }
 
   async adminCreate(dto: AdminCreateUserDto) {
@@ -83,7 +90,7 @@ export class UsersService {
 
     const password_hash = await bcrypt.hash(dto.password, SALT_ROUNDS);
 
-    return this.prisma.user.create({
+    const created = await this.prisma.user.create({
       data: {
         email: dto.email,
         password_hash,
@@ -104,8 +111,11 @@ export class UsersService {
         preferred_position: true,
         nationality: true,
         created_at: true,
+        omjepCoins: true,
+        jepyCoins: true,
       },
     });
+    return withWalletDefaults(created);
   }
 
   async adminUpdate(id: string, dto: AdminUpdateUserDto) {
@@ -152,7 +162,7 @@ export class UsersService {
       data.level = dto.level;
     }
 
-    return this.prisma.user.update({
+    const updated = await this.prisma.user.update({
       where: { id },
       data,
       select: {
@@ -167,8 +177,11 @@ export class UsersService {
         xp: true,
         level: true,
         created_at: true,
+        omjepCoins: true,
+        jepyCoins: true,
       },
     });
+    return withWalletDefaults(updated);
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {
@@ -268,8 +281,31 @@ export class UsersService {
     };
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
-    return this.prisma.user.delete({ where: { id } });
+  /**
+   * Suppression admin. Les FK Prisma gèrent la cascade (TeamMember, stats, offres…).
+   * Les clubs managés voient `manager_id` mis à null (onDelete: SetNull sur Club.manager).
+   */
+  async remove(targetUserId: string, adminUserId: string) {
+    if (targetUserId === adminUserId) {
+      throw new ForbiddenException(
+        'Vous ne pouvez pas supprimer votre propre compte administrateur.',
+      );
+    }
+
+    await this.findOne(targetUserId);
+
+    try {
+      return await this.prisma.user.delete({ where: { id: targetUserId } });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2003'
+      ) {
+        throw new ConflictException(
+          'Impossible de supprimer cet utilisateur : des données liées empêchent la suppression.',
+        );
+      }
+      throw error;
+    }
   }
 }

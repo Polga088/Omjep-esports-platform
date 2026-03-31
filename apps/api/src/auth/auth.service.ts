@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
+import { withWalletDefaults } from './wallet.util';
 
 const SALT_ROUNDS = 10;
 
@@ -54,10 +55,13 @@ export class AuthService {
         preferred_position: true,
         nationality: true,
         created_at: true,
+        omjepCoins: true,
+        jepyCoins: true,
+        isPremium: true,
       },
     });
 
-    return { message: 'Inscription réussie.', user };
+    return { message: 'Inscription réussie.', user: withWalletDefaults(user) };
   }
 
   async validateUser(email: string, password: string) {
@@ -73,7 +77,7 @@ export class AuthService {
     }
 
     const { password_hash: _hash, ...safeUser } = user;
-    return safeUser;
+    return withWalletDefaults(safeUser);
   }
 
   async login(email: string, password: string) {

@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '../prisma/prisma.service';
+import { withWalletDefaults } from './wallet.util';
 
 export interface JwtPayload {
   sub: string;
@@ -32,6 +33,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         preferred_position: true,
         nationality: true,
         created_at: true,
+        omjepCoins: true,
+        jepyCoins: true,
+        isPremium: true,
       },
     });
 
@@ -39,6 +43,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Token invalide ou utilisateur introuvable.');
     }
 
-    return user;
+    return withWalletDefaults(user);
   }
 }
