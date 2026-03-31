@@ -65,7 +65,7 @@ export class ProClubsService {
       `[ProClubs] Scraped match: ${scraped.homeTeamName} ${scraped.homeScore}–${scraped.awayScore} ${scraped.awayTeamName} (${scraped.players.length} player entries)`,
     );
 
-    const team = await this.prisma.team.findUnique({
+    const team = await this.prisma.club.findUnique({
       where: { proclubs_url: url } as any,
       include: {
         members: { include: { user: true } },

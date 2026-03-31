@@ -23,7 +23,7 @@ interface TeamOverview {
 }
 
 const quickActions = [
-  { label: 'Mon Club', description: "Gérer l'effectif et les statistiques", to: '/dashboard/club', icon: Users },
+  { label: 'Mon Club', description: "Gérer l'effectif et les statistiques", to: '/dashboard/team', icon: Users },
   { label: 'Classement', description: 'Voir votre position dans la ligue', to: '/leaderboard', icon: Trophy },
   { label: 'Paramètres', description: 'Compte, profil et préférences', to: '/dashboard/settings', icon: Zap },
 ];

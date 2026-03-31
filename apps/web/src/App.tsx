@@ -7,6 +7,7 @@ import ModeratorLayout from '@/layouts/ModeratorLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminRoute from '@/components/AdminRoute';
 import ModeratorRoute from '@/components/ModeratorRoute';
+import ManagerRoute from '@/components/ManagerRoute';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -22,11 +23,13 @@ import Settings from '@/pages/Dashboard/Settings';
 import Store from '@/pages/Dashboard/Store';
 import TransferMarket from '@/pages/Dashboard/TransferMarket';
 import Gamification from '@/pages/Dashboard/Gamification';
+import ManagerClub from '@/pages/Dashboard/ManagerClub';
 import AdminDashboard from '@/pages/Admin/Dashboard';
 import AdminCompetitions from '@/pages/Admin/Competitions';
 import AdminMatches from '@/pages/Admin/Matches';
 import AdminUsers from '@/pages/Admin/Users';
 import AdminClubs from '@/pages/Admin/Clubs';
+import AdminClubRequests from '@/pages/Admin/ClubRequests';
 import LeagueHome from '@/pages/Admin/league/LeagueHome';
 import LeagueCompetitions from '@/pages/Admin/league/LeagueCompetitions';
 import LeagueMatches from '@/pages/Admin/league/LeagueMatches';
@@ -74,6 +77,14 @@ export default function App() {
           <Route path="/dashboard/store" element={<Store />} />
           <Route path="/dashboard/transfers" element={<TransferMarket />} />
           <Route path="/dashboard/gamification" element={<Gamification />} />
+          <Route
+            path="/dashboard/manager/club"
+            element={
+              <ManagerRoute>
+                <ManagerClub />
+              </ManagerRoute>
+            }
+          />
         </Route>
 
         {/* Admin routes */}
@@ -89,6 +100,7 @@ export default function App() {
           <Route path="/admin/matches" element={<AdminMatches />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/clubs" element={<AdminClubs />} />
+          <Route path="/admin/club-requests" element={<AdminClubRequests />} />
         </Route>
 
         <Route

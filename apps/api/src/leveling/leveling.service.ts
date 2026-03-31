@@ -57,7 +57,7 @@ export class LevelingService {
     teamId: string,
     amount: number,
   ): Promise<LevelUpResult> {
-    const team = await this.prisma.team.update({
+    const team = await this.prisma.club.update({
       where: { id: teamId },
       data: { xp: { increment: amount } },
       select: { id: true, xp: true, prestige_level: true },
@@ -67,7 +67,7 @@ export class LevelingService {
     const leveledUp = newLevel > team.prestige_level;
 
     if (leveledUp) {
-      await this.prisma.team.update({
+      await this.prisma.club.update({
         where: { id: teamId },
         data: { prestige_level: newLevel },
       });

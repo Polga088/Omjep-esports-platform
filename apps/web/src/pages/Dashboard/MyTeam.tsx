@@ -151,11 +151,27 @@ const positionLabel: Record<Position, string> = {
   MDC: 'MDC', MOC: 'MOC', MG: 'MG', MD: 'MD', BU: 'BU', ATT: 'ATT',
 };
 
-const roleConfig: Record<ClubRole, { label: string; className: string; icon: React.ElementType }> = {
-  FOUNDER:    { label: 'Fondateur',   className: 'bg-amber-500/15 text-amber-400 border-amber-500/30',   icon: Crown },
-  MANAGER:    { label: 'Manager',     className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30', icon: Shield },
-  CO_MANAGER: { label: 'Co-Manager',  className: 'bg-teal-500/15 text-teal-400 border-teal-500/30',       icon: Users },
-  PLAYER:     { label: 'Joueur',      className: 'bg-blue-500/15 text-blue-400 border-blue-500/30',       icon: Swords },
+const roleConfig: Record<ClubRole, { label: string; badgeClass: string; icon: React.ElementType }> = {
+  FOUNDER: {
+    label: 'Fondateur',
+    badgeClass: 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20',
+    icon: Crown,
+  },
+  MANAGER: {
+    label: 'Manager',
+    badgeClass: 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20',
+    icon: Shield,
+  },
+  CO_MANAGER: {
+    label: 'Co-Manager',
+    badgeClass: 'bg-slate-500/10 text-slate-400 border border-slate-500/25',
+    icon: Users,
+  },
+  PLAYER: {
+    label: 'Joueur',
+    badgeClass: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
+    icon: Swords,
+  },
 };
 
 // ─── Composants utilitaires ──────────────────────────────────────────────────
@@ -169,15 +185,13 @@ function RatingBar({ value }: { value: number }) {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+      <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className={`text-sm font-bold tabular-nums w-8 text-right ${
-        value >= 8 ? 'text-emerald-400' : value >= 6.5 ? 'text-blue-400' : 'text-amber-400'
-      }`}>
+      <span className="w-10 text-right text-sm font-semibold tabular-nums text-gray-300">
         {value > 0 ? value.toFixed(1) : 'N/A'}
       </span>
     </div>
@@ -186,9 +200,9 @@ function RatingBar({ value }: { value: number }) {
 
 function SkeletonRow() {
   return (
-    <tr className="border-b border-white/5">
+    <tr className="border-b border-gray-800/30 last:border-b-0">
       {[...Array(5)].map((_, i) => (
-        <td key={i} className="px-6 py-4">
+        <td key={i} className="px-5 py-4">
           <div className="h-4 rounded-md bg-white/5 animate-pulse" style={{ width: i === 0 ? '60%' : '40%' }} />
         </td>
       ))}
@@ -203,86 +217,85 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-cyan-500/15 bg-gradient-to-br from-[#0D1221] to-[#0C1631] overflow-hidden">
-      <div className="px-5 py-3.5 border-b border-cyan-500/10 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Gem className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-sm font-bold text-white tracking-wide">Prestige du Club</h3>
+    <div className="overflow-hidden rounded-3xl border border-gray-800 bg-[#0B0D13]/50 backdrop-blur-md">
+      <div className="flex items-center justify-between border-b border-gray-800/80 px-5 py-4">
+        <div className="flex items-center gap-2.5">
+          <Gem className="h-5 w-5 shrink-0 text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.45)]" />
+          <h3 className="text-sm font-bold tracking-wide text-white">Prestige du Club</h3>
         </div>
         <div className="relative">
           <button
+            type="button"
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
             onClick={() => setShowTooltip(!showTooltip)}
-            className="w-5 h-5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-700/80 bg-white/[0.04] text-slate-400 transition-colors hover:border-cyan-500/30 hover:bg-cyan-500/10 hover:text-cyan-300"
+            aria-label="Informations prestige"
           >
-            <Info className="w-3 h-3 text-slate-500" />
+            <Info className="h-3.5 w-3.5" />
           </button>
           {showTooltip && (
-            <div className="absolute right-0 top-7 z-50 w-64 px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 shadow-xl text-xs text-slate-300 leading-relaxed">
-              <p className="font-semibold text-cyan-400 mb-1">Bonus de Prestige</p>
+            <div className="absolute right-0 top-9 z-50 w-64 rounded-xl border border-gray-700 bg-slate-900/95 px-3.5 py-2.5 text-xs leading-relaxed text-slate-300 shadow-xl backdrop-blur-md">
+              <p className="mb-1 font-semibold text-cyan-400">Bonus de Prestige</p>
               <p>
-                Le Prestige augmente à chaque victoire et performance du club.
-                Plus le niveau est élevé, plus les <span className="text-white font-medium">bonus de sponsoring</span> sont importants.
+                Le Prestige augmente à chaque victoire et performance du club. Plus le niveau est élevé, plus les{' '}
+                <span className="font-medium text-white">bonus de sponsoring</span> sont importants.
               </p>
-              <div className="absolute -top-1.5 right-3 w-3 h-3 bg-slate-800 border-t border-l border-slate-700 rotate-45" />
+              <div className="absolute -top-1.5 right-3 h-3 w-3 rotate-45 border-l border-t border-gray-700 bg-slate-900/95" />
             </div>
           )}
         </div>
       </div>
 
-      <div className="px-5 py-5">
-        <div className="flex items-center gap-4">
-          {/* Prestige level badge */}
+      <div className="px-5 py-6">
+        <div className="flex items-center gap-5">
+          {/* Badge niveau — hexagone verre */}
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.92, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
             className="shrink-0"
           >
             <div
-              className="w-16 h-16 rounded-xl flex flex-col items-center justify-center shadow-lg border border-cyan-400/20"
+              className="relative flex h-[4.5rem] w-[4.5rem] flex-col items-center justify-center border border-cyan-400/50 bg-cyan-900/40 shadow-[0_0_15px_rgba(34,211,238,0.3)] backdrop-blur-xl [clip-path:polygon(50%_0%,100%_25%,100%_75%,50%_100%,0%_75%,0%_25%)]"
               style={{
-                background: 'linear-gradient(135deg, #164e63 0%, #0e7490 40%, #67e8f9 100%)',
-                boxShadow: '0 4px 20px rgba(6,182,212,0.2)',
+                boxShadow:
+                  '0 0 15px rgba(34,211,238,0.3), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -8px 20px rgba(6,182,212,0.15)',
               }}
             >
-              <span className="text-[9px] font-bold uppercase tracking-widest text-cyan-200/70">Prstg</span>
-              <span
-                className="text-2xl font-black text-white leading-none tabular-nums"
-                style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
-              >
+              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-cyan-200/80">Prstg</span>
+              <span className="text-2xl font-black tabular-nums leading-none text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
                 {prestigeLevel}
               </span>
             </div>
           </motion.div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-xs font-semibold text-slate-400">
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <span className="text-xs font-bold tabular-nums text-gray-300">
                 {progress.current.toLocaleString('fr-FR')} / {progress.needed.toLocaleString('fr-FR')} XP
               </span>
-              <span className="text-xs font-bold text-cyan-400">
-                Niv. {progress.nextLevel}
-              </span>
+              <span className="text-xs font-bold text-gray-300">Niv. {progress.nextLevel}</span>
             </div>
 
-            {/* Progress bar - electric blue to silver */}
-            <div className="relative h-2.5 rounded-full bg-white/5 overflow-hidden border border-white/5">
+            <div className="relative h-3.5 overflow-hidden rounded-full border border-white/[0.06] bg-gray-800/50">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress.percentage}%` }}
-                transition={{ duration: 1.2, ease: 'easeOut' }}
-                className="absolute inset-y-0 left-0 rounded-full"
-                style={{
-                  background: 'linear-gradient(90deg, #0e7490 0%, #22d3ee 50%, #e2e8f0 100%)',
-                  boxShadow: '0 0 12px rgba(34,211,238,0.4)',
-                }}
-              />
+                transition={{ duration: 1.1, ease: 'easeOut' }}
+                className="relative h-full overflow-hidden rounded-full bg-gradient-to-r from-cyan-600 via-cyan-400 to-blue-500 shadow-[0_0_14px_rgba(34,211,238,0.35)]"
+              >
+                <motion.div
+                  className="pointer-events-none absolute inset-y-0 left-0 w-[42%] min-w-[1.5rem] bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-75"
+                  style={{ skewX: '-16deg' }}
+                  animate={{ x: ['-100%', '280%'] }}
+                  transition={{ repeat: Infinity, duration: 2.2, ease: 'linear' }}
+                />
+              </motion.div>
             </div>
 
-            <p className="text-[10px] text-slate-600 mt-1.5">
-              <span className="text-cyan-400/80 font-semibold">{xp.toLocaleString('fr-FR')}</span> XP Club totale
+            <p className="mt-2 text-[10px] text-slate-500">
+              <span className="font-semibold text-cyan-400/90">{xp.toLocaleString('fr-FR')}</span> XP club cumulées
             </p>
           </div>
         </div>
@@ -432,18 +445,64 @@ export default function MyTeam() {
         )}
       </div>
 
-      {/* Stats strip */}
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { label: 'Total joueurs', value: isLoading ? '—' : players.length, accent: 'text-blue-400' },
-          { label: 'Staff / Managers', value: isLoading ? '—' : staff.length, accent: 'text-emerald-400' },
-          { label: 'Note moy. équipe', value: isLoading ? '—' : avgRating > 0 ? avgRating.toFixed(1) : 'N/A', accent: 'text-amber-400' },
-        ].map(({ label, value, accent }) => (
-          <div key={label} className="rounded-xl bg-[#0D1221] border border-white/5 p-4 flex flex-col items-center">
-            <span className={`text-2xl font-black tabular-nums ${accent}`}>{value}</span>
-            <span className="mt-0.5 text-xs text-slate-500 text-center">{label}</span>
-          </div>
-        ))}
+      {/* Stats Bento — aligné 3 colonnes desktop, 1 colonne mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Total joueurs */}
+        <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/80 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg hover:shadow-black/25">
+          <svg
+            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-white opacity-[0.05]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            aria-hidden
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Total joueurs</p>
+          <p className="mt-2 text-4xl font-black tabular-nums text-white">
+            {isLoading ? '—' : players.length}
+          </p>
+        </div>
+
+        {/* Staff / Managers */}
+        <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/80 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg hover:shadow-black/25">
+          <svg
+            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-emerald-400 opacity-[0.05]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M4 10l2-6 4 3 4-6 4 6 4-3 2 6v10H4V10z" />
+            <path d="M4 20h16" />
+          </svg>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Staff / Managers</p>
+          <p className="mt-2 text-4xl font-black tabular-nums text-emerald-400">
+            {isLoading ? '—' : staff.length}
+          </p>
+        </div>
+
+        {/* Note moy. équipe */}
+        <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/80 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg hover:shadow-black/25">
+          <svg
+            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-yellow-500 opacity-[0.05]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            aria-hidden
+          >
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Note moy. équipe</p>
+          <p className="mt-2 text-4xl font-black tabular-nums text-yellow-500">
+            {isLoading ? '—' : avgRating > 0 ? avgRating.toFixed(1) : 'N/A'}
+          </p>
+        </div>
       </div>
 
       {/* Prestige du Club */}
@@ -492,13 +551,13 @@ export default function MyTeam() {
 
       {/* ══════════ TAB: Effectif (Roster) ══════════ */}
       {activeTab === 'roster' && (
-        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-          <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+        <div className="overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/50 backdrop-blur-md">
+          <div className="flex items-center justify-between border-b border-gray-800/50 px-5 py-4">
             <div className="flex items-center gap-2">
-              <Star className="w-4 h-4 text-amber-400" />
+              <Star className="h-4 w-4 text-amber-400/90" />
               <h2 className="text-sm font-semibold text-white">Roster actuel</h2>
             </div>
-            <span className="text-xs text-slate-600 bg-white/5 px-2.5 py-1 rounded-full">
+            <span className="rounded-full border border-gray-800/80 bg-white/[0.04] px-2.5 py-1 text-xs text-gray-500">
               Saison 2025
             </span>
           </div>
@@ -506,28 +565,28 @@ export default function MyTeam() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/5">
+                <tr className="border-b border-gray-800/50">
                   {['Joueur (Pseudo EA)', 'Poste', 'Rôle', 'Matchs joués', 'Note Moy. (AMR)'].map((col) => (
                     <th
                       key={col}
-                      className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-600"
+                      className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
                     >
                       {col}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody>
                 {isLoading ? (
                   [...Array(3)].map((_, i) => <SkeletonRow key={i} />)
                 ) : allMembers.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-600">
+                    <td colSpan={5} className="px-5 py-12 text-center text-sm text-gray-500">
                       Aucun membre dans cette équipe.
                     </td>
                   </tr>
                 ) : (
-                  allMembers.map((member) => {
+                  allMembers.map((member, rowIndex) => {
                     const { user, club_role } = member;
                     const role = roleConfig[club_role];
                     const RoleIcon = role.icon;
@@ -537,44 +596,49 @@ export default function MyTeam() {
                     const matchesPlayed = user.stats?.matches_played ?? 0;
                     const avgRatingPlayer = user.stats?.average_rating ?? 0;
                     const pseudo = user.ea_persona_name ?? `Joueur #${user.id.slice(0, 6)}`;
+                    const isLast = rowIndex === allMembers.length - 1;
 
                     return (
                       <tr
                         key={user.id}
-                        className="group hover:bg-white/[0.03] transition-colors duration-150 cursor-pointer"
+                        className={`group transition-colors duration-200 hover:bg-white/[0.02] ${
+                          isLast ? '' : 'border-b border-gray-800/30'
+                        }`}
                       >
-                        <td className="px-6 py-4">
+                        <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0 group-hover:border-amber-400/30 transition-colors">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-800 to-gray-900 text-xs font-bold uppercase text-white shadow-inner">
                               {pseudo.charAt(0)}
                             </div>
-                            <div>
+                            <div className="min-w-0">
                               <Link
                                 to={`/dashboard/profile/${user.id}`}
-                                className="text-sm font-semibold text-white group-hover:text-amber-400 transition-colors hover:underline decoration-amber-400/40 underline-offset-2"
+                                className="text-sm font-semibold text-white transition-colors hover:text-amber-400/90 hover:underline decoration-amber-400/30 underline-offset-2"
                               >
                                 {pseudo}
                               </Link>
-                              <p className="text-xs text-slate-600">{user.nationality ?? '—'}</p>
+                              <p className="text-xs text-gray-600">{user.nationality ?? '—'}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border tracking-wide ${posColor}`}>
+                        <td className="px-5 py-4">
+                          <span className={`inline-flex items-center rounded-lg border px-2.5 py-1 text-xs font-bold tracking-wide ${posColor}`}>
                             {posLabel}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${role.className}`}>
-                            <RoleIcon className="w-3 h-3" />
+                        <td className="px-5 py-4">
+                          <span
+                            className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold ${role.badgeClass}`}
+                          >
+                            <RoleIcon className="h-3 w-3 shrink-0 opacity-90" />
                             {role.label}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-white tabular-nums">{matchesPlayed}</span>
-                          <span className="text-xs text-slate-600 ml-1">matchs</span>
+                        <td className="px-5 py-4">
+                          <span className="text-sm font-semibold tabular-nums text-gray-300">{matchesPlayed}</span>
+                          <span className="ml-1 text-xs text-gray-600">matchs</span>
                         </td>
-                        <td className="px-6 py-4 min-w-[160px]">
+                        <td className="min-w-[160px] px-5 py-4">
                           <RatingBar value={avgRatingPlayer} />
                         </td>
                       </tr>
@@ -585,11 +649,11 @@ export default function MyTeam() {
             </table>
           </div>
 
-          <div className="px-6 py-3 border-t border-white/5 flex items-center justify-between">
-            <span className="text-xs text-slate-600">
+          <div className="flex items-center justify-between border-t border-gray-800/50 px-5 py-3">
+            <span className="text-xs text-gray-600">
               {isLoading ? '…' : `${allMembers.length} membre${allMembers.length > 1 ? 's' : ''} au total`}
             </span>
-            <span className="text-xs text-slate-700">Données live — v1.0</span>
+            <span className="text-xs text-gray-700">Données live — v1.0</span>
           </div>
         </div>
       )}

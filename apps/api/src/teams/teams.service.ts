@@ -1,5 +1,6 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ClubsService } from '../clubs/clubs.service';
 import { Prisma } from '@omjep/database';
 
 export type TeamMemberStatSnapshot = {
@@ -47,22 +48,21 @@ const TEAM_WITH_ROSTER = {
       },
     },
   },
-} satisfies Prisma.TeamInclude;
+} satisfies Prisma.ClubInclude;
 
 @Injectable()
 export class TeamsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly clubsService: ClubsService,
+  ) {}
 
   async findAll() {
-    return this.prisma.team.findMany({
-      include: {
-        _count: { select: { members: true } },
-      },
-    });
+    return this.clubsService.findAll();
   }
 
   async findOne(id: string) {
-    const team = await this.prisma.team.findUnique({
+    const team = await this.prisma.club.findUnique({
       where: { id },
       include: {
         members: {
@@ -84,14 +84,14 @@ export class TeamsService {
     return team;
   }
 
-  async create(data: Prisma.TeamCreateInput) {
-    return this.prisma.team.create({ data });
+  async create(data: Prisma.ClubCreateInput) {
+    return this.prisma.club.create({ data });
   }
 
-  async update(id: string, data: Prisma.TeamUpdateInput) {
+  async update(id: string, data: Prisma.ClubUpdateInput) {
     await this.findOne(id);
     try {
-      return await this.prisma.team.update({ where: { id }, data });
+      return await this.prisma.club.update({ where: { id }, data });
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -107,7 +107,7 @@ export class TeamsService {
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.team.delete({ where: { id } });
+    return this.prisma.club.delete({ where: { id } });
   }
 
   async addMember(teamId: string, userId: string, clubRole: Prisma.TeamMemberCreateInput['club_role']) {
@@ -147,7 +147,7 @@ export class TeamsService {
    * Agrège buts, passes et AMR sur tout le roster, et désigne le meilleur buteur et le MVP (meilleure note moyenne).
    */
   async getTeamStats(teamId: string): Promise<TeamStatsOverview> {
-    const team = await this.prisma.team.findUnique({
+    const team = await this.prisma.club.findUnique({
       where: { id: teamId },
       select: { id: true },
     });
@@ -228,7 +228,7 @@ export class TeamsService {
    * décroissante, avec buts et passes cumulés du roster.
    */
   async getLadder(): Promise<LadderEntry[]> {
-    const teams = await this.prisma.team.findMany({
+    const teams = await this.prisma.club.findMany({
       include: {
         members: {
           include: {

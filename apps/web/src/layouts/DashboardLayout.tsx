@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
   LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings, Wallet, Repeat, Scale, Gamepad2,
+  Building2,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
@@ -10,7 +11,15 @@ import GoldConfetti from '@/components/GoldConfetti';
 import { useTransferNotifications } from '@/hooks/useTransferNotifications';
 import api from '@/lib/api';
 
-const sidebarLinks = [
+type SidebarLink = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+  managerOnly?: boolean;
+};
+
+const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard, exact: true },
   { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
   { to: '/dashboard/ladder', label: 'Classement', icon: Trophy },
@@ -20,6 +29,7 @@ const sidebarLinks = [
   { to: '/dashboard/transfers', label: 'Mercato Live', icon: Repeat },
   { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
   { to: '/dashboard/settings', label: 'Paramètres', icon: Settings },
+  { to: '/dashboard/manager/club', label: 'Créer mon club', icon: Building2, managerOnly: true },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -32,6 +42,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/transfers': 'Mercato Live',
   '/dashboard/profile': 'Mon Profil',
   '/dashboard/settings': 'Paramètres',
+  '/dashboard/manager/club': 'Créer mon club',
 };
 
 function formatBudget(amount: number): string {
@@ -113,7 +124,9 @@ export default function DashboardLayout() {
 
       {/* Nav */}
       <nav className="flex-1 px-4 py-4 space-y-1">
-        {sidebarLinks.map(({ to, label, icon: Icon, exact }) => {
+        {sidebarLinks
+          .filter((link) => !link.managerOnly || user?.role === 'MANAGER')
+          .map(({ to, label, icon: Icon, exact }) => {
           const active = isActive(to, exact);
           return (
             <Link

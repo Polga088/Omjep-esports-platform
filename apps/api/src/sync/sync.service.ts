@@ -47,7 +47,7 @@ export class SyncService {
     this.logger.log('⚡ [SyncService] Starting club stats synchronisation…');
 
     // ── Step 1 : Fetch all teams that are linked to an EA club ──────
-    const teams = await this.prisma.team.findMany({
+    const teams = await this.prisma.club.findMany({
       where: { ea_club_id: { not: null } },
     });
 

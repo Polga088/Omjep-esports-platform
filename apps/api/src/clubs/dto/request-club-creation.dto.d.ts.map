@@ -1,0 +1,1 @@
+{"version":3,"file":"request-club-creation.dto.d.ts","sourceRoot":"","sources":["request-club-creation.dto.ts"],"names":[],"mappings":"AAOA,OAAO,EAAE,QAAQ,EAAE,MAAM,iBAAiB,CAAC;AAE3C,qBAAa,sBAAsB;IAIjC,IAAI,EAAG,MAAM,CAAC;IAKd,QAAQ,CAAC,EAAE,MAAM,CAAC;IAKlB,YAAY,CAAC,EAAE,MAAM,CAAC;IAKtB,UAAU,CAAC,EAAE,MAAM,CAAC;IAIpB,QAAQ,CAAC,EAAE,QAAQ,CAAC;CACrB"}

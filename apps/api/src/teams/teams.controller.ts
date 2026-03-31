@@ -46,12 +46,12 @@ export class TeamsController {
   }
 
   @Post()
-  create(@Body() body: Prisma.TeamCreateInput) {
+  create(@Body() body: Prisma.ClubCreateInput) {
     return this.teamsService.create(body);
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() body: Prisma.TeamUpdateInput) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() body: Prisma.ClubUpdateInput) {
     return this.teamsService.update(id, body);
   }
 

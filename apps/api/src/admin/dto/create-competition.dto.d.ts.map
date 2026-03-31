@@ -1,0 +1,1 @@
+{"version":3,"file":"create-competition.dto.d.ts","sourceRoot":"","sources":["create-competition.dto.ts"],"names":[],"mappings":"AAEA,qBAAa,oBAAoB;IAG/B,IAAI,EAAG,MAAM,CAAC;IAGd,IAAI,EAAG,QAAQ,GAAG,KAAK,CAAC;IAIxB,UAAU,CAAC,EAAE,MAAM,CAAC;IAIpB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAKlB,QAAQ,CAAC,EAAE,MAAM,EAAE,CAAC;CACrB"}

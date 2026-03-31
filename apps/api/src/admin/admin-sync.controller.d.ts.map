@@ -1,0 +1,1 @@
+{"version":3,"file":"admin-sync.controller.d.ts","sourceRoot":"","sources":["admin-sync.controller.ts"],"names":[],"mappings":"AAYA,OAAO,EAAE,eAAe,EAAE,MAAM,0BAA0B,CAAC;AAE3D,qBAGa,mBAAmB;IAClB,OAAO,CAAC,QAAQ,CAAC,eAAe;gBAAf,eAAe,EAAE,eAAe;IAGvD,SAAS,CAAkC,OAAO,EAAE,MAAM;;;;;;;;;;;;;IAwB1D,WAAW,CAAc,GAAG,EAAE,MAAM;;;;;;;;;;;CA4B3C"}

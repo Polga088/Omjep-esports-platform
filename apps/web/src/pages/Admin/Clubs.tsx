@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Shield, Loader2, Search, AlertCircle } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Shield, Loader2, Search, AlertCircle, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import api from '@/lib/api';
 
 interface TeamRow {
@@ -16,23 +17,43 @@ export default function AdminClubs() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const loadTeams = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await api.get('/teams');
+      const list = data?.data ?? data;
+      setTeams(Array.isArray(list) ? list : []);
+    } catch {
+      setError('Impossible de charger les clubs.');
+      setTeams([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const { data } = await api.get('/teams');
-        const list = data?.data ?? data;
-        setTeams(Array.isArray(list) ? list : []);
-      } catch {
-        setError('Impossible de charger les clubs.');
-        setTeams([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+    loadTeams();
+  }, [loadTeams]);
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!window.confirm('Êtes-vous sûr ?')) return;
+    setDeletingId(id);
+    try {
+      await api.delete(`/clubs/${id}`);
+      toast.success(`Club « ${name} » supprimé.`);
+      await loadTeams();
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string | string[] } } })?.response?.data
+        ?.message;
+      const text = Array.isArray(msg) ? msg.join(', ') : msg;
+      toast.error(typeof text === 'string' ? text : 'Suppression impossible.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -82,7 +103,7 @@ export default function AdminClubs() {
       </div>
 
       <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
-        <table className="w-full text-sm min-w-[560px]">
+        <table className="w-full text-sm min-w-[640px]">
           <thead>
             <tr className="border-b border-white/[0.06] bg-white/[0.02]">
               <th className="text-left px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
@@ -97,12 +118,15 @@ export default function AdminClubs() {
               <th className="text-left px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Créé le
               </th>
+              <th className="text-right px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 w-24">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-16 text-center text-slate-500">
+                <td colSpan={5} className="px-4 py-16 text-center text-slate-500">
                   Aucun club trouvé.
                 </td>
               </tr>
@@ -127,6 +151,22 @@ export default function AdminClubs() {
                   </td>
                   <td className="px-3 py-3 text-slate-500 text-xs tabular-nums">
                     {t.created_at ? new Date(t.created_at).toLocaleDateString('fr-FR') : '—'}
+                  </td>
+                  <td className="px-3 py-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(t.id, t.name)}
+                      disabled={deletingId === t.id}
+                      className="inline-flex items-center justify-center p-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-400/40 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+                      title="Supprimer le club"
+                      aria-label={`Supprimer ${t.name}`}
+                    >
+                      {deletingId === t.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </button>
                   </td>
                 </tr>
               ))

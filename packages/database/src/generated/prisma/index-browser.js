@@ -137,17 +137,20 @@ exports.Prisma.UserScalarFieldEnum = {
   level: 'level'
 };
 
-exports.Prisma.TeamScalarFieldEnum = {
+exports.Prisma.ClubScalarFieldEnum = {
   id: 'id',
   proclubs_url: 'proclubs_url',
   name: 'name',
+  description: 'description',
   logo_url: 'logo_url',
   created_at: 'created_at',
   ea_club_id: 'ea_club_id',
   platform: 'platform',
   budget: 'budget',
   xp: 'xp',
-  prestige_level: 'prestige_level'
+  prestige_level: 'prestige_level',
+  validation_status: 'validation_status',
+  manager_id: 'manager_id'
 };
 
 exports.Prisma.TeamMemberScalarFieldEnum = {
@@ -326,6 +329,12 @@ exports.Platform = exports.$Enums.Platform = {
   PC: 'PC'
 };
 
+exports.ValidationStatus = exports.$Enums.ValidationStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.ClubRole = exports.$Enums.ClubRole = {
   FOUNDER: 'FOUNDER',
   MANAGER: 'MANAGER',
@@ -379,7 +388,7 @@ exports.TransactionType = exports.$Enums.TransactionType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Team: 'Team',
+  Club: 'Club',
   TeamMember: 'TeamMember',
   PlayerStats: 'PlayerStats',
   Competition: 'Competition',

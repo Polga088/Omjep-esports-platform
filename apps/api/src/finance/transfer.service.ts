@@ -48,7 +48,7 @@ export class TransferService {
       throw new BadRequestException('Ce joueur est déjà dans votre équipe.');
     }
 
-    const buyingTeam = await this.prisma.team.findUnique({
+    const buyingTeam = await this.prisma.club.findUnique({
       where: { id: buyingTeamId },
     });
 
@@ -65,11 +65,11 @@ export class TransferService {
     const sellingTeamId = contract.team_id;
 
     await this.prisma.$transaction([
-      this.prisma.team.update({
+      this.prisma.club.update({
         where: { id: buyingTeamId },
         data: { budget: { decrement: contract.release_clause } },
       }),
-      this.prisma.team.update({
+      this.prisma.club.update({
         where: { id: sellingTeamId },
         data: { budget: { increment: contract.release_clause } },
       }),

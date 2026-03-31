@@ -8,6 +8,7 @@ import {
 
 const POSITIONS = ['GK', 'DC', 'LAT', 'RAT', 'MDC', 'MOC', 'MG', 'MD', 'BU', 'ATT'] as const;
 const PLATFORMS = ['CROSSPLAY', 'PS5', 'XBOX', 'PC'] as const;
+const ROLES = ['PLAYER', 'MANAGER', 'ADMIN'] as const; // <-- On définit les rôles autorisés
 
 export class RegisterDto {
   @IsEmail()
@@ -20,6 +21,10 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   ea_persona_name?: string;
+
+  @IsOptional() // <-- AJOUTÉ : Pour autoriser le choix "Manager" du frontend
+  @IsIn(ROLES)
+  role?: (typeof ROLES)[number];
 
   @IsOptional()
   @IsString()

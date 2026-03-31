@@ -48,7 +48,7 @@ export class TransferOfferService {
     }
 
     // 3. Vérifier le budget de l'acheteur
-    const buyingTeam = await this.prisma.team.findUnique({
+    const buyingTeam = await this.prisma.club.findUnique({
       where: { id: dto.from_team_id },
     });
 
@@ -158,7 +158,7 @@ export class TransferOfferService {
 
     // ── ACCEPTED — Transaction atomique ──────────────────────
     // Re-vérifier le budget de l'acheteur (il a pu changer depuis l'offre)
-    const freshBuyingTeam = await this.prisma.team.findUnique({
+    const freshBuyingTeam = await this.prisma.club.findUnique({
       where: { id: offer.from_team_id },
     });
 
@@ -185,12 +185,12 @@ export class TransferOfferService {
       });
 
       // 2. Transférer l'argent
-      await tx.team.update({
+      await tx.club.update({
         where: { id: offer.from_team_id },
         data: { budget: { decrement: offer.amount } },
       });
 
-      await tx.team.update({
+      await tx.club.update({
         where: { id: offer.to_team_id },
         data: { budget: { increment: offer.amount } },
       });

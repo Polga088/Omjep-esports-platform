@@ -3,7 +3,7 @@
     "target": "ES2022",
     "lib": ["ES2022"],
     "module": "commonjs",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -17,5 +17,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["scripts/tsconfig-root-anchor.ts"]
 }

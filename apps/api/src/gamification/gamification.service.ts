@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { LevelingService } from '../leveling/leveling.service';
 
 export interface Achievement {
   id: string;
@@ -107,10 +106,7 @@ const ACHIEVEMENT_DEFINITIONS = [
 
 @Injectable()
 export class GamificationService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly leveling: LevelingService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   private xpForLevel(level: number): number {
     return (level - 1) ** 2 * 100;

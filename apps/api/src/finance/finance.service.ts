@@ -24,7 +24,7 @@ export class FinanceService {
     const amount = MATCH_REWARDS[result];
 
     const [team] = await this.prisma.$transaction([
-      this.prisma.team.update({
+      this.prisma.club.update({
         where: { id: teamId },
         data: { budget: { increment: amount } },
       }),
@@ -57,7 +57,7 @@ export class FinanceService {
 
     for (const [teamId, totalWages] of wagesByTeam) {
       await this.prisma.$transaction([
-        this.prisma.team.update({
+        this.prisma.club.update({
           where: { id: teamId },
           data: { budget: { decrement: totalWages } },
         }),
@@ -115,7 +115,7 @@ export class FinanceService {
   ) {
     await this.assertStaffOrAdminForTeam(actorUserId, actorRole, teamId);
 
-    const team = await this.prisma.team.findUnique({
+    const team = await this.prisma.club.findUnique({
       where: { id: teamId },
       select: { id: true, name: true, budget: true },
     });
