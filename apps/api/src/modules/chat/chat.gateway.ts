@@ -80,6 +80,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       return;
     }
 
+    await client.join(`user:${userId}`);
+
+    this.logger.log(`User ${userId} joined room user:${userId}`);
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { role: true },
@@ -88,6 +92,17 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.onlineManagers.add(userId);
       this.server.emit('presence:managers', { onlineIds: [...this.onlineManagers] });
     }
+  }
+
+  /**
+   * Mercato / transferts : pastille temps réel (ex. nouvelle offre pour le joueur).
+   * Événement `transfer:mercato` — payload `{ type: 'TRANSFER_OFFER_RECEIVED', offer_id?: string }`.
+   */
+  emitTransferMercatoAlert(
+    userId: string,
+    payload: { type: string; offer_id?: string },
+  ) {
+    this.server.to(`user:${userId}`).emit('transfer:mercato', payload);
   }
 
   handleDisconnect(client: Socket) {

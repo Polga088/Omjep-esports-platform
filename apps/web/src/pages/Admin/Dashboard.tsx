@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState, type ComponentType } from 'react';
+import { useEffect, useMemo, useState, type ComponentType, type SVGProps } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Crown, Trophy, Swords, Users, Shield, Scale, Loader2, ArrowRight,
-  AlertTriangle,
+  AlertTriangle, ShoppingBag,
 } from 'lucide-react';
 import api from '@/lib/api';
 
@@ -206,6 +206,7 @@ export default function AdminDashboard() {
           <QuickLink to="/admin/matches" label="Gérer les matchs" />
           <QuickLink to="/admin/users" label="Comptes & rôles" />
           <QuickLink to="/admin/clubs" label="Clubs" />
+          <QuickLink to="/admin/store" label="Gestion boutique (Jepy / VIP)" icon={ShoppingBag} />
           <QuickLink to="/moderator/matches" label="Espace commissaire — scores" />
         </div>
       </div>
@@ -263,12 +264,21 @@ function StatCard({
   );
 }
 
-function QuickLink({ to, label }: { to: string; label: string }) {
+function QuickLink({
+  to,
+  label,
+  icon: Icon,
+}: {
+  to: string;
+  label: string;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
+}) {
   return (
     <Link
       to={to}
       className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-white/[0.08] text-slate-400 hover:text-amber-300 hover:border-amber-400/25 hover:bg-amber-400/5 transition-colors"
     >
+      {Icon ? <Icon className="w-3.5 h-3.5 opacity-70 shrink-0" /> : null}
       {label}
       <ArrowRight className="w-3 h-3 opacity-50" />
     </Link>

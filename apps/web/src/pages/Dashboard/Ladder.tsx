@@ -4,7 +4,7 @@ import api from '@/lib/api';
 
 interface LadderTeam {
   id: string;
-  name: string;
+  name?: string | null;
   logo_url: string | null;
   memberCount: number;
   averageRating: number;
@@ -36,14 +36,15 @@ function RankBadge({ rank }: { rank: number }) {
 }
 
 function RatingPill({ value }: { value: number }) {
+  const v = Number.isFinite(value) ? value : 0;
   const color =
-    value >= 8   ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' :
-    value >= 6.5 ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' :
-                   'text-amber-400 bg-amber-500/10 border-amber-500/20';
+    v >= 8   ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' :
+    v >= 6.5 ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' :
+               'text-amber-400 bg-amber-500/10 border-amber-500/20';
 
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border tabular-nums ${color}`}>
-      {value > 0 ? value.toFixed(1) : 'N/A'}
+      {v > 0 ? v.toFixed(1) : 'N/A'}
     </span>
   );
 }
@@ -68,7 +69,13 @@ export default function Ladder() {
         if (cancelled) return;
 
         if (ladderRes.status === 'fulfilled') {
-          setTeams(ladderRes.value.data);
+          const raw = ladderRes.value.data ?? [];
+          setTeams(
+            raw.map((t) => ({
+              ...t,
+              name: typeof t?.name === 'string' && t.name.length > 0 ? t.name : 'Sans nom',
+            })),
+          );
         } else {
           setError('Impossible de charger le classement.');
         }
@@ -88,7 +95,7 @@ export default function Ladder() {
   const filtered = useMemo(() => {
     if (!search.trim()) return teams;
     const q = search.toLowerCase();
-    return teams.filter((t) => t.name.toLowerCase().includes(q));
+    return teams.filter((t) => (t.name ?? '').toLowerCase().includes(q));
   }, [teams, search]);
 
   return (
@@ -201,12 +208,12 @@ export default function Ladder() {
                           {team.logo_url ? (
                             <img
                               src={team.logo_url}
-                              alt={team.name}
+                              alt={team.name ?? 'Club'}
                               className="w-9 h-9 rounded-xl object-cover border border-white/10 shrink-0"
                             />
                           ) : (
                             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0">
-                              {team.name.charAt(0)}
+                              {(team.name ?? '?').charAt(0) || '?'}
                             </div>
                           )}
                           <div>
@@ -215,7 +222,7 @@ export default function Ladder() {
                                 ? 'text-indigo-300'
                                 : 'text-white group-hover:text-amber-400'
                             }`}>
-                              {team.name}
+                              {team.name ?? '—'}
                             </p>
                             {isMyTeam && (
                               <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
@@ -231,20 +238,20 @@ export default function Ladder() {
                         <div className="flex items-center gap-1.5">
                           <Users className="w-3.5 h-3.5 text-slate-600" />
                           <span className="text-sm font-bold text-white tabular-nums">
-                            {team.memberCount}
+                            {team.memberCount ?? 0}
                           </span>
                         </div>
                       </td>
 
                       {/* Average Rating */}
                       <td className="px-6 py-4">
-                        <RatingPill value={team.averageRating} />
+                        <RatingPill value={team.averageRating ?? 0} />
                       </td>
 
                       {/* Goals */}
                       <td className="px-6 py-4">
                         <span className="text-sm font-bold text-white tabular-nums">
-                          {team.totalGoals}
+                          {team.totalGoals ?? 0}
                         </span>
                       </td>
                     </tr>

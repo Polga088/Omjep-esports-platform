@@ -12,6 +12,7 @@ import api from '../../lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import InvitePlayerModal from '@/components/InvitePlayerModal';
 import { xpProgress } from '@/lib/leveling';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 // ─── Error Boundary ──────────────────────────────────────────────────────────
 
@@ -312,13 +313,6 @@ const txTypeConfig: Record<TransactionType, { label: string; icon: React.Element
   TRANSFER:     { label: 'Transfert',  icon: Repeat, color: 'text-blue-400' },
   WAGE:         { label: 'Salaire',    icon: Banknote, color: 'text-amber-400' },
 };
-
-function formatMoney(v: number): string {
-  const abs = Math.abs(v);
-  if (abs >= 1_000_000) return `${(v / 1_000_000).toFixed(2)}M`;
-  if (abs >= 1_000) return `${(v / 1_000).toFixed(0)}K`;
-  return v.toFixed(0);
-}
 
 // ─── Page principale ─────────────────────────────────────────────────────────
 
@@ -672,7 +666,7 @@ export default function MyTeam() {
                   </div>
                   <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Budget</span>
                 </div>
-                <span className="text-2xl font-black tabular-nums text-emerald-400">{formatMoney(finance?.budget ?? 0)} €</span>
+                <span className="text-2xl font-black tabular-nums text-emerald-400">{formatCurrency(finance?.budget ?? 0, 'OC')}</span>
               </div>
               <div className="rounded-xl bg-[#0D1221] border border-blue-500/15 p-5">
                 <div className="flex items-center gap-2 mb-2">
@@ -691,7 +685,7 @@ export default function MyTeam() {
                   <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Masse salariale</span>
                 </div>
                 <span className="text-2xl font-black tabular-nums text-amber-400">
-                  {formatMoney((finance?.contracts ?? []).reduce((s, c) => s + (c.salary ?? 0), 0))} €
+                  {formatCurrency((finance?.contracts ?? []).reduce((s, c) => s + (c.salary ?? 0), 0), 'OC')}
                   <span className="text-xs font-semibold text-slate-500 ml-1">/sem</span>
                 </span>
               </div>
@@ -746,7 +740,7 @@ export default function MyTeam() {
                               <ArrowDownRight className="w-3.5 h-3.5 text-red-400" />
                             )}
                             <span className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-                              {isPositive ? '+' : ''}{formatMoney(tx.amount)} €
+                              {isPositive ? '+' : ''}{formatCurrency(tx.amount, 'OC')}
                             </span>
                           </div>
                         </div>
@@ -794,10 +788,10 @@ export default function MyTeam() {
                                 </Link>
                               </td>
                               <td className="px-5 py-3.5">
-                                <span className="text-sm font-bold text-amber-400 tabular-nums">{formatMoney(c.salary)} €</span>
+                                <span className="text-sm font-bold text-amber-400 tabular-nums">{formatCurrency(c.salary ?? 0, 'OC')}</span>
                               </td>
                               <td className="px-5 py-3.5">
-                                <span className="text-sm font-bold text-blue-400 tabular-nums">{formatMoney(c.release_clause)} €</span>
+                                <span className="text-sm font-bold text-blue-400 tabular-nums">{formatCurrency(c.release_clause ?? 0, 'OC')}</span>
                               </td>
                               <td className="px-5 py-3.5">
                                 <span className={`text-xs font-semibold ${expired ? 'text-red-400' : 'text-slate-400'}`}>

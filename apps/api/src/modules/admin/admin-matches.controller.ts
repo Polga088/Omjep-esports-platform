@@ -259,7 +259,7 @@ export class AdminMatchesController {
   /**
    * Reprogramme un match DISPUTED (ou CANCELLED) → SCHEDULED.
    * - Remet les scores à null.
-   * - Enregistre la nouvelle date dans scheduled_at.
+   * - Enregistre la nouvelle date (champ Prisma `startTime`, colonne `scheduled_at`).
    * - Notifie les managers des deux clubs.
    */
   @Patch(':id/reschedule')
@@ -298,7 +298,7 @@ export class AdminMatchesController {
         home_score: null,
         away_score: null,
         played_at: null,
-        scheduled_at: scheduledDate,
+        startTime: scheduledDate,
       },
       include: MATCH_INCLUDE,
     });

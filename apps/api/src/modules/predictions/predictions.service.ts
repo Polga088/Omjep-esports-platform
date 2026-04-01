@@ -8,24 +8,28 @@ import { Prisma, type Match } from '@omjep/database';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { CreatePredictionDto } from './dto/create-prediction.dto';
 
-/** Gain en cas de score exact : mise × 3 (crédit total en JEPY). */
+/** Gain en cas de score exact : mise × 3 (crédit total en Jepy). */
 const WIN_MULTIPLIER = 3;
 
 @Injectable()
 export class PredictionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** Matchs ouverts aux paris : SCHEDULED, sans score, et pas encore commencés (played_at futur ou null). */
+  /**
+   * Matchs ouverts aux paris : visibles, non annulés/supprimés, sans score,
+   * pas encore joués (played_at futur ou null). Tri par heure de coup d’envoi.
+   */
   async listUpcomingMatches() {
     const now = new Date();
     return this.prisma.match.findMany({
       where: {
-        status: 'SCHEDULED',
+        isVisible: true,
+        status: { notIn: ['CANCELLED', 'DELETED'] },
         home_score: null,
         away_score: null,
         OR: [{ played_at: null }, { played_at: { gt: now } }],
       },
-      orderBy: [{ played_at: { sort: 'asc', nulls: 'first' } }, { id: 'asc' }],
+      orderBy: [{ startTime: { sort: 'asc', nulls: 'last' } }, { id: 'asc' }],
       include: {
         competition: { select: { id: true, name: true, type: true } },
         homeTeam: { select: { id: true, name: true, logo_url: true } },
@@ -59,6 +63,14 @@ export class PredictionsService {
         throw new NotFoundException('Match introuvable.');
       }
 
+      if (match.status === 'CANCELLED' || match.status === 'DELETED') {
+        throw new BadRequestException('Ce match ne prend plus de pronostics.');
+      }
+      if (!match.isVisible) {
+        throw new BadRequestException(
+          'Ce match n’est pas ouvert aux pronostics.',
+        );
+      }
       if (match.status !== 'SCHEDULED') {
         throw new BadRequestException(
           'Les paris ne sont plus ouverts pour ce match.',
@@ -81,7 +93,7 @@ export class PredictionsService {
         data: { jepyCoins: { decrement: dto.bet_amount } },
       });
       if (debited.count === 0) {
-        throw new BadRequestException('Solde JEPY insuffisant.');
+        throw new BadRequestException('Solde Jepy insuffisant.');
       }
 
       try {

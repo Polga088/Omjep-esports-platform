@@ -1,6 +1,9 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import { useChatSocket } from '@/features/chat/useChatSocket';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface Notification {
   id: string;
@@ -16,12 +19,26 @@ interface Notification {
 
 const POLL_INTERVAL = 15_000;
 
+const TRANSFER_TYPES = [
+  'TRANSFER_OFFER_RECEIVED',
+  'TRANSFER_OFFER_ACCEPTED',
+  'TRANSFER_OFFER_REJECTED',
+  'PLAYER_TRANSFERRED',
+  'TRANSFER_COUNTER',
+  'TRANSFER_NEGOTIATION',
+] as const;
+
 export function useTransferNotifications() {
+  const location = useLocation();
+  const userId = useAuthStore((s) => s.user?.id ?? '');
+  const { socket } = useChatSocket(userId);
+
   const [showConfetti, setShowConfetti] = useState(false);
+  const [mercatoLiveBadge, setMercatoLiveBadge] = useState(false);
   const lastSeenRef = useRef<string | null>(null);
   const initialLoadRef = useRef(true);
 
-  const poll = useCallback(async () => {
+  const pollNotifications = useCallback(async () => {
     try {
       const { data } = await api.get<Notification[]>('/notifications');
 
@@ -29,14 +46,7 @@ export function useTransferNotifications() {
         (n) =>
           !n.is_read &&
           n.metadata?.type &&
-          [
-            'TRANSFER_OFFER_RECEIVED',
-            'TRANSFER_OFFER_ACCEPTED',
-            'TRANSFER_OFFER_REJECTED',
-            'PLAYER_TRANSFERRED',
-            'TRANSFER_COUNTER',
-            'TRANSFER_NEGOTIATION',
-          ].includes(n.metadata.type),
+          TRANSFER_TYPES.includes(n.metadata.type as (typeof TRANSFER_TYPES)[number]),
       );
 
       if (transferNotifs.length === 0) return;
@@ -76,11 +86,36 @@ export function useTransferNotifications() {
     }
   }, []);
 
+  /** Socket temps réel : nouvelle offre mercato → pastille + re-fetch offres + poll notifs */
   useEffect(() => {
-    poll();
-    const interval = setInterval(poll, POLL_INTERVAL);
-    return () => clearInterval(interval);
-  }, [poll]);
+    if (!socket) return;
 
-  return { showConfetti };
+    const onMercato = (payload: { type?: string; offer_id?: string }) => {
+      if (payload?.type !== 'TRANSFER_OFFER_RECEIVED') return;
+      setMercatoLiveBadge(true);
+      void pollNotifications();
+      window.dispatchEvent(
+        new CustomEvent('omjep:transfers-refresh', { detail: { offerId: payload.offer_id } }),
+      );
+    };
+
+    socket.on('transfer:mercato', onMercato);
+    return () => {
+      socket.off('transfer:mercato', onMercato);
+    };
+  }, [socket, pollNotifications]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/dashboard/transfers')) {
+      setMercatoLiveBadge(false);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    void pollNotifications();
+    const interval = setInterval(() => void pollNotifications(), POLL_INTERVAL);
+    return () => clearInterval(interval);
+  }, [pollNotifications]);
+
+  return { showConfetti, mercatoLiveBadge };
 }

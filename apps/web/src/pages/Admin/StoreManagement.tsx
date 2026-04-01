@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 type StoreCategory = 'BANNER' | 'AVATAR_FRAME' | 'BADGE';
 
@@ -138,7 +139,7 @@ export default function StoreManagement() {
   const submitItem = async (mode: 'create' | 'edit') => {
     const price = Number.parseInt(formPrice, 10);
     if (!Number.isFinite(price) || price < 0) {
-      toast.error('Prix JEPY invalide.');
+      toast.error('Prix Jepy invalide.');
       return;
     }
     setSavingItem(true);
@@ -197,7 +198,7 @@ export default function StoreManagement() {
     if (!ed) return;
     const price = Number.parseInt(ed.price, 10);
     if (!Number.isFinite(price) || price < 0) {
-      toast.error('Prix JEPY invalide.');
+      toast.error('Prix Jepy invalide.');
       return;
     }
     let features: unknown;
@@ -282,10 +283,10 @@ export default function StoreManagement() {
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-wider text-slate-500">
-                Revenu théorique (JEPY)
+                Revenu théorique (Jepy)
               </p>
               <p className="text-2xl font-black tabular-nums text-cyan-100">
-                {(stats?.theoreticalRevenueJepy ?? 0).toLocaleString('fr-FR')}
+                {formatCurrency(stats?.theoreticalRevenueJepy ?? 0, 'Jepy')}
               </p>
               <p className="text-[10px] text-slate-600 mt-0.5">
                 Cosmétiques + lignes d’abonnements (estimation)
@@ -347,7 +348,7 @@ export default function StoreManagement() {
               <tr className="border-b border-white/[0.06] text-[10px] uppercase tracking-wider text-slate-500">
                 <th className="px-5 py-3 font-semibold">Article</th>
                 <th className="px-5 py-3 font-semibold">Catégorie</th>
-                <th className="px-5 py-3 font-semibold">Prix JEPY</th>
+                <th className="px-5 py-3 font-semibold">Prix (Jepy)</th>
                 <th className="px-5 py-3 font-semibold">Disponible</th>
                 <th className="px-5 py-3 font-semibold text-right">Actions</th>
               </tr>
@@ -363,7 +364,7 @@ export default function StoreManagement() {
                     <p className="text-xs text-slate-500 line-clamp-1 max-w-[240px]">{row.description}</p>
                   </td>
                   <td className="px-5 py-3 text-xs">{CATEGORY_LABEL[row.category]}</td>
-                  <td className="px-5 py-3 tabular-nums">{row.priceJepy}</td>
+                  <td className="px-5 py-3 tabular-nums">{formatCurrency(row.priceJepy, 'Jepy')}</td>
                   <td className="px-5 py-3">
                     <button
                       type="button"
@@ -422,10 +423,13 @@ export default function StoreManagement() {
                       {plan.code}
                     </span>
                     <h3 className="text-lg font-bold text-white">{plan.name}</h3>
+                    <p className="text-xs text-slate-500 tabular-nums mt-0.5">
+                      Prix catalogue : {formatCurrency(plan.priceJepy, 'Jepy')}
+                    </p>
                   </div>
                   <div className="flex flex-wrap items-end gap-3">
                     <label className="block">
-                      <span className="text-[10px] uppercase text-slate-500">Prix JEPY</span>
+                      <span className="text-[10px] uppercase text-slate-500">Prix (Jepy)</span>
                       <input
                         type="number"
                         min={0}
@@ -529,7 +533,7 @@ export default function StoreManagement() {
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <label className="block text-sm">
-                  <span className="text-slate-400">Prix JEPY</span>
+                  <span className="text-slate-400">Prix (Jepy)</span>
                   <input
                     type="number"
                     min={0}

@@ -139,7 +139,10 @@ model Match {
   away_score     Int?
   status         MatchStatus        @default(SCHEDULED)
   played_at      DateTime?
-  scheduled_at   DateTime?
+  /// Heure de coup d’envoi (colonne DB `scheduled_at`). Tri pronostics.
+  startTime      DateTime?          @map("scheduled_at")
+  /// Masque les matchs « fantômes » / brouillons côté pronostics (liste publique).
+  isVisible      Boolean            @default(true)
   competition_id String?            @db.Uuid
   round          String?
   events         MatchEvent[]
@@ -357,6 +360,7 @@ enum MatchStatus {
   DISPUTED
   PLAYED
   CANCELLED
+  DELETED
 }
 
 enum CompetitionType {

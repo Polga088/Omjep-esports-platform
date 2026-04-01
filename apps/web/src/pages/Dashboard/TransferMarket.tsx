@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 import GoldConfetti from '@/components/GoldConfetti';
 import { useAuthStore } from '@/store/useAuthStore';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 interface TeamInfo {
   id: string;
@@ -56,12 +57,6 @@ interface FreeAgent {
 
 type MainTab = 'club' | 'player' | 'freeAgents';
 type OffersTab = 'sent' | 'received';
-
-function formatOmjep(v: number): string {
-  if (Math.abs(v) >= 1_000_000) return `${(v / 1_000_000).toFixed(2)}M`;
-  if (Math.abs(v) >= 1_000) return `${(v / 1_000).toFixed(0)}K`;
-  return v.toLocaleString('fr-FR');
-}
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -141,6 +136,14 @@ export default function TransferMarket() {
     fetchData();
   }, [fetchData]);
 
+  useEffect(() => {
+    const onRefresh = () => {
+      void fetchData();
+    };
+    window.addEventListener('omjep:transfers-refresh', onRefresh);
+    return () => window.removeEventListener('omjep:transfers-refresh', onRefresh);
+  }, [fetchData]);
+
   const sentOffers = offers.filter((o) => myTeam && o.from_team_id === myTeam.id);
   const receivedOffers = offers.filter((o) => myTeam && o.to_team_id === myTeam.id);
   const currentClubList = activeTab === 'sent' ? sentOffers : receivedOffers;
@@ -152,7 +155,11 @@ export default function TransferMarket() {
   const playerRespond = async (offerId: string, body: Record<string, unknown>) => {
     setRespondingId(offerId);
     try {
-      await api.patch(`/transfers/offer/${offerId}/player-respond`, body);
+      if (body.action === 'ACCEPT') {
+        await api.post(`/transfers/offer/${offerId}/accept`);
+      } else {
+        await api.patch(`/transfers/offer/${offerId}/player-respond`, body);
+      }
       toast.success('Réponse envoyée.');
       await fetchData();
     } catch (err: unknown) {
@@ -191,15 +198,15 @@ export default function TransferMarket() {
     <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
       <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
         <span className="text-slate-500 block">Frais transfert</span>
-        <span className="font-bold text-[#FFD700] tabular-nums">{formatOmjep(offer.transfer_fee)} OC</span>
+        <span className="font-bold text-[#FFD700] tabular-nums">{formatCurrency(offer.transfer_fee, 'OC')}</span>
       </div>
       <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
         <span className="text-slate-500 block">Salaire / an</span>
-        <span className="font-bold text-emerald-400/90 tabular-nums">{formatOmjep(offer.offered_salary)} OC</span>
+        <span className="font-bold text-emerald-400/90 tabular-nums">{formatCurrency(offer.offered_salary, 'OC')}</span>
       </div>
       <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
         <span className="text-slate-500 block">Clause lib.</span>
-        <span className="font-bold text-sky-400/90 tabular-nums">{formatOmjep(offer.offered_clause)} OC</span>
+        <span className="font-bold text-sky-400/90 tabular-nums">{formatCurrency(offer.offered_clause, 'OC')}</span>
       </div>
       <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
         <span className="text-slate-500 block">Durée</span>
@@ -434,9 +441,9 @@ export default function TransferMarket() {
             <ShieldCheck className="w-5 h-5 text-[#FFD700]" />
           </div>
           <div className="flex-1">
-            <p className="text-xs text-slate-500">Budget club — {myTeam.name}</p>
+            <p className="text-xs text-slate-500">Budget club — {myTeam.name ?? '—'}</p>
             <p className="text-lg font-black text-emerald-400 tabular-nums">
-              {formatOmjep(myTeam.budget)} OC
+              {formatCurrency(myTeam.budget ?? 0, 'OC')}
             </p>
           </div>
           <button
@@ -539,7 +546,7 @@ export default function TransferMarket() {
                           />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-[#FFA500]/10 border border-[#FFD700]/15 flex items-center justify-center text-lg font-bold text-[#FFD700]">
-                            {otherTeam.name.charAt(0)}
+                            {(otherTeam.name ?? '?').charAt(0) || '?'}
                           </div>
                         )}
                       </div>
@@ -558,9 +565,9 @@ export default function TransferMarket() {
                           )}
                         </div>
                         <p className="mt-2 text-sm text-white">
-                          <span className="font-semibold text-[#FFD700]">{offer.fromTeam.name}</span>
+                          <span className="font-semibold text-[#FFD700]">{offer.fromTeam.name ?? '—'}</span>
                           {' → '}
-                          <span className="text-slate-400">{offer.toTeam.name}</span>
+                          <span className="text-slate-400">{offer.toTeam.name ?? '—'}</span>
                           {' · '}
                           <Link
                             to={`/dashboard/profile/${offer.player_id}`}
@@ -605,7 +612,7 @@ export default function TransferMarket() {
                     <span className="text-[10px] text-slate-600">{timeAgo(offer.created_at)}</span>
                   </div>
                   <p className="mt-2 text-sm text-white">
-                    Proposition de <span className="font-bold text-[#FFD700]">{offer.fromTeam.name}</span>
+                    Proposition de <span className="font-bold text-[#FFD700]">{offer.fromTeam.name ?? '—'}</span>
                   </p>
                   {renderOfferTerms(offer)}
                   {renderPlayerActions(offer)}
@@ -655,14 +662,14 @@ export default function TransferMarket() {
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-lg font-bold text-emerald-400">
-                        {agent.name.charAt(0).toUpperCase()}
+                        {(agent.name ?? '?').charAt(0).toUpperCase() || '?'}
                       </div>
                       <div className="flex-1 min-w-0">
                         <Link
                           to={`/dashboard/profile/${agent.id}`}
                           className="font-semibold text-white hover:text-[#FFD700] truncate block"
                         >
-                          {agent.name}
+                          {agent.name ?? '—'}
                         </Link>
                         <span className="text-xs text-emerald-400">Agent libre · 0 OC</span>
                       </div>
@@ -674,19 +681,21 @@ export default function TransferMarket() {
                     <div className="mt-4 grid grid-cols-4 gap-2 text-[11px]">
                       <div className="text-center">
                         <span className="text-slate-500 block">Matchs</span>
-                        <span className="font-semibold text-white">{agent.stats.matches_played}</span>
+                        <span className="font-semibold text-white">{agent.stats?.matches_played ?? 0}</span>
                       </div>
                       <div className="text-center">
                         <span className="text-slate-500 block">Buts</span>
-                        <span className="font-semibold text-emerald-400">{agent.stats.goals}</span>
+                        <span className="font-semibold text-emerald-400">{agent.stats?.goals ?? 0}</span>
                       </div>
                       <div className="text-center">
                         <span className="text-slate-500 block">Passes</span>
-                        <span className="font-semibold text-sky-400">{agent.stats.assists}</span>
+                        <span className="font-semibold text-sky-400">{agent.stats?.assists ?? 0}</span>
                       </div>
                       <div className="text-center">
                         <span className="text-slate-500 block">Note</span>
-                        <span className="font-semibold text-[#FFD700]">{agent.stats.average_rating.toFixed(1)}</span>
+                        <span className="font-semibold text-[#FFD700]">
+                          {(agent.stats?.average_rating ?? 0).toFixed(1)}
+                        </span>
                       </div>
                     </div>
 

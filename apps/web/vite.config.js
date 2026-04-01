@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 export default defineConfig({
     plugins: [react()],
+    optimizeDeps: {
+        /** Évite les erreurs de pré-bundle sur le workspace `@omjep/shared` après changement d’exports. */
+        include: ['@omjep/shared'],
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),

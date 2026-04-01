@@ -181,7 +181,8 @@ export const MatchStatus: {
   FINISHED: 'FINISHED',
   DISPUTED: 'DISPUTED',
   PLAYED: 'PLAYED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  DELETED: 'DELETED'
 };
 
 export type MatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus]
@@ -11173,7 +11174,8 @@ export namespace Prisma {
     away_score: number | null
     status: $Enums.MatchStatus | null
     played_at: Date | null
-    scheduled_at: Date | null
+    startTime: Date | null
+    isVisible: boolean | null
     competition_id: string | null
     round: string | null
   }
@@ -11187,7 +11189,8 @@ export namespace Prisma {
     away_score: number | null
     status: $Enums.MatchStatus | null
     played_at: Date | null
-    scheduled_at: Date | null
+    startTime: Date | null
+    isVisible: boolean | null
     competition_id: string | null
     round: string | null
   }
@@ -11201,7 +11204,8 @@ export namespace Prisma {
     away_score: number
     status: number
     played_at: number
-    scheduled_at: number
+    startTime: number
+    isVisible: number
     competition_id: number
     round: number
     _all: number
@@ -11227,7 +11231,8 @@ export namespace Prisma {
     away_score?: true
     status?: true
     played_at?: true
-    scheduled_at?: true
+    startTime?: true
+    isVisible?: true
     competition_id?: true
     round?: true
   }
@@ -11241,7 +11246,8 @@ export namespace Prisma {
     away_score?: true
     status?: true
     played_at?: true
-    scheduled_at?: true
+    startTime?: true
+    isVisible?: true
     competition_id?: true
     round?: true
   }
@@ -11255,7 +11261,8 @@ export namespace Prisma {
     away_score?: true
     status?: true
     played_at?: true
-    scheduled_at?: true
+    startTime?: true
+    isVisible?: true
     competition_id?: true
     round?: true
     _all?: true
@@ -11356,7 +11363,8 @@ export namespace Prisma {
     away_score: number | null
     status: $Enums.MatchStatus
     played_at: Date | null
-    scheduled_at: Date | null
+    startTime: Date | null
+    isVisible: boolean
     competition_id: string | null
     round: string | null
     _count: MatchCountAggregateOutputType | null
@@ -11389,7 +11397,8 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
-    scheduled_at?: boolean
+    startTime?: boolean
+    isVisible?: boolean
     competition_id?: boolean
     round?: boolean
     events?: boolean | Match$eventsArgs<ExtArgs>
@@ -11410,7 +11419,8 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
-    scheduled_at?: boolean
+    startTime?: boolean
+    isVisible?: boolean
     competition_id?: boolean
     round?: boolean
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -11427,7 +11437,8 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
-    scheduled_at?: boolean
+    startTime?: boolean
+    isVisible?: boolean
     competition_id?: boolean
     round?: boolean
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -11444,12 +11455,13 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
-    scheduled_at?: boolean
+    startTime?: boolean
+    isVisible?: boolean
     competition_id?: boolean
     round?: boolean
   }
 
-  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at" | "scheduled_at" | "competition_id" | "round", ExtArgs["result"]["match"]>
+  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at" | "startTime" | "isVisible" | "competition_id" | "round", ExtArgs["result"]["match"]>
   export type MatchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     events?: boolean | Match$eventsArgs<ExtArgs>
     scoreReports?: boolean | Match$scoreReportsArgs<ExtArgs>
@@ -11489,7 +11501,14 @@ export namespace Prisma {
       away_score: number | null
       status: $Enums.MatchStatus
       played_at: Date | null
-      scheduled_at: Date | null
+      /**
+       * Heure de coup d’envoi (colonne DB `scheduled_at`). Tri pronostics.
+       */
+      startTime: Date | null
+      /**
+       * Masque les matchs « fantômes » / brouillons côté pronostics (liste publique).
+       */
+      isVisible: boolean
       competition_id: string | null
       round: string | null
     }, ExtArgs["result"]["match"]>
@@ -11929,7 +11948,8 @@ export namespace Prisma {
     readonly away_score: FieldRef<"Match", 'Int'>
     readonly status: FieldRef<"Match", 'MatchStatus'>
     readonly played_at: FieldRef<"Match", 'DateTime'>
-    readonly scheduled_at: FieldRef<"Match", 'DateTime'>
+    readonly startTime: FieldRef<"Match", 'DateTime'>
+    readonly isVisible: FieldRef<"Match", 'Boolean'>
     readonly competition_id: FieldRef<"Match", 'String'>
     readonly round: FieldRef<"Match", 'String'>
   }
@@ -29227,7 +29247,8 @@ export namespace Prisma {
     away_score: 'away_score',
     status: 'status',
     played_at: 'played_at',
-    scheduled_at: 'scheduled_at',
+    startTime: 'startTime',
+    isVisible: 'isVisible',
     competition_id: 'competition_id',
     round: 'round'
   };
@@ -30394,7 +30415,8 @@ export namespace Prisma {
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
-    scheduled_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    startTime?: DateTimeNullableFilter<"Match"> | Date | string | null
+    isVisible?: BoolFilter<"Match"> | boolean
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
     events?: MatchEventListRelationFilter
@@ -30414,7 +30436,8 @@ export namespace Prisma {
     away_score?: SortOrderInput | SortOrder
     status?: SortOrder
     played_at?: SortOrderInput | SortOrder
-    scheduled_at?: SortOrderInput | SortOrder
+    startTime?: SortOrderInput | SortOrder
+    isVisible?: SortOrder
     competition_id?: SortOrderInput | SortOrder
     round?: SortOrderInput | SortOrder
     events?: MatchEventOrderByRelationAggregateInput
@@ -30437,7 +30460,8 @@ export namespace Prisma {
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
-    scheduled_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    startTime?: DateTimeNullableFilter<"Match"> | Date | string | null
+    isVisible?: BoolFilter<"Match"> | boolean
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
     events?: MatchEventListRelationFilter
@@ -30457,7 +30481,8 @@ export namespace Prisma {
     away_score?: SortOrderInput | SortOrder
     status?: SortOrder
     played_at?: SortOrderInput | SortOrder
-    scheduled_at?: SortOrderInput | SortOrder
+    startTime?: SortOrderInput | SortOrder
+    isVisible?: SortOrder
     competition_id?: SortOrderInput | SortOrder
     round?: SortOrderInput | SortOrder
     _count?: MatchCountOrderByAggregateInput
@@ -30479,7 +30504,8 @@ export namespace Prisma {
     away_score?: IntNullableWithAggregatesFilter<"Match"> | number | null
     status?: EnumMatchStatusWithAggregatesFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableWithAggregatesFilter<"Match"> | Date | string | null
-    scheduled_at?: DateTimeNullableWithAggregatesFilter<"Match"> | Date | string | null
+    startTime?: DateTimeNullableWithAggregatesFilter<"Match"> | Date | string | null
+    isVisible?: BoolWithAggregatesFilter<"Match"> | boolean
     competition_id?: UuidNullableWithAggregatesFilter<"Match"> | string | null
     round?: StringNullableWithAggregatesFilter<"Match"> | string | null
   }
@@ -32125,7 +32151,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -32144,7 +32171,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -32159,7 +32187,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -32178,7 +32207,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -32195,7 +32225,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
   }
@@ -32207,7 +32238,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -32220,7 +32252,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -34070,7 +34103,8 @@ export namespace Prisma {
     away_score?: SortOrder
     status?: SortOrder
     played_at?: SortOrder
-    scheduled_at?: SortOrder
+    startTime?: SortOrder
+    isVisible?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
   }
@@ -34089,7 +34123,8 @@ export namespace Prisma {
     away_score?: SortOrder
     status?: SortOrder
     played_at?: SortOrder
-    scheduled_at?: SortOrder
+    startTime?: SortOrder
+    isVisible?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
   }
@@ -34103,7 +34138,8 @@ export namespace Prisma {
     away_score?: SortOrder
     status?: SortOrder
     played_at?: SortOrder
-    scheduled_at?: SortOrder
+    startTime?: SortOrder
+    isVisible?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
   }
@@ -38868,7 +38904,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -38885,7 +38922,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -38910,7 +38948,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -38927,7 +38966,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -39311,7 +39351,8 @@ export namespace Prisma {
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
-    scheduled_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    startTime?: DateTimeNullableFilter<"Match"> | Date | string | null
+    isVisible?: BoolFilter<"Match"> | boolean
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
   }
@@ -39982,7 +40023,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -40000,7 +40042,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
@@ -40706,7 +40749,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -40724,7 +40768,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -40890,7 +40935,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -40908,7 +40954,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -41070,7 +41117,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -41088,7 +41136,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
@@ -41254,7 +41303,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -41272,7 +41322,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
@@ -43457,7 +43508,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -43475,7 +43527,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -43584,7 +43637,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -43602,7 +43656,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -44927,7 +44982,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
   }
@@ -44940,7 +44996,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     competition_id?: string | null
     round?: string | null
   }
@@ -45136,7 +45193,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -45153,7 +45211,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -45169,7 +45228,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -45181,7 +45241,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -45198,7 +45259,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -45214,7 +45276,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -45407,7 +45470,8 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
-    scheduled_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
     round?: string | null
   }
 
@@ -45433,7 +45497,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -45451,7 +45516,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
@@ -45467,7 +45533,8 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

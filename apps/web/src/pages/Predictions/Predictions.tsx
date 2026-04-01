@@ -12,6 +12,7 @@ import {
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 type PredictionStatus = 'PENDING' | 'WON' | 'LOST';
 
@@ -111,7 +112,7 @@ export default function Predictions() {
       return;
     }
     if (Number.isNaN(bet) || bet < 1) {
-      toast.error('Mise JEPY minimale : 1.');
+      toast.error('Mise Jepy minimale : 1.');
       return;
     }
 
@@ -176,7 +177,7 @@ export default function Predictions() {
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400/80">
                   Predict &amp; Win
                 </p>
-                <h1 className="text-2xl font-black tracking-tight text-white">Pronostics JEPY</h1>
+                <h1 className="text-2xl font-black tracking-tight text-white">Pronostics Jepy</h1>
               </div>
             </div>
             <div className="inline-flex rounded-xl border border-white/10 bg-black/30 p-1">
@@ -205,7 +206,7 @@ export default function Predictions() {
             </div>
           </div>
           <p className="mt-3 text-sm text-slate-500">
-            Score exact = gain ×3 sur votre mise (JEPY). Une seule prédiction par match.
+            Score exact = gain ×3 sur votre mise (Jepy). Une seule prédiction par match.
           </p>
         </div>
       </div>
@@ -247,11 +248,11 @@ export default function Predictions() {
                           />
                         ) : (
                           <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 text-lg font-bold text-slate-400">
-                            {match.homeTeam.name.slice(0, 2).toUpperCase()}
+                            {(match.homeTeam.name ?? '??').slice(0, 2).toUpperCase()}
                           </div>
                         )}
                         <span className="max-w-[140px] text-sm font-semibold text-white">
-                          {match.homeTeam.name}
+                          {match.homeTeam.name ?? '—'}
                         </span>
                       </div>
                       <span className="text-2xl font-black text-slate-600">VS</span>
@@ -264,11 +265,11 @@ export default function Predictions() {
                           />
                         ) : (
                           <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 text-lg font-bold text-slate-400">
-                            {match.awayTeam.name.slice(0, 2).toUpperCase()}
+                            {(match.awayTeam.name ?? '??').slice(0, 2).toUpperCase()}
                           </div>
                         )}
                         <span className="max-w-[140px] text-sm font-semibold text-white">
-                          {match.awayTeam.name}
+                          {match.awayTeam.name ?? '—'}
                         </span>
                       </div>
                     </div>
@@ -311,7 +312,7 @@ export default function Predictions() {
                         <div>
                           <label className="mb-1 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
                             <Sparkles className="h-3 w-3 text-cyan-400" />
-                            Mise (JEPY)
+                            Mise (Jepy)
                           </label>
                           <input
                             type="number"
@@ -373,11 +374,11 @@ export default function Predictions() {
                       {p.status === 'LOST' && <XCircle className="h-4 w-4 shrink-0 text-red-400" />}
                       {p.status === 'PENDING' && <Clock className="h-4 w-4 shrink-0 text-amber-400" />}
                       <span className="truncate text-sm font-semibold text-white">
-                        {m.homeTeam.name} vs {m.awayTeam.name}
+                        {m.homeTeam.name ?? '—'} vs {m.awayTeam.name ?? '—'}
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-slate-500">
-                      Votre prono : {p.homeScore} - {p.awayScore} · Mise {p.betAmount} JEPY
+                      Votre prono : {p.homeScore} - {p.awayScore} · Mise {formatCurrency(p.betAmount, 'Jepy')}
                       {finalH != null && finalA != null && (
                         <span className="text-slate-400">
                           {' '}
@@ -403,7 +404,7 @@ export default function Predictions() {
                     </span>
                     {p.status === 'WON' && (
                       <span className="text-xs font-bold text-emerald-400">
-                        +{p.betAmount * 3} JEPY
+                        +{formatCurrency(p.betAmount * 3, 'Jepy')}
                       </span>
                     )}
                   </div>

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { ChatGateway } from '../chat/chat.gateway';
 import { CreateTransferOfferDto } from './dto/create-transfer-offer.dto';
 import { PlayerRespondOfferDto } from './dto/player-respond-offer.dto';
 import { BuyerRespondOfferDto } from './dto/buyer-respond-offer.dto';
@@ -28,6 +29,7 @@ export class TransferOfferService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly chatGateway: ChatGateway,
   ) {}
 
   // ── POST /transfers/offer ──────────────────────────────────
@@ -66,11 +68,31 @@ export class TransferOfferService {
       throw new NotFoundException('Club acheteur introuvable.');
     }
 
-    const required = totalSigningCost(dto.transfer_fee, dto.offered_salary);
-    if (buyingTeam.budget < required) {
+    const salaryAnnual =
+      dto.salaryPropose != null && dto.salaryPropose > 0
+        ? dto.salaryPropose * 52
+        : dto.offered_salary;
+    const clauseVal =
+      dto.releaseClausePropose != null && dto.releaseClausePropose > 0
+        ? dto.releaseClausePropose
+        : dto.offered_clause;
+
+    if (
+      salaryAnnual == null ||
+      !Number.isFinite(salaryAnnual) ||
+      salaryAnnual <= 0 ||
+      clauseVal == null ||
+      !Number.isFinite(clauseVal) ||
+      clauseVal <= 0
+    ) {
       throw new BadRequestException(
-        `Budget insuffisant. Requis : ${required.toLocaleString('fr-FR')} (frais + 1re année de salaire), disponible : ${buyingTeam.budget.toLocaleString('fr-FR')}.`,
+        'Indiquez un salaire (hebdomadaire ou annuel) et une clause libératoire.',
       );
+    }
+
+    const offerAmount = totalSigningCost(dto.transfer_fee, salaryAnnual);
+    if (buyingTeam.budget < offerAmount) {
+      throw new BadRequestException('Budget club insuffisant');
     }
 
     const existingOffer = await this.prisma.transferOffer.findFirst({
@@ -93,8 +115,8 @@ export class TransferOfferService {
         from_team_id: dto.from_team_id,
         to_team_id: dto.to_team_id,
         transfer_fee: dto.transfer_fee,
-        offered_salary: dto.offered_salary,
-        offered_clause: dto.offered_clause,
+        offered_salary: salaryAnnual,
+        offered_clause: clauseVal,
         duration_months: dto.duration_months,
         status: 'PENDING',
         negotiation_turn: 'PLAYER',
@@ -113,14 +135,27 @@ export class TransferOfferService {
       { offer_id: offer.id, type: 'TRANSFER_OFFER_RECEIVED' },
     );
 
+    const weeklyOc = Math.round(salaryAnnual / 52);
+    const weeklyStr = weeklyOc.toLocaleString('fr-FR');
     await this.notifications.send(
       dto.player_id,
       '💬 Nouvelle proposition de transfert',
-      `${offer.fromTeam.name} vous propose un contrat. Consultez le Mercato pour négocier ou accepter.`,
-      { offer_id: offer.id, type: 'TRANSFER_NEGOTIATION' },
+      `Le club ${offer.fromTeam.name} vous propose un contrat de ${weeklyStr} OC/semaine !`,
+      { offer_id: offer.id, type: 'TRANSFER_OFFER_RECEIVED' },
     );
 
+    this.chatGateway.emitTransferMercatoAlert(dto.player_id, {
+      type: 'TRANSFER_OFFER_RECEIVED',
+      offer_id: offer.id,
+    });
+
     return offer;
+  }
+
+  // ── POST /transfers/offer/:id/accept ───────────────────────
+  /** Acceptation par le joueur (équivalent à PATCH player-respond { action: ACCEPT }). */
+  async acceptOffer(requestingUserId: string, offerId: string) {
+    return this.playerRespond(requestingUserId, offerId, { action: 'ACCEPT' });
   }
 
   // ── PATCH /transfers/offer/:id/player-respond ──────────────
@@ -454,16 +489,20 @@ export class TransferOfferService {
         data: { status: 'CANCELLED', responded_at: new Date() },
       });
 
-      // 11. 📰 Créer l'entrée dans le Journal du Mercato
+      // 11. 📰 Fil d’actualité global (News)
+      const playerName = offer.player.ea_persona_name ?? 'Joueur';
+      const clubName = offer.fromTeam.name;
+      const montantStr = offer.transfer_fee.toLocaleString('fr-FR');
+      const newsTitle = `OFFICIEL : ${playerName} rejoint ${clubName} pour ${montantStr} OC !`;
+      const newsDescription = releaseClauseMet
+        ? `${playerName} quitte ${offer.toTeam.name} et rejoint ${clubName} après activation de la clause libératoire (${montantStr} OC).`
+        : `${playerName} s'engage avec ${clubName}. Frais de transfert : ${montantStr} OC.`;
+
       await tx.newsEvent.create({
         data: {
           type: 'TRANSFER',
-          title: releaseClauseMet
-            ? '⚡ OFFICIEL : Clause libératoire activée !'
-            : '🦅 OFFICIEL : Transfert conclu !',
-          description: releaseClauseMet
-            ? `${offer.player.ea_persona_name ?? 'Un joueur'} quitte ${offer.toTeam.name} et rejoint ${offer.fromTeam.name} après activation de sa clause libératoire (${offer.transfer_fee.toLocaleString('fr-FR')} OC).`
-            : `${offer.player.ea_persona_name ?? 'Un joueur'} s'engage avec ${offer.fromTeam.name} ! Contrat de ${offer.offered_salary.toLocaleString('fr-FR')} OC/an, frais de transfert : ${offer.transfer_fee.toLocaleString('fr-FR')} OC.`,
+          title: newsTitle,
+          description: newsDescription,
           metadata: {
             playerId: offer.player_id,
             playerName: offer.player.ea_persona_name,

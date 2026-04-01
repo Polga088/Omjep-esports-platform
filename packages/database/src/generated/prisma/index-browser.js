@@ -200,7 +200,8 @@ exports.Prisma.MatchScalarFieldEnum = {
   away_score: 'away_score',
   status: 'status',
   played_at: 'played_at',
-  scheduled_at: 'scheduled_at',
+  startTime: 'startTime',
+  isVisible: 'isVisible',
   competition_id: 'competition_id',
   round: 'round'
 };
@@ -440,7 +441,8 @@ exports.MatchStatus = exports.$Enums.MatchStatus = {
   FINISHED: 'FINISHED',
   DISPUTED: 'DISPUTED',
   PLAYED: 'PLAYED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  DELETED: 'DELETED'
 };
 
 exports.EventType = exports.$Enums.EventType = {

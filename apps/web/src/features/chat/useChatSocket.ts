@@ -18,10 +18,12 @@ export function getSocketBaseUrl(): string {
 
 export function useChatSocket(meId: string): {
   socket: Socket | null;
+  /** Alias historique — préférer `isConnected`. */
   connected: boolean;
+  isConnected: boolean;
 } {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [connected, setConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -36,22 +38,33 @@ export function useChatSocket(meId: string): {
 
     setSocket(s);
 
-    s.on('connect', () => {
-      console.log('[chat] socket connecté', s.id);
-      setConnected(true);
-    });
+    const onConnect = () => {
+      console.log('Socket Mercato/Chat connecté:', s.id);
+      setIsConnected(true);
+    };
 
-    s.on('disconnect', () => {
-      setConnected(false);
-    });
+    const onDisconnect = () => {
+      setIsConnected(false);
+    };
+
+    const onConnectError = (err: Error) => {
+      console.warn('[chat] socket connect_error', err?.message ?? err);
+      setIsConnected(false);
+    };
+
+    s.on('connect', onConnect);
+    s.on('disconnect', onDisconnect);
+    s.on('connect_error', onConnectError);
 
     return () => {
-      s.removeAllListeners();
+      s.off('connect', onConnect);
+      s.off('disconnect', onDisconnect);
+      s.off('connect_error', onConnectError);
       s.close();
       setSocket(null);
-      setConnected(false);
+      setIsConnected(false);
     };
   }, [meId]);
 
-  return { socket, connected };
+  return { socket, connected: isConnected, isConnected };
 }

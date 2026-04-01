@@ -10,6 +10,7 @@ import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import PlayerCard from '@/components/PlayerCard';
 import LevelUpOverlay from '@/components/LevelUpOverlay';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -121,12 +122,6 @@ const formColors = {
   D: 'bg-amber-500 text-white',
   L: 'bg-red-500 text-white',
 };
-
-function formatMoney(v: number): string {
-  if (Math.abs(v) >= 1_000_000) return `${(v / 1_000_000).toFixed(2)}M €`;
-  if (Math.abs(v) >= 1_000) return `${(v / 1_000).toFixed(0)}K €`;
-  return `${v.toLocaleString('fr-FR')} €`;
-}
 
 // ─── SVG Radar Chart ───────────────────────────────────────
 
@@ -732,11 +727,11 @@ export default function Gamification() {
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500">Salaire</span>
-                  <span className="font-bold text-emerald-400">{formatMoney(data.contract.salary)}/sem</span>
+                  <span className="font-bold text-emerald-400">{formatCurrency(data.contract.salary, 'OC')}/sem</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500">Clause libératoire</span>
-                  <span className="font-bold text-amber-400">{formatMoney(data.contract.release_clause)}</span>
+                  <span className="font-bold text-amber-400">{formatCurrency(data.contract.release_clause, 'OC')}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500">Expire le</span>

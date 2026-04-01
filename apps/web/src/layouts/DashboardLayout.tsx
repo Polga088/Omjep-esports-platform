@@ -13,6 +13,7 @@ import NotificationBell from '@/components/NotificationBell';
 import GoldConfetti from '@/components/GoldConfetti';
 import { useTransferNotifications } from '@/hooks/useTransferNotifications';
 import api from '@/lib/api';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 type SidebarLink = {
   to: string;
@@ -53,19 +54,13 @@ const pageTitles: Record<string, string> = {
   '/dashboard/manager/club': 'Créer mon club',
 };
 
-function formatBudget(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(2)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
-}
-
 export default function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, patchUser } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [budget, setBudget] = useState<number | null>(null);
-  const { showConfetti } = useTransferNotifications();
+  const { showConfetti, mercatoLiveBadge } = useTransferNotifications();
 
   useEffect(() => {
     let cancelled = false;
@@ -168,18 +163,27 @@ export default function DashboardLayout() {
           .filter((link) => !link.managerOnly || user?.role === 'MANAGER')
           .map(({ to, label, icon: Icon, exact }) => {
           const active = isActive(to, exact);
+          const mercatoPulse = to === '/dashboard/transfers' && mercatoLiveBadge;
           return (
             <Link
               key={to}
               to={to}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+              className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                 active
                   ? 'text-amber-400 bg-amber-400/10 border border-amber-400/20'
                   : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-amber-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+              <span className="relative shrink-0">
+                <Icon className={`w-4 h-4 ${active ? 'text-amber-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                {mercatoPulse && (
+                  <span
+                    className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#020617]"
+                    aria-hidden
+                  />
+                )}
+              </span>
               <span className="flex-1">{label}</span>
               {active && <ChevronRight className="w-3.5 h-3.5 text-amber-400/60" />}
             </Link>
@@ -271,7 +275,7 @@ export default function DashboardLayout() {
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
                 <Wallet className="w-4 h-4 text-emerald-400" />
                 <span className="text-sm font-bold text-emerald-400 tabular-nums">
-                  {formatBudget(budget)} €
+                  {formatCurrency(budget, 'OC')}
                 </span>
               </div>
             )}

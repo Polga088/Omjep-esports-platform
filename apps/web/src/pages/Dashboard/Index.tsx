@@ -3,6 +3,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { Swords, Star, Shield, Crown, Flame, Trophy, ChevronRight, Users, Zap, Coins, TrendingUp, Newspaper, Megaphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '@/lib/api';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 // ─── XP helpers ──────────────────────────────────────────────────────────────
 // Formule miroir du backend : level = floor(sqrt(xp / 100)) + 1
@@ -206,18 +207,16 @@ export default function DashboardIndex() {
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400/10 border border-amber-400/20">
                   <Coins className="w-3.5 h-3.5 text-amber-400" />
                   <span className="text-sm font-bold text-amber-400 tabular-nums">
-                    {user.omjepCoins.toLocaleString('fr-FR')}
+                    {formatCurrency(user.omjepCoins, 'OC')}
                   </span>
-                  <span className="text-[10px] text-amber-400/60 font-semibold">OC</span>
                 </div>
               )}
               {user?.jepyCoins !== undefined && user.jepyCoins > 0 && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-400/10 border border-purple-400/20">
                   <Zap className="w-3.5 h-3.5 text-purple-400" />
                   <span className="text-sm font-bold text-purple-400 tabular-nums">
-                    {user.jepyCoins.toLocaleString('fr-FR')}
+                    {formatCurrency(user.jepyCoins, 'Jepy')}
                   </span>
-                  <span className="text-[10px] text-purple-400/60 font-semibold">JP</span>
                 </div>
               )}
             </div>

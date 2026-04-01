@@ -41,6 +41,13 @@ export class TransfersController {
     return this.transferOfferService.playerRespond(req.user.id, id, dto);
   }
 
+  /** Le joueur accepte l’offre : transfert OC, nouveau contrat, changement de club. */
+  @Post('offer/:id/accept')
+  @Roles('PLAYER', 'ADMIN')
+  acceptOffer(@Req() req: any, @Param('id', ParseUUIDPipe) id: string) {
+    return this.transferOfferService.acceptOffer(req.user.id, id);
+  }
+
   @Patch('offer/:id/buyer-respond')
   @Roles('MANAGER', 'ADMIN', 'PLAYER')
   buyerRespond(

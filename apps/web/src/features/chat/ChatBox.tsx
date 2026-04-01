@@ -24,7 +24,7 @@ export default function ChatBox({ me }: { me: Me }) {
   const [sending, setSending] = useState(false);
   const [draft, setDraft] = useState('');
   const [typingPeer, setTypingPeer] = useState(false);
-  const { socket, connected: socketConnected } = useChatSocket(me.id);
+  const { socket, isConnected } = useChatSocket(me.id);
   const listRef = useRef<HTMLDivElement>(null);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -110,7 +110,7 @@ export default function ChatBox({ me }: { me: Me }) {
 
   useEffect(() => {
     const s = socket;
-    if (!s || !socketConnected) return;
+    if (!s || !isConnected) return;
     if (mode === 'team' && team?.id) {
       s.emit('join_team', { teamId: team.id });
       setMessages([]);
@@ -122,11 +122,11 @@ export default function ChatBox({ me }: { me: Me }) {
         scrollBottom();
       });
     }
-  }, [mode, team?.id, socketConnected, loadTeamMessages, socket]);
+  }, [mode, team?.id, isConnected, loadTeamMessages, socket]);
 
   useEffect(() => {
     const s = socket;
-    if (!s || !socketConnected || mode !== 'dm' || !peerId) return;
+    if (!s || !isConnected || mode !== 'dm' || !peerId) return;
     s.emit('join_dm', { peerId });
     setMessages([]);
     setNextCursor(null);
@@ -137,7 +137,7 @@ export default function ChatBox({ me }: { me: Me }) {
       const unread = d.messages.filter((m) => m.receiver_id === me.id && !m.is_read).map((m) => m.id);
       if (unread.length) void api.post('/chat/messages/read', { messageIds: unread });
     });
-  }, [mode, peerId, socketConnected, loadDmMessages, me.id, socket]);
+  }, [mode, peerId, isConnected, loadDmMessages, me.id, socket]);
 
   const send = async () => {
     const text = draft.trim();
@@ -264,16 +264,19 @@ export default function ChatBox({ me }: { me: Me }) {
           </h2>
           <span
             className={`ml-auto inline-flex items-center gap-1.5 text-[10px] font-semibold ${
-              socketConnected ? 'text-emerald-400' : 'text-amber-600'
+              isConnected ? 'text-emerald-400' : 'text-orange-400'
             }`}
+            title={isConnected ? 'Socket temps réel actif' : 'Reconnexion au serveur…'}
           >
             <span
               className={`w-2 h-2 rounded-full shrink-0 ${
-                socketConnected ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.65)]' : 'bg-amber-500/60 animate-pulse'
+                isConnected
+                  ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.65)]'
+                  : 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.55)] animate-pulse'
               }`}
               aria-hidden
             />
-            {socketConnected ? 'En ligne' : 'Connexion…'}
+            {isConnected ? 'En ligne' : 'Connexion…'}
           </span>
         </header>
 

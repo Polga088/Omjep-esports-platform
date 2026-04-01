@@ -119,17 +119,17 @@ function computeStandings(
 
 function matchSortKey(m: {
   played_at: Date | null;
-  scheduled_at: Date | null;
+  startTime: Date | null;
   id: string;
 }): number {
-  const t = m.played_at ?? m.scheduled_at;
+  const t = m.played_at ?? m.startTime;
   return t ? t.getTime() : 0;
 }
 
 function sortMatchesChronological<
   T extends {
     played_at: Date | null;
-    scheduled_at: Date | null;
+    startTime: Date | null;
     id: string;
   },
 >(matches: T[]): T[] {
