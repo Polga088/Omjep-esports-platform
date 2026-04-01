@@ -99,7 +99,8 @@ interface GamificationData {
   contract: {
     salary: number;
     release_clause: number;
-    expires_at: string;
+    start_date: string;
+    end_date: string;
   } | null;
   overall: number;
 }
@@ -154,7 +155,6 @@ function StatsRadar({ stats }: { stats: GamificationData['stats'] }) {
   });
 
   const dataPoints = normalized.map((v, i) => getPoint(i, v));
-  const dataPath = dataPoints.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ') + 'Z';
 
   return (
     <div className="flex flex-col items-center">
@@ -741,7 +741,7 @@ export default function Gamification() {
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500">Expire le</span>
                   <span className="font-semibold text-white">
-                    {new Date(data.contract.expires_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    {new Date(data.contract.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   </span>
                 </div>
               </div>

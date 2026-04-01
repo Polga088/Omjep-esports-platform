@@ -236,7 +236,7 @@ export default function PlayerCard({
               <div className="flex justify-center mb-2">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-500/70">Val.</span>
-                  <span className="text-xs font-black text-emerald-400 tabular-nums">{formatValue(marketValue)} €</span>
+                  <span className="text-xs font-black text-emerald-400 tabular-nums">{formatValue(marketValue)} OC</span>
                 </div>
               </div>
             )}

@@ -44,7 +44,8 @@ export default function Register() {
 
       if (data.access_token) {
         login(data.user, data.access_token);
-        setTimeout(() => navigate('/dashboard'), 1000);
+        // Redirection vers l'onboarding pour compléter le profil
+        setTimeout(() => navigate('/onboarding'), 800);
       } else {
         setTimeout(() => navigate('/login'), 1500);
       }

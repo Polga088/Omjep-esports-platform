@@ -7,6 +7,9 @@ import {
   Check,
   Crown,
   Gem,
+  Trophy,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,7 +18,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 type StoreCategory = 'BANNER' | 'AVATAR_FRAME' | 'BADGE';
 
-type StoreTab = 'cosmetics' | 'vip';
+type StoreTab = 'cosmetics' | 'vip' | 'rewards';
 
 interface StoreItemRow {
   id: string;
@@ -299,13 +302,13 @@ export default function Store() {
               Cosmétiques et abonnements VIP — payez en JEPY Coins.
             </p>
 
-            <div className="relative flex w-full max-w-md rounded-xl border border-white/[0.08] bg-black/25 p-1 sm:w-auto">
-              {(['cosmetics', 'vip'] as const).map((key) => (
+            <div className="relative flex w-full max-w-lg rounded-xl border border-white/[0.08] bg-black/25 p-1 sm:w-auto">
+              {(['cosmetics', 'vip', 'rewards'] as const).map((key) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setTab(key)}
-                  className={`relative flex-1 rounded-lg py-2.5 text-center text-sm font-semibold transition-colors sm:min-w-[10rem] ${
+                  className={`relative flex-1 rounded-lg py-2.5 text-center text-sm font-semibold transition-colors sm:min-w-[8rem] ${
                     tab === key ? 'text-white' : 'text-slate-500 hover:text-slate-300'
                   }`}
                 >
@@ -318,15 +321,11 @@ export default function Store() {
                   )}
                   <span className="relative z-10 inline-flex items-center justify-center gap-2">
                     {key === 'cosmetics' ? (
-                      <>
-                        <Gem className="h-4 w-4 opacity-80" />
-                        Cosmétiques
-                      </>
+                      <><Gem className="h-4 w-4 opacity-80" />Cosmétiques</>
+                    ) : key === 'vip' ? (
+                      <><Crown className="h-4 w-4 text-amber-300/90" />Abonnements VIP</>
                     ) : (
-                      <>
-                        <Crown className="h-4 w-4 text-amber-300/90" />
-                        Abonnements VIP
-                      </>
+                      <><Trophy className="h-4 w-4 text-amber-400/90" />Récompenses</>
                     )}
                   </span>
                 </button>
@@ -337,7 +336,7 @@ export default function Store() {
       </div>
 
       <AnimatePresence mode="wait">
-        {tab === 'cosmetics' ? (
+        {tab === 'cosmetics' && (
           <motion.div
             key="cosmetics"
             initial={{ opacity: 0, y: 8 }}
@@ -409,7 +408,8 @@ export default function Store() {
               </div>
             )}
           </motion.div>
-        ) : (
+        )}
+        {tab === 'vip' && (
           <motion.div
             key="vip"
             initial={{ opacity: 0, y: 8 }}
@@ -554,6 +554,161 @@ export default function Store() {
                 <p className="text-sm text-slate-500">Aucun plan VIP disponible.</p>
               </div>
             )}
+          </motion.div>
+        )}
+        {tab === 'rewards' && (
+          <motion.div
+            key="rewards"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22 }}
+            className="space-y-8"
+          >
+            {/* Current balance recap */}
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[
+                {
+                  label: 'OMJEP Coins',
+                  value: omjep.toLocaleString('fr-FR'),
+                  suffix: 'OC',
+                  icon: Coins,
+                  color: 'text-amber-400',
+                  bg: 'bg-amber-400/10',
+                  border: 'border-amber-400/20',
+                  desc: 'Gagnés en jouant des matchs',
+                },
+                {
+                  label: 'JEPY Coins',
+                  value: jepy.toLocaleString('fr-FR'),
+                  suffix: 'JP',
+                  icon: Sparkles,
+                  color: 'text-cyan-400',
+                  bg: 'bg-cyan-400/10',
+                  border: 'border-cyan-400/20',
+                  desc: 'Monnaie premium (store)',
+                },
+                {
+                  label: 'Niveau',
+                  value: String(user?.level ?? 1),
+                  suffix: '',
+                  icon: TrendingUp,
+                  color: 'text-emerald-400',
+                  bg: 'bg-emerald-400/10',
+                  border: 'border-emerald-400/20',
+                  desc: `${(user?.xp ?? 0).toLocaleString('fr-FR')} XP accumulés`,
+                },
+              ].map(({ label, value, suffix, icon: Icon, color, bg, border, desc }) => (
+                <div key={label} className={`rounded-2xl border ${border} ${bg} p-6 flex items-center gap-4`}>
+                  <div className={`w-12 h-12 rounded-xl ${bg} border ${border} flex items-center justify-center shrink-0`}>
+                    <Icon className={`w-6 h-6 ${color}`} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500 uppercase tracking-wider">{label}</p>
+                    <p className={`text-2xl font-black tabular-nums ${color}`}>
+                      {value}<span className="text-sm font-semibold ml-1 opacity-60">{suffix}</span>
+                    </p>
+                    <p className="text-[10px] text-slate-600 mt-0.5">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Rewards table */}
+            <div className="rounded-2xl border border-white/[0.06] bg-[#0B0D13]/90 overflow-hidden">
+              <div className="px-6 py-4 border-b border-white/[0.06] flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-amber-400" />
+                <h2 className="text-sm font-bold text-white">Barème des récompenses par match</h2>
+              </div>
+              <div className="divide-y divide-white/[0.04]">
+                {[
+                  {
+                    result: 'Victoire',
+                    xp: '+50 XP',
+                    coins: '+100 OC',
+                    emoji: '🏆',
+                    color: 'text-emerald-400',
+                    bg: 'bg-emerald-500/[0.04]',
+                  },
+                  {
+                    result: 'Match Nul',
+                    xp: '+25 XP',
+                    coins: '+50 OC',
+                    emoji: '🤝',
+                    color: 'text-amber-400',
+                    bg: 'bg-amber-500/[0.04]',
+                  },
+                  {
+                    result: 'Défaite',
+                    xp: '+10 XP',
+                    coins: '+20 OC',
+                    emoji: '💪',
+                    color: 'text-slate-400',
+                    bg: '',
+                  },
+                ].map(({ result, xp, coins, emoji, color, bg }) => (
+                  <div key={result} className={`flex items-center justify-between px-6 py-4 ${bg}`}>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{emoji}</span>
+                      <span className={`text-sm font-bold ${color}`}>{result}</span>
+                    </div>
+                    <div className="flex items-center gap-6">
+                      <div className="text-right">
+                        <p className="text-xs text-slate-500">Expérience</p>
+                        <p className={`text-sm font-black tabular-nums ${color}`}>{xp}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-slate-500">OMJEP Coins</p>
+                        <p className={`text-sm font-black tabular-nums ${color}`}>{coins}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="px-6 py-3 border-t border-white/[0.04] bg-white/[0.01]">
+                <p className="text-[11px] text-slate-600">
+                  Les récompenses sont distribuées automatiquement à tous les membres de l'équipe après validation du score par l'admin ou le commissaire.
+                </p>
+              </div>
+            </div>
+
+            {/* Level system */}
+            <div className="rounded-2xl border border-white/[0.06] bg-[#0B0D13]/90 overflow-hidden">
+              <div className="px-6 py-4 border-b border-white/[0.06] flex items-center gap-2">
+                <Zap className="w-4 h-4 text-amber-400" />
+                <h2 className="text-sm font-bold text-white">Système de niveaux</h2>
+              </div>
+              <div className="p-6 space-y-4">
+                <p className="text-sm text-slate-400">
+                  Chaque niveau requiert <span className="text-amber-400 font-semibold">niveau² × 100 XP</span> depuis le début.
+                </p>
+                <div className="grid sm:grid-cols-4 gap-3">
+                  {[1, 5, 10, 20].map((lvl) => {
+                    const needed = lvl * lvl * 100;
+                    const isCurrentLevel = user?.level === lvl;
+                    return (
+                      <div key={lvl} className={`rounded-xl border p-4 text-center ${
+                        isCurrentLevel
+                          ? 'border-amber-400/40 bg-amber-400/10'
+                          : 'border-white/[0.06] bg-white/[0.02]'
+                      }`}>
+                        <p className={`text-2xl font-black ${isCurrentLevel ? 'text-amber-400' : 'text-white'}`}>
+                          Niv.{lvl}
+                        </p>
+                        <p className="text-[10px] text-slate-500 mt-1 tabular-nums">
+                          {needed.toLocaleString('fr-FR')} XP
+                        </p>
+                        {isCurrentLevel && (
+                          <span className="mt-2 inline-block text-[9px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            Niveau actuel
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,0 +1,121 @@
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { PrismaService } from '@api/prisma/prisma.service';
+
+const STAFF_CLUB_ROLES = ['FOUNDER', 'MANAGER', 'CO_MANAGER'] as const;
+
+@Injectable()
+export class TransferService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async initiateTransfer(
+    actorUserId: string,
+    actorRole: string,
+    buyingTeamId: string,
+    playerId: string,
+  ) {
+    if (actorRole !== 'ADMIN') {
+      const membership = await this.prisma.teamMember.findUnique({
+        where: {
+          user_id_team_id: { user_id: actorUserId, team_id: buyingTeamId },
+        },
+      });
+      if (
+        !membership ||
+        !STAFF_CLUB_ROLES.includes(
+          membership.club_role as (typeof STAFF_CLUB_ROLES)[number],
+        )
+      ) {
+        throw new ForbiddenException(
+          'Seuls les dirigeants du club acheteur peuvent lancer un transfert.',
+        );
+      }
+    }
+
+    const contract = await this.prisma.contract.findFirst({
+      where: {
+        user_id: playerId,
+        status: 'ACTIVE',
+        end_date: { gt: new Date() },
+      },
+    });
+
+    if (!contract) {
+      throw new NotFoundException("Ce joueur n'a pas de contrat actif.");
+    }
+
+    if (contract.team_id === buyingTeamId) {
+      throw new BadRequestException('Ce joueur est déjà dans votre équipe.');
+    }
+
+    const buyingTeam = await this.prisma.club.findUnique({
+      where: { id: buyingTeamId },
+    });
+
+    if (!buyingTeam) {
+      throw new NotFoundException('Club acheteur introuvable.');
+    }
+
+    if (buyingTeam.budget < contract.release_clause) {
+      throw new BadRequestException(
+        `Budget insuffisant. Requis : ${contract.release_clause.toLocaleString('fr-FR')}, disponible : ${buyingTeam.budget.toLocaleString('fr-FR')}.`,
+      );
+    }
+
+    const sellingTeamId = contract.team_id;
+
+    await this.prisma.$transaction([
+      this.prisma.club.update({
+        where: { id: buyingTeamId },
+        data: { budget: { decrement: contract.release_clause } },
+      }),
+      this.prisma.club.update({
+        where: { id: sellingTeamId },
+        data: { budget: { increment: contract.release_clause } },
+      }),
+      this.prisma.transaction.create({
+        data: {
+          team_id: buyingTeamId,
+          amount: -contract.release_clause,
+          type: 'TRANSFER',
+          description: `Transfert entrant (clause libératoire : ${contract.release_clause.toLocaleString('fr-FR')})`,
+        },
+      }),
+      this.prisma.transaction.create({
+        data: {
+          team_id: sellingTeamId,
+          amount: contract.release_clause,
+          type: 'TRANSFER',
+          description: `Transfert sortant (clause libératoire : ${contract.release_clause.toLocaleString('fr-FR')})`,
+        },
+      }),
+      this.prisma.teamMember.delete({
+        where: {
+          user_id_team_id: { user_id: playerId, team_id: sellingTeamId },
+        },
+      }),
+      this.prisma.teamMember.create({
+        data: {
+          user_id: playerId,
+          team_id: buyingTeamId,
+          club_role: 'PLAYER',
+        },
+      }),
+      this.prisma.contract.update({
+        where: { id: contract.id },
+        data: { status: 'TERMINATED' },
+      }),
+    ]);
+
+    return {
+      message: 'Transfert effectué avec succès.',
+      release_clause: contract.release_clause,
+      buying_team_id: buyingTeamId,
+      selling_team_id: sellingTeamId,
+    };
+  }
+}

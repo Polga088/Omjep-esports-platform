@@ -32,7 +32,8 @@ interface ProfileCardResponse {
   contract: {
     salary: number;
     release_clause: number;
-    expires_at: string;
+    start_date: string;
+    end_date: string;
   } | null;
 }
 
@@ -313,6 +314,16 @@ export default function ProfileDetail() {
       {/* Profile content */}
       {!loading && !error && data && (
         <div className="flex flex-col items-center gap-8">
+          {canOffer &&
+            data.marketValue != null &&
+            data.marketValue > 0 &&
+            myTeam &&
+            myTeam.budget >= data.marketValue && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+                <Zap className="w-3.5 h-3.5" />
+                Clause libératoire payable
+              </div>
+            )}
           {/* Card with 3D hover */}
           <div
             className="transition-transform duration-300 ease-out hover:rotate-3 hover:scale-105"

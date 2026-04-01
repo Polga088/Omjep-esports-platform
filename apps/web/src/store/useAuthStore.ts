@@ -1,14 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { UserRole } from '@omjep/shared';
 
 export interface User {
   id: string;
   email: string;
   ea_persona_name: string;
-  role: 'PLAYER' | 'MANAGER' | 'ADMIN' | 'MODERATOR';
+  role: UserRole;
   omjepCoins?: number;
   jepyCoins?: number;
   isPremium?: boolean;
+  level?: number;
+  xp?: number;
+  preferred_position?: string;
+  nationality?: string;
 }
 
 interface AuthState {

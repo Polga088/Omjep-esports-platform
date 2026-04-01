@@ -119,7 +119,8 @@ interface Contract {
   user_id: string;
   salary: number;
   release_clause: number;
-  expires_at: string;
+  start_date: string;
+  end_date: string;
   user: ContractUser;
 }
 
@@ -781,7 +782,7 @@ export default function MyTeam() {
                         </tr>
                       ) : (
                         (finance?.contracts ?? []).map((c) => {
-                          const expired = new Date(c.expires_at) < new Date();
+                          const expired = new Date(c.end_date) < new Date();
                           return (
                             <tr key={c.id} className="hover:bg-white/[0.02] transition-colors">
                               <td className="px-5 py-3.5">
@@ -800,7 +801,7 @@ export default function MyTeam() {
                               </td>
                               <td className="px-5 py-3.5">
                                 <span className={`text-xs font-semibold ${expired ? 'text-red-400' : 'text-slate-400'}`}>
-                                  {new Date(c.expires_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  {new Date(c.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </span>
                               </td>
                             </tr>

@@ -11,6 +11,7 @@ export default function MainLayout() {
   const navLinks = [
     { to: '/', label: 'Accueil' },
     { to: '/leaderboard', label: 'Classement' },
+    { to: '/hall-of-fame', label: 'Palmarès' },
   ];
 
   const isActive = (path: string) => location.pathname === path;

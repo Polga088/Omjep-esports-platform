@@ -39,6 +39,8 @@ model User {
   inventory           UserInventory[]
   predictions         Prediction[]
   subscriptions       UserSubscription[]
+  messagesSent        Message[] @relation("MessageSender")
+  messagesReceived    Message[] @relation("MessageReceiver")
 
   @@map("users")
 }
@@ -52,7 +54,7 @@ model Club {
   ea_club_id        String?            @unique
   platform          Platform           @default(CROSSPLAY)
   proclubs_url      String?            @unique
-  budget            Float              @default(1000000)
+  budget            Float              @default(10000000)
   prestige_level    Int                @default(1)
   xp                Int                @default(0)
   description       String?
@@ -72,6 +74,7 @@ model Club {
   sentOffers        TransferOffer[]    @relation("OfferFromTeam")
   receivedOffers    TransferOffer[]    @relation("OfferToTeam")
   transferRequests  TransferRequest[]
+  messages          Message[]
 
   @@map("teams")
 }
@@ -107,8 +110,8 @@ model Competition {
   name       String            @unique
   type       CompetitionType
   status     CompetitionStatus @default(DRAFT)
-  start_date DateTime?
-  end_date   DateTime?
+  start_date DateTime
+  end_date   DateTime
   created_at DateTime          @default(now())
   teams      CompetitionTeam[]
   matches    Match[]
@@ -136,12 +139,13 @@ model Match {
   away_score     Int?
   status         MatchStatus        @default(SCHEDULED)
   played_at      DateTime?
+  scheduled_at   DateTime?
   competition_id String?            @db.Uuid
   round          String?
   events         MatchEvent[]
   scoreReports   MatchScoreReport[]
   awayTeam       Club               @relation("AwayTeam", fields: [away_team_id], references: [id])
-  competition    Competition?       @relation(fields: [competition_id], references: [id])
+  competition    Competition?       @relation(fields: [competition_id], references: [id], onDelete: Cascade)
   homeTeam       Club               @relation("HomeTeam", fields: [home_team_id], references: [id])
   predictions    Prediction[]
 
@@ -207,14 +211,16 @@ model Invitation {
 }
 
 model Contract {
-  id             String   @id @default(uuid()) @db.Uuid
-  team_id        String   @db.Uuid
-  user_id        String   @db.Uuid
+  id             String         @id @default(uuid()) @db.Uuid
+  team_id        String         @db.Uuid
+  user_id        String         @db.Uuid
   salary         Float
   release_clause Float
-  expires_at     DateTime
-  team           Club     @relation(fields: [team_id], references: [id], onDelete: Cascade)
-  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  start_date     DateTime       @default(now())
+  end_date       DateTime
+  status         ContractStatus @default(ACTIVE)
+  team           Club           @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("contracts")
 }
@@ -232,17 +238,25 @@ model Transaction {
 }
 
 model TransferOffer {
-  id           String         @id @default(uuid()) @db.Uuid
-  player_id    String         @db.Uuid
-  from_team_id String         @db.Uuid
-  to_team_id   String         @db.Uuid
-  amount       Float
-  status       TransferStatus @default(PENDING)
-  created_at   DateTime       @default(now())
-  responded_at DateTime?
-  fromTeam     Club           @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
-  player       User           @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
-  toTeam       Club           @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
+  id                String              @id @default(uuid()) @db.Uuid
+  player_id         String              @db.Uuid
+  from_team_id      String              @db.Uuid
+  to_team_id        String              @db.Uuid
+  /// Salaire annuel proposé (OMJEP Coins)
+  offered_salary    Float
+  /// Clause libératoire du nouveau contrat proposée
+  offered_clause    Float
+  /// Indemnité versée au club vendeur
+  transfer_fee      Float
+  duration_months   Int                 @default(12)
+  status            TransferOfferStatus @default(PENDING)
+  /// À qui de répondre : joueur ou club acheteur (contre-proposition)
+  negotiation_turn  NegotiationTurn     @default(PLAYER)
+  created_at        DateTime            @default(now())
+  responded_at      DateTime?
+  fromTeam          Club                @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
+  player            User                @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
+  toTeam            Club                @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
 
   @@map("transfer_offers")
 }
@@ -348,6 +362,7 @@ enum MatchStatus {
 enum CompetitionType {
   LEAGUE
   CUP
+  CHAMPIONS
 }
 
 enum CompetitionStatus {
@@ -361,6 +376,24 @@ enum TransferStatus {
   ACCEPTED
   REJECTED
   CANCELLED
+}
+
+enum TransferOfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COUNTER_OFFER
+  CANCELLED
+}
+
+enum NegotiationTurn {
+  PLAYER
+  BUYING_CLUB
+}
+
+enum ContractStatus {
+  ACTIVE
+  TERMINATED
 }
 
 enum InvitationStatus {
@@ -433,4 +466,47 @@ model UserSubscription {
   @@index([user_id, status])
   @@index([end_date, status])
   @@map("user_subscriptions")
+}
+
+/// Fil d'actualité du Mercato et événements importants
+/// Chat temps réel : salon club (team_id) ou MP (receiver_id + pas de team_id).
+model Message {
+  id          String   @id @default(uuid()) @db.Uuid
+  sender_id   String   @db.Uuid
+  receiver_id String?  @db.Uuid
+  team_id     String?  @db.Uuid
+  content     String   @db.Text
+  is_read     Boolean  @default(false)
+  created_at  DateTime @default(now())
+  sender      User     @relation("MessageSender", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver    User?    @relation("MessageReceiver", fields: [receiver_id], references: [id], onDelete: Cascade)
+  team        Club?    @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@index([team_id, created_at])
+  @@index([sender_id, receiver_id, created_at])
+  @@index([receiver_id, is_read, created_at])
+  @@map("messages")
+}
+
+model NewsEvent {
+  id          String        @id @default(uuid()) @db.Uuid
+  type        NewsEventType @default(TRANSFER)
+  title       String
+  description String
+  /// Données JSON pour enrichir l'affichage (joueur, club, montants, etc.)
+  metadata    Json?
+  created_at  DateTime      @default(now())
+
+  @@index([type, created_at])
+  @@index([created_at])
+  @@map("news_events")
+}
+
+enum NewsEventType {
+  TRANSFER
+  CONTRACT_RENEWAL
+  TOURNAMENT_WIN
+  SEASON_START
+  RECORD_BROKEN
+  OTHER
 }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Swords, Trophy, Calendar, AlertCircle, TrendingUp } from 'lucide-react';
+import { Clock, Swords, Calendar, AlertCircle, TrendingUp } from 'lucide-react';
 import api from '@/lib/api';
+import { getCompTypeConfig } from '@/lib/competition-icons';
 
 interface Team {
   id: string;
@@ -20,6 +21,7 @@ interface Match {
   competition: {
     id: string;
     name: string;
+    type: string;
   } | null;
   myTeamId: string;
 }
@@ -152,10 +154,16 @@ function MatchCard({ match }: { match: Match }) {
       <div className="relative flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           {match.competition ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/8 border border-amber-400/15 text-amber-400 text-[10px] font-bold uppercase tracking-wider">
-              <Trophy className="w-3 h-3" />
-              {match.competition.name}
-            </span>
+            (() => {
+              const ccfg = getCompTypeConfig(match.competition.type);
+              const CIcon = ccfg.Icon;
+              return (
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${ccfg.bg} border ${ccfg.border} ${ccfg.color} text-[10px] font-bold uppercase tracking-wider`}>
+                  <CIcon className="w-3 h-3" />
+                  {match.competition.name}
+                </span>
+              );
+            })()
           ) : (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-500 text-[10px] font-bold uppercase tracking-wider">
               Match Amical

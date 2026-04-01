@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Trophy, Plus, Calendar, Loader2, X, Trash2,
-  CheckCircle2, AlertCircle, Sparkles, Search, Shield, Swords,
+  CheckCircle2, AlertCircle, Search, Shuffle, Shield, Sparkles,
 } from 'lucide-react';
 import api from '@/lib/api';
+import { COMPETITION_TYPE_CONFIG, getCompTypeConfig } from '@/lib/competition-icons';
 
 interface Team {
   id: string;
@@ -19,7 +21,7 @@ interface CompetitionTeam {
 interface Competition {
   id: string;
   name: string;
-  type: 'LEAGUE' | 'CUP';
+  type: 'LEAGUE' | 'CUP' | 'CHAMPIONS';
   start_date: string | null;
   end_date: string | null;
   status: 'DRAFT' | 'ONGOING' | 'FINISHED';
@@ -28,7 +30,7 @@ interface Competition {
   _count?: { matches: number };
 }
 
-type CompetitionType = 'LEAGUE' | 'CUP';
+type CompetitionType = 'LEAGUE' | 'CUP' | 'CHAMPIONS';
 
 const STATUS_CONFIG = {
   DRAFT: {
@@ -55,6 +57,7 @@ const STATUS_CONFIG = {
 } as const;
 
 export default function AdminCompetitions() {
+  const navigate = useNavigate();
   const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,6 +68,9 @@ export default function AdminCompetitions() {
 
   const [name, setName] = useState('');
   const [type, setType] = useState<CompetitionType>('LEAGUE');
+  const minTeams = type === 'CHAMPIONS' ? 8 : 2;
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [teamSearch, setTeamSearch] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -106,6 +112,8 @@ export default function AdminCompetitions() {
   const resetForm = () => {
     setName('');
     setType('LEAGUE');
+    setStartDate('');
+    setEndDate('');
     setSelectedTeams([]);
     setTeamSearch('');
     setError('');
@@ -113,8 +121,20 @@ export default function AdminCompetitions() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedTeams.length < 2) {
-      setError('Sélectionnez au moins 2 équipes.');
+    if (selectedTeams.length < minTeams) {
+      setError(
+        type === 'CHAMPIONS'
+          ? 'Le format Champions requiert au minimum 8 équipes (groupes de 4).'
+          : 'Sélectionnez au moins 2 équipes.',
+      );
+      return;
+    }
+    if (type === 'CHAMPIONS' && selectedTeams.length % 4 !== 0) {
+      setError('Le format Champions requiert un nombre d\'équipes multiple de 4 (8, 12, 16…).');
+      return;
+    }
+    if (new Date(endDate) <= new Date(startDate)) {
+      setError('La date de fin doit être postérieure à la date de début.');
       return;
     }
     setError('');
@@ -123,6 +143,8 @@ export default function AdminCompetitions() {
       await api.post('/admin/competitions', {
         name,
         type,
+        start_date: startDate,
+        end_date: endDate,
         team_ids: selectedTeams,
       });
       setSuccess('Compétition créée avec succès !');
@@ -252,19 +274,21 @@ export default function AdminCompetitions() {
                 className="group relative flex flex-col rounded-2xl border border-amber-400/[0.08] bg-gradient-to-b from-white/[0.03] to-transparent hover:border-amber-400/20 transition-all duration-300 hover:shadow-lg hover:shadow-amber-400/[0.04] overflow-hidden"
               >
                 {/* Type stripe */}
-                <div className={`h-1 w-full ${comp.type === 'LEAGUE' ? 'bg-gradient-to-r from-amber-400/60 to-amber-600/20' : 'bg-gradient-to-r from-purple-400/60 to-purple-600/20'}`} />
+                <div className={`h-1 w-full bg-gradient-to-r ${getCompTypeConfig(comp.type).stripe}`} />
 
                 <div className="p-5 flex flex-col flex-1">
                   {/* Top row: badge + status */}
                   <div className="flex items-center justify-between mb-3">
-                    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg ${
-                      comp.type === 'LEAGUE'
-                        ? 'bg-amber-400/10 text-amber-400 border border-amber-400/15'
-                        : 'bg-purple-400/10 text-purple-400 border border-purple-400/15'
-                    }`}>
-                      {comp.type === 'LEAGUE' ? <Shield className="w-3 h-3" /> : <Swords className="w-3 h-3" />}
-                      {comp.type === 'LEAGUE' ? 'Ligue' : 'Coupe'}
-                    </span>
+                    {(() => {
+                      const tcfg = getCompTypeConfig(comp.type);
+                      const TIcon = tcfg.Icon;
+                      return (
+                        <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg ${tcfg.bg} ${tcfg.color} border ${tcfg.border}`}>
+                          <TIcon className="w-3 h-3" />
+                          {tcfg.label}
+                        </span>
+                      );
+                    })()}
                     <span className={`inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-lg border ${statusCfg.bg} ${statusCfg.border} ${statusCfg.text}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot} animate-pulse`} />
                       {statusCfg.label}
@@ -306,9 +330,9 @@ export default function AdminCompetitions() {
                     </div>
                   )}
 
-                  <div className="mt-auto pt-3 border-t border-white/[0.04] flex items-center gap-2">
-                    {/* Generate Calendar — only for DRAFT */}
-                    {isDraft && (
+                  <div className="mt-auto pt-3 border-t border-white/[0.04] flex items-center gap-2 flex-wrap">
+                    {/* LEAGUE: Generate calendar */}
+                    {isDraft && comp.type === 'LEAGUE' && (
                       <button
                         onClick={() => handleGenerate(comp.id)}
                         disabled={isGenerating}
@@ -320,6 +344,17 @@ export default function AdminCompetitions() {
                           <Sparkles className="w-3.5 h-3.5" />
                         )}
                         Générer le Calendrier
+                      </button>
+                    )}
+
+                    {/* CUP / CHAMPIONS: Draw system */}
+                    {isDraft && (comp.type === 'CUP' || comp.type === 'CHAMPIONS') && (
+                      <button
+                        onClick={() => navigate(`/admin/competitions/${comp.id}/draw`)}
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-400 hover:to-blue-400 transition-all duration-300 shadow-md shadow-purple-500/20 hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.97]"
+                      >
+                        <Shuffle className="w-3.5 h-3.5" />
+                        Tirage au Sort
                       </button>
                     )}
 
@@ -399,31 +434,68 @@ export default function AdminCompetitions() {
               {/* Type */}
               <div>
                 <label className="block text-xs font-medium text-slate-400 mb-1.5">
-                  Type de compétition
+                  Format de compétition
                 </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {(['LEAGUE', 'CUP'] as const).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setType(t)}
-                      className={`relative px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all duration-300 overflow-hidden ${
-                        type === t
-                          ? t === 'LEAGUE'
-                            ? 'border-amber-400/40 bg-amber-400/10 text-amber-400 shadow-lg shadow-amber-400/10'
-                            : 'border-purple-400/40 bg-purple-400/10 text-purple-400 shadow-lg shadow-purple-400/10'
-                          : 'border-white/[0.06] bg-white/[0.02] text-slate-500 hover:text-slate-300 hover:border-white/10 hover:bg-white/[0.04]'
-                      }`}
-                    >
-                      <span className="flex items-center justify-center gap-2">
-                        {t === 'LEAGUE' ? <Shield className="w-4 h-4" /> : <Swords className="w-4 h-4" />}
-                        {t === 'LEAGUE' ? 'Ligue' : 'Coupe'}
-                      </span>
-                      {type === t && (
-                        <span className={`absolute bottom-0 left-0 right-0 h-0.5 ${t === 'LEAGUE' ? 'bg-amber-400' : 'bg-purple-400'}`} />
-                      )}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-3 gap-2">
+                  {(['LEAGUE', 'CUP', 'CHAMPIONS'] as const).map((t) => {
+                    const cfg = COMPETITION_TYPE_CONFIG[t];
+                    const TypeIcon = cfg.Icon;
+                    const isActive = type === t;
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => { setType(t); setSelectedTeams([]); }}
+                        className={`relative px-3 py-3 rounded-xl text-sm font-semibold border-2 transition-all duration-300 overflow-hidden ${
+                          isActive
+                            ? `${cfg.border} ${cfg.bg} ${cfg.color} shadow-lg`
+                            : 'border-white/[0.06] bg-white/[0.02] text-slate-500 hover:text-slate-300 hover:border-white/10 hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        <span className="flex flex-col items-center gap-1">
+                          <TypeIcon className="w-4 h-4" />
+                          <span className="text-[11px]">{cfg.label}</span>
+                        </span>
+                        {isActive && (
+                          <span className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${cfg.stripe}`} />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                {type === 'CHAMPIONS' && (
+                  <p className={`mt-1.5 text-[10px] ${COMPETITION_TYPE_CONFIG.CHAMPIONS.color}/70`}>
+                    Groupes de 4 → élimination directe · Minimum 8 équipes (multiple de 4)
+                  </p>
+                )}
+              </div>
+
+              {/* Dates */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                    Date de début
+                  </label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200 [color-scheme:dark]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                    Date de fin
+                  </label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    required
+                    min={startDate || undefined}
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200 [color-scheme:dark]"
+                  />
                 </div>
               </div>
 
@@ -431,8 +503,8 @@ export default function AdminCompetitions() {
               <div>
                 <label className="block text-xs font-medium text-slate-400 mb-1.5">
                   Équipes participantes
-                  <span className={`ml-1.5 transition-colors duration-200 ${selectedTeams.length >= 2 ? 'text-emerald-400' : 'text-amber-400/60'}`}>
-                    ({selectedTeams.length} sélectionnée{selectedTeams.length !== 1 ? 's' : ''})
+                  <span className={`ml-1.5 transition-colors duration-200 ${selectedTeams.length >= minTeams ? 'text-emerald-400' : 'text-amber-400/60'}`}>
+                    ({selectedTeams.length} sélectionnée{selectedTeams.length !== 1 ? 's' : ''}{type === 'CHAMPIONS' ? ` · min ${minTeams}` : ''})
                   </span>
                 </label>
 
@@ -496,7 +568,7 @@ export default function AdminCompetitions() {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting || selectedTeams.length < 2}
+                  disabled={submitting || selectedTeams.length < minTeams}
                   className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#020617] text-sm font-bold hover:from-amber-300 hover:to-amber-400 disabled:opacity-40 disabled:hover:from-amber-400 disabled:hover:to-amber-500 transition-all duration-300 shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}

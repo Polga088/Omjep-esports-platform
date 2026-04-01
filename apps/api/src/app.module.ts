@@ -2,23 +2,28 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { TeamsModule } from './teams/teams.module';
-import { AuthModule } from './auth/auth.module';
-import { SyncModule } from './sync/sync.module';
-import { AdminModule } from './admin/admin.module';
-import { MatchesModule } from './matches/matches.module';
-import { CompetitionsModule } from './competitions/competitions.module';
-import { InvitationsModule } from './invitations/invitations.module';
-import { FinanceModule } from './finance/finance.module';
-import { TransfersModule } from './transfers/transfers.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { LevelingModule } from './leveling/leveling.module';
-import { GamificationModule } from './gamification/gamification.module';
-import { ClubsModule } from './clubs/clubs.module';
-import { StoreModule } from './store/store.module';
-import { PredictionsModule } from './predictions/predictions.module';
-import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import {
+  AdminModule,
+  AuthModule,
+  ChatModule,
+  ClubsModule,
+  CompetitionsModule,
+  FinanceModule,
+  GamificationModule,
+  InvitationsModule,
+  LevelingModule,
+  MatchesModule,
+  NewsModule,
+  NotificationsModule,
+  PredictionsModule,
+  StatsModule,
+  StoreModule,
+  SubscriptionsModule,
+  SyncModule,
+  TeamsModule,
+  TransfersModule,
+  UsersModule,
+} from './modules';
 
 @Module({
   imports: [
@@ -45,6 +50,9 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
     StoreModule,
     PredictionsModule,
     SubscriptionsModule,
+    NewsModule,
+    StatsModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

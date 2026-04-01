@@ -63,8 +63,15 @@ export default function AdminDashboard() {
         if (matchesRes.status === 'fulfilled') {
           const d = matchesRes.value.data?.data ?? matchesRes.value.data;
           const list = Array.isArray(d) ? d : [];
-          setMatchesScheduled(list.filter((x: { status: string }) => x.status === 'SCHEDULED' || x.status === 'LIVE').length);
-          setMatchesDisputed(list.filter((x: { status: string }) => x.status === 'DISPUTED').length);
+          // Ne compter que les matchs liés à une compétition existante (cohérent avec GET /admin/matches).
+          const withCompetition = list.filter(
+            (x: { status: string; competition?: { id: string } | null }) =>
+              x.competition != null && x.competition.id != null,
+          );
+          setMatchesScheduled(
+            withCompetition.filter((x: { status: string }) => x.status === 'SCHEDULED' || x.status === 'LIVE').length,
+          );
+          setMatchesDisputed(withCompetition.filter((x: { status: string }) => x.status === 'DISPUTED').length);
         }
 
         if (usersRes.status === 'fulfilled') {

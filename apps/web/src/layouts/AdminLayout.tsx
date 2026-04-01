@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard, Trophy, Swords, Shield, Users, ClipboardList,
-  ChevronRight, Menu, X, ArrowLeft, Crown, ShoppingBag,
+  LayoutDashboard, Swords, Shield, Users, ClipboardList,
+  ChevronRight, Menu, X, ArrowLeft, Crown, ShoppingBag, ListOrdered,
 } from 'lucide-react';
 
 const sidebarLinks = [
   { to: '/admin', label: 'Tableau de Bord', icon: LayoutDashboard, exact: true },
-  { to: '/admin/competitions', label: 'Compétitions', icon: Trophy },
+  { to: '/admin/competitions', label: 'Compétitions', icon: ListOrdered },
   { to: '/admin/matches', label: 'Matchs', icon: Swords },
   { to: '/admin/users', label: 'Utilisateurs', icon: Users },
   { to: '/admin/clubs', label: 'Clubs', icon: Shield },

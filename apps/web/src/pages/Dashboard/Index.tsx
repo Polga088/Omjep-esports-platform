@@ -1,8 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Swords, Star, Shield, Crown, Flame, Trophy, ChevronRight, Users, Zap } from 'lucide-react';
+import { Swords, Star, Shield, Crown, Flame, Trophy, ChevronRight, Users, Zap, Coins, TrendingUp, Newspaper, Megaphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '@/lib/api';
+
+// ─── XP helpers ──────────────────────────────────────────────────────────────
+// Formule miroir du backend : level = floor(sqrt(xp / 100)) + 1
+function xpForLevel(level: number) { return (level - 1) ** 2 * 100; }
+function xpForNextLevel(level: number) { return level ** 2 * 100; }
+function xpProgress(xp: number, level: number): number {
+  const base = xpForLevel(level);
+  const next = xpForNextLevel(level);
+  if (next <= base) return 100;
+  return Math.min(100, Math.round(((xp - base) / (next - base)) * 100));
+}
 
 interface MemberSnapshot {
   userId: string;
@@ -20,6 +31,23 @@ interface TeamOverview {
   };
   topScorer: MemberSnapshot | null;
   mvp: MemberSnapshot | null;
+}
+
+interface NewsEvent {
+  id: string;
+  type: 'TRANSFER' | 'CONTRACT_RENEWAL' | 'TOURNAMENT_WIN' | 'SEASON_START' | 'RECORD_BROKEN' | 'OTHER';
+  title: string;
+  description: string;
+  metadata: {
+    playerName?: string;
+    fromTeamName?: string;
+    toTeamName?: string;
+    transferFee?: number;
+    offeredSalary?: number;
+    releaseClauseMet?: boolean;
+    timestamp: string;
+  } | null;
+  created_at: string;
 }
 
 const quickActions = [
@@ -58,32 +86,53 @@ function EmptyDataCard({ title, message }: { title: string; message: string }) {
 }
 
 export default function DashboardIndex() {
-  const { user } = useAuthStore();
+  const { user, patchUser } = useAuthStore();
   const [data, setData] = useState<TeamOverview | null>(null);
+  const [news, setNews] = useState<NewsEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [newsLoading, setNewsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await api.get<TeamOverview>('/teams/my-team/overview');
-        if (!cancelled) setData(res.data);
-      } catch (err: any) {
-        if (!cancelled) {
-          const status = err?.response?.status;
-          if (status === 404) {
-            setError('no-team');
-          } else {
-            setError('generic');
-          }
+        const [overviewRes, meRes, newsRes] = await Promise.allSettled([
+          api.get<TeamOverview>('/teams/my-team/overview'),
+          api.get<{ omjepCoins?: number; jepyCoins?: number; isPremium?: boolean; level?: number; xp?: number }>('/auth/me'),
+          api.get<NewsEvent[]>('/news/transfers?limit=5'),
+        ]);
+        if (cancelled) return;
+
+        if (overviewRes.status === 'fulfilled') setData(overviewRes.value.data);
+        else {
+          const status = (overviewRes.reason as any)?.response?.status;
+          setError(status === 404 ? 'no-team' : 'generic');
+        }
+
+        if (meRes.status === 'fulfilled') {
+          const d = meRes.value.data;
+          patchUser({
+            omjepCoins: typeof d.omjepCoins === 'number' ? d.omjepCoins : undefined,
+            jepyCoins:  typeof d.jepyCoins  === 'number' ? d.jepyCoins  : undefined,
+            isPremium:  typeof d.isPremium   === 'boolean' ? d.isPremium : undefined,
+            level:      typeof d.level       === 'number' ? d.level      : undefined,
+            xp:         typeof d.xp          === 'number' ? d.xp         : undefined,
+          });
+        }
+
+        if (newsRes.status === 'fulfilled') {
+          setNews(newsRes.value.data);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setNewsLoading(false);
+        }
       }
     })();
     return () => { cancelled = true; };
-  }, []);
+  }, [patchUser]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -130,20 +179,75 @@ export default function DashboardIndex() {
       <div className="relative rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8 overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-amber-400/5 blur-[80px] pointer-events-none" />
         <div className="relative">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400/30 to-amber-600/30 flex items-center justify-center text-lg font-bold text-amber-400 uppercase border border-amber-400/20">
-              {user?.ea_persona_name?.charAt(0) ?? 'U'}
+          {/* Top row: avatar + name + coins */}
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="relative w-12 h-12 shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400/30 to-amber-600/30 flex items-center justify-center text-lg font-bold text-amber-400 uppercase border border-amber-400/20">
+                  {user?.ea_persona_name?.charAt(0) ?? 'U'}
+                </div>
+                {user?.level !== undefined && (
+                  <span className="absolute -bottom-1.5 -right-1.5 min-w-[22px] h-[22px] px-1 rounded-md bg-gradient-to-br from-amber-400 to-amber-600 text-[#020617] text-[10px] font-black flex items-center justify-center shadow-sm shadow-amber-400/30">
+                    {user.level}
+                  </span>
+                )}
+              </div>
+              <div>
+                <p className="text-slate-500 text-sm">{greeting()},</p>
+                <h1 className="font-display font-bold text-2xl text-white leading-tight">
+                  {user?.ea_persona_name}
+                </h1>
+              </div>
             </div>
-            <div>
-              <p className="text-slate-500 text-sm">{greeting()},</p>
-              <h1 className="font-display font-bold text-2xl text-white">
-                {user?.ea_persona_name}
-              </h1>
+
+            {/* Wallet pills */}
+            <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
+              {user?.omjepCoins !== undefined && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400/10 border border-amber-400/20">
+                  <Coins className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-sm font-bold text-amber-400 tabular-nums">
+                    {user.omjepCoins.toLocaleString('fr-FR')}
+                  </span>
+                  <span className="text-[10px] text-amber-400/60 font-semibold">OC</span>
+                </div>
+              )}
+              {user?.jepyCoins !== undefined && user.jepyCoins > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-400/10 border border-purple-400/20">
+                  <Zap className="w-3.5 h-3.5 text-purple-400" />
+                  <span className="text-sm font-bold text-purple-400 tabular-nums">
+                    {user.jepyCoins.toLocaleString('fr-FR')}
+                  </span>
+                  <span className="text-[10px] text-purple-400/60 font-semibold">JP</span>
+                </div>
+              )}
             </div>
           </div>
-          <p className="text-slate-400 text-sm">
-            Centre de commandement — OMJEP
-          </p>
+
+          {/* XP progress bar */}
+          {user?.xp !== undefined && user?.level !== undefined && (
+            <div className="mb-4 space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="flex items-center gap-1.5 text-slate-500">
+                  <TrendingUp className="w-3.5 h-3.5 text-amber-400/60" />
+                  Niveau {user.level}
+                </span>
+                <span className="text-slate-600 tabular-nums">
+                  {user.xp.toLocaleString('fr-FR')} / {xpForNextLevel(user.level).toLocaleString('fr-FR')} XP
+                </span>
+              </div>
+              <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-700"
+                  style={{ width: `${xpProgress(user.xp, user.level)}%` }}
+                />
+              </div>
+              <p className="text-[10px] text-slate-600">
+                {xpForNextLevel(user.level) - user.xp} XP avant le niveau {user.level + 1}
+              </p>
+            </div>
+          )}
+
+          <p className="text-slate-400 text-sm">Centre de commandement — OMJEP</p>
           {user?.role && (
             <span className="inline-block mt-3 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-medium">
               {user.role === 'MANAGER'
@@ -354,6 +458,76 @@ export default function DashboardIndex() {
           ) : null}
         </div>
       )}
+
+      {/* Fil d'actualité Mercato */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+            <Megaphone className="w-4 h-4" />
+            Journal du Mercato
+          </h2>
+          <Link to="/dashboard/transfers" className="text-xs text-[#FFD700] hover:underline">
+            Voir tout →
+          </Link>
+        </div>
+
+        {newsLoading ? (
+          <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-6">
+            <SkeletonPulse className="w-3/4 h-4 mb-3" />
+            <SkeletonPulse className="w-1/2 h-4 mb-3" />
+            <SkeletonPulse className="w-2/3 h-4" />
+          </div>
+        ) : news.length === 0 ? (
+          <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-8 text-center">
+            <Newspaper className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+            <p className="text-sm text-slate-500">Aucune actualité pour le moment.</p>
+            <p className="text-xs text-slate-600 mt-1">Les transferts officialisés apparaîtront ici.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {news.map((item) => (
+              <div
+                key={item.id}
+                className={`rounded-xl border p-4 transition-all hover:bg-white/[0.04] ${
+                  item.type === 'TRANSFER' && item.metadata?.releaseClauseMet
+                    ? 'border-purple-500/20 bg-purple-500/5'
+                    : 'border-white/5 bg-white/[0.02]'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    item.type === 'TRANSFER' && item.metadata?.releaseClauseMet
+                      ? 'bg-purple-500/15 border border-purple-500/25'
+                      : 'bg-emerald-500/15 border border-emerald-500/25'
+                  }`}>
+                    {item.type === 'TRANSFER' && item.metadata?.releaseClauseMet ? (
+                      <Zap className="w-5 h-5 text-purple-400" />
+                    ) : (
+                      <Newspaper className="w-5 h-5 text-emerald-400" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-white">
+                      {item.title}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      {item.description}
+                    </p>
+                    <p className="text-[10px] text-slate-600 mt-2">
+                      {new Date(item.created_at).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Quick Actions */}
       <div>

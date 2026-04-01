@@ -4,6 +4,10 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    /** Évite les erreurs de pré-bundle sur le workspace `@omjep/shared` après changement d’exports. */
+    include: ['@omjep/shared'],
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -15,6 +19,11 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
+      },
+      '/socket.io': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        ws: true,
       },
     },
   },

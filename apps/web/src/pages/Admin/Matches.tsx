@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import {
   Swords, Loader2, X, CheckCircle2, AlertCircle,
-  Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal, Globe,
+  Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal, Globe, Pencil,
+  ShieldAlert, CalendarClock,
 } from 'lucide-react';
 import api from '@/lib/api';
 import SyncPreviewModal from '@/components/SyncPreviewModal';
@@ -117,6 +118,18 @@ export default function AdminMatches() {
   const [success, setSuccess] = useState('');
   const [syncPreviewMatch, setSyncPreviewMatch] = useState<Match | null>(null);
   const [syncedMatchIds, setSyncedMatchIds] = useState<Set<string>>(new Set());
+
+  // Correction rétroactive
+  const [correctModal, setCorrectModal] = useState<Match | null>(null);
+  const [correctHome, setCorrectHome] = useState('');
+  const [correctAway, setCorrectAway] = useState('');
+  const [correcting, setCorrecting] = useState(false);
+
+  // Litige & reprogrammation
+  const [disputingId, setDisputingId] = useState<string | null>(null);
+  const [rescheduleModal, setRescheduleModal] = useState<Match | null>(null);
+  const [scheduledAt, setScheduledAt] = useState('');
+  const [rescheduling, setRescheduling] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -245,6 +258,86 @@ export default function AdminMatches() {
       setError(err.response?.data?.message ?? 'Erreur lors de la validation.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const openCorrectModal = (match: Match) => {
+    setCorrectModal(match);
+    setCorrectHome(String(match.home_score ?? ''));
+    setCorrectAway(String(match.away_score ?? ''));
+    setError('');
+  };
+
+  const handleCorrectScore = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!correctModal) return;
+
+    const hs = parseInt(correctHome, 10);
+    const as = parseInt(correctAway, 10);
+    if (isNaN(hs) || isNaN(as) || hs < 0 || as < 0) {
+      setError('Les scores doivent être des nombres positifs.');
+      return;
+    }
+
+    setCorrecting(true);
+    setError('');
+    try {
+      const res = await api.patch(`/admin/matches/${correctModal.id}/correct-score`, {
+        home_score: hs,
+        away_score: as,
+      });
+      setSuccess(res.data.message ?? 'Score corrigé avec succès !');
+      setCorrectModal(null);
+      await fetchData();
+      setTimeout(() => setSuccess(''), 5000);
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? 'Erreur lors de la correction.');
+    } finally {
+      setCorrecting(false);
+    }
+  };
+
+  const handleDisputeMatch = async (match: Match, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!window.confirm(`Confirmer le litige pour "${match.homeTeam.name} vs ${match.awayTeam.name}" ?`)) return;
+    setDisputingId(match.id);
+    setError('');
+    try {
+      const res = await api.patch(`/admin/matches/${match.id}/dispute`);
+      setSuccess(res.data.message ?? 'Match placé en litige.');
+      await fetchData();
+      setTimeout(() => setSuccess(''), 5000);
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? 'Erreur lors du litige.');
+    } finally {
+      setDisputingId(null);
+    }
+  };
+
+  const openRescheduleModal = (match: Match, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRescheduleModal(match);
+    setScheduledAt('');
+    setError('');
+  };
+
+  const handleReschedule = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!rescheduleModal || !scheduledAt) return;
+    setRescheduling(true);
+    setError('');
+    try {
+      const res = await api.patch(`/admin/matches/${rescheduleModal.id}/reschedule`, {
+        scheduled_at: new Date(scheduledAt).toISOString(),
+      });
+      setSuccess(res.data.message ?? 'Match reprogrammé.');
+      setRescheduleModal(null);
+      await fetchData();
+      setTimeout(() => setSuccess(''), 5000);
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? 'Erreur lors de la reprogrammation.');
+    } finally {
+      setRescheduling(false);
     }
   };
 
@@ -388,6 +481,8 @@ export default function AdminMatches() {
           {filtered.map((match) => {
             const statusCfg = STATUS_CONFIG[match.status] ?? STATUS_CONFIG.SCHEDULED;
             const isScheduled = match.status === 'SCHEDULED';
+            const isPlayed = match.status === 'PLAYED';
+            const isDisputed = match.status === 'DISPUTED';
 
             return (
               <div
@@ -483,6 +578,48 @@ export default function AdminMatches() {
                   >
                     <Globe className="w-4 h-4" />
                     <span className="hidden xl:inline text-[11px] font-semibold">ProClubs.io</span>
+                  </button>
+                )}
+
+                {/* Score correction button — PLAYED matches only */}
+                {isPlayed && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); openCorrectModal(match); }}
+                    title="Corriger le score"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-orange-400/15 bg-orange-400/[0.04] text-orange-400/70 hover:text-orange-400 hover:border-orange-400/30 hover:bg-orange-400/10 transition-all duration-200 shrink-0"
+                  >
+                    <Pencil className="w-4 h-4" />
+                    <span className="hidden xl:inline text-[11px] font-semibold">Corriger</span>
+                  </button>
+                )}
+
+                {/* Dispute button — PLAYED or SCHEDULED matches */}
+                {(isPlayed || isScheduled) && (
+                  <button
+                    type="button"
+                    disabled={disputingId === match.id}
+                    onClick={(e) => handleDisputeMatch(match, e)}
+                    title="Signaler un litige"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-500/15 bg-red-500/[0.04] text-red-400/70 hover:text-red-400 hover:border-red-500/30 hover:bg-red-500/10 transition-all duration-200 shrink-0 disabled:opacity-40 disabled:pointer-events-none"
+                  >
+                    {disputingId === match.id
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : <ShieldAlert className="w-4 h-4" />}
+                    <span className="hidden xl:inline text-[11px] font-semibold">Litige</span>
+                  </button>
+                )}
+
+                {/* Reschedule button — DISPUTED matches only */}
+                {isDisputed && (
+                  <button
+                    type="button"
+                    onClick={(e) => openRescheduleModal(match, e)}
+                    title="Reprogrammer le match"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-cyan-400/15 bg-cyan-400/[0.04] text-cyan-400/70 hover:text-cyan-400 hover:border-cyan-400/30 hover:bg-cyan-400/10 transition-all duration-200 shrink-0"
+                  >
+                    <CalendarClock className="w-4 h-4" />
+                    <span className="hidden xl:inline text-[11px] font-semibold">Reprogrammer</span>
                   </button>
                 )}
 
@@ -720,6 +857,190 @@ export default function AdminMatches() {
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   Valider le Résultat
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Score Correction Modal (PLAYED matches) ── */}
+      {correctModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setCorrectModal(null)}
+          />
+          <div className="relative w-full max-w-sm bg-[#0a0f1e] border border-orange-400/20 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden animate-[slideUp_0.3s_ease-out]">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-orange-400/10 bg-gradient-to-r from-orange-400/[0.04] to-transparent">
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
+                <Pencil className="w-4 h-4 text-orange-400" />
+                Correction de Score
+              </h2>
+              <button
+                onClick={() => setCorrectModal(null)}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all duration-200 hover:rotate-90"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCorrectScore} className="p-6 space-y-5">
+              {error && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  {error}
+                </div>
+              )}
+
+              {/* Context */}
+              <div className="text-center space-y-1">
+                {correctModal.competition && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.05] text-[11px] text-slate-500 font-medium">
+                    <Trophy className="w-3 h-3 text-orange-400/50" />
+                    {correctModal.competition.name}
+                    {correctModal.round && <span className="text-slate-600">· {correctModal.round}</span>}
+                  </span>
+                )}
+                <p className="text-[11px] text-orange-400/60 font-medium">
+                  Score actuel : {correctModal.home_score} – {correctModal.away_score}
+                </p>
+              </div>
+
+              {/* Score inputs */}
+              <div className="flex items-center gap-4">
+                <div className="flex-1 text-center space-y-2">
+                  <p className="text-xs font-semibold text-white truncate">{correctModal.homeTeam.name}</p>
+                  <input
+                    type="number"
+                    min="0"
+                    value={correctHome}
+                    onChange={(e) => setCorrectHome(e.target.value)}
+                    required
+                    placeholder="0"
+                    className="w-full text-center text-3xl font-black py-4 rounded-xl bg-white/[0.04] border border-orange-400/15 text-white placeholder:text-slate-700 focus:outline-none focus:border-orange-400/40 focus:ring-1 focus:ring-orange-400/20 transition-all duration-200 tabular-nums"
+                  />
+                </div>
+                <span className="text-lg font-bold text-slate-600 mt-6">–</span>
+                <div className="flex-1 text-center space-y-2">
+                  <p className="text-xs font-semibold text-white truncate">{correctModal.awayTeam.name}</p>
+                  <input
+                    type="number"
+                    min="0"
+                    value={correctAway}
+                    onChange={(e) => setCorrectAway(e.target.value)}
+                    required
+                    placeholder="0"
+                    className="w-full text-center text-3xl font-black py-4 rounded-xl bg-white/[0.04] border border-orange-400/15 text-white placeholder:text-slate-700 focus:outline-none focus:border-orange-400/40 focus:ring-1 focus:ring-orange-400/20 transition-all duration-200 tabular-nums"
+                  />
+                </div>
+              </div>
+
+              <p className="text-[10px] text-slate-600 text-center">
+                Le classement sera recalculé automatiquement.
+              </p>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setCorrectModal(null)}
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-all duration-200 active:scale-[0.97]"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={correcting}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-400 to-orange-500 text-[#020617] text-sm font-bold hover:from-orange-300 hover:to-orange-400 disabled:opacity-40 transition-all duration-300 shadow-lg shadow-orange-400/20 hover:shadow-orange-400/40 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  {correcting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  Confirmer la Correction
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Reschedule Modal (DISPUTED matches) ── */}
+      {rescheduleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setRescheduleModal(null)}
+          />
+          <div className="relative w-full max-w-sm bg-[#0a0f1e] border border-cyan-400/20 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden animate-[slideUp_0.3s_ease-out]">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-cyan-400/10 bg-gradient-to-r from-cyan-400/[0.04] to-transparent">
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
+                <CalendarClock className="w-4 h-4 text-cyan-400" />
+                Reprogrammer le Match
+              </h2>
+              <button
+                onClick={() => setRescheduleModal(null)}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all duration-200 hover:rotate-90"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleReschedule} className="p-6 space-y-5">
+              {error && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  {error}
+                </div>
+              )}
+
+              {/* Match context */}
+              <div className="flex items-center justify-center gap-3 py-3 rounded-xl bg-white/[0.02] border border-red-500/10">
+                <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-red-500/10 border border-red-500/15 text-[10px] font-bold text-red-400 uppercase tracking-wider">
+                  <ShieldAlert className="w-3 h-3" />
+                  Litige
+                </span>
+                <span className="text-sm font-semibold text-white truncate">
+                  {rescheduleModal.homeTeam.name} <span className="text-slate-600 font-normal">vs</span> {rescheduleModal.awayTeam.name}
+                </span>
+              </div>
+
+              {/* Datetime picker */}
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                  Nouvelle date et heure
+                </label>
+                <input
+                  type="datetime-local"
+                  value={scheduledAt}
+                  onChange={(e) => setScheduledAt(e.target.value)}
+                  required
+                  min={new Date().toISOString().slice(0, 16)}
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-cyan-400/15 text-sm text-white focus:outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 transition-all duration-200 [color-scheme:dark]"
+                />
+              </div>
+
+              <p className="text-[10px] text-slate-600 text-center">
+                Le statut repassera à SCHEDULED. Les scores seront remis à zéro.
+                <br />Les managers des deux clubs seront notifiés automatiquement.
+              </p>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setRescheduleModal(null)}
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-all duration-200 active:scale-[0.97]"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={rescheduling || !scheduledAt}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-500 text-[#020617] text-sm font-bold hover:from-cyan-300 hover:to-cyan-400 disabled:opacity-40 transition-all duration-300 shadow-lg shadow-cyan-400/20 hover:shadow-cyan-400/40 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  {rescheduling && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  Confirmer
                 </button>
               </div>
             </form>

@@ -113,6 +113,17 @@ export type SubscriptionPlan = $Result.DefaultSelection<Prisma.$SubscriptionPlan
  * 
  */
 export type UserSubscription = $Result.DefaultSelection<Prisma.$UserSubscriptionPayload>
+/**
+ * Model Message
+ * Fil d'actualité du Mercato et événements importants
+ * Chat temps réel : salon club (team_id) ou MP (receiver_id + pas de team_id).
+ */
+export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
+/**
+ * Model NewsEvent
+ * 
+ */
+export type NewsEvent = $Result.DefaultSelection<Prisma.$NewsEventPayload>
 
 /**
  * Enums
@@ -178,7 +189,8 @@ export type MatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus]
 
 export const CompetitionType: {
   LEAGUE: 'LEAGUE',
-  CUP: 'CUP'
+  CUP: 'CUP',
+  CHAMPIONS: 'CHAMPIONS'
 };
 
 export type CompetitionType = (typeof CompetitionType)[keyof typeof CompetitionType]
@@ -201,6 +213,33 @@ export const TransferStatus: {
 };
 
 export type TransferStatus = (typeof TransferStatus)[keyof typeof TransferStatus]
+
+
+export const TransferOfferStatus: {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  COUNTER_OFFER: 'COUNTER_OFFER',
+  CANCELLED: 'CANCELLED'
+};
+
+export type TransferOfferStatus = (typeof TransferOfferStatus)[keyof typeof TransferOfferStatus]
+
+
+export const NegotiationTurn: {
+  PLAYER: 'PLAYER',
+  BUYING_CLUB: 'BUYING_CLUB'
+};
+
+export type NegotiationTurn = (typeof NegotiationTurn)[keyof typeof NegotiationTurn]
+
+
+export const ContractStatus: {
+  ACTIVE: 'ACTIVE',
+  TERMINATED: 'TERMINATED'
+};
+
+export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus]
 
 
 export const InvitationStatus: {
@@ -271,6 +310,18 @@ export const UserSubscriptionStatus: {
 
 export type UserSubscriptionStatus = (typeof UserSubscriptionStatus)[keyof typeof UserSubscriptionStatus]
 
+
+export const NewsEventType: {
+  TRANSFER: 'TRANSFER',
+  CONTRACT_RENEWAL: 'CONTRACT_RENEWAL',
+  TOURNAMENT_WIN: 'TOURNAMENT_WIN',
+  SEASON_START: 'SEASON_START',
+  RECORD_BROKEN: 'RECORD_BROKEN',
+  OTHER: 'OTHER'
+};
+
+export type NewsEventType = (typeof NewsEventType)[keyof typeof NewsEventType]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -305,6 +356,18 @@ export type TransferStatus = $Enums.TransferStatus
 
 export const TransferStatus: typeof $Enums.TransferStatus
 
+export type TransferOfferStatus = $Enums.TransferOfferStatus
+
+export const TransferOfferStatus: typeof $Enums.TransferOfferStatus
+
+export type NegotiationTurn = $Enums.NegotiationTurn
+
+export const NegotiationTurn: typeof $Enums.NegotiationTurn
+
+export type ContractStatus = $Enums.ContractStatus
+
+export const ContractStatus: typeof $Enums.ContractStatus
+
 export type InvitationStatus = $Enums.InvitationStatus
 
 export const InvitationStatus: typeof $Enums.InvitationStatus
@@ -336,6 +399,10 @@ export const SubscriptionPlanCode: typeof $Enums.SubscriptionPlanCode
 export type UserSubscriptionStatus = $Enums.UserSubscriptionStatus
 
 export const UserSubscriptionStatus: typeof $Enums.UserSubscriptionStatus
+
+export type NewsEventType = $Enums.NewsEventType
+
+export const NewsEventType: typeof $Enums.NewsEventType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -654,6 +721,26 @@ export class PrismaClient<
     * ```
     */
   get userSubscription(): Prisma.UserSubscriptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.message`: Exposes CRUD operations for the **Message** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Messages
+    * const messages = await prisma.message.findMany()
+    * ```
+    */
+  get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.newsEvent`: Exposes CRUD operations for the **NewsEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NewsEvents
+    * const newsEvents = await prisma.newsEvent.findMany()
+    * ```
+    */
+  get newsEvent(): Prisma.NewsEventDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1114,7 +1201,9 @@ export namespace Prisma {
     UserInventory: 'UserInventory',
     Prediction: 'Prediction',
     SubscriptionPlan: 'SubscriptionPlan',
-    UserSubscription: 'UserSubscription'
+    UserSubscription: 'UserSubscription',
+    Message: 'Message',
+    NewsEvent: 'NewsEvent'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1133,7 +1222,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "club" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription"
+      modelProps: "user" | "club" | "teamMember" | "playerStats" | "competition" | "competitionTeam" | "match" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription" | "message" | "newsEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2617,6 +2706,154 @@ export namespace Prisma {
           }
         }
       }
+      Message: {
+        payload: Prisma.$MessagePayload<ExtArgs>
+        fields: Prisma.MessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findFirst: {
+            args: Prisma.MessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findMany: {
+            args: Prisma.MessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          create: {
+            args: Prisma.MessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          createMany: {
+            args: Prisma.MessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          delete: {
+            args: Prisma.MessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          update: {
+            args: Prisma.MessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          aggregate: {
+            args: Prisma.MessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessage>
+          }
+          groupBy: {
+            args: Prisma.MessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      NewsEvent: {
+        payload: Prisma.$NewsEventPayload<ExtArgs>
+        fields: Prisma.NewsEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NewsEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NewsEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>
+          }
+          findFirst: {
+            args: Prisma.NewsEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NewsEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>
+          }
+          findMany: {
+            args: Prisma.NewsEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>[]
+          }
+          create: {
+            args: Prisma.NewsEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>
+          }
+          createMany: {
+            args: Prisma.NewsEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NewsEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>[]
+          }
+          delete: {
+            args: Prisma.NewsEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>
+          }
+          update: {
+            args: Prisma.NewsEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.NewsEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NewsEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NewsEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.NewsEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NewsEventPayload>
+          }
+          aggregate: {
+            args: Prisma.NewsEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNewsEvent>
+          }
+          groupBy: {
+            args: Prisma.NewsEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NewsEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NewsEventCountArgs<ExtArgs>
+            result: $Utils.Optional<NewsEventCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2733,6 +2970,8 @@ export namespace Prisma {
     prediction?: PredictionOmit
     subscriptionPlan?: SubscriptionPlanOmit
     userSubscription?: UserSubscriptionOmit
+    message?: MessageOmit
+    newsEvent?: NewsEventOmit
   }
 
   /* Types for Logging */
@@ -2826,6 +3065,8 @@ export namespace Prisma {
     inventory: number
     predictions: number
     subscriptions: number
+    messagesSent: number
+    messagesReceived: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2842,6 +3083,8 @@ export namespace Prisma {
     inventory?: boolean | UserCountOutputTypeCountInventoryArgs
     predictions?: boolean | UserCountOutputTypeCountPredictionsArgs
     subscriptions?: boolean | UserCountOutputTypeCountSubscriptionsArgs
+    messagesSent?: boolean | UserCountOutputTypeCountMessagesSentArgs
+    messagesReceived?: boolean | UserCountOutputTypeCountMessagesReceivedArgs
   }
 
   // Custom InputTypes
@@ -2946,6 +3189,20 @@ export namespace Prisma {
     where?: UserSubscriptionWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMessagesSentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMessagesReceivedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+  }
+
 
   /**
    * Count Type ClubCountOutputType
@@ -2964,6 +3221,7 @@ export namespace Prisma {
     sentOffers: number
     receivedOffers: number
     transferRequests: number
+    messages: number
   }
 
   export type ClubCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2979,6 +3237,7 @@ export namespace Prisma {
     sentOffers?: boolean | ClubCountOutputTypeCountSentOffersArgs
     receivedOffers?: boolean | ClubCountOutputTypeCountReceivedOffersArgs
     transferRequests?: boolean | ClubCountOutputTypeCountTransferRequestsArgs
+    messages?: boolean | ClubCountOutputTypeCountMessagesArgs
   }
 
   // Custom InputTypes
@@ -3074,6 +3333,13 @@ export namespace Prisma {
    */
   export type ClubCountOutputTypeCountTransferRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransferRequestWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
   }
 
 
@@ -3544,6 +3810,8 @@ export namespace Prisma {
     inventory?: boolean | User$inventoryArgs<ExtArgs>
     predictions?: boolean | User$predictionsArgs<ExtArgs>
     subscriptions?: boolean | User$subscriptionsArgs<ExtArgs>
+    messagesSent?: boolean | User$messagesSentArgs<ExtArgs>
+    messagesReceived?: boolean | User$messagesReceivedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3620,6 +3888,8 @@ export namespace Prisma {
     inventory?: boolean | User$inventoryArgs<ExtArgs>
     predictions?: boolean | User$predictionsArgs<ExtArgs>
     subscriptions?: boolean | User$subscriptionsArgs<ExtArgs>
+    messagesSent?: boolean | User$messagesSentArgs<ExtArgs>
+    messagesReceived?: boolean | User$messagesReceivedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3642,6 +3912,8 @@ export namespace Prisma {
       inventory: Prisma.$UserInventoryPayload<ExtArgs>[]
       predictions: Prisma.$PredictionPayload<ExtArgs>[]
       subscriptions: Prisma.$UserSubscriptionPayload<ExtArgs>[]
+      messagesSent: Prisma.$MessagePayload<ExtArgs>[]
+      messagesReceived: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4068,6 +4340,8 @@ export namespace Prisma {
     inventory<T extends User$inventoryArgs<ExtArgs> = {}>(args?: Subset<T, User$inventoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInventoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     predictions<T extends User$predictionsArgs<ExtArgs> = {}>(args?: Subset<T, User$predictionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PredictionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     subscriptions<T extends User$subscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, User$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    messagesSent<T extends User$messagesSentArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesSentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    messagesReceived<T extends User$messagesReceivedArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4832,6 +5106,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.messagesSent
+   */
+  export type User$messagesSentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * User.messagesReceived
+   */
+  export type User$messagesReceivedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5141,6 +5463,7 @@ export namespace Prisma {
     sentOffers?: boolean | Club$sentOffersArgs<ExtArgs>
     receivedOffers?: boolean | Club$receivedOffersArgs<ExtArgs>
     transferRequests?: boolean | Club$transferRequestsArgs<ExtArgs>
+    messages?: boolean | Club$messagesArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -5212,6 +5535,7 @@ export namespace Prisma {
     sentOffers?: boolean | Club$sentOffersArgs<ExtArgs>
     receivedOffers?: boolean | Club$receivedOffersArgs<ExtArgs>
     transferRequests?: boolean | Club$transferRequestsArgs<ExtArgs>
+    messages?: boolean | Club$messagesArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClubIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5237,6 +5561,7 @@ export namespace Prisma {
       sentOffers: Prisma.$TransferOfferPayload<ExtArgs>[]
       receivedOffers: Prisma.$TransferOfferPayload<ExtArgs>[]
       transferRequests: Prisma.$TransferRequestPayload<ExtArgs>[]
+      messages: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5660,6 +5985,7 @@ export namespace Prisma {
     sentOffers<T extends Club$sentOffersArgs<ExtArgs> = {}>(args?: Subset<T, Club$sentOffersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedOffers<T extends Club$receivedOffersArgs<ExtArgs> = {}>(args?: Subset<T, Club$receivedOffersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transferRequests<T extends Club$transferRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Club$transferRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    messages<T extends Club$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Club$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6403,6 +6729,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransferRequestScalarFieldEnum | TransferRequestScalarFieldEnum[]
+  }
+
+  /**
+   * Club.messages
+   */
+  export type Club$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
   }
 
   /**
@@ -8778,8 +9128,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status: $Enums.CompetitionStatus
-    start_date: Date | null
-    end_date: Date | null
+    start_date: Date
+    end_date: Date
     created_at: Date
     _count: CompetitionCountAggregateOutputType | null
     _min: CompetitionMinAggregateOutputType | null
@@ -8863,8 +9213,8 @@ export namespace Prisma {
       name: string
       type: $Enums.CompetitionType
       status: $Enums.CompetitionStatus
-      start_date: Date | null
-      end_date: Date | null
+      start_date: Date
+      end_date: Date
       created_at: Date
     }, ExtArgs["result"]["competition"]>
     composites: {}
@@ -10823,6 +11173,7 @@ export namespace Prisma {
     away_score: number | null
     status: $Enums.MatchStatus | null
     played_at: Date | null
+    scheduled_at: Date | null
     competition_id: string | null
     round: string | null
   }
@@ -10836,6 +11187,7 @@ export namespace Prisma {
     away_score: number | null
     status: $Enums.MatchStatus | null
     played_at: Date | null
+    scheduled_at: Date | null
     competition_id: string | null
     round: string | null
   }
@@ -10849,6 +11201,7 @@ export namespace Prisma {
     away_score: number
     status: number
     played_at: number
+    scheduled_at: number
     competition_id: number
     round: number
     _all: number
@@ -10874,6 +11227,7 @@ export namespace Prisma {
     away_score?: true
     status?: true
     played_at?: true
+    scheduled_at?: true
     competition_id?: true
     round?: true
   }
@@ -10887,6 +11241,7 @@ export namespace Prisma {
     away_score?: true
     status?: true
     played_at?: true
+    scheduled_at?: true
     competition_id?: true
     round?: true
   }
@@ -10900,6 +11255,7 @@ export namespace Prisma {
     away_score?: true
     status?: true
     played_at?: true
+    scheduled_at?: true
     competition_id?: true
     round?: true
     _all?: true
@@ -11000,6 +11356,7 @@ export namespace Prisma {
     away_score: number | null
     status: $Enums.MatchStatus
     played_at: Date | null
+    scheduled_at: Date | null
     competition_id: string | null
     round: string | null
     _count: MatchCountAggregateOutputType | null
@@ -11032,6 +11389,7 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
+    scheduled_at?: boolean
     competition_id?: boolean
     round?: boolean
     events?: boolean | Match$eventsArgs<ExtArgs>
@@ -11052,6 +11410,7 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
+    scheduled_at?: boolean
     competition_id?: boolean
     round?: boolean
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -11068,6 +11427,7 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
+    scheduled_at?: boolean
     competition_id?: boolean
     round?: boolean
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -11084,11 +11444,12 @@ export namespace Prisma {
     away_score?: boolean
     status?: boolean
     played_at?: boolean
+    scheduled_at?: boolean
     competition_id?: boolean
     round?: boolean
   }
 
-  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at" | "competition_id" | "round", ExtArgs["result"]["match"]>
+  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at" | "scheduled_at" | "competition_id" | "round", ExtArgs["result"]["match"]>
   export type MatchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     events?: boolean | Match$eventsArgs<ExtArgs>
     scoreReports?: boolean | Match$scoreReportsArgs<ExtArgs>
@@ -11128,6 +11489,7 @@ export namespace Prisma {
       away_score: number | null
       status: $Enums.MatchStatus
       played_at: Date | null
+      scheduled_at: Date | null
       competition_id: string | null
       round: string | null
     }, ExtArgs["result"]["match"]>
@@ -11567,6 +11929,7 @@ export namespace Prisma {
     readonly away_score: FieldRef<"Match", 'Int'>
     readonly status: FieldRef<"Match", 'MatchStatus'>
     readonly played_at: FieldRef<"Match", 'DateTime'>
+    readonly scheduled_at: FieldRef<"Match", 'DateTime'>
     readonly competition_id: FieldRef<"Match", 'String'>
     readonly round: FieldRef<"Match", 'String'>
   }
@@ -16559,7 +16922,9 @@ export namespace Prisma {
     user_id: string | null
     salary: number | null
     release_clause: number | null
-    expires_at: Date | null
+    start_date: Date | null
+    end_date: Date | null
+    status: $Enums.ContractStatus | null
   }
 
   export type ContractMaxAggregateOutputType = {
@@ -16568,7 +16933,9 @@ export namespace Prisma {
     user_id: string | null
     salary: number | null
     release_clause: number | null
-    expires_at: Date | null
+    start_date: Date | null
+    end_date: Date | null
+    status: $Enums.ContractStatus | null
   }
 
   export type ContractCountAggregateOutputType = {
@@ -16577,7 +16944,9 @@ export namespace Prisma {
     user_id: number
     salary: number
     release_clause: number
-    expires_at: number
+    start_date: number
+    end_date: number
+    status: number
     _all: number
   }
 
@@ -16598,7 +16967,9 @@ export namespace Prisma {
     user_id?: true
     salary?: true
     release_clause?: true
-    expires_at?: true
+    start_date?: true
+    end_date?: true
+    status?: true
   }
 
   export type ContractMaxAggregateInputType = {
@@ -16607,7 +16978,9 @@ export namespace Prisma {
     user_id?: true
     salary?: true
     release_clause?: true
-    expires_at?: true
+    start_date?: true
+    end_date?: true
+    status?: true
   }
 
   export type ContractCountAggregateInputType = {
@@ -16616,7 +16989,9 @@ export namespace Prisma {
     user_id?: true
     salary?: true
     release_clause?: true
-    expires_at?: true
+    start_date?: true
+    end_date?: true
+    status?: true
     _all?: true
   }
 
@@ -16712,7 +17087,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
-    expires_at: Date
+    start_date: Date
+    end_date: Date
+    status: $Enums.ContractStatus
     _count: ContractCountAggregateOutputType | null
     _avg: ContractAvgAggregateOutputType | null
     _sum: ContractSumAggregateOutputType | null
@@ -16740,7 +17117,9 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
-    expires_at?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
@@ -16751,7 +17130,9 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
-    expires_at?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
@@ -16762,7 +17143,9 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
-    expires_at?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
@@ -16773,10 +17156,12 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
-    expires_at?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
   }
 
-  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "user_id" | "salary" | "release_clause" | "expires_at", ExtArgs["result"]["contract"]>
+  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "user_id" | "salary" | "release_clause" | "start_date" | "end_date" | "status", ExtArgs["result"]["contract"]>
   export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -16802,7 +17187,9 @@ export namespace Prisma {
       user_id: string
       salary: number
       release_clause: number
-      expires_at: Date
+      start_date: Date
+      end_date: Date
+      status: $Enums.ContractStatus
     }, ExtArgs["result"]["contract"]>
     composites: {}
   }
@@ -17233,7 +17620,9 @@ export namespace Prisma {
     readonly user_id: FieldRef<"Contract", 'String'>
     readonly salary: FieldRef<"Contract", 'Float'>
     readonly release_clause: FieldRef<"Contract", 'Float'>
-    readonly expires_at: FieldRef<"Contract", 'DateTime'>
+    readonly start_date: FieldRef<"Contract", 'DateTime'>
+    readonly end_date: FieldRef<"Contract", 'DateTime'>
+    readonly status: FieldRef<"Contract", 'ContractStatus'>
   }
     
 
@@ -18766,11 +19155,17 @@ export namespace Prisma {
   }
 
   export type TransferOfferAvgAggregateOutputType = {
-    amount: number | null
+    offered_salary: number | null
+    offered_clause: number | null
+    transfer_fee: number | null
+    duration_months: number | null
   }
 
   export type TransferOfferSumAggregateOutputType = {
-    amount: number | null
+    offered_salary: number | null
+    offered_clause: number | null
+    transfer_fee: number | null
+    duration_months: number | null
   }
 
   export type TransferOfferMinAggregateOutputType = {
@@ -18778,8 +19173,12 @@ export namespace Prisma {
     player_id: string | null
     from_team_id: string | null
     to_team_id: string | null
-    amount: number | null
-    status: $Enums.TransferStatus | null
+    offered_salary: number | null
+    offered_clause: number | null
+    transfer_fee: number | null
+    duration_months: number | null
+    status: $Enums.TransferOfferStatus | null
+    negotiation_turn: $Enums.NegotiationTurn | null
     created_at: Date | null
     responded_at: Date | null
   }
@@ -18789,8 +19188,12 @@ export namespace Prisma {
     player_id: string | null
     from_team_id: string | null
     to_team_id: string | null
-    amount: number | null
-    status: $Enums.TransferStatus | null
+    offered_salary: number | null
+    offered_clause: number | null
+    transfer_fee: number | null
+    duration_months: number | null
+    status: $Enums.TransferOfferStatus | null
+    negotiation_turn: $Enums.NegotiationTurn | null
     created_at: Date | null
     responded_at: Date | null
   }
@@ -18800,8 +19203,12 @@ export namespace Prisma {
     player_id: number
     from_team_id: number
     to_team_id: number
-    amount: number
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months: number
     status: number
+    negotiation_turn: number
     created_at: number
     responded_at: number
     _all: number
@@ -18809,11 +19216,17 @@ export namespace Prisma {
 
 
   export type TransferOfferAvgAggregateInputType = {
-    amount?: true
+    offered_salary?: true
+    offered_clause?: true
+    transfer_fee?: true
+    duration_months?: true
   }
 
   export type TransferOfferSumAggregateInputType = {
-    amount?: true
+    offered_salary?: true
+    offered_clause?: true
+    transfer_fee?: true
+    duration_months?: true
   }
 
   export type TransferOfferMinAggregateInputType = {
@@ -18821,8 +19234,12 @@ export namespace Prisma {
     player_id?: true
     from_team_id?: true
     to_team_id?: true
-    amount?: true
+    offered_salary?: true
+    offered_clause?: true
+    transfer_fee?: true
+    duration_months?: true
     status?: true
+    negotiation_turn?: true
     created_at?: true
     responded_at?: true
   }
@@ -18832,8 +19249,12 @@ export namespace Prisma {
     player_id?: true
     from_team_id?: true
     to_team_id?: true
-    amount?: true
+    offered_salary?: true
+    offered_clause?: true
+    transfer_fee?: true
+    duration_months?: true
     status?: true
+    negotiation_turn?: true
     created_at?: true
     responded_at?: true
   }
@@ -18843,8 +19264,12 @@ export namespace Prisma {
     player_id?: true
     from_team_id?: true
     to_team_id?: true
-    amount?: true
+    offered_salary?: true
+    offered_clause?: true
+    transfer_fee?: true
+    duration_months?: true
     status?: true
+    negotiation_turn?: true
     created_at?: true
     responded_at?: true
     _all?: true
@@ -18941,8 +19366,12 @@ export namespace Prisma {
     player_id: string
     from_team_id: string
     to_team_id: string
-    amount: number
-    status: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months: number
+    status: $Enums.TransferOfferStatus
+    negotiation_turn: $Enums.NegotiationTurn
     created_at: Date
     responded_at: Date | null
     _count: TransferOfferCountAggregateOutputType | null
@@ -18971,8 +19400,12 @@ export namespace Prisma {
     player_id?: boolean
     from_team_id?: boolean
     to_team_id?: boolean
-    amount?: boolean
+    offered_salary?: boolean
+    offered_clause?: boolean
+    transfer_fee?: boolean
+    duration_months?: boolean
     status?: boolean
+    negotiation_turn?: boolean
     created_at?: boolean
     responded_at?: boolean
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -18985,8 +19418,12 @@ export namespace Prisma {
     player_id?: boolean
     from_team_id?: boolean
     to_team_id?: boolean
-    amount?: boolean
+    offered_salary?: boolean
+    offered_clause?: boolean
+    transfer_fee?: boolean
+    duration_months?: boolean
     status?: boolean
+    negotiation_turn?: boolean
     created_at?: boolean
     responded_at?: boolean
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -18999,8 +19436,12 @@ export namespace Prisma {
     player_id?: boolean
     from_team_id?: boolean
     to_team_id?: boolean
-    amount?: boolean
+    offered_salary?: boolean
+    offered_clause?: boolean
+    transfer_fee?: boolean
+    duration_months?: boolean
     status?: boolean
+    negotiation_turn?: boolean
     created_at?: boolean
     responded_at?: boolean
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -19013,13 +19454,17 @@ export namespace Prisma {
     player_id?: boolean
     from_team_id?: boolean
     to_team_id?: boolean
-    amount?: boolean
+    offered_salary?: boolean
+    offered_clause?: boolean
+    transfer_fee?: boolean
+    duration_months?: boolean
     status?: boolean
+    negotiation_turn?: boolean
     created_at?: boolean
     responded_at?: boolean
   }
 
-  export type TransferOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "player_id" | "from_team_id" | "to_team_id" | "amount" | "status" | "created_at" | "responded_at", ExtArgs["result"]["transferOffer"]>
+  export type TransferOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "player_id" | "from_team_id" | "to_team_id" | "offered_salary" | "offered_clause" | "transfer_fee" | "duration_months" | "status" | "negotiation_turn" | "created_at" | "responded_at", ExtArgs["result"]["transferOffer"]>
   export type TransferOfferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
@@ -19048,8 +19493,24 @@ export namespace Prisma {
       player_id: string
       from_team_id: string
       to_team_id: string
-      amount: number
-      status: $Enums.TransferStatus
+      /**
+       * Salaire annuel proposé (OMJEP Coins)
+       */
+      offered_salary: number
+      /**
+       * Clause libératoire du nouveau contrat proposée
+       */
+      offered_clause: number
+      /**
+       * Indemnité versée au club vendeur
+       */
+      transfer_fee: number
+      duration_months: number
+      status: $Enums.TransferOfferStatus
+      /**
+       * À qui de répondre : joueur ou club acheteur (contre-proposition)
+       */
+      negotiation_turn: $Enums.NegotiationTurn
       created_at: Date
       responded_at: Date | null
     }, ExtArgs["result"]["transferOffer"]>
@@ -19482,8 +19943,12 @@ export namespace Prisma {
     readonly player_id: FieldRef<"TransferOffer", 'String'>
     readonly from_team_id: FieldRef<"TransferOffer", 'String'>
     readonly to_team_id: FieldRef<"TransferOffer", 'String'>
-    readonly amount: FieldRef<"TransferOffer", 'Float'>
-    readonly status: FieldRef<"TransferOffer", 'TransferStatus'>
+    readonly offered_salary: FieldRef<"TransferOffer", 'Float'>
+    readonly offered_clause: FieldRef<"TransferOffer", 'Float'>
+    readonly transfer_fee: FieldRef<"TransferOffer", 'Float'>
+    readonly duration_months: FieldRef<"TransferOffer", 'Int'>
+    readonly status: FieldRef<"TransferOffer", 'TransferOfferStatus'>
+    readonly negotiation_turn: FieldRef<"TransferOffer", 'NegotiationTurn'>
     readonly created_at: FieldRef<"TransferOffer", 'DateTime'>
     readonly responded_at: FieldRef<"TransferOffer", 'DateTime'>
   }
@@ -26507,6 +26972,2151 @@ export namespace Prisma {
 
 
   /**
+   * Model Message
+   */
+
+  export type AggregateMessage = {
+    _count: MessageCountAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  export type MessageMinAggregateOutputType = {
+    id: string | null
+    sender_id: string | null
+    receiver_id: string | null
+    team_id: string | null
+    content: string | null
+    is_read: boolean | null
+    created_at: Date | null
+  }
+
+  export type MessageMaxAggregateOutputType = {
+    id: string | null
+    sender_id: string | null
+    receiver_id: string | null
+    team_id: string | null
+    content: string | null
+    is_read: boolean | null
+    created_at: Date | null
+  }
+
+  export type MessageCountAggregateOutputType = {
+    id: number
+    sender_id: number
+    receiver_id: number
+    team_id: number
+    content: number
+    is_read: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type MessageMinAggregateInputType = {
+    id?: true
+    sender_id?: true
+    receiver_id?: true
+    team_id?: true
+    content?: true
+    is_read?: true
+    created_at?: true
+  }
+
+  export type MessageMaxAggregateInputType = {
+    id?: true
+    sender_id?: true
+    receiver_id?: true
+    team_id?: true
+    content?: true
+    is_read?: true
+    created_at?: true
+  }
+
+  export type MessageCountAggregateInputType = {
+    id?: true
+    sender_id?: true
+    receiver_id?: true
+    team_id?: true
+    content?: true
+    is_read?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type MessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Message to aggregate.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Messages
+    **/
+    _count?: true | MessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type GetMessageAggregateType<T extends MessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessage[P]>
+      : GetScalarType<T[P], AggregateMessage[P]>
+  }
+
+
+
+
+  export type MessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithAggregationInput | MessageOrderByWithAggregationInput[]
+    by: MessageScalarFieldEnum[] | MessageScalarFieldEnum
+    having?: MessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageCountAggregateInputType | true
+    _min?: MessageMinAggregateInputType
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type MessageGroupByOutputType = {
+    id: string
+    sender_id: string
+    receiver_id: string | null
+    team_id: string | null
+    content: string
+    is_read: boolean
+    created_at: Date
+    _count: MessageCountAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  type GetMessageGroupByPayload<T extends MessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sender_id?: boolean
+    receiver_id?: boolean
+    team_id?: boolean
+    content?: boolean
+    is_read?: boolean
+    created_at?: boolean
+    sender?: boolean | UserDefaultArgs<ExtArgs>
+    receiver?: boolean | Message$receiverArgs<ExtArgs>
+    team?: boolean | Message$teamArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sender_id?: boolean
+    receiver_id?: boolean
+    team_id?: boolean
+    content?: boolean
+    is_read?: boolean
+    created_at?: boolean
+    sender?: boolean | UserDefaultArgs<ExtArgs>
+    receiver?: boolean | Message$receiverArgs<ExtArgs>
+    team?: boolean | Message$teamArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sender_id?: boolean
+    receiver_id?: boolean
+    team_id?: boolean
+    content?: boolean
+    is_read?: boolean
+    created_at?: boolean
+    sender?: boolean | UserDefaultArgs<ExtArgs>
+    receiver?: boolean | Message$receiverArgs<ExtArgs>
+    team?: boolean | Message$teamArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectScalar = {
+    id?: boolean
+    sender_id?: boolean
+    receiver_id?: boolean
+    team_id?: boolean
+    content?: boolean
+    is_read?: boolean
+    created_at?: boolean
+  }
+
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sender_id" | "receiver_id" | "team_id" | "content" | "is_read" | "created_at", ExtArgs["result"]["message"]>
+  export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sender?: boolean | UserDefaultArgs<ExtArgs>
+    receiver?: boolean | Message$receiverArgs<ExtArgs>
+    team?: boolean | Message$teamArgs<ExtArgs>
+  }
+  export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sender?: boolean | UserDefaultArgs<ExtArgs>
+    receiver?: boolean | Message$receiverArgs<ExtArgs>
+    team?: boolean | Message$teamArgs<ExtArgs>
+  }
+  export type MessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sender?: boolean | UserDefaultArgs<ExtArgs>
+    receiver?: boolean | Message$receiverArgs<ExtArgs>
+    team?: boolean | Message$teamArgs<ExtArgs>
+  }
+
+  export type $MessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Message"
+    objects: {
+      sender: Prisma.$UserPayload<ExtArgs>
+      receiver: Prisma.$UserPayload<ExtArgs> | null
+      team: Prisma.$ClubPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sender_id: string
+      receiver_id: string | null
+      team_id: string | null
+      content: string
+      is_read: boolean
+      created_at: Date
+    }, ExtArgs["result"]["message"]>
+    composites: {}
+  }
+
+  type MessageGetPayload<S extends boolean | null | undefined | MessageDefaultArgs> = $Result.GetResult<Prisma.$MessagePayload, S>
+
+  type MessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageCountAggregateInputType | true
+    }
+
+  export interface MessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Message'], meta: { name: 'Message' } }
+    /**
+     * Find zero or one Message that matches the filter.
+     * @param {MessageFindUniqueArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageFindUniqueArgs>(args: SelectSubset<T, MessageFindUniqueArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Message that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageFindUniqueOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageFindFirstArgs>(args?: SelectSubset<T, MessageFindFirstArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Messages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Messages
+     * const messages = await prisma.message.findMany()
+     * 
+     * // Get first 10 Messages
+     * const messages = await prisma.message.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageWithIdOnly = await prisma.message.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageFindManyArgs>(args?: SelectSubset<T, MessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Message.
+     * @param {MessageCreateArgs} args - Arguments to create a Message.
+     * @example
+     * // Create one Message
+     * const Message = await prisma.message.create({
+     *   data: {
+     *     // ... data to create a Message
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageCreateArgs>(args: SelectSubset<T, MessageCreateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Messages.
+     * @param {MessageCreateManyArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageCreateManyArgs>(args?: SelectSubset<T, MessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Messages and returns the data saved in the database.
+     * @param {MessageCreateManyAndReturnArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Message.
+     * @param {MessageDeleteArgs} args - Arguments to delete one Message.
+     * @example
+     * // Delete one Message
+     * const Message = await prisma.message.delete({
+     *   where: {
+     *     // ... filter to delete one Message
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageDeleteArgs>(args: SelectSubset<T, MessageDeleteArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Message.
+     * @param {MessageUpdateArgs} args - Arguments to update one Message.
+     * @example
+     * // Update one Message
+     * const message = await prisma.message.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageUpdateArgs>(args: SelectSubset<T, MessageUpdateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Messages.
+     * @param {MessageDeleteManyArgs} args - Arguments to filter Messages to delete.
+     * @example
+     * // Delete a few Messages
+     * const { count } = await prisma.message.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageDeleteManyArgs>(args?: SelectSubset<T, MessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageUpdateManyArgs>(args: SelectSubset<T, MessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages and returns the data updated in the database.
+     * @param {MessageUpdateManyAndReturnArgs} args - Arguments to update many Messages.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Message.
+     * @param {MessageUpsertArgs} args - Arguments to update or create a Message.
+     * @example
+     * // Update or create a Message
+     * const message = await prisma.message.upsert({
+     *   create: {
+     *     // ... data to create a Message
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Message we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageUpsertArgs>(args: SelectSubset<T, MessageUpsertArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCountArgs} args - Arguments to filter Messages to count.
+     * @example
+     * // Count the number of Messages
+     * const count = await prisma.message.count({
+     *   where: {
+     *     // ... the filter for the Messages we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageCountArgs>(
+      args?: Subset<T, MessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageAggregateArgs>(args: Subset<T, MessageAggregateArgs>): Prisma.PrismaPromise<GetMessageAggregateType<T>>
+
+    /**
+     * Group by Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageGroupByArgs['orderBy'] }
+        : { orderBy?: MessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Message model
+   */
+  readonly fields: MessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Message.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    sender<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    receiver<T extends Message$receiverArgs<ExtArgs> = {}>(args?: Subset<T, Message$receiverArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    team<T extends Message$teamArgs<ExtArgs> = {}>(args?: Subset<T, Message$teamArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Message model
+   */
+  interface MessageFieldRefs {
+    readonly id: FieldRef<"Message", 'String'>
+    readonly sender_id: FieldRef<"Message", 'String'>
+    readonly receiver_id: FieldRef<"Message", 'String'>
+    readonly team_id: FieldRef<"Message", 'String'>
+    readonly content: FieldRef<"Message", 'String'>
+    readonly is_read: FieldRef<"Message", 'Boolean'>
+    readonly created_at: FieldRef<"Message", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Message findUnique
+   */
+  export type MessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findUniqueOrThrow
+   */
+  export type MessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findFirst
+   */
+  export type MessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findFirstOrThrow
+   */
+  export type MessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findMany
+   */
+  export type MessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message create
+   */
+  export type MessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Message.
+     */
+    data: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+  }
+
+  /**
+   * Message createMany
+   */
+  export type MessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Message createManyAndReturn
+   */
+  export type MessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message update
+   */
+  export type MessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Message.
+     */
+    data: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+    /**
+     * Choose, which Message to update.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message updateMany
+   */
+  export type MessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message updateManyAndReturn
+   */
+  export type MessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message upsert
+   */
+  export type MessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Message to update in case it exists.
+     */
+    where: MessageWhereUniqueInput
+    /**
+     * In case the Message found by the `where` argument doesn't exist, create a new Message with this data.
+     */
+    create: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+    /**
+     * In case the Message was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+  }
+
+  /**
+   * Message delete
+   */
+  export type MessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter which Message to delete.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message deleteMany
+   */
+  export type MessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Messages to delete
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message.receiver
+   */
+  export type Message$receiverArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Message.team
+   */
+  export type Message$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Club
+     */
+    select?: ClubSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Club
+     */
+    omit?: ClubOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubInclude<ExtArgs> | null
+    where?: ClubWhereInput
+  }
+
+  /**
+   * Message without action
+   */
+  export type MessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model NewsEvent
+   */
+
+  export type AggregateNewsEvent = {
+    _count: NewsEventCountAggregateOutputType | null
+    _min: NewsEventMinAggregateOutputType | null
+    _max: NewsEventMaxAggregateOutputType | null
+  }
+
+  export type NewsEventMinAggregateOutputType = {
+    id: string | null
+    type: $Enums.NewsEventType | null
+    title: string | null
+    description: string | null
+    created_at: Date | null
+  }
+
+  export type NewsEventMaxAggregateOutputType = {
+    id: string | null
+    type: $Enums.NewsEventType | null
+    title: string | null
+    description: string | null
+    created_at: Date | null
+  }
+
+  export type NewsEventCountAggregateOutputType = {
+    id: number
+    type: number
+    title: number
+    description: number
+    metadata: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type NewsEventMinAggregateInputType = {
+    id?: true
+    type?: true
+    title?: true
+    description?: true
+    created_at?: true
+  }
+
+  export type NewsEventMaxAggregateInputType = {
+    id?: true
+    type?: true
+    title?: true
+    description?: true
+    created_at?: true
+  }
+
+  export type NewsEventCountAggregateInputType = {
+    id?: true
+    type?: true
+    title?: true
+    description?: true
+    metadata?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type NewsEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NewsEvent to aggregate.
+     */
+    where?: NewsEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NewsEvents to fetch.
+     */
+    orderBy?: NewsEventOrderByWithRelationInput | NewsEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NewsEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NewsEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NewsEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NewsEvents
+    **/
+    _count?: true | NewsEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NewsEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NewsEventMaxAggregateInputType
+  }
+
+  export type GetNewsEventAggregateType<T extends NewsEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateNewsEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNewsEvent[P]>
+      : GetScalarType<T[P], AggregateNewsEvent[P]>
+  }
+
+
+
+
+  export type NewsEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NewsEventWhereInput
+    orderBy?: NewsEventOrderByWithAggregationInput | NewsEventOrderByWithAggregationInput[]
+    by: NewsEventScalarFieldEnum[] | NewsEventScalarFieldEnum
+    having?: NewsEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NewsEventCountAggregateInputType | true
+    _min?: NewsEventMinAggregateInputType
+    _max?: NewsEventMaxAggregateInputType
+  }
+
+  export type NewsEventGroupByOutputType = {
+    id: string
+    type: $Enums.NewsEventType
+    title: string
+    description: string
+    metadata: JsonValue | null
+    created_at: Date
+    _count: NewsEventCountAggregateOutputType | null
+    _min: NewsEventMinAggregateOutputType | null
+    _max: NewsEventMaxAggregateOutputType | null
+  }
+
+  type GetNewsEventGroupByPayload<T extends NewsEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NewsEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NewsEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NewsEventGroupByOutputType[P]>
+            : GetScalarType<T[P], NewsEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NewsEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    title?: boolean
+    description?: boolean
+    metadata?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["newsEvent"]>
+
+  export type NewsEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    title?: boolean
+    description?: boolean
+    metadata?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["newsEvent"]>
+
+  export type NewsEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    title?: boolean
+    description?: boolean
+    metadata?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["newsEvent"]>
+
+  export type NewsEventSelectScalar = {
+    id?: boolean
+    type?: boolean
+    title?: boolean
+    description?: boolean
+    metadata?: boolean
+    created_at?: boolean
+  }
+
+  export type NewsEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "title" | "description" | "metadata" | "created_at", ExtArgs["result"]["newsEvent"]>
+
+  export type $NewsEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NewsEvent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      type: $Enums.NewsEventType
+      title: string
+      description: string
+      /**
+       * Données JSON pour enrichir l'affichage (joueur, club, montants, etc.)
+       */
+      metadata: Prisma.JsonValue | null
+      created_at: Date
+    }, ExtArgs["result"]["newsEvent"]>
+    composites: {}
+  }
+
+  type NewsEventGetPayload<S extends boolean | null | undefined | NewsEventDefaultArgs> = $Result.GetResult<Prisma.$NewsEventPayload, S>
+
+  type NewsEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NewsEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NewsEventCountAggregateInputType | true
+    }
+
+  export interface NewsEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NewsEvent'], meta: { name: 'NewsEvent' } }
+    /**
+     * Find zero or one NewsEvent that matches the filter.
+     * @param {NewsEventFindUniqueArgs} args - Arguments to find a NewsEvent
+     * @example
+     * // Get one NewsEvent
+     * const newsEvent = await prisma.newsEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NewsEventFindUniqueArgs>(args: SelectSubset<T, NewsEventFindUniqueArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one NewsEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NewsEventFindUniqueOrThrowArgs} args - Arguments to find a NewsEvent
+     * @example
+     * // Get one NewsEvent
+     * const newsEvent = await prisma.newsEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NewsEventFindUniqueOrThrowArgs>(args: SelectSubset<T, NewsEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NewsEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NewsEventFindFirstArgs} args - Arguments to find a NewsEvent
+     * @example
+     * // Get one NewsEvent
+     * const newsEvent = await prisma.newsEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NewsEventFindFirstArgs>(args?: SelectSubset<T, NewsEventFindFirstArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NewsEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NewsEventFindFirstOrThrowArgs} args - Arguments to find a NewsEvent
+     * @example
+     * // Get one NewsEvent
+     * const newsEvent = await prisma.newsEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NewsEventFindFirstOrThrowArgs>(args?: SelectSubset<T, NewsEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more NewsEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NewsEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NewsEvents
+     * const newsEvents = await prisma.newsEvent.findMany()
+     * 
+     * // Get first 10 NewsEvents
+     * const newsEvents = await prisma.newsEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const newsEventWithIdOnly = await prisma.newsEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NewsEventFindManyArgs>(args?: SelectSubset<T, NewsEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a NewsEvent.
+     * @param {NewsEventCreateArgs} args - Arguments to create a NewsEvent.
+     * @example
+     * // Create one NewsEvent
+     * const NewsEvent = await prisma.newsEvent.create({
+     *   data: {
+     *     // ... data to create a NewsEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends NewsEventCreateArgs>(args: SelectSubset<T, NewsEventCreateArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many NewsEvents.
+     * @param {NewsEventCreateManyArgs} args - Arguments to create many NewsEvents.
+     * @example
+     * // Create many NewsEvents
+     * const newsEvent = await prisma.newsEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NewsEventCreateManyArgs>(args?: SelectSubset<T, NewsEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many NewsEvents and returns the data saved in the database.
+     * @param {NewsEventCreateManyAndReturnArgs} args - Arguments to create many NewsEvents.
+     * @example
+     * // Create many NewsEvents
+     * const newsEvent = await prisma.newsEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many NewsEvents and only return the `id`
+     * const newsEventWithIdOnly = await prisma.newsEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NewsEventCreateManyAndReturnArgs>(args?: SelectSubset<T, NewsEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a NewsEvent.
+     * @param {NewsEventDeleteArgs} args - Arguments to delete one NewsEvent.
+     * @example
+     * // Delete one NewsEvent
+     * const NewsEvent = await prisma.newsEvent.delete({
+     *   where: {
+     *     // ... filter to delete one NewsEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NewsEventDeleteArgs>(args: SelectSubset<T, NewsEventDeleteArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one NewsEvent.
+     * @param {NewsEventUpdateArgs} args - Arguments to update one NewsEvent.
+     * @example
+     * // Update one NewsEvent
+     * const newsEvent = await prisma.newsEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NewsEventUpdateArgs>(args: SelectSubset<T, NewsEventUpdateArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more NewsEvents.
+     * @param {NewsEventDeleteManyArgs} args - Arguments to filter NewsEvents to delete.
+     * @example
+     * // Delete a few NewsEvents
+     * const { count } = await prisma.newsEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NewsEventDeleteManyArgs>(args?: SelectSubset<T, NewsEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NewsEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NewsEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NewsEvents
+     * const newsEvent = await prisma.newsEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NewsEventUpdateManyArgs>(args: SelectSubset<T, NewsEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NewsEvents and returns the data updated in the database.
+     * @param {NewsEventUpdateManyAndReturnArgs} args - Arguments to update many NewsEvents.
+     * @example
+     * // Update many NewsEvents
+     * const newsEvent = await prisma.newsEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more NewsEvents and only return the `id`
+     * const newsEventWithIdOnly = await prisma.newsEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NewsEventUpdateManyAndReturnArgs>(args: SelectSubset<T, NewsEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one NewsEvent.
+     * @param {NewsEventUpsertArgs} args - Arguments to update or create a NewsEvent.
+     * @example
+     * // Update or create a NewsEvent
+     * const newsEvent = await prisma.newsEvent.upsert({
+     *   create: {
+     *     // ... data to create a NewsEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NewsEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NewsEventUpsertArgs>(args: SelectSubset<T, NewsEventUpsertArgs<ExtArgs>>): Prisma__NewsEventClient<$Result.GetResult<Prisma.$NewsEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of NewsEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NewsEventCountArgs} args - Arguments to filter NewsEvents to count.
+     * @example
+     * // Count the number of NewsEvents
+     * const count = await prisma.newsEvent.count({
+     *   where: {
+     *     // ... the filter for the NewsEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends NewsEventCountArgs>(
+      args?: Subset<T, NewsEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NewsEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NewsEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NewsEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NewsEventAggregateArgs>(args: Subset<T, NewsEventAggregateArgs>): Prisma.PrismaPromise<GetNewsEventAggregateType<T>>
+
+    /**
+     * Group by NewsEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NewsEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NewsEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NewsEventGroupByArgs['orderBy'] }
+        : { orderBy?: NewsEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NewsEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNewsEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NewsEvent model
+   */
+  readonly fields: NewsEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NewsEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NewsEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NewsEvent model
+   */
+  interface NewsEventFieldRefs {
+    readonly id: FieldRef<"NewsEvent", 'String'>
+    readonly type: FieldRef<"NewsEvent", 'NewsEventType'>
+    readonly title: FieldRef<"NewsEvent", 'String'>
+    readonly description: FieldRef<"NewsEvent", 'String'>
+    readonly metadata: FieldRef<"NewsEvent", 'Json'>
+    readonly created_at: FieldRef<"NewsEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NewsEvent findUnique
+   */
+  export type NewsEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * Filter, which NewsEvent to fetch.
+     */
+    where: NewsEventWhereUniqueInput
+  }
+
+  /**
+   * NewsEvent findUniqueOrThrow
+   */
+  export type NewsEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * Filter, which NewsEvent to fetch.
+     */
+    where: NewsEventWhereUniqueInput
+  }
+
+  /**
+   * NewsEvent findFirst
+   */
+  export type NewsEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * Filter, which NewsEvent to fetch.
+     */
+    where?: NewsEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NewsEvents to fetch.
+     */
+    orderBy?: NewsEventOrderByWithRelationInput | NewsEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NewsEvents.
+     */
+    cursor?: NewsEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NewsEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NewsEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NewsEvents.
+     */
+    distinct?: NewsEventScalarFieldEnum | NewsEventScalarFieldEnum[]
+  }
+
+  /**
+   * NewsEvent findFirstOrThrow
+   */
+  export type NewsEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * Filter, which NewsEvent to fetch.
+     */
+    where?: NewsEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NewsEvents to fetch.
+     */
+    orderBy?: NewsEventOrderByWithRelationInput | NewsEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NewsEvents.
+     */
+    cursor?: NewsEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NewsEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NewsEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NewsEvents.
+     */
+    distinct?: NewsEventScalarFieldEnum | NewsEventScalarFieldEnum[]
+  }
+
+  /**
+   * NewsEvent findMany
+   */
+  export type NewsEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * Filter, which NewsEvents to fetch.
+     */
+    where?: NewsEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NewsEvents to fetch.
+     */
+    orderBy?: NewsEventOrderByWithRelationInput | NewsEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NewsEvents.
+     */
+    cursor?: NewsEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NewsEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NewsEvents.
+     */
+    skip?: number
+    distinct?: NewsEventScalarFieldEnum | NewsEventScalarFieldEnum[]
+  }
+
+  /**
+   * NewsEvent create
+   */
+  export type NewsEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * The data needed to create a NewsEvent.
+     */
+    data: XOR<NewsEventCreateInput, NewsEventUncheckedCreateInput>
+  }
+
+  /**
+   * NewsEvent createMany
+   */
+  export type NewsEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NewsEvents.
+     */
+    data: NewsEventCreateManyInput | NewsEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NewsEvent createManyAndReturn
+   */
+  export type NewsEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many NewsEvents.
+     */
+    data: NewsEventCreateManyInput | NewsEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NewsEvent update
+   */
+  export type NewsEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * The data needed to update a NewsEvent.
+     */
+    data: XOR<NewsEventUpdateInput, NewsEventUncheckedUpdateInput>
+    /**
+     * Choose, which NewsEvent to update.
+     */
+    where: NewsEventWhereUniqueInput
+  }
+
+  /**
+   * NewsEvent updateMany
+   */
+  export type NewsEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NewsEvents.
+     */
+    data: XOR<NewsEventUpdateManyMutationInput, NewsEventUncheckedUpdateManyInput>
+    /**
+     * Filter which NewsEvents to update
+     */
+    where?: NewsEventWhereInput
+    /**
+     * Limit how many NewsEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * NewsEvent updateManyAndReturn
+   */
+  export type NewsEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * The data used to update NewsEvents.
+     */
+    data: XOR<NewsEventUpdateManyMutationInput, NewsEventUncheckedUpdateManyInput>
+    /**
+     * Filter which NewsEvents to update
+     */
+    where?: NewsEventWhereInput
+    /**
+     * Limit how many NewsEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * NewsEvent upsert
+   */
+  export type NewsEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * The filter to search for the NewsEvent to update in case it exists.
+     */
+    where: NewsEventWhereUniqueInput
+    /**
+     * In case the NewsEvent found by the `where` argument doesn't exist, create a new NewsEvent with this data.
+     */
+    create: XOR<NewsEventCreateInput, NewsEventUncheckedCreateInput>
+    /**
+     * In case the NewsEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NewsEventUpdateInput, NewsEventUncheckedUpdateInput>
+  }
+
+  /**
+   * NewsEvent delete
+   */
+  export type NewsEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+    /**
+     * Filter which NewsEvent to delete.
+     */
+    where: NewsEventWhereUniqueInput
+  }
+
+  /**
+   * NewsEvent deleteMany
+   */
+  export type NewsEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NewsEvents to delete
+     */
+    where?: NewsEventWhereInput
+    /**
+     * Limit how many NewsEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * NewsEvent without action
+   */
+  export type NewsEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NewsEvent
+     */
+    select?: NewsEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NewsEvent
+     */
+    omit?: NewsEventOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -26617,6 +29227,7 @@ export namespace Prisma {
     away_score: 'away_score',
     status: 'status',
     played_at: 'played_at',
+    scheduled_at: 'scheduled_at',
     competition_id: 'competition_id',
     round: 'round'
   };
@@ -26680,7 +29291,9 @@ export namespace Prisma {
     user_id: 'user_id',
     salary: 'salary',
     release_clause: 'release_clause',
-    expires_at: 'expires_at'
+    start_date: 'start_date',
+    end_date: 'end_date',
+    status: 'status'
   };
 
   export type ContractScalarFieldEnum = (typeof ContractScalarFieldEnum)[keyof typeof ContractScalarFieldEnum]
@@ -26703,8 +29316,12 @@ export namespace Prisma {
     player_id: 'player_id',
     from_team_id: 'from_team_id',
     to_team_id: 'to_team_id',
-    amount: 'amount',
+    offered_salary: 'offered_salary',
+    offered_clause: 'offered_clause',
+    transfer_fee: 'transfer_fee',
+    duration_months: 'duration_months',
     status: 'status',
+    negotiation_turn: 'negotiation_turn',
     created_at: 'created_at',
     responded_at: 'responded_at'
   };
@@ -26784,6 +29401,31 @@ export namespace Prisma {
   };
 
   export type UserSubscriptionScalarFieldEnum = (typeof UserSubscriptionScalarFieldEnum)[keyof typeof UserSubscriptionScalarFieldEnum]
+
+
+  export const MessageScalarFieldEnum: {
+    id: 'id',
+    sender_id: 'sender_id',
+    receiver_id: 'receiver_id',
+    team_id: 'team_id',
+    content: 'content',
+    is_read: 'is_read',
+    created_at: 'created_at'
+  };
+
+  export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+  export const NewsEventScalarFieldEnum: {
+    id: 'id',
+    type: 'type',
+    title: 'title',
+    description: 'description',
+    metadata: 'metadata',
+    created_at: 'created_at'
+  };
+
+  export type NewsEventScalarFieldEnum = (typeof NewsEventScalarFieldEnum)[keyof typeof NewsEventScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -27057,6 +29699,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ContractStatus'
+   */
+  export type EnumContractStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ContractStatus[]'
+   */
+  export type ListEnumContractStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'TransactionType'
    */
   export type EnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType'>
@@ -27067,6 +29723,34 @@ export namespace Prisma {
    * Reference to a field of type 'TransactionType[]'
    */
   export type ListEnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransferOfferStatus'
+   */
+  export type EnumTransferOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferOfferStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransferOfferStatus[]'
+   */
+  export type ListEnumTransferOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferOfferStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'NegotiationTurn'
+   */
+  export type EnumNegotiationTurnFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NegotiationTurn'>
+    
+
+
+  /**
+   * Reference to a field of type 'NegotiationTurn[]'
+   */
+  export type ListEnumNegotiationTurnFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NegotiationTurn[]'>
     
 
 
@@ -27138,6 +29822,20 @@ export namespace Prisma {
    */
   export type ListEnumUserSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserSubscriptionStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'NewsEventType'
+   */
+  export type EnumNewsEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NewsEventType'>
+    
+
+
+  /**
+   * Reference to a field of type 'NewsEventType[]'
+   */
+  export type ListEnumNewsEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NewsEventType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -27177,6 +29875,8 @@ export namespace Prisma {
     inventory?: UserInventoryListRelationFilter
     predictions?: PredictionListRelationFilter
     subscriptions?: UserSubscriptionListRelationFilter
+    messagesSent?: MessageListRelationFilter
+    messagesReceived?: MessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -27210,6 +29910,8 @@ export namespace Prisma {
     inventory?: UserInventoryOrderByRelationAggregateInput
     predictions?: PredictionOrderByRelationAggregateInput
     subscriptions?: UserSubscriptionOrderByRelationAggregateInput
+    messagesSent?: MessageOrderByRelationAggregateInput
+    messagesReceived?: MessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -27246,6 +29948,8 @@ export namespace Prisma {
     inventory?: UserInventoryListRelationFilter
     predictions?: PredictionListRelationFilter
     subscriptions?: UserSubscriptionListRelationFilter
+    messagesSent?: MessageListRelationFilter
+    messagesReceived?: MessageListRelationFilter
   }, "id" | "email" | "ea_persona_name" | "external_id">
 
   export type UserOrderByWithAggregationInput = {
@@ -27325,6 +30029,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferListRelationFilter
     receivedOffers?: TransferOfferListRelationFilter
     transferRequests?: TransferRequestListRelationFilter
+    messages?: MessageListRelationFilter
   }
 
   export type ClubOrderByWithRelationInput = {
@@ -27355,6 +30060,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferOrderByRelationAggregateInput
     receivedOffers?: TransferOfferOrderByRelationAggregateInput
     transferRequests?: TransferRequestOrderByRelationAggregateInput
+    messages?: MessageOrderByRelationAggregateInput
   }
 
   export type ClubWhereUniqueInput = Prisma.AtLeast<{
@@ -27388,6 +30094,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferListRelationFilter
     receivedOffers?: TransferOfferListRelationFilter
     transferRequests?: TransferRequestListRelationFilter
+    messages?: MessageListRelationFilter
   }, "id" | "name" | "ea_club_id" | "proclubs_url">
 
   export type ClubOrderByWithAggregationInput = {
@@ -27566,8 +30273,8 @@ export namespace Prisma {
     name?: StringFilter<"Competition"> | string
     type?: EnumCompetitionTypeFilter<"Competition"> | $Enums.CompetitionType
     status?: EnumCompetitionStatusFilter<"Competition"> | $Enums.CompetitionStatus
-    start_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
-    end_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
+    start_date?: DateTimeFilter<"Competition"> | Date | string
+    end_date?: DateTimeFilter<"Competition"> | Date | string
     created_at?: DateTimeFilter<"Competition"> | Date | string
     teams?: CompetitionTeamListRelationFilter
     matches?: MatchListRelationFilter
@@ -27578,8 +30285,8 @@ export namespace Prisma {
     name?: SortOrder
     type?: SortOrder
     status?: SortOrder
-    start_date?: SortOrderInput | SortOrder
-    end_date?: SortOrderInput | SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
     created_at?: SortOrder
     teams?: CompetitionTeamOrderByRelationAggregateInput
     matches?: MatchOrderByRelationAggregateInput
@@ -27593,8 +30300,8 @@ export namespace Prisma {
     NOT?: CompetitionWhereInput | CompetitionWhereInput[]
     type?: EnumCompetitionTypeFilter<"Competition"> | $Enums.CompetitionType
     status?: EnumCompetitionStatusFilter<"Competition"> | $Enums.CompetitionStatus
-    start_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
-    end_date?: DateTimeNullableFilter<"Competition"> | Date | string | null
+    start_date?: DateTimeFilter<"Competition"> | Date | string
+    end_date?: DateTimeFilter<"Competition"> | Date | string
     created_at?: DateTimeFilter<"Competition"> | Date | string
     teams?: CompetitionTeamListRelationFilter
     matches?: MatchListRelationFilter
@@ -27605,8 +30312,8 @@ export namespace Prisma {
     name?: SortOrder
     type?: SortOrder
     status?: SortOrder
-    start_date?: SortOrderInput | SortOrder
-    end_date?: SortOrderInput | SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
     created_at?: SortOrder
     _count?: CompetitionCountOrderByAggregateInput
     _max?: CompetitionMaxOrderByAggregateInput
@@ -27621,8 +30328,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Competition"> | string
     type?: EnumCompetitionTypeWithAggregatesFilter<"Competition"> | $Enums.CompetitionType
     status?: EnumCompetitionStatusWithAggregatesFilter<"Competition"> | $Enums.CompetitionStatus
-    start_date?: DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
-    end_date?: DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+    start_date?: DateTimeWithAggregatesFilter<"Competition"> | Date | string
+    end_date?: DateTimeWithAggregatesFilter<"Competition"> | Date | string
     created_at?: DateTimeWithAggregatesFilter<"Competition"> | Date | string
   }
 
@@ -27687,6 +30394,7 @@ export namespace Prisma {
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    scheduled_at?: DateTimeNullableFilter<"Match"> | Date | string | null
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
     events?: MatchEventListRelationFilter
@@ -27706,6 +30414,7 @@ export namespace Prisma {
     away_score?: SortOrderInput | SortOrder
     status?: SortOrder
     played_at?: SortOrderInput | SortOrder
+    scheduled_at?: SortOrderInput | SortOrder
     competition_id?: SortOrderInput | SortOrder
     round?: SortOrderInput | SortOrder
     events?: MatchEventOrderByRelationAggregateInput
@@ -27728,6 +30437,7 @@ export namespace Prisma {
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    scheduled_at?: DateTimeNullableFilter<"Match"> | Date | string | null
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
     events?: MatchEventListRelationFilter
@@ -27747,6 +30457,7 @@ export namespace Prisma {
     away_score?: SortOrderInput | SortOrder
     status?: SortOrder
     played_at?: SortOrderInput | SortOrder
+    scheduled_at?: SortOrderInput | SortOrder
     competition_id?: SortOrderInput | SortOrder
     round?: SortOrderInput | SortOrder
     _count?: MatchCountOrderByAggregateInput
@@ -27768,6 +30479,7 @@ export namespace Prisma {
     away_score?: IntNullableWithAggregatesFilter<"Match"> | number | null
     status?: EnumMatchStatusWithAggregatesFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableWithAggregatesFilter<"Match"> | Date | string | null
+    scheduled_at?: DateTimeNullableWithAggregatesFilter<"Match"> | Date | string | null
     competition_id?: UuidNullableWithAggregatesFilter<"Match"> | string | null
     round?: StringNullableWithAggregatesFilter<"Match"> | string | null
   }
@@ -28057,7 +30769,9 @@ export namespace Prisma {
     user_id?: UuidFilter<"Contract"> | string
     salary?: FloatFilter<"Contract"> | number
     release_clause?: FloatFilter<"Contract"> | number
-    expires_at?: DateTimeFilter<"Contract"> | Date | string
+    start_date?: DateTimeFilter<"Contract"> | Date | string
+    end_date?: DateTimeFilter<"Contract"> | Date | string
+    status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
     team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -28068,7 +30782,9 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
-    expires_at?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
     team?: ClubOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
@@ -28082,7 +30798,9 @@ export namespace Prisma {
     user_id?: UuidFilter<"Contract"> | string
     salary?: FloatFilter<"Contract"> | number
     release_clause?: FloatFilter<"Contract"> | number
-    expires_at?: DateTimeFilter<"Contract"> | Date | string
+    start_date?: DateTimeFilter<"Contract"> | Date | string
+    end_date?: DateTimeFilter<"Contract"> | Date | string
+    status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
     team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -28093,7 +30811,9 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
-    expires_at?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
     _count?: ContractCountOrderByAggregateInput
     _avg?: ContractAvgOrderByAggregateInput
     _max?: ContractMaxOrderByAggregateInput
@@ -28110,7 +30830,9 @@ export namespace Prisma {
     user_id?: UuidWithAggregatesFilter<"Contract"> | string
     salary?: FloatWithAggregatesFilter<"Contract"> | number
     release_clause?: FloatWithAggregatesFilter<"Contract"> | number
-    expires_at?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
+    start_date?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
+    end_date?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
+    status?: EnumContractStatusWithAggregatesFilter<"Contract"> | $Enums.ContractStatus
   }
 
   export type TransactionWhereInput = {
@@ -28183,8 +30905,12 @@ export namespace Prisma {
     player_id?: UuidFilter<"TransferOffer"> | string
     from_team_id?: UuidFilter<"TransferOffer"> | string
     to_team_id?: UuidFilter<"TransferOffer"> | string
-    amount?: FloatFilter<"TransferOffer"> | number
-    status?: EnumTransferStatusFilter<"TransferOffer"> | $Enums.TransferStatus
+    offered_salary?: FloatFilter<"TransferOffer"> | number
+    offered_clause?: FloatFilter<"TransferOffer"> | number
+    transfer_fee?: FloatFilter<"TransferOffer"> | number
+    duration_months?: IntFilter<"TransferOffer"> | number
+    status?: EnumTransferOfferStatusFilter<"TransferOffer"> | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFilter<"TransferOffer"> | $Enums.NegotiationTurn
     created_at?: DateTimeFilter<"TransferOffer"> | Date | string
     responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
     fromTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -28197,8 +30923,12 @@ export namespace Prisma {
     player_id?: SortOrder
     from_team_id?: SortOrder
     to_team_id?: SortOrder
-    amount?: SortOrder
+    offered_salary?: SortOrder
+    offered_clause?: SortOrder
+    transfer_fee?: SortOrder
+    duration_months?: SortOrder
     status?: SortOrder
+    negotiation_turn?: SortOrder
     created_at?: SortOrder
     responded_at?: SortOrderInput | SortOrder
     fromTeam?: ClubOrderByWithRelationInput
@@ -28214,8 +30944,12 @@ export namespace Prisma {
     player_id?: UuidFilter<"TransferOffer"> | string
     from_team_id?: UuidFilter<"TransferOffer"> | string
     to_team_id?: UuidFilter<"TransferOffer"> | string
-    amount?: FloatFilter<"TransferOffer"> | number
-    status?: EnumTransferStatusFilter<"TransferOffer"> | $Enums.TransferStatus
+    offered_salary?: FloatFilter<"TransferOffer"> | number
+    offered_clause?: FloatFilter<"TransferOffer"> | number
+    transfer_fee?: FloatFilter<"TransferOffer"> | number
+    duration_months?: IntFilter<"TransferOffer"> | number
+    status?: EnumTransferOfferStatusFilter<"TransferOffer"> | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFilter<"TransferOffer"> | $Enums.NegotiationTurn
     created_at?: DateTimeFilter<"TransferOffer"> | Date | string
     responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
     fromTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -28228,8 +30962,12 @@ export namespace Prisma {
     player_id?: SortOrder
     from_team_id?: SortOrder
     to_team_id?: SortOrder
-    amount?: SortOrder
+    offered_salary?: SortOrder
+    offered_clause?: SortOrder
+    transfer_fee?: SortOrder
+    duration_months?: SortOrder
     status?: SortOrder
+    negotiation_turn?: SortOrder
     created_at?: SortOrder
     responded_at?: SortOrderInput | SortOrder
     _count?: TransferOfferCountOrderByAggregateInput
@@ -28247,8 +30985,12 @@ export namespace Prisma {
     player_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
     from_team_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
     to_team_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
-    amount?: FloatWithAggregatesFilter<"TransferOffer"> | number
-    status?: EnumTransferStatusWithAggregatesFilter<"TransferOffer"> | $Enums.TransferStatus
+    offered_salary?: FloatWithAggregatesFilter<"TransferOffer"> | number
+    offered_clause?: FloatWithAggregatesFilter<"TransferOffer"> | number
+    transfer_fee?: FloatWithAggregatesFilter<"TransferOffer"> | number
+    duration_months?: IntWithAggregatesFilter<"TransferOffer"> | number
+    status?: EnumTransferOfferStatusWithAggregatesFilter<"TransferOffer"> | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnWithAggregatesFilter<"TransferOffer"> | $Enums.NegotiationTurn
     created_at?: DateTimeWithAggregatesFilter<"TransferOffer"> | Date | string
     responded_at?: DateTimeNullableWithAggregatesFilter<"TransferOffer"> | Date | string | null
   }
@@ -28640,6 +31382,134 @@ export namespace Prisma {
     status?: EnumUserSubscriptionStatusWithAggregatesFilter<"UserSubscription"> | $Enums.UserSubscriptionStatus
   }
 
+  export type MessageWhereInput = {
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    id?: UuidFilter<"Message"> | string
+    sender_id?: UuidFilter<"Message"> | string
+    receiver_id?: UuidNullableFilter<"Message"> | string | null
+    team_id?: UuidNullableFilter<"Message"> | string | null
+    content?: StringFilter<"Message"> | string
+    is_read?: BoolFilter<"Message"> | boolean
+    created_at?: DateTimeFilter<"Message"> | Date | string
+    sender?: XOR<UserScalarRelationFilter, UserWhereInput>
+    receiver?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    team?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+  }
+
+  export type MessageOrderByWithRelationInput = {
+    id?: SortOrder
+    sender_id?: SortOrder
+    receiver_id?: SortOrderInput | SortOrder
+    team_id?: SortOrderInput | SortOrder
+    content?: SortOrder
+    is_read?: SortOrder
+    created_at?: SortOrder
+    sender?: UserOrderByWithRelationInput
+    receiver?: UserOrderByWithRelationInput
+    team?: ClubOrderByWithRelationInput
+  }
+
+  export type MessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    sender_id?: UuidFilter<"Message"> | string
+    receiver_id?: UuidNullableFilter<"Message"> | string | null
+    team_id?: UuidNullableFilter<"Message"> | string | null
+    content?: StringFilter<"Message"> | string
+    is_read?: BoolFilter<"Message"> | boolean
+    created_at?: DateTimeFilter<"Message"> | Date | string
+    sender?: XOR<UserScalarRelationFilter, UserWhereInput>
+    receiver?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    team?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+  }, "id">
+
+  export type MessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    sender_id?: SortOrder
+    receiver_id?: SortOrderInput | SortOrder
+    team_id?: SortOrderInput | SortOrder
+    content?: SortOrder
+    is_read?: SortOrder
+    created_at?: SortOrder
+    _count?: MessageCountOrderByAggregateInput
+    _max?: MessageMaxOrderByAggregateInput
+    _min?: MessageMinOrderByAggregateInput
+  }
+
+  export type MessageScalarWhereWithAggregatesInput = {
+    AND?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    OR?: MessageScalarWhereWithAggregatesInput[]
+    NOT?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Message"> | string
+    sender_id?: UuidWithAggregatesFilter<"Message"> | string
+    receiver_id?: UuidNullableWithAggregatesFilter<"Message"> | string | null
+    team_id?: UuidNullableWithAggregatesFilter<"Message"> | string | null
+    content?: StringWithAggregatesFilter<"Message"> | string
+    is_read?: BoolWithAggregatesFilter<"Message"> | boolean
+    created_at?: DateTimeWithAggregatesFilter<"Message"> | Date | string
+  }
+
+  export type NewsEventWhereInput = {
+    AND?: NewsEventWhereInput | NewsEventWhereInput[]
+    OR?: NewsEventWhereInput[]
+    NOT?: NewsEventWhereInput | NewsEventWhereInput[]
+    id?: UuidFilter<"NewsEvent"> | string
+    type?: EnumNewsEventTypeFilter<"NewsEvent"> | $Enums.NewsEventType
+    title?: StringFilter<"NewsEvent"> | string
+    description?: StringFilter<"NewsEvent"> | string
+    metadata?: JsonNullableFilter<"NewsEvent">
+    created_at?: DateTimeFilter<"NewsEvent"> | Date | string
+  }
+
+  export type NewsEventOrderByWithRelationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+  }
+
+  export type NewsEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: NewsEventWhereInput | NewsEventWhereInput[]
+    OR?: NewsEventWhereInput[]
+    NOT?: NewsEventWhereInput | NewsEventWhereInput[]
+    type?: EnumNewsEventTypeFilter<"NewsEvent"> | $Enums.NewsEventType
+    title?: StringFilter<"NewsEvent"> | string
+    description?: StringFilter<"NewsEvent"> | string
+    metadata?: JsonNullableFilter<"NewsEvent">
+    created_at?: DateTimeFilter<"NewsEvent"> | Date | string
+  }, "id">
+
+  export type NewsEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: NewsEventCountOrderByAggregateInput
+    _max?: NewsEventMaxOrderByAggregateInput
+    _min?: NewsEventMinOrderByAggregateInput
+  }
+
+  export type NewsEventScalarWhereWithAggregatesInput = {
+    AND?: NewsEventScalarWhereWithAggregatesInput | NewsEventScalarWhereWithAggregatesInput[]
+    OR?: NewsEventScalarWhereWithAggregatesInput[]
+    NOT?: NewsEventScalarWhereWithAggregatesInput | NewsEventScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"NewsEvent"> | string
+    type?: EnumNewsEventTypeWithAggregatesFilter<"NewsEvent"> | $Enums.NewsEventType
+    title?: StringWithAggregatesFilter<"NewsEvent"> | string
+    description?: StringWithAggregatesFilter<"NewsEvent"> | string
+    metadata?: JsonNullableWithAggregatesFilter<"NewsEvent">
+    created_at?: DateTimeWithAggregatesFilter<"NewsEvent"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -28671,6 +31541,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -28704,6 +31576,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUpdateInput = {
@@ -28737,6 +31611,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -28770,6 +31646,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -28856,6 +31734,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateInput = {
@@ -28885,6 +31764,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUpdateInput = {
@@ -28914,6 +31794,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateInput = {
@@ -28943,6 +31824,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubCreateManyInput = {
@@ -29123,8 +32005,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status?: $Enums.CompetitionStatus
-    start_date?: Date | string | null
-    end_date?: Date | string | null
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     teams?: CompetitionTeamCreateNestedManyWithoutCompetitionInput
     matches?: MatchCreateNestedManyWithoutCompetitionInput
@@ -29135,8 +32017,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status?: $Enums.CompetitionStatus
-    start_date?: Date | string | null
-    end_date?: Date | string | null
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     teams?: CompetitionTeamUncheckedCreateNestedManyWithoutCompetitionInput
     matches?: MatchUncheckedCreateNestedManyWithoutCompetitionInput
@@ -29147,8 +32029,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: CompetitionTeamUpdateManyWithoutCompetitionNestedInput
     matches?: MatchUpdateManyWithoutCompetitionNestedInput
@@ -29159,8 +32041,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: CompetitionTeamUncheckedUpdateManyWithoutCompetitionNestedInput
     matches?: MatchUncheckedUpdateManyWithoutCompetitionNestedInput
@@ -29171,8 +32053,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status?: $Enums.CompetitionStatus
-    start_date?: Date | string | null
-    end_date?: Date | string | null
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
   }
 
@@ -29181,8 +32063,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29191,8 +32073,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29243,6 +32125,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -29261,6 +32144,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -29275,6 +32159,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -29293,6 +32178,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -29309,6 +32195,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
   }
@@ -29320,6 +32207,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -29332,6 +32220,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -29595,7 +32484,9 @@ export namespace Prisma {
     id?: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
     team: ClubCreateNestedOneWithoutContractsInput
     user: UserCreateNestedOneWithoutContractsInput
   }
@@ -29606,14 +32497,18 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
   }
 
   export type ContractUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
     team?: ClubUpdateOneRequiredWithoutContractsNestedInput
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
   }
@@ -29624,7 +32519,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
   }
 
   export type ContractCreateManyInput = {
@@ -29633,14 +32530,18 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
   }
 
   export type ContractUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
   }
 
   export type ContractUncheckedUpdateManyInput = {
@@ -29649,7 +32550,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
   }
 
   export type TransactionCreateInput = {
@@ -29716,8 +32619,12 @@ export namespace Prisma {
 
   export type TransferOfferCreateInput = {
     id?: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
@@ -29730,16 +32637,24 @@ export namespace Prisma {
     player_id: string
     from_team_id: string
     to_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
 
   export type TransferOfferUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
@@ -29752,8 +32667,12 @@ export namespace Prisma {
     player_id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
     to_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -29763,16 +32682,24 @@ export namespace Prisma {
     player_id: string
     from_team_id: string
     to_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
 
   export type TransferOfferUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -29782,8 +32709,12 @@ export namespace Prisma {
     player_id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
     to_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -30181,6 +33112,136 @@ export namespace Prisma {
     status?: EnumUserSubscriptionStatusFieldUpdateOperationsInput | $Enums.UserSubscriptionStatus
   }
 
+  export type MessageCreateInput = {
+    id?: string
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+    sender: UserCreateNestedOneWithoutMessagesSentInput
+    receiver?: UserCreateNestedOneWithoutMessagesReceivedInput
+    team?: ClubCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateInput = {
+    id?: string
+    sender_id: string
+    receiver_id?: string | null
+    team_id?: string | null
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+  }
+
+  export type MessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    sender?: UserUpdateOneRequiredWithoutMessagesSentNestedInput
+    receiver?: UserUpdateOneWithoutMessagesReceivedNestedInput
+    team?: ClubUpdateOneWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sender_id?: StringFieldUpdateOperationsInput | string
+    receiver_id?: NullableStringFieldUpdateOperationsInput | string | null
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCreateManyInput = {
+    id?: string
+    sender_id: string
+    receiver_id?: string | null
+    team_id?: string | null
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+  }
+
+  export type MessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sender_id?: StringFieldUpdateOperationsInput | string
+    receiver_id?: NullableStringFieldUpdateOperationsInput | string | null
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NewsEventCreateInput = {
+    id?: string
+    type?: $Enums.NewsEventType
+    title: string
+    description: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+  }
+
+  export type NewsEventUncheckedCreateInput = {
+    id?: string
+    type?: $Enums.NewsEventType
+    title: string
+    description: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+  }
+
+  export type NewsEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNewsEventTypeFieldUpdateOperationsInput | $Enums.NewsEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NewsEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNewsEventTypeFieldUpdateOperationsInput | $Enums.NewsEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NewsEventCreateManyInput = {
+    id?: string
+    type?: $Enums.NewsEventType
+    title: string
+    description: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+  }
+
+  export type NewsEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNewsEventTypeFieldUpdateOperationsInput | $Enums.NewsEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NewsEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNewsEventTypeFieldUpdateOperationsInput | $Enums.NewsEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -30341,6 +33402,12 @@ export namespace Prisma {
     none?: UserSubscriptionWhereInput
   }
 
+  export type MessageListRelationFilter = {
+    every?: MessageWhereInput
+    some?: MessageWhereInput
+    none?: MessageWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -30391,6 +33458,10 @@ export namespace Prisma {
   }
 
   export type UserSubscriptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -30878,17 +33949,6 @@ export namespace Prisma {
     not?: NestedEnumCompetitionStatusFilter<$PrismaModel> | $Enums.CompetitionStatus
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type CompetitionCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -30939,20 +33999,6 @@ export namespace Prisma {
     _max?: NestedEnumCompetitionStatusFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type CompetitionScalarRelationFilter = {
     is?: CompetitionWhereInput
     isNot?: CompetitionWhereInput
@@ -30999,6 +34045,17 @@ export namespace Prisma {
     not?: NestedEnumMatchStatusFilter<$PrismaModel> | $Enums.MatchStatus
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type CompetitionNullableScalarRelationFilter = {
     is?: CompetitionWhereInput | null
     isNot?: CompetitionWhereInput | null
@@ -31013,6 +34070,7 @@ export namespace Prisma {
     away_score?: SortOrder
     status?: SortOrder
     played_at?: SortOrder
+    scheduled_at?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
   }
@@ -31031,6 +34089,7 @@ export namespace Prisma {
     away_score?: SortOrder
     status?: SortOrder
     played_at?: SortOrder
+    scheduled_at?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
   }
@@ -31044,6 +34103,7 @@ export namespace Prisma {
     away_score?: SortOrder
     status?: SortOrder
     played_at?: SortOrder
+    scheduled_at?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
   }
@@ -31077,6 +34137,20 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMatchStatusFilter<$PrismaModel>
     _max?: NestedEnumMatchStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type MatchScalarRelationFilter = {
@@ -31272,13 +34346,22 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
+  export type EnumContractStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusFilter<$PrismaModel> | $Enums.ContractStatus
+  }
+
   export type ContractCountOrderByAggregateInput = {
     id?: SortOrder
     team_id?: SortOrder
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
-    expires_at?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
   }
 
   export type ContractAvgOrderByAggregateInput = {
@@ -31292,7 +34375,9 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
-    expires_at?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
   }
 
   export type ContractMinOrderByAggregateInput = {
@@ -31301,12 +34386,24 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
-    expires_at?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
   }
 
   export type ContractSumOrderByAggregateInput = {
     salary?: SortOrder
     release_clause?: SortOrder
+  }
+
+  export type EnumContractStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContractStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumContractStatusFilter<$PrismaModel>
+    _max?: NestedEnumContractStatusFilter<$PrismaModel>
   }
 
   export type EnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -31361,19 +34458,40 @@ export namespace Prisma {
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
   }
 
+  export type EnumTransferOfferStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferOfferStatusFilter<$PrismaModel> | $Enums.TransferOfferStatus
+  }
+
+  export type EnumNegotiationTurnFilter<$PrismaModel = never> = {
+    equals?: $Enums.NegotiationTurn | EnumNegotiationTurnFieldRefInput<$PrismaModel>
+    in?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    not?: NestedEnumNegotiationTurnFilter<$PrismaModel> | $Enums.NegotiationTurn
+  }
+
   export type TransferOfferCountOrderByAggregateInput = {
     id?: SortOrder
     player_id?: SortOrder
     from_team_id?: SortOrder
     to_team_id?: SortOrder
-    amount?: SortOrder
+    offered_salary?: SortOrder
+    offered_clause?: SortOrder
+    transfer_fee?: SortOrder
+    duration_months?: SortOrder
     status?: SortOrder
+    negotiation_turn?: SortOrder
     created_at?: SortOrder
     responded_at?: SortOrder
   }
 
   export type TransferOfferAvgOrderByAggregateInput = {
-    amount?: SortOrder
+    offered_salary?: SortOrder
+    offered_clause?: SortOrder
+    transfer_fee?: SortOrder
+    duration_months?: SortOrder
   }
 
   export type TransferOfferMaxOrderByAggregateInput = {
@@ -31381,8 +34499,12 @@ export namespace Prisma {
     player_id?: SortOrder
     from_team_id?: SortOrder
     to_team_id?: SortOrder
-    amount?: SortOrder
+    offered_salary?: SortOrder
+    offered_clause?: SortOrder
+    transfer_fee?: SortOrder
+    duration_months?: SortOrder
     status?: SortOrder
+    negotiation_turn?: SortOrder
     created_at?: SortOrder
     responded_at?: SortOrder
   }
@@ -31392,14 +34514,41 @@ export namespace Prisma {
     player_id?: SortOrder
     from_team_id?: SortOrder
     to_team_id?: SortOrder
-    amount?: SortOrder
+    offered_salary?: SortOrder
+    offered_clause?: SortOrder
+    transfer_fee?: SortOrder
+    duration_months?: SortOrder
     status?: SortOrder
+    negotiation_turn?: SortOrder
     created_at?: SortOrder
     responded_at?: SortOrder
   }
 
   export type TransferOfferSumOrderByAggregateInput = {
-    amount?: SortOrder
+    offered_salary?: SortOrder
+    offered_clause?: SortOrder
+    transfer_fee?: SortOrder
+    duration_months?: SortOrder
+  }
+
+  export type EnumTransferOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferOfferStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransferOfferStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferOfferStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransferOfferStatusFilter<$PrismaModel>
+  }
+
+  export type EnumNegotiationTurnWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NegotiationTurn | EnumNegotiationTurnFieldRefInput<$PrismaModel>
+    in?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    not?: NestedEnumNegotiationTurnWithAggregatesFilter<$PrismaModel> | $Enums.NegotiationTurn
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNegotiationTurnFilter<$PrismaModel>
+    _max?: NestedEnumNegotiationTurnFilter<$PrismaModel>
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -31782,6 +34931,83 @@ export namespace Prisma {
     _max?: NestedEnumUserSubscriptionStatusFilter<$PrismaModel>
   }
 
+  export type ClubNullableScalarRelationFilter = {
+    is?: ClubWhereInput | null
+    isNot?: ClubWhereInput | null
+  }
+
+  export type MessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    sender_id?: SortOrder
+    receiver_id?: SortOrder
+    team_id?: SortOrder
+    content?: SortOrder
+    is_read?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type MessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sender_id?: SortOrder
+    receiver_id?: SortOrder
+    team_id?: SortOrder
+    content?: SortOrder
+    is_read?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type MessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    sender_id?: SortOrder
+    receiver_id?: SortOrder
+    team_id?: SortOrder
+    content?: SortOrder
+    is_read?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type EnumNewsEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.NewsEventType | EnumNewsEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNewsEventTypeFilter<$PrismaModel> | $Enums.NewsEventType
+  }
+
+  export type NewsEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    metadata?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type NewsEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type NewsEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type EnumNewsEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NewsEventType | EnumNewsEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNewsEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.NewsEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNewsEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumNewsEventTypeFilter<$PrismaModel>
+  }
+
   export type ContractCreateNestedManyWithoutUserInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -31879,6 +35105,20 @@ export namespace Prisma {
     connect?: UserSubscriptionWhereUniqueInput | UserSubscriptionWhereUniqueInput[]
   }
 
+  export type MessageCreateNestedManyWithoutSenderInput = {
+    create?: XOR<MessageCreateWithoutSenderInput, MessageUncheckedCreateWithoutSenderInput> | MessageCreateWithoutSenderInput[] | MessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderInput | MessageCreateOrConnectWithoutSenderInput[]
+    createMany?: MessageCreateManySenderInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type MessageCreateNestedManyWithoutReceiverInput = {
+    create?: XOR<MessageCreateWithoutReceiverInput, MessageUncheckedCreateWithoutReceiverInput> | MessageCreateWithoutReceiverInput[] | MessageUncheckedCreateWithoutReceiverInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutReceiverInput | MessageCreateOrConnectWithoutReceiverInput[]
+    createMany?: MessageCreateManyReceiverInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
   export type ContractUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -31974,6 +35214,20 @@ export namespace Prisma {
     connectOrCreate?: UserSubscriptionCreateOrConnectWithoutUserInput | UserSubscriptionCreateOrConnectWithoutUserInput[]
     createMany?: UserSubscriptionCreateManyUserInputEnvelope
     connect?: UserSubscriptionWhereUniqueInput | UserSubscriptionWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutSenderInput = {
+    create?: XOR<MessageCreateWithoutSenderInput, MessageUncheckedCreateWithoutSenderInput> | MessageCreateWithoutSenderInput[] | MessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderInput | MessageCreateOrConnectWithoutSenderInput[]
+    createMany?: MessageCreateManySenderInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutReceiverInput = {
+    create?: XOR<MessageCreateWithoutReceiverInput, MessageUncheckedCreateWithoutReceiverInput> | MessageCreateWithoutReceiverInput[] | MessageUncheckedCreateWithoutReceiverInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutReceiverInput | MessageCreateOrConnectWithoutReceiverInput[]
+    createMany?: MessageCreateManyReceiverInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -32200,6 +35454,34 @@ export namespace Prisma {
     deleteMany?: UserSubscriptionScalarWhereInput | UserSubscriptionScalarWhereInput[]
   }
 
+  export type MessageUpdateManyWithoutSenderNestedInput = {
+    create?: XOR<MessageCreateWithoutSenderInput, MessageUncheckedCreateWithoutSenderInput> | MessageCreateWithoutSenderInput[] | MessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderInput | MessageCreateOrConnectWithoutSenderInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutSenderInput | MessageUpsertWithWhereUniqueWithoutSenderInput[]
+    createMany?: MessageCreateManySenderInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutSenderInput | MessageUpdateWithWhereUniqueWithoutSenderInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutSenderInput | MessageUpdateManyWithWhereWithoutSenderInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type MessageUpdateManyWithoutReceiverNestedInput = {
+    create?: XOR<MessageCreateWithoutReceiverInput, MessageUncheckedCreateWithoutReceiverInput> | MessageCreateWithoutReceiverInput[] | MessageUncheckedCreateWithoutReceiverInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutReceiverInput | MessageCreateOrConnectWithoutReceiverInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutReceiverInput | MessageUpsertWithWhereUniqueWithoutReceiverInput[]
+    createMany?: MessageCreateManyReceiverInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutReceiverInput | MessageUpdateWithWhereUniqueWithoutReceiverInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutReceiverInput | MessageUpdateManyWithWhereWithoutReceiverInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type ContractUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -32392,6 +35674,34 @@ export namespace Prisma {
     deleteMany?: UserSubscriptionScalarWhereInput | UserSubscriptionScalarWhereInput[]
   }
 
+  export type MessageUncheckedUpdateManyWithoutSenderNestedInput = {
+    create?: XOR<MessageCreateWithoutSenderInput, MessageUncheckedCreateWithoutSenderInput> | MessageCreateWithoutSenderInput[] | MessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderInput | MessageCreateOrConnectWithoutSenderInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutSenderInput | MessageUpsertWithWhereUniqueWithoutSenderInput[]
+    createMany?: MessageCreateManySenderInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutSenderInput | MessageUpdateWithWhereUniqueWithoutSenderInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutSenderInput | MessageUpdateManyWithWhereWithoutSenderInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type MessageUncheckedUpdateManyWithoutReceiverNestedInput = {
+    create?: XOR<MessageCreateWithoutReceiverInput, MessageUncheckedCreateWithoutReceiverInput> | MessageCreateWithoutReceiverInput[] | MessageUncheckedCreateWithoutReceiverInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutReceiverInput | MessageCreateOrConnectWithoutReceiverInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutReceiverInput | MessageUpsertWithWhereUniqueWithoutReceiverInput[]
+    createMany?: MessageCreateManyReceiverInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutReceiverInput | MessageUpdateWithWhereUniqueWithoutReceiverInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutReceiverInput | MessageUpdateManyWithWhereWithoutReceiverInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type CompetitionTeamCreateNestedManyWithoutTeamInput = {
     create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
@@ -32482,6 +35792,13 @@ export namespace Prisma {
     connect?: TransferRequestWhereUniqueInput | TransferRequestWhereUniqueInput[]
   }
 
+  export type MessageCreateNestedManyWithoutTeamInput = {
+    create?: XOR<MessageCreateWithoutTeamInput, MessageUncheckedCreateWithoutTeamInput> | MessageCreateWithoutTeamInput[] | MessageUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutTeamInput | MessageCreateOrConnectWithoutTeamInput[]
+    createMany?: MessageCreateManyTeamInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
   export type CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
@@ -32564,6 +35881,13 @@ export namespace Prisma {
     connectOrCreate?: TransferRequestCreateOrConnectWithoutTeamInput | TransferRequestCreateOrConnectWithoutTeamInput[]
     createMany?: TransferRequestCreateManyTeamInputEnvelope
     connect?: TransferRequestWhereUniqueInput | TransferRequestWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<MessageCreateWithoutTeamInput, MessageUncheckedCreateWithoutTeamInput> | MessageCreateWithoutTeamInput[] | MessageUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutTeamInput | MessageCreateOrConnectWithoutTeamInput[]
+    createMany?: MessageCreateManyTeamInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type EnumPlatformFieldUpdateOperationsInput = {
@@ -32760,6 +36084,20 @@ export namespace Prisma {
     deleteMany?: TransferRequestScalarWhereInput | TransferRequestScalarWhereInput[]
   }
 
+  export type MessageUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<MessageCreateWithoutTeamInput, MessageUncheckedCreateWithoutTeamInput> | MessageCreateWithoutTeamInput[] | MessageUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutTeamInput | MessageCreateOrConnectWithoutTeamInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutTeamInput | MessageUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: MessageCreateManyTeamInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutTeamInput | MessageUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutTeamInput | MessageUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
@@ -32928,6 +36266,20 @@ export namespace Prisma {
     deleteMany?: TransferRequestScalarWhereInput | TransferRequestScalarWhereInput[]
   }
 
+  export type MessageUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<MessageCreateWithoutTeamInput, MessageUncheckedCreateWithoutTeamInput> | MessageCreateWithoutTeamInput[] | MessageUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutTeamInput | MessageCreateOrConnectWithoutTeamInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutTeamInput | MessageUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: MessageCreateManyTeamInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutTeamInput | MessageUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutTeamInput | MessageUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type ClubCreateNestedOneWithoutMembersInput = {
     create?: XOR<ClubCreateWithoutMembersInput, ClubUncheckedCreateWithoutMembersInput>
     connectOrCreate?: ClubCreateOrConnectWithoutMembersInput
@@ -33008,10 +36360,6 @@ export namespace Prisma {
 
   export type EnumCompetitionStatusFieldUpdateOperationsInput = {
     set?: $Enums.CompetitionStatus
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type CompetitionTeamUpdateManyWithoutCompetitionNestedInput = {
@@ -33168,6 +36516,10 @@ export namespace Prisma {
 
   export type EnumMatchStatusFieldUpdateOperationsInput = {
     set?: $Enums.MatchStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type MatchEventUpdateManyWithoutMatchNestedInput = {
@@ -33460,6 +36812,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type EnumContractStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ContractStatus
+  }
+
   export type ClubUpdateOneRequiredWithoutContractsNestedInput = {
     create?: XOR<ClubCreateWithoutContractsInput, ClubUncheckedCreateWithoutContractsInput>
     connectOrCreate?: ClubCreateOrConnectWithoutContractsInput
@@ -33510,6 +36866,14 @@ export namespace Prisma {
     create?: XOR<ClubCreateWithoutReceivedOffersInput, ClubUncheckedCreateWithoutReceivedOffersInput>
     connectOrCreate?: ClubCreateOrConnectWithoutReceivedOffersInput
     connect?: ClubWhereUniqueInput
+  }
+
+  export type EnumTransferOfferStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TransferOfferStatus
+  }
+
+  export type EnumNegotiationTurnFieldUpdateOperationsInput = {
+    set?: $Enums.NegotiationTurn
   }
 
   export type ClubUpdateOneRequiredWithoutSentOffersNestedInput = {
@@ -33732,6 +37096,56 @@ export namespace Prisma {
     upsert?: SubscriptionPlanUpsertWithoutSubscriptionsInput
     connect?: SubscriptionPlanWhereUniqueInput
     update?: XOR<XOR<SubscriptionPlanUpdateToOneWithWhereWithoutSubscriptionsInput, SubscriptionPlanUpdateWithoutSubscriptionsInput>, SubscriptionPlanUncheckedUpdateWithoutSubscriptionsInput>
+  }
+
+  export type UserCreateNestedOneWithoutMessagesSentInput = {
+    create?: XOR<UserCreateWithoutMessagesSentInput, UserUncheckedCreateWithoutMessagesSentInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesSentInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutMessagesReceivedInput = {
+    create?: XOR<UserCreateWithoutMessagesReceivedInput, UserUncheckedCreateWithoutMessagesReceivedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesReceivedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ClubCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<ClubCreateWithoutMessagesInput, ClubUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutMessagesInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutMessagesSentNestedInput = {
+    create?: XOR<UserCreateWithoutMessagesSentInput, UserUncheckedCreateWithoutMessagesSentInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesSentInput
+    upsert?: UserUpsertWithoutMessagesSentInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesSentInput, UserUpdateWithoutMessagesSentInput>, UserUncheckedUpdateWithoutMessagesSentInput>
+  }
+
+  export type UserUpdateOneWithoutMessagesReceivedNestedInput = {
+    create?: XOR<UserCreateWithoutMessagesReceivedInput, UserUncheckedCreateWithoutMessagesReceivedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesReceivedInput
+    upsert?: UserUpsertWithoutMessagesReceivedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesReceivedInput, UserUpdateWithoutMessagesReceivedInput>, UserUncheckedUpdateWithoutMessagesReceivedInput>
+  }
+
+  export type ClubUpdateOneWithoutMessagesNestedInput = {
+    create?: XOR<ClubCreateWithoutMessagesInput, ClubUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutMessagesInput
+    upsert?: ClubUpsertWithoutMessagesInput
+    disconnect?: ClubWhereInput | boolean
+    delete?: ClubWhereInput | boolean
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutMessagesInput, ClubUpdateWithoutMessagesInput>, ClubUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type EnumNewsEventTypeFieldUpdateOperationsInput = {
+    set?: $Enums.NewsEventType
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -34048,17 +37462,6 @@ export namespace Prisma {
     not?: NestedEnumCompetitionStatusFilter<$PrismaModel> | $Enums.CompetitionStatus
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedEnumCompetitionTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.CompetitionType | EnumCompetitionTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
@@ -34079,7 +37482,14 @@ export namespace Prisma {
     _max?: NestedEnumCompetitionStatusFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  export type NestedEnumMatchStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MatchStatus | EnumMatchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMatchStatusFilter<$PrismaModel> | $Enums.MatchStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -34087,17 +37497,7 @@ export namespace Prisma {
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedEnumMatchStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.MatchStatus | EnumMatchStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumMatchStatusFilter<$PrismaModel> | $Enums.MatchStatus
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -34135,6 +37535,20 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMatchStatusFilter<$PrismaModel>
     _max?: NestedEnumMatchStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumEventTypeFilter<$PrismaModel = never> = {
@@ -34188,6 +37602,23 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumContractStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusFilter<$PrismaModel> | $Enums.ContractStatus
+  }
+
+  export type NestedEnumContractStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContractStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumContractStatusFilter<$PrismaModel>
+    _max?: NestedEnumContractStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
     in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
@@ -34203,6 +37634,40 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTransferOfferStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferOfferStatusFilter<$PrismaModel> | $Enums.TransferOfferStatus
+  }
+
+  export type NestedEnumNegotiationTurnFilter<$PrismaModel = never> = {
+    equals?: $Enums.NegotiationTurn | EnumNegotiationTurnFieldRefInput<$PrismaModel>
+    in?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    not?: NestedEnumNegotiationTurnFilter<$PrismaModel> | $Enums.NegotiationTurn
+  }
+
+  export type NestedEnumTransferOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferOfferStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransferOfferStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferOfferStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransferOfferStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNegotiationTurnWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NegotiationTurn | EnumNegotiationTurnFieldRefInput<$PrismaModel>
+    in?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
+    not?: NestedEnumNegotiationTurnWithAggregatesFilter<$PrismaModel> | $Enums.NegotiationTurn
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNegotiationTurnFilter<$PrismaModel>
+    _max?: NestedEnumNegotiationTurnFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -34319,11 +37784,30 @@ export namespace Prisma {
     _max?: NestedEnumUserSubscriptionStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumNewsEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.NewsEventType | EnumNewsEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNewsEventTypeFilter<$PrismaModel> | $Enums.NewsEventType
+  }
+
+  export type NestedEnumNewsEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NewsEventType | EnumNewsEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NewsEventType[] | ListEnumNewsEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNewsEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.NewsEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNewsEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumNewsEventTypeFilter<$PrismaModel>
+  }
+
   export type ContractCreateWithoutUserInput = {
     id?: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
     team: ClubCreateNestedOneWithoutContractsInput
   }
 
@@ -34332,7 +37816,9 @@ export namespace Prisma {
     team_id: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
   }
 
   export type ContractCreateOrConnectWithoutUserInput = {
@@ -34558,6 +38044,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutManagerInput = {
@@ -34586,6 +38073,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutManagerInput = {
@@ -34600,8 +38088,12 @@ export namespace Prisma {
 
   export type TransferOfferCreateWithoutPlayerInput = {
     id?: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
@@ -34612,8 +38104,12 @@ export namespace Prisma {
     id?: string
     from_team_id: string
     to_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
@@ -34730,6 +38226,62 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MessageCreateWithoutSenderInput = {
+    id?: string
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+    receiver?: UserCreateNestedOneWithoutMessagesReceivedInput
+    team?: ClubCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutSenderInput = {
+    id?: string
+    receiver_id?: string | null
+    team_id?: string | null
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+  }
+
+  export type MessageCreateOrConnectWithoutSenderInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutSenderInput, MessageUncheckedCreateWithoutSenderInput>
+  }
+
+  export type MessageCreateManySenderInputEnvelope = {
+    data: MessageCreateManySenderInput | MessageCreateManySenderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MessageCreateWithoutReceiverInput = {
+    id?: string
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+    sender: UserCreateNestedOneWithoutMessagesSentInput
+    team?: ClubCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutReceiverInput = {
+    id?: string
+    sender_id: string
+    team_id?: string | null
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+  }
+
+  export type MessageCreateOrConnectWithoutReceiverInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutReceiverInput, MessageUncheckedCreateWithoutReceiverInput>
+  }
+
+  export type MessageCreateManyReceiverInputEnvelope = {
+    data: MessageCreateManyReceiverInput | MessageCreateManyReceiverInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ContractUpsertWithWhereUniqueWithoutUserInput = {
     where: ContractWhereUniqueInput
     update: XOR<ContractUpdateWithoutUserInput, ContractUncheckedUpdateWithoutUserInput>
@@ -34755,7 +38307,9 @@ export namespace Prisma {
     user_id?: UuidFilter<"Contract"> | string
     salary?: FloatFilter<"Contract"> | number
     release_clause?: FloatFilter<"Contract"> | number
-    expires_at?: DateTimeFilter<"Contract"> | Date | string
+    start_date?: DateTimeFilter<"Contract"> | Date | string
+    end_date?: DateTimeFilter<"Contract"> | Date | string
+    status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
   }
 
   export type InvitationUpsertWithWhereUniqueWithoutInviteeInput = {
@@ -35007,8 +38561,12 @@ export namespace Prisma {
     player_id?: UuidFilter<"TransferOffer"> | string
     from_team_id?: UuidFilter<"TransferOffer"> | string
     to_team_id?: UuidFilter<"TransferOffer"> | string
-    amount?: FloatFilter<"TransferOffer"> | number
-    status?: EnumTransferStatusFilter<"TransferOffer"> | $Enums.TransferStatus
+    offered_salary?: FloatFilter<"TransferOffer"> | number
+    offered_clause?: FloatFilter<"TransferOffer"> | number
+    transfer_fee?: FloatFilter<"TransferOffer"> | number
+    duration_months?: IntFilter<"TransferOffer"> | number
+    status?: EnumTransferOfferStatusFilter<"TransferOffer"> | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFilter<"TransferOffer"> | $Enums.NegotiationTurn
     created_at?: DateTimeFilter<"TransferOffer"> | Date | string
     responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
   }
@@ -35124,6 +38682,51 @@ export namespace Prisma {
     status?: EnumUserSubscriptionStatusFilter<"UserSubscription"> | $Enums.UserSubscriptionStatus
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutSenderInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutSenderInput, MessageUncheckedUpdateWithoutSenderInput>
+    create: XOR<MessageCreateWithoutSenderInput, MessageUncheckedCreateWithoutSenderInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutSenderInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutSenderInput, MessageUncheckedUpdateWithoutSenderInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutSenderInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutSenderInput>
+  }
+
+  export type MessageScalarWhereInput = {
+    AND?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    OR?: MessageScalarWhereInput[]
+    NOT?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    id?: UuidFilter<"Message"> | string
+    sender_id?: UuidFilter<"Message"> | string
+    receiver_id?: UuidNullableFilter<"Message"> | string | null
+    team_id?: UuidNullableFilter<"Message"> | string | null
+    content?: StringFilter<"Message"> | string
+    is_read?: BoolFilter<"Message"> | boolean
+    created_at?: DateTimeFilter<"Message"> | Date | string
+  }
+
+  export type MessageUpsertWithWhereUniqueWithoutReceiverInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutReceiverInput, MessageUncheckedUpdateWithoutReceiverInput>
+    create: XOR<MessageCreateWithoutReceiverInput, MessageUncheckedCreateWithoutReceiverInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutReceiverInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutReceiverInput, MessageUncheckedUpdateWithoutReceiverInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutReceiverInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutReceiverInput>
+  }
+
   export type CompetitionTeamCreateWithoutTeamInput = {
     joined_at?: Date | string
     competition: CompetitionCreateNestedOneWithoutTeamsInput
@@ -35148,7 +38751,9 @@ export namespace Prisma {
     id?: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
     user: UserCreateNestedOneWithoutContractsInput
   }
 
@@ -35157,7 +38762,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
   }
 
   export type ContractCreateOrConnectWithoutTeamInput = {
@@ -35261,6 +38868,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -35277,6 +38885,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -35301,6 +38910,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -35317,6 +38927,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -35386,6 +38997,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutManagedClubsInput = {
@@ -35418,6 +39031,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutManagedClubsInput = {
@@ -35453,8 +39068,12 @@ export namespace Prisma {
 
   export type TransferOfferCreateWithoutFromTeamInput = {
     id?: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
     player: UserCreateNestedOneWithoutTransferOffersInput
@@ -35465,8 +39084,12 @@ export namespace Prisma {
     id?: string
     player_id: string
     to_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
@@ -35483,8 +39106,12 @@ export namespace Prisma {
 
   export type TransferOfferCreateWithoutToTeamInput = {
     id?: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
@@ -35495,8 +39122,12 @@ export namespace Prisma {
     id?: string
     player_id: string
     from_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
@@ -35532,6 +39163,34 @@ export namespace Prisma {
 
   export type TransferRequestCreateManyTeamInputEnvelope = {
     data: TransferRequestCreateManyTeamInput | TransferRequestCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MessageCreateWithoutTeamInput = {
+    id?: string
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+    sender: UserCreateNestedOneWithoutMessagesSentInput
+    receiver?: UserCreateNestedOneWithoutMessagesReceivedInput
+  }
+
+  export type MessageUncheckedCreateWithoutTeamInput = {
+    id?: string
+    sender_id: string
+    receiver_id?: string | null
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+  }
+
+  export type MessageCreateOrConnectWithoutTeamInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutTeamInput, MessageUncheckedCreateWithoutTeamInput>
+  }
+
+  export type MessageCreateManyTeamInputEnvelope = {
+    data: MessageCreateManyTeamInput | MessageCreateManyTeamInput[]
     skipDuplicates?: boolean
   }
 
@@ -35652,6 +39311,7 @@ export namespace Prisma {
     away_score?: IntNullableFilter<"Match"> | number | null
     status?: EnumMatchStatusFilter<"Match"> | $Enums.MatchStatus
     played_at?: DateTimeNullableFilter<"Match"> | Date | string | null
+    scheduled_at?: DateTimeNullableFilter<"Match"> | Date | string | null
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
   }
@@ -35729,6 +39389,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedClubsInput = {
@@ -35761,6 +39423,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutTeamInput = {
@@ -35839,6 +39503,22 @@ export namespace Prisma {
     data: XOR<TransferRequestUpdateManyMutationInput, TransferRequestUncheckedUpdateManyWithoutTeamInput>
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutTeamInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutTeamInput, MessageUncheckedUpdateWithoutTeamInput>
+    create: XOR<MessageCreateWithoutTeamInput, MessageUncheckedCreateWithoutTeamInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutTeamInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutTeamInput, MessageUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutTeamInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutTeamInput>
+  }
+
   export type ClubCreateWithoutMembersInput = {
     id?: string
     name: string
@@ -35865,6 +39545,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutMembersInput = {
@@ -35893,6 +39574,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutMembersInput = {
@@ -35930,6 +39612,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -35962,6 +39646,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -36006,6 +39692,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMembersInput = {
@@ -36034,6 +39721,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutTeamMembershipsInput = {
@@ -36077,6 +39765,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -36109,6 +39799,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserCreateWithoutStatsInput = {
@@ -36141,6 +39833,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutStatsInput = {
@@ -36173,6 +39867,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutStatsInput = {
@@ -36221,6 +39917,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatsInput = {
@@ -36253,6 +39951,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type CompetitionTeamCreateWithoutCompetitionInput = {
@@ -36282,6 +39982,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -36299,6 +40000,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
@@ -36352,8 +40054,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status?: $Enums.CompetitionStatus
-    start_date?: Date | string | null
-    end_date?: Date | string | null
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     matches?: MatchCreateNestedManyWithoutCompetitionInput
   }
@@ -36363,8 +40065,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status?: $Enums.CompetitionStatus
-    start_date?: Date | string | null
-    end_date?: Date | string | null
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     matches?: MatchUncheckedCreateNestedManyWithoutCompetitionInput
   }
@@ -36400,6 +40102,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutCompetitionsInput = {
@@ -36428,6 +40131,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutCompetitionsInput = {
@@ -36451,8 +40155,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     matches?: MatchUpdateManyWithoutCompetitionNestedInput
   }
@@ -36462,8 +40166,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     matches?: MatchUncheckedUpdateManyWithoutCompetitionNestedInput
   }
@@ -36505,6 +40209,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutCompetitionsInput = {
@@ -36533,6 +40238,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type MatchEventCreateWithoutMatchInput = {
@@ -36617,6 +40323,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutAwayMatchesInput = {
@@ -36645,6 +40352,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutAwayMatchesInput = {
@@ -36657,8 +40365,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status?: $Enums.CompetitionStatus
-    start_date?: Date | string | null
-    end_date?: Date | string | null
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     teams?: CompetitionTeamCreateNestedManyWithoutCompetitionInput
   }
@@ -36668,8 +40376,8 @@ export namespace Prisma {
     name: string
     type: $Enums.CompetitionType
     status?: $Enums.CompetitionStatus
-    start_date?: Date | string | null
-    end_date?: Date | string | null
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     teams?: CompetitionTeamUncheckedCreateNestedManyWithoutCompetitionInput
   }
@@ -36705,6 +40413,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutHomeMatchesInput = {
@@ -36733,6 +40442,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutHomeMatchesInput = {
@@ -36839,6 +40549,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAwayMatchesInput = {
@@ -36867,6 +40578,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CompetitionUpsertWithoutMatchesInput = {
@@ -36885,8 +40597,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: CompetitionTeamUpdateManyWithoutCompetitionNestedInput
   }
@@ -36896,8 +40608,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumCompetitionTypeFieldUpdateOperationsInput | $Enums.CompetitionType
     status?: EnumCompetitionStatusFieldUpdateOperationsInput | $Enums.CompetitionStatus
-    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    end_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: CompetitionTeamUncheckedUpdateManyWithoutCompetitionNestedInput
   }
@@ -36939,6 +40651,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutHomeMatchesInput = {
@@ -36967,6 +40680,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type PredictionUpsertWithWhereUniqueWithoutMatchInput = {
@@ -36992,6 +40706,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -37009,6 +40724,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -37046,6 +40762,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutMatchScoreReportsInput = {
@@ -37074,6 +40791,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutMatchScoreReportsInput = {
@@ -37111,6 +40829,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutMatchScoreReportsInput = {
@@ -37143,6 +40863,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutMatchScoreReportsInput = {
@@ -37168,6 +40890,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -37185,6 +40908,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -37228,6 +40952,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMatchScoreReportsInput = {
@@ -37256,6 +40981,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutMatchScoreReportsInput = {
@@ -37299,6 +41025,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchScoreReportsInput = {
@@ -37331,6 +41059,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type MatchCreateWithoutEventsInput = {
@@ -37340,6 +41070,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -37357,6 +41088,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
@@ -37398,6 +41130,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutMatchEventsInput = {
@@ -37430,6 +41164,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutMatchEventsInput = {
@@ -37463,6 +41199,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutMatchEventsInput = {
@@ -37491,6 +41228,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutMatchEventsInput = {
@@ -37516,6 +41254,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -37533,6 +41272,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
@@ -37580,6 +41320,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchEventsInput = {
@@ -37612,6 +41354,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type ClubUpsertWithoutMatchEventsInput = {
@@ -37651,6 +41395,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMatchEventsInput = {
@@ -37679,6 +41424,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutTransferRequestsInput = {
@@ -37711,6 +41457,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutTransferRequestsInput = {
@@ -37743,6 +41491,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutTransferRequestsInput = {
@@ -37776,6 +41526,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutTeamInput
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutTransferRequestsInput = {
@@ -37804,6 +41555,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutTransferRequestsInput = {
@@ -37852,6 +41604,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferRequestsInput = {
@@ -37884,6 +41638,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type ClubUpsertWithoutTransferRequestsInput = {
@@ -37923,6 +41679,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTransferRequestsInput = {
@@ -37951,6 +41708,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutReceivedInvitationsInput = {
@@ -37983,6 +41741,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -38015,6 +41775,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -38052,6 +41814,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -38084,6 +41848,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -38117,6 +41883,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutInvitationsInput = {
@@ -38145,6 +41912,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutInvitationsInput = {
@@ -38193,6 +41961,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -38225,6 +41995,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUpsertWithoutSentInvitationsInput = {
@@ -38268,6 +42040,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -38300,6 +42074,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type ClubUpsertWithoutInvitationsInput = {
@@ -38339,6 +42115,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutInvitationsInput = {
@@ -38367,6 +42144,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubCreateWithoutContractsInput = {
@@ -38395,6 +42173,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutContractsInput = {
@@ -38423,6 +42202,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutContractsInput = {
@@ -38460,6 +42240,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutContractsInput = {
@@ -38492,6 +42274,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutContractsInput = {
@@ -38536,6 +42320,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutContractsInput = {
@@ -38564,6 +42349,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutContractsInput = {
@@ -38607,6 +42393,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutContractsInput = {
@@ -38639,6 +42427,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type ClubCreateWithoutTransactionsInput = {
@@ -38667,6 +42457,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutTransactionsInput = {
@@ -38695,6 +42486,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutTransactionsInput = {
@@ -38739,6 +42531,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTransactionsInput = {
@@ -38767,6 +42560,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubCreateWithoutSentOffersInput = {
@@ -38795,6 +42589,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutTeamInput
     receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutSentOffersInput = {
@@ -38823,6 +42618,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
     receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutSentOffersInput = {
@@ -38860,6 +42656,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutTransferOffersInput = {
@@ -38892,6 +42690,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutTransferOffersInput = {
@@ -38925,6 +42725,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutTeamInput
     sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutReceivedOffersInput = {
@@ -38953,6 +42754,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
     sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutReceivedOffersInput = {
@@ -38997,6 +42799,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutSentOffersInput = {
@@ -39025,6 +42828,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutTransferOffersInput = {
@@ -39068,6 +42872,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferOffersInput = {
@@ -39100,6 +42906,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type ClubUpsertWithoutReceivedOffersInput = {
@@ -39139,6 +42947,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutTeamNestedInput
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutReceivedOffersInput = {
@@ -39167,6 +42976,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -39199,6 +43009,8 @@ export namespace Prisma {
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -39231,6 +43043,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -39279,6 +43093,8 @@ export namespace Prisma {
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -39311,6 +43127,8 @@ export namespace Prisma {
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserInventoryCreateWithoutItemInput = {
@@ -39381,6 +43199,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutInventoryInput = {
@@ -39413,6 +43233,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutInventoryInput = {
@@ -39486,6 +43308,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInventoryInput = {
@@ -39518,6 +43342,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type StoreItemUpsertWithoutInventoryInput = {
@@ -39581,6 +43407,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutPredictionsInput = {
@@ -39613,6 +43441,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutPredictionsInput = {
@@ -39627,6 +43457,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
@@ -39644,6 +43475,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
@@ -39696,6 +43528,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPredictionsInput = {
@@ -39728,6 +43562,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type MatchUpsertWithoutPredictionsInput = {
@@ -39748,6 +43584,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -39765,6 +43602,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -39843,6 +43681,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
     inventory?: UserInventoryCreateNestedManyWithoutUserInput
     predictions?: PredictionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
   }
 
   export type UserUncheckedCreateWithoutSubscriptionsInput = {
@@ -39875,6 +43715,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
   }
 
   export type UserCreateOrConnectWithoutSubscriptionsInput = {
@@ -39946,6 +43788,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
     inventory?: UserInventoryUpdateManyWithoutUserNestedInput
     predictions?: PredictionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSubscriptionsInput = {
@@ -39978,6 +43822,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
     inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type SubscriptionPlanUpsertWithoutSubscriptionsInput = {
@@ -40009,12 +43855,450 @@ export namespace Prisma {
     features?: JsonNullValueInput | InputJsonValue
   }
 
+  export type UserCreateWithoutMessagesSentInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    managedClubs?: ClubCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryCreateNestedManyWithoutUserInput
+    predictions?: PredictionCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+  }
+
+  export type UserUncheckedCreateWithoutMessagesSentInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    managedClubs?: ClubUncheckedCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+  }
+
+  export type UserCreateOrConnectWithoutMessagesSentInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMessagesSentInput, UserUncheckedCreateWithoutMessagesSentInput>
+  }
+
+  export type UserCreateWithoutMessagesReceivedInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    managedClubs?: ClubCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryCreateNestedManyWithoutUserInput
+    predictions?: PredictionCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserUncheckedCreateWithoutMessagesReceivedInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    managedClubs?: ClubUncheckedCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserCreateOrConnectWithoutMessagesReceivedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMessagesReceivedInput, UserUncheckedCreateWithoutMessagesReceivedInput>
+  }
+
+  export type ClubCreateWithoutMessagesInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    manager?: UserCreateNestedOneWithoutManagedClubsInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+  }
+
+  export type ClubUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    manager_id?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type ClubCreateOrConnectWithoutMessagesInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutMessagesInput, ClubUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserUpsertWithoutMessagesSentInput = {
+    update: XOR<UserUpdateWithoutMessagesSentInput, UserUncheckedUpdateWithoutMessagesSentInput>
+    create: XOR<UserCreateWithoutMessagesSentInput, UserUncheckedCreateWithoutMessagesSentInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMessagesSentInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMessagesSentInput, UserUncheckedUpdateWithoutMessagesSentInput>
+  }
+
+  export type UserUpdateWithoutMessagesSentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMessagesSentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUncheckedUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+  }
+
+  export type UserUpsertWithoutMessagesReceivedInput = {
+    update: XOR<UserUpdateWithoutMessagesReceivedInput, UserUncheckedUpdateWithoutMessagesReceivedInput>
+    create: XOR<UserCreateWithoutMessagesReceivedInput, UserUncheckedCreateWithoutMessagesReceivedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMessagesReceivedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMessagesReceivedInput, UserUncheckedUpdateWithoutMessagesReceivedInput>
+  }
+
+  export type UserUpdateWithoutMessagesReceivedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMessagesReceivedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUncheckedUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
+  export type ClubUpsertWithoutMessagesInput = {
+    update: XOR<ClubUpdateWithoutMessagesInput, ClubUncheckedUpdateWithoutMessagesInput>
+    create: XOR<ClubCreateWithoutMessagesInput, ClubUncheckedCreateWithoutMessagesInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutMessagesInput, ClubUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type ClubUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    manager?: UserUpdateOneWithoutManagedClubsNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    manager_id?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
   export type ContractCreateManyUserInput = {
     id?: string
     team_id: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
   }
 
   export type InvitationCreateManyInviteeInput = {
@@ -40088,8 +44372,12 @@ export namespace Prisma {
     id?: string
     from_team_id: string
     to_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
@@ -40125,11 +44413,31 @@ export namespace Prisma {
     status?: $Enums.UserSubscriptionStatus
   }
 
+  export type MessageCreateManySenderInput = {
+    id?: string
+    receiver_id?: string | null
+    team_id?: string | null
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+  }
+
+  export type MessageCreateManyReceiverInput = {
+    id?: string
+    sender_id: string
+    team_id?: string | null
+    content: string
+    is_read?: boolean
+    created_at?: Date | string
+  }
+
   export type ContractUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
     team?: ClubUpdateOneRequiredWithoutContractsNestedInput
   }
 
@@ -40138,7 +44446,9 @@ export namespace Prisma {
     team_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
   }
 
   export type ContractUncheckedUpdateManyWithoutUserInput = {
@@ -40146,7 +44456,9 @@ export namespace Prisma {
     team_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
   }
 
   export type InvitationUpdateWithoutInviteeInput = {
@@ -40328,6 +44640,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutManagerInput = {
@@ -40356,6 +44669,7 @@ export namespace Prisma {
     sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateManyWithoutManagerInput = {
@@ -40376,8 +44690,12 @@ export namespace Prisma {
 
   export type TransferOfferUpdateWithoutPlayerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
@@ -40388,8 +44706,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
     to_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40398,8 +44720,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
     to_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40497,6 +44823,60 @@ export namespace Prisma {
     status?: EnumUserSubscriptionStatusFieldUpdateOperationsInput | $Enums.UserSubscriptionStatus
   }
 
+  export type MessageUpdateWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    receiver?: UserUpdateOneWithoutMessagesReceivedNestedInput
+    team?: ClubUpdateOneWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    receiver_id?: NullableStringFieldUpdateOperationsInput | string | null
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    receiver_id?: NullableStringFieldUpdateOperationsInput | string | null
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUpdateWithoutReceiverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    sender?: UserUpdateOneRequiredWithoutMessagesSentNestedInput
+    team?: ClubUpdateOneWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutReceiverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sender_id?: StringFieldUpdateOperationsInput | string
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyWithoutReceiverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sender_id?: StringFieldUpdateOperationsInput | string
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CompetitionTeamCreateManyTeamInput = {
     competition_id: string
     joined_at?: Date | string
@@ -40507,7 +44887,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
-    expires_at: Date | string
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
   }
 
   export type InvitationCreateManyTeamInput = {
@@ -40545,6 +44927,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
   }
@@ -40557,6 +44940,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     competition_id?: string | null
     round?: string | null
   }
@@ -40579,8 +44963,12 @@ export namespace Prisma {
     id?: string
     player_id: string
     to_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
@@ -40589,8 +44977,12 @@ export namespace Prisma {
     id?: string
     player_id: string
     from_team_id: string
-    amount: number
-    status?: $Enums.TransferStatus
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
   }
@@ -40599,6 +44991,15 @@ export namespace Prisma {
     id?: string
     player_id: string
     status?: $Enums.TransferStatus
+    created_at?: Date | string
+  }
+
+  export type MessageCreateManyTeamInput = {
+    id?: string
+    sender_id: string
+    receiver_id?: string | null
+    content: string
+    is_read?: boolean
     created_at?: Date | string
   }
 
@@ -40621,7 +45022,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
   }
 
@@ -40630,7 +45033,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
   }
 
   export type ContractUncheckedUpdateManyWithoutTeamInput = {
@@ -40638,7 +45043,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
-    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
   }
 
   export type InvitationUpdateWithoutTeamInput = {
@@ -40729,6 +45136,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -40745,6 +45153,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -40760,6 +45169,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -40771,6 +45181,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -40787,6 +45198,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
@@ -40802,6 +45214,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -40850,8 +45263,12 @@ export namespace Prisma {
 
   export type TransferOfferUpdateWithoutFromTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
@@ -40862,8 +45279,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
     to_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40872,16 +45293,24 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
     to_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransferOfferUpdateWithoutToTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
@@ -40892,8 +45321,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40902,8 +45335,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
-    amount?: FloatFieldUpdateOperationsInput | number
-    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40929,6 +45366,33 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MessageUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    sender?: UserUpdateOneRequiredWithoutMessagesSentNestedInput
+    receiver?: UserUpdateOneWithoutMessagesReceivedNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sender_id?: StringFieldUpdateOperationsInput | string
+    receiver_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sender_id?: StringFieldUpdateOperationsInput | string
+    receiver_id?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CompetitionTeamCreateManyCompetitionInput = {
     team_id: string
     joined_at?: Date | string
@@ -40943,6 +45407,7 @@ export namespace Prisma {
     away_score?: number | null
     status?: $Enums.MatchStatus
     played_at?: Date | string | null
+    scheduled_at?: Date | string | null
     round?: string | null
   }
 
@@ -40968,6 +45433,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
@@ -40985,6 +45451,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
@@ -41000,6 +45467,7 @@ export namespace Prisma {
     away_score?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
     played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

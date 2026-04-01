@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/useAuthStore';
 import {
-  Scale, Trophy, Swords, LayoutDashboard, ChevronRight, Menu, X, ArrowLeft,
+  Scale, Swords, LayoutDashboard, ChevronRight, Menu, X, ArrowLeft, ListOrdered,
 } from 'lucide-react';
 
 const sidebarLinks = [
   { to: '/moderator', label: 'Accueil', icon: LayoutDashboard, exact: true },
-  { to: '/moderator/competitions', label: 'Ligue & Coupe', icon: Trophy },
+  { to: '/moderator/competitions', label: 'Ligue & Coupe', icon: ListOrdered },
   { to: '/moderator/matches', label: 'Matchs & scores', icon: Swords },
 ];
 

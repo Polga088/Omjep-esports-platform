@@ -9,7 +9,9 @@
     "rootDir": "./src",
     "baseUrl": "./",
     "paths": {
+      "@api/*": ["./src/*"],
       "@omjep/database": ["../../packages/database/dist"],
+      "@omjep/shared": ["../../packages/shared/dist"],
       "@omjep/ui": ["../../packages/ui/dist"]
     },
     "emitDecoratorMetadata": true,

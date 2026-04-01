@@ -1,0 +1,77 @@
+{
+  "name": "@omjep/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./chat": {
+      "types": "./dist/chat/index.d.ts",
+      "import": "./dist/chat/index.js",
+      "require": "./dist/chat/index.js",
+      "default": "./dist/chat/index.js"
+    },
+    "./chat/constants": {
+      "types": "./dist/chat/constants.d.ts",
+      "import": "./dist/chat/constants.js",
+      "require": "./dist/chat/constants.js",
+      "default": "./dist/chat/constants.js"
+    },
+    "./chat/types": {
+      "types": "./dist/chat/types.d.ts",
+      "import": "./dist/chat/types.js",
+      "require": "./dist/chat/types.js",
+      "default": "./dist/chat/types.js"
+    },
+    "./chat/*": {
+      "types": "./dist/chat/*.d.ts",
+      "import": "./dist/chat/*.js",
+      "require": "./dist/chat/*.js",
+      "default": "./dist/chat/*.js"
+    },
+    "./enums": {
+      "types": "./dist/enums/index.d.ts",
+      "import": "./dist/enums/index.js",
+      "require": "./dist/enums/index.js",
+      "default": "./dist/enums/index.js"
+    },
+    "./enums/*": {
+      "types": "./dist/enums/*.d.ts",
+      "import": "./dist/enums/*.js",
+      "require": "./dist/enums/*.js",
+      "default": "./dist/enums/*.js"
+    },
+    "./prisma-enums": {
+      "types": "./dist/prisma-enums.d.ts",
+      "import": "./dist/prisma-enums.js",
+      "require": "./dist/prisma-enums.js",
+      "default": "./dist/prisma-enums.js"
+    },
+    "./api-response": {
+      "types": "./dist/api-response.d.ts",
+      "import": "./dist/api-response.js",
+      "require": "./dist/api-response.js",
+      "default": "./dist/api-response.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@omjep/database": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  },
+  "sideEffects": false
+}

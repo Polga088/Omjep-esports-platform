@@ -5,6 +5,8 @@ import {
   LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings, Wallet, Repeat, Scale, Gamepad2,
   Building2,
   Dices,
+  Medal,
+  MessageCircle,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
@@ -24,11 +26,13 @@ const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard, exact: true },
   { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
   { to: '/dashboard/ladder', label: 'Classement', icon: Trophy },
+  { to: '/hall-of-fame', label: 'Palmarès', icon: Medal },
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
   { to: '/dashboard/gamification', label: 'Mon Parcours', icon: Gamepad2 },
   { to: '/dashboard/predictions', label: 'Predict & Win', icon: Dices },
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
   { to: '/dashboard/transfers', label: 'Mercato Live', icon: Repeat },
+  { to: '/dashboard/chat', label: 'Messagerie', icon: MessageCircle },
   { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
   { to: '/dashboard/settings', label: 'Paramètres', icon: Settings },
   { to: '/dashboard/manager/club', label: 'Créer mon club', icon: Building2, managerOnly: true },
@@ -43,6 +47,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/predictions': 'Predict & Win',
   '/dashboard/store': 'Boutique',
   '/dashboard/transfers': 'Mercato Live',
+  '/dashboard/chat': 'Messagerie',
   '/dashboard/profile': 'Mon Profil',
   '/dashboard/settings': 'Paramètres',
   '/dashboard/manager/club': 'Créer mon club',

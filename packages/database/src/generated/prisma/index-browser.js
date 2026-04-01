@@ -200,6 +200,7 @@ exports.Prisma.MatchScalarFieldEnum = {
   away_score: 'away_score',
   status: 'status',
   played_at: 'played_at',
+  scheduled_at: 'scheduled_at',
   competition_id: 'competition_id',
   round: 'round'
 };
@@ -248,7 +249,9 @@ exports.Prisma.ContractScalarFieldEnum = {
   user_id: 'user_id',
   salary: 'salary',
   release_clause: 'release_clause',
-  expires_at: 'expires_at'
+  start_date: 'start_date',
+  end_date: 'end_date',
+  status: 'status'
 };
 
 exports.Prisma.TransactionScalarFieldEnum = {
@@ -265,8 +268,12 @@ exports.Prisma.TransferOfferScalarFieldEnum = {
   player_id: 'player_id',
   from_team_id: 'from_team_id',
   to_team_id: 'to_team_id',
-  amount: 'amount',
+  offered_salary: 'offered_salary',
+  offered_clause: 'offered_clause',
+  transfer_fee: 'transfer_fee',
+  duration_months: 'duration_months',
   status: 'status',
+  negotiation_turn: 'negotiation_turn',
   created_at: 'created_at',
   responded_at: 'responded_at'
 };
@@ -325,6 +332,25 @@ exports.Prisma.UserSubscriptionScalarFieldEnum = {
   start_date: 'start_date',
   end_date: 'end_date',
   status: 'status'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  id: 'id',
+  sender_id: 'sender_id',
+  receiver_id: 'receiver_id',
+  team_id: 'team_id',
+  content: 'content',
+  is_read: 'is_read',
+  created_at: 'created_at'
+};
+
+exports.Prisma.NewsEventScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  title: 'title',
+  description: 'description',
+  metadata: 'metadata',
+  created_at: 'created_at'
 };
 
 exports.Prisma.SortOrder = {
@@ -398,7 +424,8 @@ exports.ClubRole = exports.$Enums.ClubRole = {
 
 exports.CompetitionType = exports.$Enums.CompetitionType = {
   LEAGUE: 'LEAGUE',
-  CUP: 'CUP'
+  CUP: 'CUP',
+  CHAMPIONS: 'CHAMPIONS'
 };
 
 exports.CompetitionStatus = exports.$Enums.CompetitionStatus = {
@@ -434,10 +461,28 @@ exports.InvitationStatus = exports.$Enums.InvitationStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.ContractStatus = exports.$Enums.ContractStatus = {
+  ACTIVE: 'ACTIVE',
+  TERMINATED: 'TERMINATED'
+};
+
 exports.TransactionType = exports.$Enums.TransactionType = {
   MATCH_REWARD: 'MATCH_REWARD',
   TRANSFER: 'TRANSFER',
   WAGE: 'WAGE'
+};
+
+exports.TransferOfferStatus = exports.$Enums.TransferOfferStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  COUNTER_OFFER: 'COUNTER_OFFER',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.NegotiationTurn = exports.$Enums.NegotiationTurn = {
+  PLAYER: 'PLAYER',
+  BUYING_CLUB: 'BUYING_CLUB'
 };
 
 exports.StoreItemCategory = exports.$Enums.StoreItemCategory = {
@@ -462,6 +507,15 @@ exports.UserSubscriptionStatus = exports.$Enums.UserSubscriptionStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.NewsEventType = exports.$Enums.NewsEventType = {
+  TRANSFER: 'TRANSFER',
+  CONTRACT_RENEWAL: 'CONTRACT_RENEWAL',
+  TOURNAMENT_WIN: 'TOURNAMENT_WIN',
+  SEASON_START: 'SEASON_START',
+  RECORD_BROKEN: 'RECORD_BROKEN',
+  OTHER: 'OTHER'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Club: 'Club',
@@ -482,7 +536,9 @@ exports.Prisma.ModelName = {
   UserInventory: 'UserInventory',
   Prediction: 'Prediction',
   SubscriptionPlan: 'SubscriptionPlan',
-  UserSubscription: 'UserSubscription'
+  UserSubscription: 'UserSubscription',
+  Message: 'Message',
+  NewsEvent: 'NewsEvent'
 };
 
 /**

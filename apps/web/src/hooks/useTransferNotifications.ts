@@ -29,7 +29,14 @@ export function useTransferNotifications() {
         (n) =>
           !n.is_read &&
           n.metadata?.type &&
-          ['TRANSFER_OFFER_RECEIVED', 'TRANSFER_OFFER_ACCEPTED', 'TRANSFER_OFFER_REJECTED', 'PLAYER_TRANSFERRED'].includes(n.metadata.type),
+          [
+            'TRANSFER_OFFER_RECEIVED',
+            'TRANSFER_OFFER_ACCEPTED',
+            'TRANSFER_OFFER_REJECTED',
+            'PLAYER_TRANSFERRED',
+            'TRANSFER_COUNTER',
+            'TRANSFER_NEGOTIATION',
+          ].includes(n.metadata.type),
       );
 
       if (transferNotifs.length === 0) return;

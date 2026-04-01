@@ -6,12 +6,15 @@
   "scripts": {
     "build": "tsc -b && vite build",
     "dev": "vite --port 3000",
+    "dev:force": "vite --port 3000 --force",
     "preview": "vite preview",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo node_modules/.vite",
+    "clean:vite": "rm -rf node_modules/.vite"
   },
   "dependencies": {
+    "@omjep/shared": "workspace:*",
     "@omjep/ui": "workspace:*",
     "@tanstack/react-table": "^8.21.0",
     "axios": "^1.14.0",
@@ -20,6 +23,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.5",
+    "socket.io-client": "^4.8.1",
     "sonner": "^2.0.7",
     "zustand": "^5.0.12"
   },
