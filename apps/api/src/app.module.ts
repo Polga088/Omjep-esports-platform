@@ -23,6 +23,7 @@ import {
   TeamsModule,
   TransfersModule,
   UsersModule,
+  WalletsModule,
 } from './modules';
 
 @Module({
@@ -53,6 +54,7 @@ import {
     NewsModule,
     StatsModule,
     ChatModule,
+    WalletsModule,
   ],
 })
 export class AppModule {}

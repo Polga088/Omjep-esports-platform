@@ -48,6 +48,20 @@ export class TransfersController {
     return this.transferOfferService.acceptOffer(req.user.id, id);
   }
 
+  /** Alias pratique (REST) — même effet que POST `offer/:id/accept`. */
+  @Patch('accept/:id')
+  @Roles('PLAYER', 'ADMIN')
+  acceptOfferPatch(@Req() req: any, @Param('id', ParseUUIDPipe) id: string) {
+    return this.transferOfferService.acceptOffer(req.user.id, id);
+  }
+
+  /** Le joueur refuse l’offre (statut REJECTED). */
+  @Patch('reject/:id')
+  @Roles('PLAYER', 'ADMIN')
+  rejectOfferPatch(@Req() req: any, @Param('id', ParseUUIDPipe) id: string) {
+    return this.transferOfferService.playerRespond(req.user.id, id, { action: 'REJECT' });
+  }
+
   @Patch('offer/:id/buyer-respond')
   @Roles('MANAGER', 'ADMIN', 'PLAYER')
   buyerRespond(
@@ -81,7 +95,9 @@ export class TransfersController {
   getFreeAgents(
     @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
     @Query('position') position?: string,
+    /** Exclut les joueurs pour lesquels ce club a déjà une offre en attente (PENDING / COUNTER_OFFER) */
+    @Query('team_id') teamId?: string,
   ) {
-    return this.transferOfferService.getFreeAgents(limit, position);
+    return this.transferOfferService.getFreeAgents(limit, position, teamId);
   }
 }

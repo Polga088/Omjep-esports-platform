@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, Link2, Check, Calendar, Send, Zap, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PlayerCard from '@/components/PlayerCard';
-import TransferOfferModal from '@/components/TransferOfferModal';
+import TransferOfferModal, { type PendingOfferRecap } from '@/components/TransferOfferModal';
 import LevelUpOverlay from '@/components/LevelUpOverlay';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -195,6 +195,7 @@ export default function ProfileDetail() {
 
   const [myTeam, setMyTeam] = useState<MyTeamData | null>(null);
   const [transferModalOpen, setTransferModalOpen] = useState(false);
+  const [pendingOfferForPlayer, setPendingOfferForPlayer] = useState<PendingOfferRecap | null>(null);
 
   const prevLevelRef = useRef<number | null>(null);
 
@@ -251,6 +252,57 @@ export default function ProfileDetail() {
       .catch(() => {});
     return () => { cancelled = true; };
   }, []);
+
+  const loadPendingOfferForPlayer = useCallback(async () => {
+    if (!myTeam?.id || !id) {
+      setPendingOfferForPlayer(null);
+      return;
+    }
+    try {
+      const { data } = await api.get<
+        Array<{
+          id: string;
+          player_id: string;
+          from_team_id: string;
+          status: string;
+          transfer_fee: number;
+          offered_salary: number;
+          offered_clause: number;
+          duration_months: number;
+          negotiation_turn: 'PLAYER' | 'BUYING_CLUB';
+        }>
+      >('/transfers/offers', { params: { team_id: myTeam.id } });
+      const o = data.find(
+        (x) =>
+          x.player_id === id &&
+          x.from_team_id === myTeam.id &&
+          (x.status === 'PENDING' || x.status === 'COUNTER_OFFER'),
+      );
+      if (!o) {
+        setPendingOfferForPlayer(null);
+        return;
+      }
+      setPendingOfferForPlayer({
+        id: o.id,
+        transfer_fee: o.transfer_fee,
+        offered_salary: o.offered_salary,
+        offered_clause: o.offered_clause,
+        duration_months: o.duration_months,
+        status: o.status as PendingOfferRecap['status'],
+        negotiation_turn: o.negotiation_turn,
+      });
+    } catch {
+      setPendingOfferForPlayer(null);
+    }
+  }, [myTeam?.id, id]);
+
+  useEffect(() => {
+    void loadPendingOfferForPlayer();
+  }, [loadPendingOfferForPlayer]);
+
+  useEffect(() => {
+    if (transferModalOpen) void loadPendingOfferForPlayer();
+  }, [transferModalOpen, loadPendingOfferForPlayer]);
 
   const handleCopyLink = async () => {
     const url = `${window.location.origin}/dashboard/profile/${id}`;
@@ -410,6 +462,8 @@ export default function ProfileDetail() {
             marketValue: data.marketValue,
           }}
           myTeam={myTeam}
+          pendingOfferFromMyClub={pendingOfferForPlayer}
+          onSuccess={() => void loadPendingOfferForPlayer()}
         />
       )}
     </div>

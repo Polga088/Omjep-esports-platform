@@ -272,7 +272,9 @@ export type EventType = (typeof EventType)[keyof typeof EventType]
 export const TransactionType: {
   MATCH_REWARD: 'MATCH_REWARD',
   TRANSFER: 'TRANSFER',
-  WAGE: 'WAGE'
+  WAGE: 'WAGE',
+  EXCHANGE: 'EXCHANGE',
+  ADMIN_GRANT: 'ADMIN_GRANT'
 };
 
 export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
@@ -3068,6 +3070,7 @@ export namespace Prisma {
     subscriptions: number
     messagesSent: number
     messagesReceived: number
+    walletTransactions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3086,6 +3089,7 @@ export namespace Prisma {
     subscriptions?: boolean | UserCountOutputTypeCountSubscriptionsArgs
     messagesSent?: boolean | UserCountOutputTypeCountMessagesSentArgs
     messagesReceived?: boolean | UserCountOutputTypeCountMessagesReceivedArgs
+    walletTransactions?: boolean | UserCountOutputTypeCountWalletTransactionsArgs
   }
 
   // Custom InputTypes
@@ -3202,6 +3206,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountMessagesReceivedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountWalletTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -3813,6 +3824,7 @@ export namespace Prisma {
     subscriptions?: boolean | User$subscriptionsArgs<ExtArgs>
     messagesSent?: boolean | User$messagesSentArgs<ExtArgs>
     messagesReceived?: boolean | User$messagesReceivedArgs<ExtArgs>
+    walletTransactions?: boolean | User$walletTransactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3891,6 +3903,7 @@ export namespace Prisma {
     subscriptions?: boolean | User$subscriptionsArgs<ExtArgs>
     messagesSent?: boolean | User$messagesSentArgs<ExtArgs>
     messagesReceived?: boolean | User$messagesReceivedArgs<ExtArgs>
+    walletTransactions?: boolean | User$walletTransactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3915,6 +3928,7 @@ export namespace Prisma {
       subscriptions: Prisma.$UserSubscriptionPayload<ExtArgs>[]
       messagesSent: Prisma.$MessagePayload<ExtArgs>[]
       messagesReceived: Prisma.$MessagePayload<ExtArgs>[]
+      walletTransactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4343,6 +4357,7 @@ export namespace Prisma {
     subscriptions<T extends User$subscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, User$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     messagesSent<T extends User$messagesSentArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesSentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     messagesReceived<T extends User$messagesReceivedArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    walletTransactions<T extends User$walletTransactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$walletTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5152,6 +5167,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * User.walletTransactions
+   */
+  export type User$walletTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -18080,6 +18119,7 @@ export namespace Prisma {
   export type TransactionMinAggregateOutputType = {
     id: string | null
     team_id: string | null
+    user_id: string | null
     amount: number | null
     type: $Enums.TransactionType | null
     description: string | null
@@ -18089,6 +18129,7 @@ export namespace Prisma {
   export type TransactionMaxAggregateOutputType = {
     id: string | null
     team_id: string | null
+    user_id: string | null
     amount: number | null
     type: $Enums.TransactionType | null
     description: string | null
@@ -18098,6 +18139,7 @@ export namespace Prisma {
   export type TransactionCountAggregateOutputType = {
     id: number
     team_id: number
+    user_id: number
     amount: number
     type: number
     description: number
@@ -18117,6 +18159,7 @@ export namespace Prisma {
   export type TransactionMinAggregateInputType = {
     id?: true
     team_id?: true
+    user_id?: true
     amount?: true
     type?: true
     description?: true
@@ -18126,6 +18169,7 @@ export namespace Prisma {
   export type TransactionMaxAggregateInputType = {
     id?: true
     team_id?: true
+    user_id?: true
     amount?: true
     type?: true
     description?: true
@@ -18135,6 +18179,7 @@ export namespace Prisma {
   export type TransactionCountAggregateInputType = {
     id?: true
     team_id?: true
+    user_id?: true
     amount?: true
     type?: true
     description?: true
@@ -18230,7 +18275,8 @@ export namespace Prisma {
 
   export type TransactionGroupByOutputType = {
     id: string
-    team_id: string
+    team_id: string | null
+    user_id: string | null
     amount: number
     type: $Enums.TransactionType
     description: string | null
@@ -18259,61 +18305,79 @@ export namespace Prisma {
   export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     team_id?: boolean
+    user_id?: boolean
     amount?: boolean
     type?: boolean
     description?: boolean
     created_at?: boolean
-    team?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Transaction$teamArgs<ExtArgs>
+    user?: boolean | Transaction$userArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     team_id?: boolean
+    user_id?: boolean
     amount?: boolean
     type?: boolean
     description?: boolean
     created_at?: boolean
-    team?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Transaction$teamArgs<ExtArgs>
+    user?: boolean | Transaction$userArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     team_id?: boolean
+    user_id?: boolean
     amount?: boolean
     type?: boolean
     description?: boolean
     created_at?: boolean
-    team?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Transaction$teamArgs<ExtArgs>
+    user?: boolean | Transaction$userArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectScalar = {
     id?: boolean
     team_id?: boolean
+    user_id?: boolean
     amount?: boolean
     type?: boolean
     description?: boolean
     created_at?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "amount" | "type" | "description" | "created_at", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "user_id" | "amount" | "type" | "description" | "created_at", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Transaction$teamArgs<ExtArgs>
+    user?: boolean | Transaction$userArgs<ExtArgs>
   }
   export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Transaction$teamArgs<ExtArgs>
+    user?: boolean | Transaction$userArgs<ExtArgs>
   }
   export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Transaction$teamArgs<ExtArgs>
+    user?: boolean | Transaction$userArgs<ExtArgs>
   }
 
   export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Transaction"
     objects: {
-      team: Prisma.$ClubPayload<ExtArgs>
+      team: Prisma.$ClubPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      team_id: string
+      /**
+       * Mouvements club (budget) — null pour les opérations portefeuille joueur (ex. échange OC→Jepy).
+       */
+      team_id: string | null
+      /**
+       * Mouvements portefeuille personnel (ex. EXCHANGE).
+       */
+      user_id: string | null
       amount: number
       type: $Enums.TransactionType
       description: string | null
@@ -18712,7 +18776,8 @@ export namespace Prisma {
    */
   export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    team<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    team<T extends Transaction$teamArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$teamArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends Transaction$userArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -18744,6 +18809,7 @@ export namespace Prisma {
   interface TransactionFieldRefs {
     readonly id: FieldRef<"Transaction", 'String'>
     readonly team_id: FieldRef<"Transaction", 'String'>
+    readonly user_id: FieldRef<"Transaction", 'String'>
     readonly amount: FieldRef<"Transaction", 'Float'>
     readonly type: FieldRef<"Transaction", 'TransactionType'>
     readonly description: FieldRef<"Transaction", 'String'>
@@ -19144,6 +19210,44 @@ export namespace Prisma {
   }
 
   /**
+   * Transaction.team
+   */
+  export type Transaction$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Club
+     */
+    select?: ClubSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Club
+     */
+    omit?: ClubOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubInclude<ExtArgs> | null
+    where?: ClubWhereInput
+  }
+
+  /**
+   * Transaction.user
+   */
+  export type Transaction$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * Transaction without action
    */
   export type TransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19385,7 +19489,7 @@ export namespace Prisma {
     id: string
     player_id: string
     from_team_id: string
-    to_team_id: string
+    to_team_id: string | null
     offered_salary: number
     offered_clause: number
     transfer_fee: number
@@ -19430,7 +19534,7 @@ export namespace Prisma {
     responded_at?: boolean
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
-    toTeam?: boolean | ClubDefaultArgs<ExtArgs>
+    toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
   }, ExtArgs["result"]["transferOffer"]>
 
   export type TransferOfferSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -19448,7 +19552,7 @@ export namespace Prisma {
     responded_at?: boolean
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
-    toTeam?: boolean | ClubDefaultArgs<ExtArgs>
+    toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
   }, ExtArgs["result"]["transferOffer"]>
 
   export type TransferOfferSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -19466,7 +19570,7 @@ export namespace Prisma {
     responded_at?: boolean
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
-    toTeam?: boolean | ClubDefaultArgs<ExtArgs>
+    toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
   }, ExtArgs["result"]["transferOffer"]>
 
   export type TransferOfferSelectScalar = {
@@ -19488,17 +19592,17 @@ export namespace Prisma {
   export type TransferOfferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
-    toTeam?: boolean | ClubDefaultArgs<ExtArgs>
+    toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
   }
   export type TransferOfferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
-    toTeam?: boolean | ClubDefaultArgs<ExtArgs>
+    toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
   }
   export type TransferOfferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
-    toTeam?: boolean | ClubDefaultArgs<ExtArgs>
+    toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
   }
 
   export type $TransferOfferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19506,13 +19610,16 @@ export namespace Prisma {
     objects: {
       fromTeam: Prisma.$ClubPayload<ExtArgs>
       player: Prisma.$UserPayload<ExtArgs>
-      toTeam: Prisma.$ClubPayload<ExtArgs>
+      toTeam: Prisma.$ClubPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       player_id: string
       from_team_id: string
-      to_team_id: string
+      /**
+       * Club vendeur ; null = agent libre sans club (recrutement direct)
+       */
+      to_team_id: string | null
       /**
        * Salaire annuel proposé (OMJEP Coins)
        */
@@ -19929,7 +20036,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     fromTeam<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     player<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    toTeam<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    toTeam<T extends TransferOffer$toTeamArgs<ExtArgs> = {}>(args?: Subset<T, TransferOffer$toTeamArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20364,6 +20471,25 @@ export namespace Prisma {
      * Limit how many TransferOffers to delete.
      */
     limit?: number
+  }
+
+  /**
+   * TransferOffer.toTeam
+   */
+  export type TransferOffer$toTeamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Club
+     */
+    select?: ClubSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Club
+     */
+    omit?: ClubOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubInclude<ExtArgs> | null
+    where?: ClubWhereInput
   }
 
   /**
@@ -29323,6 +29449,7 @@ export namespace Prisma {
   export const TransactionScalarFieldEnum: {
     id: 'id',
     team_id: 'team_id',
+    user_id: 'user_id',
     amount: 'amount',
     type: 'type',
     description: 'description',
@@ -29898,6 +30025,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionListRelationFilter
     messagesSent?: MessageListRelationFilter
     messagesReceived?: MessageListRelationFilter
+    walletTransactions?: TransactionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -29933,6 +30061,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionOrderByRelationAggregateInput
     messagesSent?: MessageOrderByRelationAggregateInput
     messagesReceived?: MessageOrderByRelationAggregateInput
+    walletTransactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -29971,6 +30100,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionListRelationFilter
     messagesSent?: MessageListRelationFilter
     messagesReceived?: MessageListRelationFilter
+    walletTransactions?: TransactionListRelationFilter
   }, "id" | "email" | "ea_persona_name" | "external_id">
 
   export type UserOrderByWithAggregationInput = {
@@ -30866,22 +30996,26 @@ export namespace Prisma {
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
     id?: UuidFilter<"Transaction"> | string
-    team_id?: UuidFilter<"Transaction"> | string
+    team_id?: UuidNullableFilter<"Transaction"> | string | null
+    user_id?: UuidNullableFilter<"Transaction"> | string | null
     amount?: FloatFilter<"Transaction"> | number
     type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
     description?: StringNullableFilter<"Transaction"> | string | null
     created_at?: DateTimeFilter<"Transaction"> | Date | string
-    team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    team?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type TransactionOrderByWithRelationInput = {
     id?: SortOrder
-    team_id?: SortOrder
+    team_id?: SortOrderInput | SortOrder
+    user_id?: SortOrderInput | SortOrder
     amount?: SortOrder
     type?: SortOrder
     description?: SortOrderInput | SortOrder
     created_at?: SortOrder
     team?: ClubOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type TransactionWhereUniqueInput = Prisma.AtLeast<{
@@ -30889,17 +31023,20 @@ export namespace Prisma {
     AND?: TransactionWhereInput | TransactionWhereInput[]
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
-    team_id?: UuidFilter<"Transaction"> | string
+    team_id?: UuidNullableFilter<"Transaction"> | string | null
+    user_id?: UuidNullableFilter<"Transaction"> | string | null
     amount?: FloatFilter<"Transaction"> | number
     type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
     description?: StringNullableFilter<"Transaction"> | string | null
     created_at?: DateTimeFilter<"Transaction"> | Date | string
-    team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    team?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type TransactionOrderByWithAggregationInput = {
     id?: SortOrder
-    team_id?: SortOrder
+    team_id?: SortOrderInput | SortOrder
+    user_id?: SortOrderInput | SortOrder
     amount?: SortOrder
     type?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -30916,7 +31053,8 @@ export namespace Prisma {
     OR?: TransactionScalarWhereWithAggregatesInput[]
     NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Transaction"> | string
-    team_id?: UuidWithAggregatesFilter<"Transaction"> | string
+    team_id?: UuidNullableWithAggregatesFilter<"Transaction"> | string | null
+    user_id?: UuidNullableWithAggregatesFilter<"Transaction"> | string | null
     amount?: FloatWithAggregatesFilter<"Transaction"> | number
     type?: EnumTransactionTypeWithAggregatesFilter<"Transaction"> | $Enums.TransactionType
     description?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
@@ -30930,7 +31068,7 @@ export namespace Prisma {
     id?: UuidFilter<"TransferOffer"> | string
     player_id?: UuidFilter<"TransferOffer"> | string
     from_team_id?: UuidFilter<"TransferOffer"> | string
-    to_team_id?: UuidFilter<"TransferOffer"> | string
+    to_team_id?: UuidNullableFilter<"TransferOffer"> | string | null
     offered_salary?: FloatFilter<"TransferOffer"> | number
     offered_clause?: FloatFilter<"TransferOffer"> | number
     transfer_fee?: FloatFilter<"TransferOffer"> | number
@@ -30941,14 +31079,14 @@ export namespace Prisma {
     responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
     fromTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     player?: XOR<UserScalarRelationFilter, UserWhereInput>
-    toTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    toTeam?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
   }
 
   export type TransferOfferOrderByWithRelationInput = {
     id?: SortOrder
     player_id?: SortOrder
     from_team_id?: SortOrder
-    to_team_id?: SortOrder
+    to_team_id?: SortOrderInput | SortOrder
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
@@ -30969,7 +31107,7 @@ export namespace Prisma {
     NOT?: TransferOfferWhereInput | TransferOfferWhereInput[]
     player_id?: UuidFilter<"TransferOffer"> | string
     from_team_id?: UuidFilter<"TransferOffer"> | string
-    to_team_id?: UuidFilter<"TransferOffer"> | string
+    to_team_id?: UuidNullableFilter<"TransferOffer"> | string | null
     offered_salary?: FloatFilter<"TransferOffer"> | number
     offered_clause?: FloatFilter<"TransferOffer"> | number
     transfer_fee?: FloatFilter<"TransferOffer"> | number
@@ -30980,14 +31118,14 @@ export namespace Prisma {
     responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
     fromTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     player?: XOR<UserScalarRelationFilter, UserWhereInput>
-    toTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    toTeam?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
   }, "id">
 
   export type TransferOfferOrderByWithAggregationInput = {
     id?: SortOrder
     player_id?: SortOrder
     from_team_id?: SortOrder
-    to_team_id?: SortOrder
+    to_team_id?: SortOrderInput | SortOrder
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
@@ -31010,7 +31148,7 @@ export namespace Prisma {
     id?: UuidWithAggregatesFilter<"TransferOffer"> | string
     player_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
     from_team_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
-    to_team_id?: UuidWithAggregatesFilter<"TransferOffer"> | string
+    to_team_id?: UuidNullableWithAggregatesFilter<"TransferOffer"> | string | null
     offered_salary?: FloatWithAggregatesFilter<"TransferOffer"> | number
     offered_clause?: FloatWithAggregatesFilter<"TransferOffer"> | number
     transfer_fee?: FloatWithAggregatesFilter<"TransferOffer"> | number
@@ -31569,6 +31707,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -31604,6 +31743,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -31639,6 +31779,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -31674,6 +31815,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -32594,12 +32736,14 @@ export namespace Prisma {
     type: $Enums.TransactionType
     description?: string | null
     created_at?: Date | string
-    team: ClubCreateNestedOneWithoutTransactionsInput
+    team?: ClubCreateNestedOneWithoutTransactionsInput
+    user?: UserCreateNestedOneWithoutWalletTransactionsInput
   }
 
   export type TransactionUncheckedCreateInput = {
     id?: string
-    team_id: string
+    team_id?: string | null
+    user_id?: string | null
     amount: number
     type: $Enums.TransactionType
     description?: string | null
@@ -32612,12 +32756,14 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: ClubUpdateOneRequiredWithoutTransactionsNestedInput
+    team?: ClubUpdateOneWithoutTransactionsNestedInput
+    user?: UserUpdateOneWithoutWalletTransactionsNestedInput
   }
 
   export type TransactionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team_id?: StringFieldUpdateOperationsInput | string
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32626,7 +32772,8 @@ export namespace Prisma {
 
   export type TransactionCreateManyInput = {
     id?: string
-    team_id: string
+    team_id?: string | null
+    user_id?: string | null
     amount: number
     type: $Enums.TransactionType
     description?: string | null
@@ -32643,7 +32790,8 @@ export namespace Prisma {
 
   export type TransactionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team_id?: StringFieldUpdateOperationsInput | string
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32662,14 +32810,14 @@ export namespace Prisma {
     responded_at?: Date | string | null
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
     player: UserCreateNestedOneWithoutTransferOffersInput
-    toTeam: ClubCreateNestedOneWithoutReceivedOffersInput
+    toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
   }
 
   export type TransferOfferUncheckedCreateInput = {
     id?: string
     player_id: string
     from_team_id: string
-    to_team_id: string
+    to_team_id?: string | null
     offered_salary: number
     offered_clause: number
     transfer_fee: number
@@ -32692,14 +32840,14 @@ export namespace Prisma {
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
     player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
-    toTeam?: ClubUpdateOneRequiredWithoutReceivedOffersNestedInput
+    toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
   }
 
   export type TransferOfferUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
-    to_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
@@ -32714,7 +32862,7 @@ export namespace Prisma {
     id?: string
     player_id: string
     from_team_id: string
-    to_team_id: string
+    to_team_id?: string | null
     offered_salary: number
     offered_clause: number
     transfer_fee: number
@@ -32741,7 +32889,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
-    to_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
@@ -33441,6 +33589,12 @@ export namespace Prisma {
     none?: MessageWhereInput
   }
 
+  export type TransactionListRelationFilter = {
+    every?: TransactionWhereInput
+    some?: TransactionWhereInput
+    none?: TransactionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -33495,6 +33649,10 @@ export namespace Prisma {
   }
 
   export type MessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransactionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -33732,21 +33890,11 @@ export namespace Prisma {
     isNot?: UserWhereInput | null
   }
 
-  export type TransactionListRelationFilter = {
-    every?: TransactionWhereInput
-    some?: TransactionWhereInput
-    none?: TransactionWhereInput
-  }
-
   export type CompetitionTeamOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type MatchOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type TransactionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -34449,9 +34597,15 @@ export namespace Prisma {
     not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
   }
 
+  export type ClubNullableScalarRelationFilter = {
+    is?: ClubWhereInput | null
+    isNot?: ClubWhereInput | null
+  }
+
   export type TransactionCountOrderByAggregateInput = {
     id?: SortOrder
     team_id?: SortOrder
+    user_id?: SortOrder
     amount?: SortOrder
     type?: SortOrder
     description?: SortOrder
@@ -34465,6 +34619,7 @@ export namespace Prisma {
   export type TransactionMaxOrderByAggregateInput = {
     id?: SortOrder
     team_id?: SortOrder
+    user_id?: SortOrder
     amount?: SortOrder
     type?: SortOrder
     description?: SortOrder
@@ -34474,6 +34629,7 @@ export namespace Prisma {
   export type TransactionMinOrderByAggregateInput = {
     id?: SortOrder
     team_id?: SortOrder
+    user_id?: SortOrder
     amount?: SortOrder
     type?: SortOrder
     description?: SortOrder
@@ -34967,11 +35123,6 @@ export namespace Prisma {
     _max?: NestedEnumUserSubscriptionStatusFilter<$PrismaModel>
   }
 
-  export type ClubNullableScalarRelationFilter = {
-    is?: ClubWhereInput | null
-    isNot?: ClubWhereInput | null
-  }
-
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
     sender_id?: SortOrder
@@ -35155,6 +35306,13 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type TransactionCreateNestedManyWithoutUserInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type ContractUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -35264,6 +35422,13 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutReceiverInput | MessageCreateOrConnectWithoutReceiverInput[]
     createMany?: MessageCreateManyReceiverInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -35518,6 +35683,20 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
+  export type TransactionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutUserInput | TransactionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutUserInput | TransactionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutUserInput | TransactionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type ContractUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -35736,6 +35915,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutReceiverInput | MessageUpdateWithWhereUniqueWithoutReceiverInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutReceiverInput | MessageUpdateManyWithWhereWithoutReceiverInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutUserInput | TransactionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutUserInput | TransactionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutUserInput | TransactionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type CompetitionTeamCreateNestedManyWithoutTeamInput = {
@@ -36874,16 +37067,34 @@ export namespace Prisma {
     connect?: ClubWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutWalletTransactionsInput = {
+    create?: XOR<UserCreateWithoutWalletTransactionsInput, UserUncheckedCreateWithoutWalletTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWalletTransactionsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type EnumTransactionTypeFieldUpdateOperationsInput = {
     set?: $Enums.TransactionType
   }
 
-  export type ClubUpdateOneRequiredWithoutTransactionsNestedInput = {
+  export type ClubUpdateOneWithoutTransactionsNestedInput = {
     create?: XOR<ClubCreateWithoutTransactionsInput, ClubUncheckedCreateWithoutTransactionsInput>
     connectOrCreate?: ClubCreateOrConnectWithoutTransactionsInput
     upsert?: ClubUpsertWithoutTransactionsInput
+    disconnect?: ClubWhereInput | boolean
+    delete?: ClubWhereInput | boolean
     connect?: ClubWhereUniqueInput
     update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutTransactionsInput, ClubUpdateWithoutTransactionsInput>, ClubUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type UserUpdateOneWithoutWalletTransactionsNestedInput = {
+    create?: XOR<UserCreateWithoutWalletTransactionsInput, UserUncheckedCreateWithoutWalletTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWalletTransactionsInput
+    upsert?: UserUpsertWithoutWalletTransactionsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWalletTransactionsInput, UserUpdateWithoutWalletTransactionsInput>, UserUncheckedUpdateWithoutWalletTransactionsInput>
   }
 
   export type ClubCreateNestedOneWithoutSentOffersInput = {
@@ -36928,10 +37139,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransferOffersInput, UserUpdateWithoutTransferOffersInput>, UserUncheckedUpdateWithoutTransferOffersInput>
   }
 
-  export type ClubUpdateOneRequiredWithoutReceivedOffersNestedInput = {
+  export type ClubUpdateOneWithoutReceivedOffersNestedInput = {
     create?: XOR<ClubCreateWithoutReceivedOffersInput, ClubUncheckedCreateWithoutReceivedOffersInput>
     connectOrCreate?: ClubCreateOrConnectWithoutReceivedOffersInput
     upsert?: ClubUpsertWithoutReceivedOffersInput
+    disconnect?: ClubWhereInput | boolean
+    delete?: ClubWhereInput | boolean
     connect?: ClubWhereUniqueInput
     update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutReceivedOffersInput, ClubUpdateWithoutReceivedOffersInput>, ClubUncheckedUpdateWithoutReceivedOffersInput>
   }
@@ -38133,13 +38346,13 @@ export namespace Prisma {
     created_at?: Date | string
     responded_at?: Date | string | null
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
-    toTeam: ClubCreateNestedOneWithoutReceivedOffersInput
+    toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
   }
 
   export type TransferOfferUncheckedCreateWithoutPlayerInput = {
     id?: string
     from_team_id: string
-    to_team_id: string
+    to_team_id?: string | null
     offered_salary: number
     offered_clause: number
     transfer_fee: number
@@ -38315,6 +38528,34 @@ export namespace Prisma {
 
   export type MessageCreateManyReceiverInputEnvelope = {
     data: MessageCreateManyReceiverInput | MessageCreateManyReceiverInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutUserInput = {
+    id?: string
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
+    team?: ClubCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutUserInput = {
+    id?: string
+    team_id?: string | null
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
+    created_at?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutUserInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput>
+  }
+
+  export type TransactionCreateManyUserInputEnvelope = {
+    data: TransactionCreateManyUserInput | TransactionCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -38596,7 +38837,7 @@ export namespace Prisma {
     id?: UuidFilter<"TransferOffer"> | string
     player_id?: UuidFilter<"TransferOffer"> | string
     from_team_id?: UuidFilter<"TransferOffer"> | string
-    to_team_id?: UuidFilter<"TransferOffer"> | string
+    to_team_id?: UuidNullableFilter<"TransferOffer"> | string | null
     offered_salary?: FloatFilter<"TransferOffer"> | number
     offered_clause?: FloatFilter<"TransferOffer"> | number
     transfer_fee?: FloatFilter<"TransferOffer"> | number
@@ -38761,6 +39002,35 @@ export namespace Prisma {
   export type MessageUpdateManyWithWhereWithoutReceiverInput = {
     where: MessageScalarWhereInput
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutReceiverInput>
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutUserInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutUserInput, TransactionUncheckedUpdateWithoutUserInput>
+    create: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutUserInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutUserInput, TransactionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutUserInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: UuidFilter<"Transaction"> | string
+    team_id?: UuidNullableFilter<"Transaction"> | string | null
+    user_id?: UuidNullableFilter<"Transaction"> | string | null
+    amount?: FloatFilter<"Transaction"> | number
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    description?: StringNullableFilter<"Transaction"> | string | null
+    created_at?: DateTimeFilter<"Transaction"> | Date | string
   }
 
   export type CompetitionTeamCreateWithoutTeamInput = {
@@ -39039,6 +39309,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutManagedClubsInput = {
@@ -39073,6 +39344,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutManagedClubsInput = {
@@ -39086,10 +39358,12 @@ export namespace Prisma {
     type: $Enums.TransactionType
     description?: string | null
     created_at?: Date | string
+    user?: UserCreateNestedOneWithoutWalletTransactionsInput
   }
 
   export type TransactionUncheckedCreateWithoutTeamInput = {
     id?: string
+    user_id?: string | null
     amount: number
     type: $Enums.TransactionType
     description?: string | null
@@ -39117,13 +39391,13 @@ export namespace Prisma {
     created_at?: Date | string
     responded_at?: Date | string | null
     player: UserCreateNestedOneWithoutTransferOffersInput
-    toTeam: ClubCreateNestedOneWithoutReceivedOffersInput
+    toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
   }
 
   export type TransferOfferUncheckedCreateWithoutFromTeamInput = {
     id?: string
     player_id: string
-    to_team_id: string
+    to_team_id?: string | null
     offered_salary: number
     offered_clause: number
     transfer_fee: number
@@ -39432,6 +39706,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedClubsInput = {
@@ -39466,6 +39741,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutTeamInput = {
@@ -39482,18 +39758,6 @@ export namespace Prisma {
   export type TransactionUpdateManyWithWhereWithoutTeamInput = {
     where: TransactionScalarWhereInput
     data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutTeamInput>
-  }
-
-  export type TransactionScalarWhereInput = {
-    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
-    OR?: TransactionScalarWhereInput[]
-    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
-    id?: UuidFilter<"Transaction"> | string
-    team_id?: UuidFilter<"Transaction"> | string
-    amount?: FloatFilter<"Transaction"> | number
-    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
-    description?: StringNullableFilter<"Transaction"> | string | null
-    created_at?: DateTimeFilter<"Transaction"> | Date | string
   }
 
   export type TransferOfferUpsertWithWhereUniqueWithoutFromTeamInput = {
@@ -39655,6 +39919,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -39689,6 +39954,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -39808,6 +40074,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -39842,6 +40109,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutStatsInput = {
@@ -39876,6 +40144,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutStatsInput = {
@@ -39910,6 +40179,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutStatsInput = {
@@ -39960,6 +40230,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatsInput = {
@@ -39994,6 +40265,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompetitionTeamCreateWithoutCompetitionInput = {
@@ -40876,6 +41148,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMatchScoreReportsInput = {
@@ -40910,6 +41183,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMatchScoreReportsInput = {
@@ -41074,6 +41348,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchScoreReportsInput = {
@@ -41108,6 +41383,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MatchCreateWithoutEventsInput = {
@@ -41181,6 +41457,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMatchEventsInput = {
@@ -41215,6 +41492,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMatchEventsInput = {
@@ -41373,6 +41651,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchEventsInput = {
@@ -41407,6 +41686,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutMatchEventsInput = {
@@ -41510,6 +41790,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransferRequestsInput = {
@@ -41544,6 +41825,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransferRequestsInput = {
@@ -41657,6 +41939,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferRequestsInput = {
@@ -41691,6 +41974,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutTransferRequestsInput = {
@@ -41794,6 +42078,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -41828,6 +42113,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -41867,6 +42153,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -41901,6 +42188,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -42014,6 +42302,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -42048,6 +42337,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutSentInvitationsInput = {
@@ -42093,6 +42383,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -42127,6 +42418,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutInvitationsInput = {
@@ -42293,6 +42585,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutContractsInput = {
@@ -42327,6 +42620,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutContractsInput = {
@@ -42446,6 +42740,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutContractsInput = {
@@ -42480,6 +42775,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubCreateWithoutTransactionsInput = {
@@ -42543,6 +42839,81 @@ export namespace Prisma {
   export type ClubCreateOrConnectWithoutTransactionsInput = {
     where: ClubWhereUniqueInput
     create: XOR<ClubCreateWithoutTransactionsInput, ClubUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type UserCreateWithoutWalletTransactionsInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    managedClubs?: ClubCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryCreateNestedManyWithoutUserInput
+    predictions?: PredictionCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+  }
+
+  export type UserUncheckedCreateWithoutWalletTransactionsInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    managedClubs?: ClubUncheckedCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+  }
+
+  export type UserCreateOrConnectWithoutWalletTransactionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutWalletTransactionsInput, UserUncheckedCreateWithoutWalletTransactionsInput>
   }
 
   export type ClubUpsertWithoutTransactionsInput = {
@@ -42612,6 +42983,87 @@ export namespace Prisma {
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type UserUpsertWithoutWalletTransactionsInput = {
+    update: XOR<UserUpdateWithoutWalletTransactionsInput, UserUncheckedUpdateWithoutWalletTransactionsInput>
+    create: XOR<UserCreateWithoutWalletTransactionsInput, UserUncheckedCreateWithoutWalletTransactionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutWalletTransactionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutWalletTransactionsInput, UserUncheckedUpdateWithoutWalletTransactionsInput>
+  }
+
+  export type UserUpdateWithoutWalletTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutWalletTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUncheckedUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
   }
 
   export type ClubCreateWithoutSentOffersInput = {
@@ -42709,6 +43161,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransferOffersInput = {
@@ -42743,6 +43196,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransferOffersInput = {
@@ -42925,6 +43379,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferOffersInput = {
@@ -42959,6 +43414,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutReceivedOffersInput = {
@@ -43062,6 +43518,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -43096,6 +43553,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -43146,6 +43604,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -43180,6 +43639,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserInventoryCreateWithoutItemInput = {
@@ -43252,6 +43712,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInventoryInput = {
@@ -43286,6 +43747,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInventoryInput = {
@@ -43361,6 +43823,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInventoryInput = {
@@ -43395,6 +43858,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type StoreItemUpsertWithoutInventoryInput = {
@@ -43460,6 +43924,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPredictionsInput = {
@@ -43494,6 +43959,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPredictionsInput = {
@@ -43583,6 +44049,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPredictionsInput = {
@@ -43617,6 +44084,7 @@ export namespace Prisma {
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MatchUpsertWithoutPredictionsInput = {
@@ -43738,6 +44206,7 @@ export namespace Prisma {
     predictions?: PredictionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSubscriptionsInput = {
@@ -43772,6 +44241,7 @@ export namespace Prisma {
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSubscriptionsInput = {
@@ -43845,6 +44315,7 @@ export namespace Prisma {
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSubscriptionsInput = {
@@ -43879,6 +44350,7 @@ export namespace Prisma {
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SubscriptionPlanUpsertWithoutSubscriptionsInput = {
@@ -43942,6 +44414,7 @@ export namespace Prisma {
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMessagesSentInput = {
@@ -43976,6 +44449,7 @@ export namespace Prisma {
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMessagesSentInput = {
@@ -44015,6 +44489,7 @@ export namespace Prisma {
     predictions?: PredictionCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
     messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMessagesReceivedInput = {
@@ -44049,6 +44524,7 @@ export namespace Prisma {
     predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
     subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
     messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMessagesReceivedInput = {
@@ -44162,6 +44638,7 @@ export namespace Prisma {
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesSentInput = {
@@ -44196,6 +44673,7 @@ export namespace Prisma {
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutMessagesReceivedInput = {
@@ -44241,6 +44719,7 @@ export namespace Prisma {
     predictions?: PredictionUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesReceivedInput = {
@@ -44275,6 +44754,7 @@ export namespace Prisma {
     predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
     subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutMessagesInput = {
@@ -44426,7 +44906,7 @@ export namespace Prisma {
   export type TransferOfferCreateManyPlayerInput = {
     id?: string
     from_team_id: string
-    to_team_id: string
+    to_team_id?: string | null
     offered_salary: number
     offered_clause: number
     transfer_fee: number
@@ -44483,6 +44963,15 @@ export namespace Prisma {
     team_id?: string | null
     content: string
     is_read?: boolean
+    created_at?: Date | string
+  }
+
+  export type TransactionCreateManyUserInput = {
+    id?: string
+    team_id?: string | null
+    amount: number
+    type: $Enums.TransactionType
+    description?: string | null
     created_at?: Date | string
   }
 
@@ -44754,13 +45243,13 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
-    toTeam?: ClubUpdateOneRequiredWithoutReceivedOffersNestedInput
+    toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
   }
 
   export type TransferOfferUncheckedUpdateWithoutPlayerInput = {
     id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
-    to_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
@@ -44774,7 +45263,7 @@ export namespace Prisma {
   export type TransferOfferUncheckedUpdateManyWithoutPlayerInput = {
     id?: StringFieldUpdateOperationsInput | string
     from_team_id?: StringFieldUpdateOperationsInput | string
-    to_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
@@ -44932,6 +45421,33 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransactionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: ClubUpdateOneWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CompetitionTeamCreateManyTeamInput = {
     competition_id: string
     joined_at?: Date | string
@@ -45010,6 +45526,7 @@ export namespace Prisma {
 
   export type TransactionCreateManyTeamInput = {
     id?: string
+    user_id?: string | null
     amount: number
     type: $Enums.TransactionType
     description?: string | null
@@ -45019,7 +45536,7 @@ export namespace Prisma {
   export type TransferOfferCreateManyFromTeamInput = {
     id?: string
     player_id: string
-    to_team_id: string
+    to_team_id?: string | null
     offered_salary: number
     offered_clause: number
     transfer_fee: number
@@ -45306,10 +45823,12 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutWalletTransactionsNestedInput
   }
 
   export type TransactionUncheckedUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45318,6 +45837,7 @@ export namespace Prisma {
 
   export type TransactionUncheckedUpdateManyWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45335,13 +45855,13 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
-    toTeam?: ClubUpdateOneRequiredWithoutReceivedOffersNestedInput
+    toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
   }
 
   export type TransferOfferUncheckedUpdateWithoutFromTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
-    to_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
@@ -45355,7 +45875,7 @@ export namespace Prisma {
   export type TransferOfferUncheckedUpdateManyWithoutFromTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     player_id?: StringFieldUpdateOperationsInput | string
-    to_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number

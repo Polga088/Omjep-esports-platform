@@ -3,7 +3,6 @@ import {
   Logger,
   NotFoundException,
   ForbiddenException,
-  BadRequestException,
 } from '@nestjs/common';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { Cron } from '@nestjs/schedule';
@@ -15,55 +14,11 @@ const MATCH_REWARDS: Record<string, number> = {
   L: 10_000,
 };
 
-/** 1000 OMJEP = 1 JEPY */
-const OMJEP_PER_JEPY = 1000;
-
 @Injectable()
 export class FinanceService {
   private readonly logger = new Logger(FinanceService.name);
 
   constructor(private readonly prisma: PrismaService) {}
-
-  /**
-   * Échange des OMJEP contre des JEPY pour l'utilisateur connecté.
-   * Transaction atomique : débit OMJEP et crédit JEPY, avec garde-fou solde (updateMany + gte).
-   */
-  async exchangeOmjepToJepy(userId: string, jepyAmount: number) {
-    const omjepCost = jepyAmount * OMJEP_PER_JEPY;
-
-    return this.prisma.$transaction(async (tx) => {
-      const exists = await tx.user.findUnique({
-        where: { id: userId },
-        select: { id: true },
-      });
-      if (!exists) {
-        throw new NotFoundException('Utilisateur introuvable.');
-      }
-
-      const updated = await tx.user.updateMany({
-        where: { id: userId, omjepCoins: { gte: omjepCost } },
-        data: {
-          omjepCoins: { decrement: omjepCost },
-          jepyCoins: { increment: jepyAmount },
-        },
-      });
-
-      if (updated.count === 0) {
-        throw new BadRequestException(
-          'Solde OMJEP insuffisant pour cet échange.',
-        );
-      }
-
-      return tx.user.findUniqueOrThrow({
-        where: { id: userId },
-        select: {
-          id: true,
-          omjepCoins: true,
-          jepyCoins: true,
-        },
-      });
-    });
-  }
 
   async addMatchReward(teamId: string, result: 'W' | 'D' | 'L') {
     const amount = MATCH_REWARDS[result];

@@ -20,6 +20,12 @@ export class NotificationsController {
     return this.notificationsService.getUserNotifications(req.user.id);
   }
 
+  @Get('unread-count')
+  async getUnreadCount(@Req() req: any) {
+    const count = await this.notificationsService.countUnread(req.user.id);
+    return { count };
+  }
+
   @Patch(':id/read')
   markAsRead(@Param('id', ParseUUIDPipe) id: string, @Req() req: any) {
     return this.notificationsService.markAsRead(id, req.user.id);

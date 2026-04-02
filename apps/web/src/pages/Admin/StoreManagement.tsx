@@ -8,6 +8,8 @@ import {
   Pencil,
   Plus,
   X,
+  Gift,
+  Coins,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
@@ -86,6 +88,12 @@ export default function StoreManagement() {
     {},
   );
   const [savingPlanCode, setSavingPlanCode] = useState<string | null>(null);
+
+  const [grantUserId, setGrantUserId] = useState('');
+  const [grantAmount, setGrantAmount] = useState('');
+  const [grantCurrency, setGrantCurrency] = useState<'OC' | 'JEPY'>('OC');
+  const [grantReason, setGrantReason] = useState('');
+  const [grantSubmitting, setGrantSubmitting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -193,6 +201,47 @@ export default function StoreManagement() {
     }
   };
 
+  const submitGrant = async () => {
+    const uuid = grantUserId.trim();
+    const uuidOk =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        uuid,
+      );
+    if (!uuidOk) {
+      toast.error('Identifiant utilisateur (UUID) invalide.');
+      return;
+    }
+    const amount = Number.parseInt(grantAmount.replace(/\D/g, ''), 10);
+    if (!Number.isFinite(amount) || amount < 1) {
+      toast.error('Montant invalide (entier ≥ 1).');
+      return;
+    }
+    const reason = grantReason.trim();
+    if (!reason) {
+      toast.error('Indiquez une raison.');
+      return;
+    }
+    setGrantSubmitting(true);
+    try {
+      await api.post('/admin/wallets/grant', {
+        userId: uuid,
+        amount,
+        currency: grantCurrency,
+        reason,
+      });
+      toast.success('Fonds affectés avec succès.');
+      setGrantAmount('');
+      setGrantReason('');
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string | string[] } } })?.response?.data
+        ?.message;
+      const text = Array.isArray(msg) ? msg.join(', ') : msg;
+      toast.error(typeof text === 'string' ? text : 'Affectation impossible.');
+    } finally {
+      setGrantSubmitting(false);
+    }
+  };
+
   const savePlan = async (code: string) => {
     const ed = planEdits[code];
     if (!ed) return;
@@ -259,6 +308,84 @@ export default function StoreManagement() {
         <p className="mt-1 text-sm text-slate-500">
           Articles cosmétiques, abonnements VIP et indicateurs de performance.
         </p>
+      </div>
+
+      {/* Récompense utilisateur */}
+      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.04] p-5 backdrop-blur-md">
+        <div className="mb-4 flex items-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-500/15">
+            <Gift className="h-5 w-5 text-emerald-300" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-white">Récompense utilisateur</h2>
+            <p className="text-[11px] text-slate-500">
+              Créditer le portefeuille OMJEP ou Jepy d’un joueur (réservé admin).
+            </p>
+          </div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="sm:col-span-2">
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              ID utilisateur (UUID)
+            </label>
+            <input
+              value={grantUserId}
+              onChange={(e) => setGrantUserId(e.target.value)}
+              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 font-mono text-sm text-white placeholder:text-slate-600 focus:border-emerald-500/40 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              Montant
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={grantAmount}
+              onChange={(e) => setGrantAmount(e.target.value)}
+              className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-emerald-500/40 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              Devise
+            </label>
+            <select
+              value={grantCurrency}
+              onChange={(e) => setGrantCurrency(e.target.value as 'OC' | 'JEPY')}
+              className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-emerald-500/40 focus:outline-none"
+            >
+              <option value="OC">OMJEP (OC)</option>
+              <option value="JEPY">Jepy</option>
+            </select>
+          </div>
+        </div>
+        <div className="mt-4">
+          <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            Raison
+          </label>
+          <textarea
+            value={grantReason}
+            onChange={(e) => setGrantReason(e.target.value)}
+            rows={2}
+            placeholder="Ex. Bonus tournoi, correction solde…"
+            className="w-full resize-none rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:border-emerald-500/40 focus:outline-none"
+          />
+        </div>
+        <button
+          type="button"
+          disabled={grantSubmitting}
+          onClick={() => void submitGrant()}
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-700 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/30 transition hover:brightness-110 disabled:opacity-50"
+        >
+          {grantSubmitting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Coins className="h-4 w-4" />
+          )}
+          Affecter les fonds
+        </button>
       </div>
 
       {/* Stats */}

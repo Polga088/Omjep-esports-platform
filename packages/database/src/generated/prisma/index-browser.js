@@ -258,6 +258,7 @@ exports.Prisma.ContractScalarFieldEnum = {
 exports.Prisma.TransactionScalarFieldEnum = {
   id: 'id',
   team_id: 'team_id',
+  user_id: 'user_id',
   amount: 'amount',
   type: 'type',
   description: 'description',
@@ -471,7 +472,9 @@ exports.ContractStatus = exports.$Enums.ContractStatus = {
 exports.TransactionType = exports.$Enums.TransactionType = {
   MATCH_REWARD: 'MATCH_REWARD',
   TRANSFER: 'TRANSFER',
-  WAGE: 'WAGE'
+  WAGE: 'WAGE',
+  EXCHANGE: 'EXCHANGE',
+  ADMIN_GRANT: 'ADMIN_GRANT'
 };
 
 exports.TransferOfferStatus = exports.$Enums.TransferOfferStatus = {

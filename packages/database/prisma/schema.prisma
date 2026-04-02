@@ -41,6 +41,7 @@ model User {
   subscriptions       UserSubscription[]
   messagesSent        Message[] @relation("MessageSender")
   messagesReceived    Message[] @relation("MessageReceiver")
+  walletTransactions    Transaction[]
 
   @@map("users")
 }
@@ -230,12 +231,16 @@ model Contract {
 
 model Transaction {
   id          String          @id @default(uuid()) @db.Uuid
-  team_id     String          @db.Uuid
+  /// Mouvements club (budget) — null pour les opérations portefeuille joueur (ex. échange OC→Jepy).
+  team_id     String?         @db.Uuid
+  /// Mouvements portefeuille personnel (ex. EXCHANGE).
+  user_id     String?         @db.Uuid
   amount      Float
   type        TransactionType
   description String?
   created_at  DateTime        @default(now())
-  team        Club            @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  team        Club?           @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  user        User?           @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("transactions")
 }
@@ -244,7 +249,8 @@ model TransferOffer {
   id                String              @id @default(uuid()) @db.Uuid
   player_id         String              @db.Uuid
   from_team_id      String              @db.Uuid
-  to_team_id        String              @db.Uuid
+  /// Club vendeur ; null = agent libre sans club (recrutement direct)
+  to_team_id        String?             @db.Uuid
   /// Salaire annuel proposé (OMJEP Coins)
   offered_salary    Float
   /// Clause libératoire du nouveau contrat proposée
@@ -259,7 +265,7 @@ model TransferOffer {
   responded_at      DateTime?
   fromTeam          Club                @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
   player            User                @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
-  toTeam            Club                @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
+  toTeam            Club?               @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
 
   @@map("transfer_offers")
 }
@@ -421,6 +427,10 @@ enum TransactionType {
   MATCH_REWARD
   TRANSFER
   WAGE
+  /// Échange OMJEP Coins → Jepy (portefeuille utilisateur).
+  EXCHANGE
+  /// Crédit manuel par un administrateur (OMJEP ou Jepy).
+  ADMIN_GRANT
 }
 
 enum StoreItemCategory {

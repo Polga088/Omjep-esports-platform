@@ -303,6 +303,17 @@ export default function Matches() {
     };
   }, []);
 
+  useEffect(() => {
+    const onRefresh = () => {
+      void api
+        .get<Match[]>('/matches/my-team')
+        .then((res) => setMatches(res.data))
+        .catch(() => {});
+    };
+    window.addEventListener('omjep:matches-refresh', onRefresh);
+    return () => window.removeEventListener('omjep:matches-refresh', onRefresh);
+  }, []);
+
   const upcoming = matches
     .filter((m) => m.status === 'SCHEDULED')
     .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime());

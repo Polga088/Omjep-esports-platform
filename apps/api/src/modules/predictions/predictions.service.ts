@@ -7,13 +7,17 @@ import {
 import { Prisma, type Match } from '@omjep/database';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { CreatePredictionDto } from './dto/create-prediction.dto';
+import { CompetitionsService } from '../competitions/competitions.service';
 
 /** Gain en cas de score exact : mise × 3 (crédit total en Jepy). */
 const WIN_MULTIPLIER = 3;
 
 @Injectable()
 export class PredictionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly competitionsService: CompetitionsService,
+  ) {}
 
   /**
    * Matchs ouverts aux paris : visibles, non annulés/supprimés, sans score,
@@ -21,7 +25,7 @@ export class PredictionsService {
    */
   async listUpcomingMatches() {
     const now = new Date();
-    return this.prisma.match.findMany({
+    const rows = await this.prisma.match.findMany({
       where: {
         isVisible: true,
         status: { notIn: ['CANCELLED', 'DELETED'] },
@@ -36,6 +40,7 @@ export class PredictionsService {
         awayTeam: { select: { id: true, name: true, logo_url: true } },
       },
     });
+    return this.competitionsService.enrichMatchesWithFormAndRank(rows);
   }
 
   async listMyPredictions(userId: string) {
@@ -184,5 +189,91 @@ export class PredictionsService {
     });
 
     return { resolved: pending.length };
+  }
+
+  /**
+   * Stats pronostics : historique Jepy (solde reconstitué par jour) + totaux par statut.
+   * Reconstruction : mises le jour du pari, gains le jour du match (played_at) si WON.
+   */
+  async getUserStats(userId: string) {
+    const [user, predictions, grouped] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { jepyCoins: true },
+      }),
+      this.prisma.prediction.findMany({
+        where: { user_id: userId },
+        select: {
+          betAmount: true,
+          status: true,
+          created_at: true,
+          match: { select: { played_at: true, startTime: true } },
+        },
+        orderBy: { created_at: 'asc' },
+      }),
+      this.prisma.prediction.groupBy({
+        by: ['status'],
+        where: { user_id: userId },
+        _count: { _all: true },
+      }),
+    ]);
+
+    const currentJepy = user?.jepyCoins ?? 0;
+    const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+
+    const deltas = new Map<string, number>();
+    for (const p of predictions) {
+      const betDay = dayKey(p.created_at);
+      deltas.set(betDay, (deltas.get(betDay) ?? 0) - p.betAmount);
+      if (p.status === 'WON') {
+        const winAt = p.match.played_at ?? p.match.startTime ?? p.created_at;
+        const winDay = dayKey(winAt);
+        deltas.set(
+          winDay,
+          (deltas.get(winDay) ?? 0) + p.betAmount * WIN_MULTIPLIER,
+        );
+      }
+    }
+
+    const sortedDays = [...deltas.keys()].sort();
+    let running = 0;
+    const rawSeries: { date: string; balanceJepy: number }[] = sortedDays.map(
+      (d) => {
+        running += deltas.get(d) ?? 0;
+        return { date: d, balanceJepy: running };
+      },
+    );
+
+    if (rawSeries.length > 0) {
+      const net = rawSeries[rawSeries.length - 1].balanceJepy;
+      const offset = currentJepy - net;
+      for (const pt of rawSeries) {
+        pt.balanceJepy += offset;
+      }
+    } else {
+      rawSeries.push({
+        date: new Date().toISOString().slice(0, 10),
+        balanceJepy: currentJepy,
+      });
+    }
+
+    const predictionsByStatus = {
+      PENDING: 0,
+      WON: 0,
+      LOST: 0,
+    } as Record<'PENDING' | 'WON' | 'LOST', number>;
+
+    for (const row of grouped) {
+      const status = row.status as keyof typeof predictionsByStatus;
+      if (status in predictionsByStatus) {
+        predictionsByStatus[status] = row._count._all;
+      }
+    }
+
+    return {
+      currentJepy,
+      jepyHistory: rawSeries,
+      predictionsByStatus,
+    };
   }
 }

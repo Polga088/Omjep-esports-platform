@@ -1,18 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Dices,
-  Loader2,
-  Sparkles,
-  Trophy,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Minus,
-} from 'lucide-react';
+import { Dices, Loader2, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/formatCurrency';
+import PredictStats from './PredictStats';
+import PredictMatch from './PredictMatch';
+import type { TeamFormLetter } from './predictionTypes';
 
 type PredictionStatus = 'PENDING' | 'WON' | 'LOST';
 
@@ -30,9 +24,14 @@ interface MatchRow {
   away_score: number | null;
   status: string;
   played_at: string | null;
+  round: string | null;
   competition: { id: string; name: string; type: string } | null;
   homeTeam: TeamMini;
   awayTeam: TeamMini;
+  homeTeamForm?: TeamFormLetter[];
+  awayTeamForm?: TeamFormLetter[];
+  homeTeamRank?: number | null;
+  awayTeamRank?: number | null;
 }
 
 interface MyPredictionRow {
@@ -61,6 +60,7 @@ export default function Predictions() {
   const [mine, setMine] = useState<MyPredictionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState<string | null>(null);
+  const [statsRefreshKey, setStatsRefreshKey] = useState(0);
   const [forms, setForms] = useState<
     Record<string, { home: string; away: string; bet: string }>
   >({});
@@ -89,6 +89,7 @@ export default function Predictions() {
       setMine([]);
     } finally {
       setLoading(false);
+      setStatsRefreshKey((k) => k + 1);
     }
   }, []);
 
@@ -211,6 +212,8 @@ export default function Predictions() {
         </div>
       </div>
 
+      <PredictStats refreshKey={statsRefreshKey} />
+
       {tab === 'paris' && (
         <div className="space-y-6">
           {upcoming.length === 0 ? (
@@ -221,124 +224,30 @@ export default function Predictions() {
             upcoming.map((match) => {
               const f = forms[match.id] ?? { home: '0', away: '0', bet: '10' };
               const already = predictedMatchIds.has(match.id);
+              const cardMatch = {
+                id: match.id,
+                round: match.round ?? null,
+                played_at: match.played_at,
+                competition: match.competition,
+                homeTeam: match.homeTeam,
+                awayTeam: match.awayTeam,
+                homeTeamForm: match.homeTeamForm ?? [],
+                awayTeamForm: match.awayTeamForm ?? [],
+                homeTeamRank: match.homeTeamRank ?? null,
+                awayTeamRank: match.awayTeamRank ?? null,
+              };
               return (
-                <div
+                <PredictMatch
                   key={match.id}
-                  className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0D13]/80 shadow-lg backdrop-blur-xl"
-                >
-                  <div className="border-b border-white/[0.06] bg-white/[0.03] px-4 py-3 sm:px-6">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="text-xs font-medium text-slate-500">
-                        {match.competition?.name ?? 'Match amical'}
-                      </span>
-                      {match.played_at && (
-                        <span className="inline-flex items-center gap-1 text-[10px] text-slate-600">
-                          <Clock className="h-3 w-3" />
-                          {new Date(match.played_at).toLocaleString('fr-FR')}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
-                      <div className="flex flex-col items-center gap-2 text-center">
-                        {match.homeTeam.logo_url ? (
-                          <img
-                            src={match.homeTeam.logo_url}
-                            alt=""
-                            className="h-14 w-14 rounded-xl object-cover ring-1 ring-white/10"
-                          />
-                        ) : (
-                          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 text-lg font-bold text-slate-400">
-                            {(match.homeTeam.name ?? '??').slice(0, 2).toUpperCase()}
-                          </div>
-                        )}
-                        <span className="max-w-[140px] text-sm font-semibold text-white">
-                          {match.homeTeam.name ?? '—'}
-                        </span>
-                      </div>
-                      <span className="text-2xl font-black text-slate-600">VS</span>
-                      <div className="flex flex-col items-center gap-2 text-center">
-                        {match.awayTeam.logo_url ? (
-                          <img
-                            src={match.awayTeam.logo_url}
-                            alt=""
-                            className="h-14 w-14 rounded-xl object-cover ring-1 ring-white/10"
-                          />
-                        ) : (
-                          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 text-lg font-bold text-slate-400">
-                            {(match.awayTeam.name ?? '??').slice(0, 2).toUpperCase()}
-                          </div>
-                        )}
-                        <span className="max-w-[140px] text-sm font-semibold text-white">
-                          {match.awayTeam.name ?? '—'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 sm:p-6">
-                    {already ? (
-                      <p className="text-center text-sm text-amber-400/90">
-                        Vous avez déjà un pronostic en cours sur ce match.
-                      </p>
-                    ) : (
-                      <div className="mx-auto flex max-w-md flex-col gap-4">
-                        <div className="flex items-end justify-center gap-3">
-                          <div className="flex-1">
-                            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                              Domicile
-                            </label>
-                            <input
-                              type="number"
-                              min={0}
-                              value={f.home}
-                              onChange={(e) => updateForm(match.id, 'home', e.target.value)}
-                              className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-center text-lg font-bold text-white backdrop-blur-sm focus:border-emerald-500/40 focus:outline-none"
-                            />
-                          </div>
-                          <Minus className="mb-2 h-5 w-5 text-slate-600" />
-                          <div className="flex-1">
-                            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                              Extérieur
-                            </label>
-                            <input
-                              type="number"
-                              min={0}
-                              value={f.away}
-                              onChange={(e) => updateForm(match.id, 'away', e.target.value)}
-                              className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-center text-lg font-bold text-white backdrop-blur-sm focus:border-emerald-500/40 focus:outline-none"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="mb-1 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                            <Sparkles className="h-3 w-3 text-cyan-400" />
-                            Mise (Jepy)
-                          </label>
-                          <input
-                            type="number"
-                            min={1}
-                            value={f.bet}
-                            onChange={(e) => updateForm(match.id, 'bet', e.target.value)}
-                            className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-white backdrop-blur-sm focus:border-emerald-500/40 focus:outline-none"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          disabled={submitting === match.id}
-                          onClick={() => void submit(match)}
-                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-700 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-900/30 transition hover:brightness-110 disabled:opacity-50"
-                        >
-                          {submitting === match.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trophy className="h-4 w-4" />
-                          )}
-                          Valider le prono
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  match={cardMatch}
+                  formHome={f.home}
+                  formAway={f.away}
+                  formBet={f.bet}
+                  already={already}
+                  submitting={submitting === match.id}
+                  onChange={(field, value) => updateForm(match.id, field, value)}
+                  onSubmit={() => void submit(match)}
+                />
               );
             })
           )}

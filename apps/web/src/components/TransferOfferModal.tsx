@@ -10,6 +10,7 @@ import {
   FileText,
   Scale,
   Building2,
+  Clock,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
@@ -22,8 +23,21 @@ function weeksToDurationMonths(weeks: number): number {
   return Math.min(60, Math.max(1, m));
 }
 
+/** Offre déjà envoyée par le club acheteur pour ce joueur (formulaire remplacé par le récap). */
+export type PendingOfferRecap = {
+  id: string;
+  transfer_fee: number;
+  offered_salary: number;
+  offered_clause: number;
+  duration_months: number;
+  status: 'PENDING' | 'COUNTER_OFFER';
+  negotiation_turn: 'PLAYER' | 'BUYING_CLUB';
+};
+
 interface Props {
-  open: boolean;
+  /** Alias de `isOpen` pour compatibilité */
+  open?: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   player: {
     id: string;
@@ -32,6 +46,8 @@ interface Props {
     teamId: string;
     teamName: string;
     marketValue: number | null;
+    /** Agent libre sans club : frais 0, API envoie `to_team_id: null` */
+    isFreeAgent?: boolean;
   };
   myTeam: {
     id: string;
@@ -39,9 +55,20 @@ interface Props {
     budget: number;
   };
   onSuccess?: () => void;
+  /** Si défini : pas de nouveau formulaire, affichage du récapitulatif en attente */
+  pendingOfferFromMyClub?: PendingOfferRecap | null;
 }
 
-export default function TransferOfferModal({ open, onClose, player, myTeam, onSuccess }: Props) {
+export default function TransferOfferModal({
+  open: openProp,
+  isOpen,
+  onClose,
+  player,
+  myTeam,
+  onSuccess,
+  pendingOfferFromMyClub,
+}: Props) {
+  const open = Boolean(isOpen ?? openProp);
   const [transferFee, setTransferFee] = useState('');
   const [weeklySalary, setWeeklySalary] = useState('');
   const [releaseClause, setReleaseClause] = useState('');
@@ -53,7 +80,7 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
   useEffect(() => {
     if (open) {
       const hint = player.marketValue ?? 5_000_000;
-      setTransferFee(String(hint));
+      setTransferFee(player.isFreeAgent ? '0' : String(hint));
       const annualSalary = Math.max(100_000, Math.round(hint * 0.08));
       setWeeklySalary(String(Math.max(1, Math.round(annualSalary / 52))));
       setReleaseClause(String(Math.round(hint * 1.2)));
@@ -61,7 +88,7 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
       setError('');
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [open, player.marketValue]);
+  }, [open, player.marketValue, player.isFreeAgent]);
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
@@ -73,6 +100,99 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
 
   if (!open) return null;
 
+  if (pendingOfferFromMyClub) {
+    const p = pendingOfferFromMyClub;
+    const waitingMsg =
+      p.status === 'COUNTER_OFFER' && p.negotiation_turn === 'BUYING_CLUB'
+        ? 'Le joueur a fait une contre-proposition. Répondez depuis Mercato Live (Mon club → Offres envoyées).'
+        : 'Offre envoyée. En attente de la réponse du joueur…';
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-[#030712]/85 backdrop-blur-md" onClick={onClose} aria-hidden />
+
+        <div
+          className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl border border-[#c9a227]/25 shadow-[0_0_0_1px_rgba(201,162,39,0.08),0_25px_80px_-12px_rgba(0,0,0,0.85)] animate-in fade-in zoom-in-95 duration-200"
+          style={{
+            background:
+              'linear-gradient(165deg, rgba(15,23,42,0.98) 0%, rgba(8,12,24,0.99) 45%, rgba(6,8,18,1) 100%)',
+          }}
+        >
+          <header className="relative border-b border-[#c9a227]/20 px-6 pt-6 pb-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#c9a227]/35 bg-gradient-to-br from-[#c9a227]/15 to-transparent shadow-inner">
+                  <Clock className="h-6 w-6 text-[#e8d48b]" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#a89f7a]/90">
+                    Mercato · suivi
+                  </p>
+                  <h2 className="mt-1 font-serif text-xl font-semibold tracking-tight text-[#faf8f3] md:text-2xl">
+                    Offre en cours
+                  </h2>
+                  <p className="mt-2 text-sm text-sky-300/90">{waitingMsg}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-lg p-2 text-slate-500 transition hover:bg-white/5 hover:text-white"
+                aria-label="Fermer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </header>
+
+          <div className="relative border-b border-white/5 px-6 py-4">
+            <p className="text-sm text-white">
+              <span className="font-semibold text-[#e8d48b]">{player.name}</span>
+              <span className="text-slate-500"> · {player.position ?? '—'}</span>
+            </p>
+          </div>
+
+          <div className="px-6 py-6 space-y-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#a89f7a]">
+              Récapitulatif de votre proposition
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
+                <span className="text-xs uppercase text-slate-500 block">Indemnité de transfert</span>
+                <div className="text-lg font-bold text-[#FFD700] tabular-nums mt-1">
+                  {formatCurrency(p.transfer_fee, 'OC')}
+                </div>
+              </div>
+              <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
+                <span className="text-xs uppercase text-slate-500 block">Salaire /an</span>
+                <div className="text-lg font-bold text-emerald-400/90 tabular-nums mt-1">
+                  {formatCurrency(p.offered_salary, 'OC')}
+                </div>
+              </div>
+              <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
+                <span className="text-xs uppercase text-slate-500 block">Clause Libératoire</span>
+                <div className="text-lg font-bold text-sky-400/90 tabular-nums mt-1">
+                  {formatCurrency(p.offered_clause, 'OC')}
+                </div>
+              </div>
+              <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
+                <span className="text-xs uppercase text-slate-500 block">Durée</span>
+                <div className="text-lg font-bold text-slate-200 mt-1">{p.duration_months} mois</div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full mt-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-slate-200 hover:bg-white/[0.08]"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const numFee = Number(transferFee) || 0;
   const numWeekly = Number(weeklySalary) || 0;
   const annualCost = numWeekly * 52;
@@ -80,7 +200,8 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
   const totalCommitment = numFee + annualCost;
   const remainingBalance = myTeam.budget - totalCommitment;
   const overBudget = totalCommitment > myTeam.budget;
-  const invalid = numFee <= 0 || numWeekly <= 0 || numClause <= 0 || durationWeeks < 1;
+  const feeValid = player.isFreeAgent ? numFee >= 0 : numFee > 0;
+  const invalid = !feeValid || numWeekly <= 0 || numClause <= 0 || durationWeeks < 1;
   const durationMonths = weeksToDurationMonths(durationWeeks);
   const canSubmit = !invalid && !overBudget && !sending;
 
@@ -94,7 +215,7 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
       await api.post('/transfers/offer', {
         player_id: player.id,
         from_team_id: myTeam.id,
-        to_team_id: player.teamId,
+        ...(player.isFreeAgent ? { to_team_id: null } : { to_team_id: player.teamId }),
         transfer_fee: numFee,
         salaryPropose: numWeekly,
         releaseClausePropose: numClause,
@@ -106,11 +227,21 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
       onSuccess?.();
       onClose();
     } catch (err: unknown) {
-      const msg =
+      const raw =
         err && typeof err === 'object' && 'response' in err
-          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+          ? (err as { response?: { data?: { message?: string | string[] } } }).response?.data?.message
           : undefined;
-      setError(msg ?? "Erreur lors de l'envoi de l'offre.");
+      const msg = Array.isArray(raw) ? raw.join(' ') : raw;
+      const hideForFreeAgent =
+        player.isFreeAgent &&
+        typeof msg === 'string' &&
+        (msg.includes("n'appartient pas au club indiqué") ||
+          msg.includes('club actuel du joueur'));
+      if (hideForFreeAgent) {
+        setError('');
+      } else {
+        setError(msg ?? "Erreur lors de l'envoi de l'offre.");
+      }
     } finally {
       setSending(false);
     }
@@ -210,7 +341,7 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
                 <input
                   ref={inputRef}
                   type="number"
-                  min={1}
+                  min={player.isFreeAgent ? 0 : 1}
                   step={1000}
                   required
                   value={transferFee}
@@ -292,24 +423,25 @@ export default function TransferOfferModal({ open, onClose, player, myTeam, onSu
             <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-[#a89f7a]">
               Mémo · coût première année
             </p>
-            <div className="space-y-2 font-mono text-sm text-slate-300">
-              <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/5 pb-2">
-                <span className="text-slate-500">Salaire hebdo × 52</span>
-                <span className="text-right tabular-nums text-white">
-                  <span className="text-slate-300">
-                    {numWeekly.toLocaleString('fr-FR')} OC × 52 =
-                  </span>{' '}
-                  <span className="font-semibold text-[#e8d48b]">{formatCurrency(annualCost, 'OC')}</span>
-                  <span className="ml-1 text-[11px] font-sans text-slate-500">(coût annuel)</span>
-                </span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="rounded-lg bg-black/20 border border-white/5 px-3 py-2.5">
+                <span className="text-xs uppercase text-slate-500 block">Salaire /an</span>
+                <div className="text-lg font-bold tabular-nums text-[#e8d48b] mt-1">
+                  {formatCurrency(annualCost, 'OC')}
+                </div>
+                <p className="text-[10px] text-slate-600 mt-1 font-mono">
+                  {numWeekly.toLocaleString('fr-FR')} OC × 52 sem.
+                </p>
               </div>
-              <div className="flex flex-wrap items-baseline justify-between gap-2 pt-1">
-                <span className="text-slate-500">+ Montant transfert</span>
-                <span className="tabular-nums font-semibold text-white">{formatCurrency(numFee, 'OC')}</span>
+              <div className="rounded-lg bg-black/20 border border-white/5 px-3 py-2.5">
+                <span className="text-xs uppercase text-slate-500 block">Indemnité de transfert</span>
+                <div className="text-lg font-bold tabular-nums text-white mt-1">{formatCurrency(numFee, 'OC')}</div>
               </div>
-              <div className="flex flex-wrap items-baseline justify-between gap-2 border-t border-[#c9a227]/20 pt-3">
-                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">Engagement total (année 1)</span>
-                <span className="text-base font-bold tabular-nums text-[#e8d48b]">{formatCurrency(totalCommitment, 'OC')}</span>
+              <div className="rounded-lg bg-black/20 border border-[#c9a227]/25 px-3 py-2.5 sm:col-span-1">
+                <span className="text-xs uppercase text-slate-500 block">Engagement année 1</span>
+                <div className="text-lg font-bold tabular-nums text-[#e8d48b] mt-1">
+                  {formatCurrency(totalCommitment, 'OC')}
+                </div>
               </div>
             </div>
           </div>

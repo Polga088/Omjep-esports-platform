@@ -20,3 +20,4 @@ export { SyncModule } from './sync';
 export { TeamsModule } from './teams';
 export { TransfersModule } from './transfers';
 export { UsersModule } from './users';
+export { WalletsModule } from './wallets';

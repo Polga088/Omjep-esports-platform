@@ -12,15 +12,25 @@ import { ClubsModule } from '../clubs/clubs.module';
 import { PredictionsModule } from '../predictions/predictions.module';
 import { RewardsModule } from '../rewards/rewards.module';
 import { PlayerStatsModule } from '../player-stats/player-stats.module';
+import { WalletsModule } from '../wallets/wallets.module';
+import { AdminWalletsController } from './admin-wallets.controller';
 
 @Module({
-  imports: [SyncModule, ClubsModule, PredictionsModule, RewardsModule, PlayerStatsModule],
+  imports: [
+    SyncModule,
+    ClubsModule,
+    PredictionsModule,
+    RewardsModule,
+    PlayerStatsModule,
+    WalletsModule,
+  ],
   controllers: [
     AdminCompetitionsController,
     AdminMatchesController,
     AdminSyncController,
     AdminClubsController,
     AdminStoreController,
+    AdminWalletsController,
   ],
   providers: [AdminStoreService, AdminCompetitionsService, DrawService],
 })

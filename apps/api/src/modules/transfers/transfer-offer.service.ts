@@ -3,10 +3,10 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  HttpException,
 } from '@nestjs/common';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { ChatGateway } from '../chat/chat.gateway';
 import { CreateTransferOfferDto } from './dto/create-transfer-offer.dto';
 import { PlayerRespondOfferDto } from './dto/player-respond-offer.dto';
 import { BuyerRespondOfferDto } from './dto/buyer-respond-offer.dto';
@@ -24,12 +24,15 @@ function totalSigningCost(transferFee: number, salary: number): number {
   return transferFee + salary;
 }
 
+function formatOc(n: number): string {
+  return `${Number.isFinite(n) ? n.toLocaleString('fr-FR') : '0'} OC`;
+}
+
 @Injectable()
 export class TransferOfferService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
-    private readonly chatGateway: ChatGateway,
   ) {}
 
   // ── POST /transfers/offer ──────────────────────────────────
@@ -46,18 +49,24 @@ export class TransferOfferService {
       );
     }
 
-    const playerMembership = await this.prisma.teamMember.findUnique({
-      where: {
-        user_id_team_id: { user_id: dto.player_id, team_id: dto.to_team_id },
-      },
-    });
+    const toTeamId =
+      dto.to_team_id === undefined || dto.to_team_id === null || dto.to_team_id === ''
+        ? null
+        : dto.to_team_id;
 
-    if (!playerMembership) {
-      throw new BadRequestException("Ce joueur n'appartient pas au club indiqué.");
-    }
-
-    if (dto.from_team_id === dto.to_team_id) {
-      throw new BadRequestException('Impossible de transférer vers le même club.');
+    // to_team_id absent / null = signature libre (recrutement direct) — pas de contrôle d’historique club
+    if (toTeamId != null) {
+      const playerMembership = await this.prisma.teamMember.findUnique({
+        where: {
+          user_id_team_id: { user_id: dto.player_id, team_id: toTeamId },
+        },
+      });
+      if (!playerMembership) {
+        throw new BadRequestException("Ce joueur n'appartient pas au club indiqué.");
+      }
+      if (dto.from_team_id === toTeamId) {
+        throw new BadRequestException('Impossible de transférer vers le même club.');
+      }
     }
 
     const buyingTeam = await this.prisma.club.findUnique({
@@ -113,7 +122,7 @@ export class TransferOfferService {
       data: {
         player_id: dto.player_id,
         from_team_id: dto.from_team_id,
-        to_team_id: dto.to_team_id,
+        to_team_id: toTeamId,
         transfer_fee: dto.transfer_fee,
         offered_salary: salaryAnnual,
         offered_clause: clauseVal,
@@ -128,26 +137,36 @@ export class TransferOfferService {
       },
     });
 
-    await this.notifications.sendToTeamManagers(
-      dto.to_team_id,
-      '📨 Offre de transfert (négociation joueur)',
-      `${offer.fromTeam.name} propose un transfert pour ${offer.player.ea_persona_name ?? 'un joueur'} — le joueur doit répondre.`,
-      { offer_id: offer.id, type: 'TRANSFER_OFFER_RECEIVED' },
-    );
+    if (toTeamId != null) {
+      await this.notifications.sendToTeamManagers(
+        toTeamId,
+        '📨 Offre de transfert (négociation joueur)',
+        `${offer.fromTeam.name} propose ${formatOc(dto.transfer_fee)} d'indemnité pour ${offer.player.ea_persona_name ?? 'un joueur'} (salaire annuel ${formatOc(salaryAnnual)}, clause ${formatOc(clauseVal)}) — le joueur doit répondre.`,
+        { offer_id: offer.id, type: 'TRANSFER_OFFER_RECEIVED' },
+      );
+    }
 
     const weeklyOc = Math.round(salaryAnnual / 52);
     const weeklyStr = weeklyOc.toLocaleString('fr-FR');
-    await this.notifications.send(
+    await this.notifications.sendNotification(
       dto.player_id,
       '💬 Nouvelle proposition de transfert',
-      `Le club ${offer.fromTeam.name} vous propose un contrat de ${weeklyStr} OC/semaine !`,
-      { offer_id: offer.id, type: 'TRANSFER_OFFER_RECEIVED' },
+      `Club ${offer.fromTeam.name} : indemnité ${formatOc(dto.transfer_fee)}, salaire annuel ${formatOc(salaryAnnual)}, clause libératoire ${formatOc(clauseVal)} (${weeklyStr} OC/semaine).`,
+      'info',
+      {
+        type: 'TRANSFER_OFFER_RECEIVED',
+        offer_id: offer.id,
+        from_team_name: offer.fromTeam.name,
+      },
     );
 
-    this.chatGateway.emitTransferMercatoAlert(dto.player_id, {
-      type: 'TRANSFER_OFFER_RECEIVED',
-      offer_id: offer.id,
-    });
+    await this.notifications.sendToTeamManagers(
+      dto.from_team_id,
+      '✉️ Offre envoyée',
+      `Proposition à ${offer.player.ea_persona_name ?? 'le joueur'} : ${formatOc(dto.transfer_fee)} de frais + ${formatOc(salaryAnnual)}/an de salaire (total engagement année 1 : ${formatOc(totalSigningCost(dto.transfer_fee, salaryAnnual))}) — en attente de réponse.`,
+      { type: 'TRANSFER_OFFER_SENT', offer_id: offer.id },
+      'info',
+    );
 
     return offer;
   }
@@ -212,7 +231,7 @@ export class TransferOfferService {
       await this.notifications.sendToTeamManagers(
         offer.from_team_id,
         '🔄 Contre-proposition du joueur',
-        `${updated.player.ea_persona_name ?? 'Le joueur'} a modifié les termes du transfert.`,
+        `${updated.player.ea_persona_name ?? 'Le joueur'} propose : indemnité ${formatOc(updated.transfer_fee)}, salaire annuel ${formatOc(updated.offered_salary)}, clause ${formatOc(updated.offered_clause)}.`,
         { offer_id: offerId, type: 'TRANSFER_COUNTER' },
       );
 
@@ -314,11 +333,12 @@ export class TransferOfferService {
     offer: {
       id: string;
       from_team_id: string;
-      to_team_id: string;
+      to_team_id: string | null;
       player_id: string;
       transfer_fee: number;
+      offered_salary: number;
       player: { ea_persona_name: string | null };
-      toTeam: { name: string };
+      toTeam: { name: string } | null;
       fromTeam: { name: string };
     },
     by: 'player' | 'buyer',
@@ -330,15 +350,34 @@ export class TransferOfferService {
 
     const label =
       by === 'player'
-        ? `${offer.player.ea_persona_name ?? 'Le joueur'} a refusé l'offre.`
-        : `${offer.fromTeam.name} a abandonné la négociation.`;
+        ? `${offer.player.ea_persona_name ?? 'Le joueur'} a refusé l'offre (indemnité prévue ${formatOc(offer.transfer_fee)}).`
+        : `${offer.fromTeam.name} a abandonné la négociation (offre à ${formatOc(offer.transfer_fee)} + ${formatOc(offer.offered_salary)}/an).`;
 
     await this.notifications.sendToTeamManagers(
       offer.from_team_id,
       '❌ Négociation clôturée',
       label,
-      { offer_id: offer.id, type: 'TRANSFER_OFFER_REJECTED' },
+      {
+        offer_id: offer.id,
+        type: 'TRANSFER_OFFER_REJECTED',
+        player_name: offer.player.ea_persona_name ?? undefined,
+      },
+      by === 'player' ? 'error' : 'info',
     );
+
+    if (by === 'buyer') {
+      await this.notifications.sendNotification(
+        offer.player_id,
+        '❌ Proposition retirée',
+        `Le club ${offer.fromTeam.name} a abandonné la négociation (offre : ${formatOc(offer.transfer_fee)} + ${formatOc(offer.offered_salary)}/an).`,
+        'info',
+        {
+          type: 'TRANSFER_OFFER_CANCELLED',
+          offer_id: offer.id,
+          from_team_name: offer.fromTeam.name,
+        },
+      );
+    }
 
     return rejected;
   }
@@ -374,7 +413,9 @@ export class TransferOfferService {
     const currentContract = await this.prisma.contract.findFirst({
       where: {
         user_id: offer.player_id,
-        team_id: offer.to_team_id,
+        ...(offer.to_team_id != null
+          ? { team_id: offer.to_team_id }
+          : {}),
         status: 'ACTIVE',
         end_date: { gt: new Date() },
       },
@@ -397,9 +438,23 @@ export class TransferOfferService {
         throw new BadRequestException('Club acheteur introuvable.');
       }
 
+      if (buyer.budget < offer.transfer_fee) {
+        throw new HttpException(
+          {
+            message: `Budget club insuffisant pour couvrir les frais de transfert (${formatOc(offer.transfer_fee)}).`,
+            code: 'INSUFFICIENT_CLUB_FUNDS',
+          },
+          400,
+        );
+      }
+
       if (buyer.budget < totalCost) {
-        throw new BadRequestException(
-          `Budget insuffisant pour finaliser le transfert. Requis : ${totalCost.toLocaleString('fr-FR')} OC (frais + première année de salaire), Disponible : ${buyer.budget.toLocaleString('fr-FR')} OC.`,
+        throw new HttpException(
+          {
+            message: `Budget insuffisant pour finaliser le transfert. Requis : ${totalCost.toLocaleString('fr-FR')} OC (frais + première année de salaire), disponible : ${buyer.budget.toLocaleString('fr-FR')} OC.`,
+            code: 'INSUFFICIENT_CLUB_FUNDS',
+          },
+          400,
         );
       }
 
@@ -409,46 +464,82 @@ export class TransferOfferService {
         data: { status: 'ACCEPTED', responded_at: new Date() },
       });
 
-      // 2. Débiter l'acheteur
+      // 2. Débit club acheteur : indemnité de transfert
       await tx.club.update({
         where: { id: offer.from_team_id },
-        data: { budget: { decrement: totalCost } },
+        data: { budget: { decrement: offer.transfer_fee } },
       });
 
-      // 3. Créditer le vendeur (seulement les frais de transfert, pas le salaire)
-      await tx.club.update({
-        where: { id: offer.to_team_id },
-        data: { budget: { increment: offer.transfer_fee } },
-      });
+      // 3. Crédit portefeuille OC personnel du joueur (User.omjepCoins — pas de table UserWallet)
+      const signingBonusOc = Math.max(0, Math.round(offer.transfer_fee));
+      if (signingBonusOc > 0) {
+        await tx.user.update({
+          where: { id: offer.player_id },
+          data: { omjepCoins: { increment: signingBonusOc } },
+        });
+      }
 
-      // 4. Journal comptable - Débit acheteur
+      // 4. Écriture comptable : débit frais de transfert côté club acheteur
       await tx.transaction.create({
         data: {
           team_id: offer.from_team_id,
-          amount: -totalCost,
+          amount: -offer.transfer_fee,
           type: 'TRANSFER',
-          description: `Transfert : ${offer.player.ea_persona_name ?? 'joueur'} — frais ${offer.transfer_fee.toLocaleString('fr-FR')} + salaire année 1 ${offer.offered_salary.toLocaleString('fr-FR')}`,
+          description: `Frais de transfert — ${offer.player.ea_persona_name ?? 'joueur'} (prime OC joueur : ${signingBonusOc.toLocaleString('fr-FR')} OC)`,
         },
       });
 
-      // 5. Journal comptable - Crédit vendeur
+      // 5. Débit salaire année 1
+      await tx.club.update({
+        where: { id: offer.from_team_id },
+        data: { budget: { decrement: offer.offered_salary } },
+      });
+
       await tx.transaction.create({
         data: {
-          team_id: offer.to_team_id,
-          amount: offer.transfer_fee,
-          type: 'TRANSFER',
-          description: `Vente ${offer.player.ea_persona_name ?? 'joueur'} vers ${offer.fromTeam.name}${releaseClauseMet ? ' (clause libératoire atteinte)' : ''}`,
+          team_id: offer.from_team_id,
+          amount: -offer.offered_salary,
+          type: 'WAGE',
+          description: `Salaire année 1 — ${offer.player.ea_persona_name ?? 'joueur'}`,
         },
       });
 
-      // 6. Retirer le joueur de l'ancien club
-      await tx.teamMember.delete({
-        where: {
-          user_id_team_id: { user_id: offer.player_id, team_id: offer.to_team_id },
-        },
-      });
+      // 6. Créditer le vendeur (indemnité reçue)
+      if (offer.to_team_id != null && offer.transfer_fee > 0) {
+        await tx.club.update({
+          where: { id: offer.to_team_id },
+          data: { budget: { increment: offer.transfer_fee } },
+        });
+      }
 
-      // 7. Ajouter le joueur au nouveau club
+      // 7. Journal comptable — crédit vendeur
+      if (offer.to_team_id != null && offer.transfer_fee > 0) {
+        await tx.transaction.create({
+          data: {
+            team_id: offer.to_team_id,
+            amount: offer.transfer_fee,
+            type: 'TRANSFER',
+            description: `Vente ${offer.player.ea_persona_name ?? 'joueur'} vers ${offer.fromTeam.name}${releaseClauseMet ? ' (clause libératoire atteinte)' : ''}`,
+          },
+        });
+      }
+
+      // 8. Retirer le joueur de l’ancien club
+      if (offer.to_team_id != null) {
+        await tx.teamMember.deleteMany({
+          where: {
+            user_id: offer.player_id,
+            team_id: offer.to_team_id,
+          },
+        });
+      } else {
+        // Signature libre (to_team_id null) : retirer toute affiliation existante avant l’effectif acheteur
+        await tx.teamMember.deleteMany({
+          where: { user_id: offer.player_id },
+        });
+      }
+
+      // 9. Ajouter le joueur au nouveau club
       await tx.teamMember.create({
         data: {
           user_id: offer.player_id,
@@ -457,7 +548,7 @@ export class TransferOfferService {
         },
       });
 
-      // 8. Résilier l'ancien contrat
+      // 10. Résilier l'ancien contrat
       if (currentContract) {
         await tx.contract.update({
           where: { id: currentContract.id },
@@ -465,7 +556,7 @@ export class TransferOfferService {
         });
       }
 
-      // 9. Créer le nouveau contrat
+      // 11. Créer le nouveau contrat
       const start = new Date();
       await tx.contract.create({
         data: {
@@ -479,7 +570,7 @@ export class TransferOfferService {
         },
       });
 
-      // 10. Annuler les autres offres en cours pour ce joueur
+      // 12. Annuler les autres offres en cours pour ce joueur
       await tx.transferOffer.updateMany({
         where: {
           player_id: offer.player_id,
@@ -489,14 +580,18 @@ export class TransferOfferService {
         data: { status: 'CANCELLED', responded_at: new Date() },
       });
 
-      // 11. 📰 Fil d’actualité global (News)
+      // 13. 📰 Fil d’actualité global (News)
       const playerName = offer.player.ea_persona_name ?? 'Joueur';
       const clubName = offer.fromTeam.name;
       const montantStr = offer.transfer_fee.toLocaleString('fr-FR');
       const newsTitle = `OFFICIEL : ${playerName} rejoint ${clubName} pour ${montantStr} OC !`;
-      const newsDescription = releaseClauseMet
-        ? `${playerName} quitte ${offer.toTeam.name} et rejoint ${clubName} après activation de la clause libératoire (${montantStr} OC).`
-        : `${playerName} s'engage avec ${clubName}. Frais de transfert : ${montantStr} OC.`;
+      const sellerName = offer.toTeam?.name ?? 'Agent libre';
+      const newsDescription =
+        offer.to_team_id == null
+          ? `${playerName} s'engage avec ${clubName} en tant qu'agent libre.`
+          : releaseClauseMet
+            ? `${playerName} quitte ${sellerName} et rejoint ${clubName} après activation de la clause libératoire (${montantStr} OC).`
+            : `${playerName} s'engage avec ${clubName}. Frais de transfert : ${montantStr} OC.`;
 
       await tx.newsEvent.create({
         data: {
@@ -507,7 +602,7 @@ export class TransferOfferService {
             playerId: offer.player_id,
             playerName: offer.player.ea_persona_name,
             fromTeamId: offer.to_team_id,
-            fromTeamName: offer.toTeam.name,
+            fromTeamName: sellerName,
             toTeamId: offer.from_team_id,
             toTeamName: offer.fromTeam.name,
             transferFee: offer.transfer_fee,
@@ -530,26 +625,30 @@ export class TransferOfferService {
     await this.notifications.sendToTeamManagers(
       offer.from_team_id,
       '✅ Transfert conclu',
-      `${offer.player.ea_persona_name ?? 'Le joueur'} a signé — bienvenue dans l'effectif.`,
+      `${offer.player.ea_persona_name ?? 'Le joueur'} a signé — bienvenue dans l'effectif. Frais ${formatOc(offer.transfer_fee)} + ${formatOc(offer.offered_salary)} de salaire année 1.`,
       { offer_id: offerId, type: 'TRANSFER_OFFER_ACCEPTED' },
+      'success',
     );
 
-    await this.notifications.send(
+    await this.notifications.sendNotification(
       offer.player_id,
       '🔄 Transfert officialisé',
-      `Vous rejoignez ${offer.fromTeam.name}.`,
+      `Vous rejoignez ${offer.fromTeam.name}. Indemnité ${formatOc(offer.transfer_fee)}, salaire annuel ${formatOc(offer.offered_salary)}, clause ${formatOc(offer.offered_clause)}.`,
+      'success',
       { offer_id: offerId, type: 'PLAYER_TRANSFERRED' },
     );
 
-    // Notification au club vendeur
-    await this.notifications.sendToTeamManagers(
-      offer.to_team_id,
-      releaseClauseMet ? '⚡ Clause libératoire activée' : '💰 Transfert réalisé',
-      releaseClauseMet
-        ? `${offer.player.ea_persona_name ?? 'Votre joueur'} a été libéré après activation de la clause libératoire (${offer.transfer_fee.toLocaleString('fr-FR')} OC).`
-        : `${offer.player.ea_persona_name ?? 'Votre joueur'} a été vendu à ${offer.fromTeam.name} pour ${offer.transfer_fee.toLocaleString('fr-FR')} OC.`,
-      { offer_id: offerId, type: 'PLAYER_SOLD' },
-    );
+    if (offer.to_team_id != null) {
+      await this.notifications.sendToTeamManagers(
+        offer.to_team_id,
+        releaseClauseMet ? '⚡ Clause libératoire activée' : '💰 Transfert réalisé',
+        releaseClauseMet
+          ? `${offer.player.ea_persona_name ?? 'Votre joueur'} a été libéré après activation de la clause libératoire (${offer.transfer_fee.toLocaleString('fr-FR')} OC).`
+          : `${offer.player.ea_persona_name ?? 'Votre joueur'} a été vendu à ${offer.fromTeam.name} pour ${offer.transfer_fee.toLocaleString('fr-FR')} OC.`,
+        { offer_id: offerId, type: 'PLAYER_SOLD' },
+        'success',
+      );
+    }
 
     return result;
   }
@@ -616,8 +715,20 @@ export class TransferOfferService {
    * Récupère les agents libres : joueurs sans club OU avec un contrat expiré
    * Ces joueurs peuvent être recrutés sans frais de transfert
    */
-  async getFreeAgents(limit = 50, position?: string) {
+  async getFreeAgents(limit = 50, position?: string, excludePendingOffersFromTeamId?: string) {
     const now = new Date();
+
+    let excludePlayerIds: string[] = [];
+    if (excludePendingOffersFromTeamId) {
+      const pending = await this.prisma.transferOffer.findMany({
+        where: {
+          from_team_id: excludePendingOffersFromTeamId,
+          status: { in: ['PENDING', 'COUNTER_OFFER'] },
+        },
+        select: { player_id: true },
+      });
+      excludePlayerIds = [...new Set(pending.map((p) => p.player_id))];
+    }
 
     // Convertir la position string en enum Position si nécessaire
     const positionFilter = position as Position | undefined;
@@ -626,6 +737,7 @@ export class TransferOfferService {
     const freeAgents = await this.prisma.user.findMany({
       where: {
         role: 'PLAYER',
+        ...(excludePlayerIds.length > 0 && { id: { notIn: excludePlayerIds } }),
         // Soit pas de team membership actif
         OR: [
           {

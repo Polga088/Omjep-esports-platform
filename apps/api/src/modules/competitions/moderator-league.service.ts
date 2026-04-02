@@ -10,6 +10,7 @@ import { CreateModeratorMatchDto } from './dto/create-moderator-match.dto';
 import { ModeratorValidateScoreDto } from './dto/moderator-validate-score.dto';
 import { RewardsService } from '../rewards/rewards.service';
 import { PlayerStatsService } from '../player-stats/player-stats.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const MATCH_INCLUDE = {
   competition: { select: { id: true, name: true, type: true } },
@@ -37,6 +38,7 @@ export class ModeratorLeagueService {
     private readonly prisma: PrismaService,
     private readonly rewardsService: RewardsService,
     private readonly playerStatsService: PlayerStatsService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async listCompetitions() {
@@ -90,6 +92,20 @@ export class ModeratorLeagueService {
       },
       include: MATCH_INCLUDE,
     });
+
+    const label = `${match.homeTeam.name} vs ${match.awayTeam.name}`;
+    await this.notifications.notifyUsersInTeams(
+      [dto.home_team_id, dto.away_team_id],
+      '📅 Nouveau match',
+      `Un match a été programmé : ${label}.`,
+      'info',
+      {
+        type: 'MATCH_CREATED',
+        category: 'MATCH',
+        match_id: match.id,
+        competition_id: competitionId,
+      },
+    );
 
     return { message: 'Match créé.', match };
   }

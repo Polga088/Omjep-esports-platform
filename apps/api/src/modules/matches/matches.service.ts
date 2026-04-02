@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { MatchStatus } from '@omjep/shared';
+import { CompetitionsService } from '../competitions/competitions.service';
 
 const CLUB_STAFF_ROLES = ['FOUNDER', 'MANAGER', 'CO_MANAGER'] as const;
 
@@ -37,7 +38,10 @@ function sortMatchesCalendar<T extends { status: MatchStatus; played_at: Date | 
 
 @Injectable()
 export class MatchesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly competitionsService: CompetitionsService,
+  ) {}
 
   async findMyTeamMatches(userId: string) {
     const membership = await this.prisma.teamMember.findFirst({
@@ -58,7 +62,8 @@ export class MatchesService {
       include: MATCH_INCLUDE,
     });
 
-    return sortMatchesCalendar(matches);
+    const sorted = sortMatchesCalendar(matches);
+    return this.competitionsService.enrichMatchesWithFormAndRank(sorted);
   }
 
   async findCompetitionMatches(competitionId: string) {
@@ -76,7 +81,8 @@ export class MatchesService {
       include: MATCH_INCLUDE,
     });
 
-    return sortMatchesCalendar(matches);
+    const sorted = sortMatchesCalendar(matches);
+    return this.competitionsService.enrichMatchesWithFormAndRank(sorted);
   }
 
   async submitScoreReport(

@@ -16,8 +16,6 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { AddMatchRewardDto } from './dto/add-match-reward.dto';
 import { InitiateTransferDto } from './dto/initiate-transfer.dto';
 import { CreateContractDto } from './dto/create-contract.dto';
-import { ExchangeOmjepDto } from './dto/exchange-omjep.dto';
-
 type AuthedRequest = { user: { id: string; role: string } };
 
 @Controller('finance')
@@ -27,15 +25,6 @@ export class FinanceController {
     private readonly financeService: FinanceService,
     private readonly transferService: TransferService,
   ) {}
-
-  /** Échange OMJEP → JEPY (1000 OMJEP = 1 JEPY), pour le compte authentifié. */
-  @Post('exchange')
-  exchangeOmjepToJepy(
-    @Body() dto: ExchangeOmjepDto,
-    @Req() req: AuthedRequest,
-  ) {
-    return this.financeService.exchangeOmjepToJepy(req.user.id, dto.jepy_amount);
-  }
 
   @Get(':teamId')
   getTeamFinances(

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
@@ -7,11 +7,14 @@ import {
   Dices,
   Medal,
   MessageCircle,
+  Coins,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
 import GoldConfetti from '@/components/GoldConfetti';
 import { useTransferNotifications } from '@/hooks/useTransferNotifications';
+import { useAppNotifications } from '@/hooks/useAppNotifications';
+import { useAppNotificationStore } from '@/store/useAppNotificationStore';
 import api from '@/lib/api';
 import { formatCurrency } from '@/utils/formatCurrency';
 
@@ -58,20 +61,45 @@ export default function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, patchUser } = useAuthStore();
+  const isManagerRole = user?.role === 'MANAGER';
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [budget, setBudget] = useState<number | null>(null);
   const { showConfetti, mercatoLiveBadge } = useTransferNotifications();
+  const { notifications, refreshNotifications, syncUnread } = useAppNotifications();
+  const appUnreadCount = useAppNotificationStore((s) => s.unreadCount);
+
+  const refreshTeamBudget = useCallback(() => {
+    void api
+      .get<{ budget: number }>('/teams/my-team')
+      .then(({ data }) => setBudget(data.budget))
+      .catch(() => setBudget(null));
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    api
-      .get<{ budget: number }>('/teams/my-team')
-      .then(({ data }) => {
-        if (!cancelled) setBudget(data.budget);
-      })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
+    refreshTeamBudget();
+  }, [refreshTeamBudget]);
+
+  /** Mercato / transferts : budget club + portefeuille à jour */
+  useEffect(() => {
+    const onTransfers = () => {
+      refreshTeamBudget();
+      void api
+        .get<{ omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }>('/auth/me')
+        .then(({ data }) => {
+          if (!data) return;
+          patchUser({
+            omjepCoins:
+              typeof data.omjepCoins === 'number' && Number.isFinite(data.omjepCoins) ? data.omjepCoins : undefined,
+            jepyCoins:
+              typeof data.jepyCoins === 'number' && Number.isFinite(data.jepyCoins) ? data.jepyCoins : undefined,
+            isPremium: data.isPremium === true,
+          });
+        })
+        .catch(() => {});
+    };
+    window.addEventListener('omjep:transfers-refresh', onTransfers);
+    return () => window.removeEventListener('omjep:transfers-refresh', onTransfers);
+  }, [patchUser, refreshTeamBudget]);
 
   /** Synchronise le wallet (OMJEP/JEPY) avec le JWT / DB — évite un state obsolète après ajout des colonnes. */
   useEffect(() => {
@@ -270,16 +298,46 @@ export default function DashboardLayout() {
             )}
           </div>
 
-          <div className="ml-auto flex items-center gap-3">
-            {budget !== null && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                <Wallet className="w-4 h-4 text-emerald-400" />
-                <span className="text-sm font-bold text-emerald-400 tabular-nums">
+          <div className="ml-auto flex items-center gap-2 sm:gap-3 flex-wrap justify-end max-w-[min(100vw-6rem,36rem)]">
+            <div
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20"
+              title="Jepy"
+            >
+              <Coins className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+              <span className="hidden sm:inline text-[10px] uppercase tracking-wide text-slate-500">Jepy</span>
+              <span className="text-xs sm:text-sm font-bold text-violet-300 tabular-nums">
+                {formatCurrency(user?.jepyCoins ?? 0, 'Jepy')}
+              </span>
+            </div>
+            <div
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20"
+              title="OMJEP perso"
+            >
+              <span className="text-[10px] uppercase tracking-wide text-slate-500 hidden sm:inline">OC</span>
+              <span className="text-xs sm:text-sm font-bold text-amber-300 tabular-nums">
+                {formatCurrency(user?.omjepCoins ?? 0, 'OC')}
+              </span>
+            </div>
+            {isManagerRole && budget !== null && (
+              <div
+                className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20"
+                title="Budget club"
+              >
+                <Wallet className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="text-[10px] uppercase tracking-wide text-slate-500 hidden sm:inline">Club</span>
+                <span className="text-xs sm:text-sm font-bold text-emerald-400 tabular-nums">
                   {formatCurrency(budget, 'OC')}
                 </span>
               </div>
             )}
-            <NotificationBell />
+            <NotificationBell
+              appUnreadCount={appUnreadCount}
+              inboxNotifications={notifications}
+              onRefreshInbox={async () => {
+                await refreshNotifications();
+                await syncUnread();
+              }}
+            />
           </div>
         </header>
 

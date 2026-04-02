@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, type ComponentProps } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Repeat, Send, Inbox, Loader2, Check, X, Clock,
@@ -9,37 +9,14 @@ import api from '@/lib/api';
 import GoldConfetti from '@/components/GoldConfetti';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/formatCurrency';
+import TransferOfferModal, { type PendingOfferRecap } from '@/components/TransferOfferModal';
+import {
+  OfferTermsGrid,
+  PlayerOfferActions,
+  type TransferOfferRow,
+} from '@/components/TransferOfferRow';
 
-interface TeamInfo {
-  id: string;
-  name: string;
-  logo_url: string | null;
-  budget?: number;
-}
-
-interface PlayerInfo {
-  id: string;
-  ea_persona_name: string | null;
-  preferred_position: string | null;
-}
-
-interface TransferOfferRow {
-  id: string;
-  player_id: string;
-  from_team_id: string;
-  to_team_id: string;
-  transfer_fee: number;
-  offered_salary: number;
-  offered_clause: number;
-  duration_months: number;
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'COUNTER_OFFER' | 'CANCELLED';
-  negotiation_turn: 'PLAYER' | 'BUYING_CLUB';
-  created_at: string;
-  responded_at: string | null;
-  player: PlayerInfo;
-  fromTeam: TeamInfo;
-  toTeam: TeamInfo;
-}
+type TransferOfferModalPlayer = ComponentProps<typeof TransferOfferModal>['player'];
 
 interface FreeAgent {
   id: string;
@@ -97,8 +74,24 @@ const statusConfig = {
   },
 } as const;
 
+async function refreshWalletFromApi(patchUser: (p: { omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }) => void) {
+  try {
+    const { data } = await api.get<{ omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }>('/auth/me');
+    if (!data) return;
+    patchUser({
+      omjepCoins:
+        typeof data.omjepCoins === 'number' && Number.isFinite(data.omjepCoins) ? data.omjepCoins : undefined,
+      jepyCoins:
+        typeof data.jepyCoins === 'number' && Number.isFinite(data.jepyCoins) ? data.jepyCoins : undefined,
+      isPremium: data.isPremium === true,
+    });
+  } catch {
+    /* ignore */
+  }
+}
+
 export default function TransferMarket() {
-  const { user } = useAuthStore();
+  const { user, patchUser } = useAuthStore();
   const [myTeam, setMyTeam] = useState<{ id: string; name: string; budget: number } | null>(null);
   const [offers, setOffers] = useState<TransferOfferRow[]>([]);
   const [playerOffers, setPlayerOffers] = useState<TransferOfferRow[]>([]);
@@ -110,6 +103,8 @@ export default function TransferMarket() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [freeAgentPosition, setFreeAgentPosition] = useState<string>('');
   const [counterDraft, setCounterDraft] = useState<Record<string, { fee: string; sal: string; clause: string }>>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState<TransferOfferModalPlayer | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -120,7 +115,9 @@ export default function TransferMarket() {
           params: { team_id: teamRes.data.id },
         }),
         api.get<TransferOfferRow[]>('/transfers/offers/as-player'),
-        api.get<FreeAgent[]>('/transfers/free-agents'),
+        api.get<FreeAgent[]>('/transfers/free-agents', {
+          params: { team_id: teamRes.data.id },
+        }),
       ]);
       setOffers(offersRes.data);
       setPlayerOffers(asPlayerRes.data);
@@ -152,25 +149,68 @@ export default function TransferMarket() {
   const pendingReceivedCount = receivedOffers.filter((o) => o.status === 'PENDING' || o.status === 'COUNTER_OFFER').length;
   const pendingPlayerCount = playerOffers.length;
 
+  const pendingRecapForModal = useMemo((): PendingOfferRecap | null => {
+    if (!selectedPlayer) return null;
+    const pending = sentOffers.find(
+      (o) =>
+        o.player_id === selectedPlayer.id &&
+        (o.status === 'PENDING' || o.status === 'COUNTER_OFFER'),
+    );
+    if (!pending) return null;
+    return {
+      id: pending.id,
+      transfer_fee: pending.transfer_fee,
+      offered_salary: pending.offered_salary,
+      offered_clause: pending.offered_clause,
+      duration_months: pending.duration_months,
+      status: pending.status as PendingOfferRecap['status'],
+      negotiation_turn: pending.negotiation_turn,
+    };
+  }, [selectedPlayer, sentOffers]);
+
   const playerRespond = async (offerId: string, body: Record<string, unknown>) => {
     setRespondingId(offerId);
     try {
       if (body.action === 'ACCEPT') {
-        await api.post(`/transfers/offer/${offerId}/accept`);
+        await api.patch(`/transfers/accept/${offerId}`);
+      } else if (body.action === 'REJECT') {
+        await api.patch(`/transfers/reject/${offerId}`);
       } else {
         await api.patch(`/transfers/offer/${offerId}/player-respond`, body);
       }
       toast.success('Réponse envoyée.');
+      await refreshWalletFromApi(patchUser);
       await fetchData();
     } catch (err: unknown) {
-      const msg =
+      const raw =
         err && typeof err === 'object' && 'response' in err
-          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
-          : 'Erreur.';
+          ? (err as { response?: { data?: { message?: string; code?: string } } }).response?.data
+          : undefined;
+      const msg =
+        typeof raw === 'string'
+          ? raw
+          : typeof raw?.message === 'string'
+            ? raw.message
+            : 'Erreur.';
       toast.error(msg ?? 'Erreur');
     } finally {
       setRespondingId(null);
     }
+  };
+
+  const handleAcceptOffer = (offerId: string) => {
+    void playerRespond(offerId, { action: 'ACCEPT' });
+  };
+
+  const handleRejectOffer = (offerId: string) => {
+    void playerRespond(offerId, { action: 'REJECT' });
+  };
+
+  const handlePlayerCounterOffer = (
+    offerId: string,
+    body: { transfer_fee?: number; offered_salary?: number; offered_clause?: number },
+  ) => {
+    void playerRespond(offerId, { action: 'COUNTER', ...body });
   };
 
   const buyerRespond = async (offerId: string, body: Record<string, unknown>) => {
@@ -182,146 +222,45 @@ export default function TransferMarket() {
         setShowConfetti(true);
         setTimeout(() => setShowConfetti(false), 4000);
       }
+      await refreshWalletFromApi(patchUser);
       await fetchData();
     } catch (err: unknown) {
-      const msg =
+      const raw =
         err && typeof err === 'object' && 'response' in err
-          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
-          : 'Erreur.';
+          ? (err as { response?: { data?: { message?: string; code?: string } } }).response?.data
+          : undefined;
+      const msg =
+        typeof raw === 'string'
+          ? raw
+          : typeof raw?.message === 'string'
+            ? raw.message
+            : 'Erreur.';
       toast.error(msg ?? 'Erreur');
     } finally {
       setRespondingId(null);
     }
   };
 
-  const renderOfferTerms = (offer: TransferOfferRow) => (
-    <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-      <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
-        <span className="text-slate-500 block">Frais transfert</span>
-        <span className="font-bold text-[#FFD700] tabular-nums">{formatCurrency(offer.transfer_fee, 'OC')}</span>
-      </div>
-      <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
-        <span className="text-slate-500 block">Salaire / an</span>
-        <span className="font-bold text-emerald-400/90 tabular-nums">{formatCurrency(offer.offered_salary, 'OC')}</span>
-      </div>
-      <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
-        <span className="text-slate-500 block">Clause lib.</span>
-        <span className="font-bold text-sky-400/90 tabular-nums">{formatCurrency(offer.offered_clause, 'OC')}</span>
-      </div>
-      <div className="rounded-lg bg-white/5 px-2 py-1.5 border border-white/5">
-        <span className="text-slate-500 block">Durée</span>
-        <span className="font-bold text-slate-300">{offer.duration_months} mois</span>
-      </div>
-    </div>
-  );
-
-  const renderPlayerActions = (offer: TransferOfferRow) => {
-    const isPlayer = user?.id === offer.player_id;
-    const busy = respondingId === offer.id;
-    if (!isPlayer || offer.status === 'ACCEPTED' || offer.status === 'REJECTED' || offer.status === 'CANCELLED') {
-      return null;
+  const handleOpenOfferModal = (agent: FreeAgent) => {
+    if (!myTeam) {
+      toast.error('Vous devez être membre d’un club pour recruter.');
+      return;
     }
+    setSelectedPlayer({
+      id: agent.id,
+      name: agent.name,
+      position: agent.position === 'Non spécifié' ? null : agent.position,
+      teamId: myTeam.id,
+      teamName: 'Sans club (agent libre)',
+      marketValue: null,
+      isFreeAgent: true,
+    });
+    setIsModalOpen(true);
+  };
 
-    if (offer.status === 'COUNTER_OFFER' && offer.negotiation_turn === 'BUYING_CLUB') {
-      return (
-        <p className="mt-3 text-xs text-amber-400/80 flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5" />
-          En attente de la réponse du club acheteur.
-        </p>
-      );
-    }
-
-    if (offer.negotiation_turn !== 'PLAYER') {
-      return null;
-    }
-
-    const draft = counterDraft[offer.id] ?? {
-      fee: String(offer.transfer_fee),
-      sal: String(offer.offered_salary),
-      clause: String(offer.offered_clause),
-    };
-
-    return (
-      <div className="mt-4 space-y-3 border-t border-white/5 pt-4">
-        <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
-          <User className="w-3.5 h-3.5" />
-          Votre décision (joueur)
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => playerRespond(offer.id, { action: 'ACCEPT' })}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 disabled:opacity-50"
-          >
-            {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-            Accepter & signer
-          </button>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => playerRespond(offer.id, { action: 'REJECT' })}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-white/5 text-slate-400 border border-white/10 hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
-          >
-            <X className="w-3.5 h-3.5" />
-            Refuser
-          </button>
-        </div>
-        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 space-y-2">
-          <p className="text-[10px] uppercase tracking-wider text-amber-400/80 font-bold">Contre-proposer</p>
-          <div className="grid grid-cols-3 gap-2">
-            <input
-              placeholder="Frais"
-              className="w-full px-2 py-1.5 rounded-lg bg-[#0D1221] border border-white/10 text-xs text-white placeholder:text-slate-600"
-              value={draft.fee}
-              onChange={(e) =>
-                setCounterDraft((d) => ({
-                  ...d,
-                  [offer.id]: { ...draft, fee: e.target.value },
-                }))
-              }
-            />
-            <input
-              placeholder="Salaire"
-              className="w-full px-2 py-1.5 rounded-lg bg-[#0D1221] border border-white/10 text-xs text-white placeholder:text-slate-600"
-              value={draft.sal}
-              onChange={(e) =>
-                setCounterDraft((d) => ({
-                  ...d,
-                  [offer.id]: { ...draft, sal: e.target.value },
-                }))
-              }
-            />
-            <input
-              placeholder="Clause"
-              className="w-full px-2 py-1.5 rounded-lg bg-[#0D1221] border border-white/10 text-xs text-white placeholder:text-slate-600"
-              value={draft.clause}
-              onChange={(e) =>
-                setCounterDraft((d) => ({
-                  ...d,
-                  [offer.id]: { ...draft, clause: e.target.value },
-                }))
-              }
-            />
-          </div>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() =>
-              playerRespond(offer.id, {
-                action: 'COUNTER',
-                transfer_fee: Number(draft.fee) || undefined,
-                offered_salary: Number(draft.sal) || undefined,
-                offered_clause: Number(draft.clause) || undefined,
-              })
-            }
-            className="w-full py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 disabled:opacity-50"
-          >
-            Envoyer la contre-proposition
-          </button>
-        </div>
-      </div>
-    );
+  const handleCloseOfferModal = () => {
+    setIsModalOpen(false);
+    setSelectedPlayer(null);
   };
 
   const renderBuyerActions = (offer: TransferOfferRow) => {
@@ -525,6 +464,9 @@ export default function TransferMarket() {
                 const cfg = statusConfig[offer.status];
                 const StatusIcon = cfg.icon;
                 const otherTeam = activeTab === 'sent' ? offer.toTeam : offer.fromTeam;
+                const otherLabel =
+                  otherTeam?.name ??
+                  (activeTab === 'sent' && offer.to_team_id == null ? 'Agent libre' : '—');
                 return (
                   <div
                     key={offer.id}
@@ -538,7 +480,7 @@ export default function TransferMarket() {
                   >
                     <div className="flex items-start gap-4">
                       <div className="shrink-0">
-                        {otherTeam.logo_url ? (
+                        {otherTeam?.logo_url ? (
                           <img
                             src={otherTeam.logo_url}
                             alt=""
@@ -546,7 +488,7 @@ export default function TransferMarket() {
                           />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-[#FFA500]/10 border border-[#FFD700]/15 flex items-center justify-center text-lg font-bold text-[#FFD700]">
-                            {(otherTeam.name ?? '?').charAt(0) || '?'}
+                            {otherLabel.charAt(0) || '?'}
                           </div>
                         )}
                       </div>
@@ -567,7 +509,9 @@ export default function TransferMarket() {
                         <p className="mt-2 text-sm text-white">
                           <span className="font-semibold text-[#FFD700]">{offer.fromTeam.name ?? '—'}</span>
                           {' → '}
-                          <span className="text-slate-400">{offer.toTeam.name ?? '—'}</span>
+                          <span className="text-slate-400">
+                            {offer.toTeam?.name ?? (offer.to_team_id == null ? 'Agent libre' : '—')}
+                          </span>
                           {' · '}
                           <Link
                             to={`/dashboard/profile/${offer.player_id}`}
@@ -576,7 +520,7 @@ export default function TransferMarket() {
                             {offer.player.ea_persona_name ?? 'Joueur'}
                           </Link>
                         </p>
-                        {renderOfferTerms(offer)}
+                        <OfferTermsGrid offer={offer} />
                         {renderBuyerActions(offer)}
                       </div>
                     </div>
@@ -614,8 +558,25 @@ export default function TransferMarket() {
                   <p className="mt-2 text-sm text-white">
                     Proposition de <span className="font-bold text-[#FFD700]">{offer.fromTeam.name ?? '—'}</span>
                   </p>
-                  {renderOfferTerms(offer)}
-                  {renderPlayerActions(offer)}
+                  <OfferTermsGrid offer={offer} />
+                  <PlayerOfferActions
+                    offer={offer}
+                    currentUserId={user?.id}
+                    busy={respondingId === offer.id}
+                    draft={
+                      counterDraft[offer.id] ?? {
+                        fee: String(offer.transfer_fee),
+                        sal: String(offer.offered_salary),
+                        clause: String(offer.offered_clause),
+                      }
+                    }
+                    onDraftChange={(d) =>
+                      setCounterDraft((prev) => ({ ...prev, [offer.id]: d }))
+                    }
+                    onAcceptOffer={handleAcceptOffer}
+                    onRejectOffer={handleRejectOffer}
+                    onCounterOffer={handlePlayerCounterOffer}
+                  />
                 </div>
               );
             })
@@ -699,16 +660,35 @@ export default function TransferMarket() {
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-white/5">
+                    <div className="mt-4 pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <p className="text-[10px] text-slate-500">
                         Recrutement gratuit · Aucun frais de transfert
                       </p>
+                      <button
+                        type="button"
+                        disabled={!myTeam}
+                        onClick={() => handleOpenOfferModal(agent)}
+                        className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 hover:border-emerald-400/60 disabled:opacity-40 disabled:pointer-events-none transition"
+                      >
+                        Recruter
+                      </button>
                     </div>
                   </div>
                 ))}
             </div>
           )}
         </div>
+      )}
+
+      {myTeam && selectedPlayer && (
+        <TransferOfferModal
+          isOpen={isModalOpen}
+          onClose={handleCloseOfferModal}
+          player={selectedPlayer}
+          myTeam={myTeam}
+          onSuccess={() => void fetchData()}
+          pendingOfferFromMyClub={pendingRecapForModal}
+        />
       )}
     </div>
   );

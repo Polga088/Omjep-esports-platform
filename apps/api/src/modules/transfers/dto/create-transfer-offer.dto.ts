@@ -1,4 +1,14 @@
-import { IsInt, IsNumber, IsOptional, IsPositive, IsUUID, Min, Max } from 'class-validator';
+import {
+  Allow,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsUUID,
+  Min,
+  Max,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateTransferOfferDto {
   @IsUUID()
@@ -7,12 +17,16 @@ export class CreateTransferOfferDto {
   @IsUUID()
   from_team_id!: string;
 
+  /** Club vendeur — optionnel ; absent / null = recrutement direct (sans vendeur) */
+  @IsOptional()
+  @Allow()
+  @ValidateIf((_, v) => v != null && v !== '')
   @IsUUID()
-  to_team_id!: string;
+  to_team_id?: string | null;
 
-  /** Indemnité versée au club vendeur (OMJEP Coins) */
+  /** Indemnité versée au club vendeur (OMJEP Coins) — 0 pour agent libre sans frais */
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   transfer_fee!: number;
 
   /** Salaire annuel proposé au joueur (OC) — si absent, utiliser `salaryPropose` (hebdo × 52) */

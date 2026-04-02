@@ -96,13 +96,39 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   /**
    * Mercato / transferts : pastille temps réel (ex. nouvelle offre pour le joueur).
-   * Événement `transfer:mercato` — payload `{ type: 'TRANSFER_OFFER_RECEIVED', offer_id?: string }`.
+   * Événement `transfer:mercato` — ex. `{ type: 'TRANSFER_OFFER_RECEIVED', offer_id, from_team_name }`.
    */
   emitTransferMercatoAlert(
     userId: string,
-    payload: { type: string; offer_id?: string },
-  ) {
+    payload: { type: string; offer_id?: string; from_team_name?: string },
+  ): void {
     this.server.to(`user:${userId}`).emit('transfer:mercato', payload);
+  }
+
+  /**
+   * Dirigeants ayant rejoint la room `team:${teamId}` (ex. via `join_team`) : rafraîchir Mercato.
+   */
+  emitTransferMercatoToBuyingClub(
+    teamId: string,
+    payload: { type: string; offer_id?: string; player_name?: string },
+  ) {
+    this.server.to(chatTeamRoomId(teamId)).emit('transfer:mercato', payload);
+  }
+
+  /**
+   * Notification persistante + toast client : inbox unifiée (`app:notification`).
+   */
+  emitAppNotification(
+    userId: string,
+    payload: {
+      id: string;
+      title: string;
+      message: string;
+      type: 'success' | 'error' | 'info' | 'warning';
+      metadata?: Record<string, unknown> | null;
+    },
+  ): void {
+    this.server.to(`user:${userId}`).emit('app:notification', payload);
   }
 
   handleDisconnect(client: Socket) {

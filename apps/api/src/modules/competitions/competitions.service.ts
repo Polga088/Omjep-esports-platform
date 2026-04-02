@@ -161,11 +161,198 @@ function toMatchBrief(m: {
   };
 }
 
+// ─── Pronostics / match cards: forme (5 derniers) + rang ─────────────────────
+
+export type TeamFormLetter = 'W' | 'D' | 'L';
+
+export interface MatchFormRankEnrichment {
+  homeTeamForm: TeamFormLetter[];
+  awayTeamForm: TeamFormLetter[];
+  homeTeamRank: number | null;
+  awayTeamRank: number | null;
+}
+
+type CompetitionLoadedForEnrichment = {
+  id: string;
+  type: string;
+  teams: { team: { id: string; name: string; logo_url: string | null } }[];
+  matches: Array<{
+    status: string;
+    round: string | null;
+    home_team_id: string;
+    away_team_id: string;
+    home_score: number | null;
+    away_score: number | null;
+    played_at: Date | null;
+    startTime: Date | null;
+    id: string;
+    homeTeam: { id: string; name: string; logo_url: string | null };
+    awayTeam: { id: string; name: string; logo_url: string | null };
+  }>;
+};
+
+function outcomeForTeam(
+  m: {
+    home_team_id: string;
+    away_team_id: string;
+    home_score: number | null;
+    away_score: number | null;
+  },
+  teamId: string,
+): TeamFormLetter {
+  const hs = m.home_score ?? 0;
+  const as = m.away_score ?? 0;
+  if (m.home_team_id === teamId) {
+    if (hs > as) return 'W';
+    if (hs < as) return 'L';
+    return 'D';
+  }
+  if (as > hs) return 'W';
+  if (as < hs) return 'L';
+  return 'D';
+}
+
+function teamLast5Form(
+  teamId: string,
+  playedMatches: Array<{
+    home_team_id: string;
+    away_team_id: string;
+    home_score: number | null;
+    away_score: number | null;
+    played_at: Date | null;
+    startTime: Date | null;
+    id: string;
+  }>,
+): TeamFormLetter[] {
+  const chronological = sortMatchesChronological(playedMatches).filter(
+    (m) => m.home_team_id === teamId || m.away_team_id === teamId,
+  );
+  const last5 = chronological.slice(-5);
+  return last5.map((m) => outcomeForTeam(m, teamId));
+}
+
+function resolveTeamRankFromLoaded(
+  competition: CompetitionLoadedForEnrichment,
+  teamId: string,
+): number | null {
+  if (competition.type === 'LEAGUE') {
+    const teams = competition.teams.map((ct) => ct.team);
+    const playedMatches = competition.matches.filter((m) => m.status === 'PLAYED');
+    const standings = computeStandings(teams, playedMatches);
+    return standings.find((s) => s.team.id === teamId)?.rank ?? null;
+  }
+  if (competition.type === 'CUP') {
+    return null;
+  }
+  if (competition.type === 'CHAMPIONS') {
+    const groupMatches = competition.matches.filter(
+      (m) => m.round && m.round.startsWith('Groupe '),
+    );
+    const groupNames = [...new Set(groupMatches.map((m) => m.round!))];
+    for (const groupName of groupNames) {
+      const gMatches = groupMatches.filter((m) => m.round === groupName);
+      const teamIds = new Set<string>();
+      for (const m of gMatches) {
+        teamIds.add(m.homeTeam.id);
+        teamIds.add(m.awayTeam.id);
+      }
+      if (!teamIds.has(teamId)) continue;
+      const teamMap = new Map<string, { id: string; name: string; logo_url: string | null }>();
+      for (const m of gMatches) {
+        teamMap.set(m.homeTeam.id, m.homeTeam);
+        teamMap.set(m.awayTeam.id, m.awayTeam);
+      }
+      const groupTeams = Array.from(teamMap.values());
+      const playedGMatches = gMatches.filter((m) => m.status === 'PLAYED');
+      const standings = computeStandings(groupTeams, playedGMatches);
+      const row = standings.find((s) => s.team.id === teamId);
+      if (row) return row.rank;
+    }
+    return null;
+  }
+  return null;
+}
+
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 @Injectable()
 export class CompetitionsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Enrichit une liste de matchs (même forme que Prisma `include` classique) avec
+   * les 5 derniers résultats par équipe dans la compétition et le rang au classement.
+   */
+  async enrichMatchesWithFormAndRank<
+    T extends {
+      competition_id: string | null;
+      home_team_id: string;
+      away_team_id: string;
+    },
+  >(matches: T[]): Promise<Array<T & MatchFormRankEnrichment>> {
+    const compIds = [
+      ...new Set(matches.map((m) => m.competition_id).filter(Boolean)),
+    ] as string[];
+
+    const loadedMap = new Map<string, CompetitionLoadedForEnrichment>();
+
+    await Promise.all(
+      compIds.map(async (id) => {
+        const c = await this.prisma.competition.findUnique({
+          where: { id },
+          select: {
+            id: true,
+            type: true,
+            teams: {
+              include: {
+                team: { select: { id: true, name: true, logo_url: true } },
+              },
+            },
+            matches: {
+              include: {
+                homeTeam: { select: { id: true, name: true, logo_url: true } },
+                awayTeam: { select: { id: true, name: true, logo_url: true } },
+              },
+              orderBy: { round: 'asc' },
+            },
+          },
+        });
+        if (c) {
+          loadedMap.set(id, c as unknown as CompetitionLoadedForEnrichment);
+        }
+      }),
+    );
+
+    return matches.map((m) => {
+      if (!m.competition_id) {
+        return {
+          ...m,
+          homeTeamForm: [] as TeamFormLetter[],
+          awayTeamForm: [] as TeamFormLetter[],
+          homeTeamRank: null,
+          awayTeamRank: null,
+        };
+      }
+      const comp = loadedMap.get(m.competition_id);
+      if (!comp) {
+        return {
+          ...m,
+          homeTeamForm: [] as TeamFormLetter[],
+          awayTeamForm: [] as TeamFormLetter[],
+          homeTeamRank: null,
+          awayTeamRank: null,
+        };
+      }
+      const played = comp.matches.filter((x) => x.status === 'PLAYED');
+      return {
+        ...m,
+        homeTeamForm: teamLast5Form(m.home_team_id, played),
+        awayTeamForm: teamLast5Form(m.away_team_id, played),
+        homeTeamRank: resolveTeamRankFromLoaded(comp, m.home_team_id),
+        awayTeamRank: resolveTeamRankFromLoaded(comp, m.away_team_id),
+      };
+    });
+  }
 
   // ── Top stats (unchanged) ─────────────────────────────────────────────────
 

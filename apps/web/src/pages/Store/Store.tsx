@@ -10,12 +10,14 @@ import {
   Trophy,
   TrendingUp,
   Zap,
+  History,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/formatCurrency';
+import ExchangeModal from './ExchangeModal';
 
 type StoreCategory = 'BANNER' | 'AVATAR_FRAME' | 'BADGE';
 
@@ -44,6 +46,14 @@ interface MySubscriptionRow {
   id: string;
   end_date: string;
   plan: SubscriptionPlanRow;
+}
+
+interface WalletHistoryRow {
+  id: string;
+  type: 'EXCHANGE' | 'ADMIN_GRANT';
+  amount: number;
+  description: string | null;
+  created_at: string;
 }
 
 const CATEGORY_LABEL: Record<StoreCategory, string> = {
@@ -90,6 +100,9 @@ export default function Store() {
   const [mySubs, setMySubs] = useState<MySubscriptionRow[]>([]);
   const [vipLoading, setVipLoading] = useState(false);
   const [buyingPlan, setBuyingPlan] = useState<string | null>(null);
+  const [exchangeOpen, setExchangeOpen] = useState(false);
+  const [walletHistory, setWalletHistory] = useState<WalletHistoryRow[]>([]);
+  const [walletHistoryLoading, setWalletHistoryLoading] = useState(false);
 
   const syncWallet = useCallback(async () => {
     try {
@@ -109,6 +122,15 @@ export default function Store() {
       /* ignore */
     }
   }, [patchUser]);
+
+  const refreshWalletHistory = useCallback(async () => {
+    try {
+      const { data } = await api.get<WalletHistoryRow[]>('/wallets/history');
+      setWalletHistory(Array.isArray(data) ? data : []);
+    } catch {
+      setWalletHistory([]);
+    }
+  }, []);
 
   const loadCosmetics = useCallback(async () => {
     const itemsRes = await api.get<StoreItemRow[]>('/store/items');
@@ -170,6 +192,31 @@ export default function Store() {
   useEffect(() => {
     if (tab === 'vip') loadVip();
   }, [tab, loadVip]);
+
+  useEffect(() => {
+    if (tab !== 'rewards') return;
+    let cancelled = false;
+    setWalletHistoryLoading(true);
+    void (async () => {
+      try {
+        const { data } = await api.get<WalletHistoryRow[]>('/wallets/history');
+        if (!cancelled) {
+          setWalletHistory(Array.isArray(data) ? data : []);
+        }
+      } catch {
+        if (!cancelled) {
+          setWalletHistory([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setWalletHistoryLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tab]);
 
   const omjep = user?.omjepCoins ?? 1000;
   const jepy = user?.jepyCoins ?? 0;
@@ -265,6 +312,16 @@ export default function Store() {
 
   return (
     <div className="space-y-8">
+      <ExchangeModal
+        open={exchangeOpen}
+        onClose={() => setExchangeOpen(false)}
+        onSuccessRefresh={async () => {
+          await syncWallet();
+          await refreshWalletHistory();
+        }}
+        maxOc={omjep}
+        maxJepy={jepy}
+      />
       <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0B0D13]/80 backdrop-blur-md">
         <div className="border-b border-white/[0.06] bg-white/[0.02] px-6 py-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -280,7 +337,7 @@ export default function Store() {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <div className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 backdrop-blur-sm">
                 <Coins className="h-4 w-4 text-amber-400" />
                 <div>
@@ -288,6 +345,13 @@ export default function Store() {
                   <p className="tabular-nums text-sm font-bold text-white">{formatCurrency(omjep, 'OC')}</p>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setExchangeOpen(true)}
+                className="rounded-xl border border-amber-400/35 bg-amber-500/10 px-3 py-2 text-xs font-bold uppercase tracking-wide text-amber-200 transition hover:bg-amber-500/20"
+              >
+                Convertir
+              </button>
               <div className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-black/20 px-4 py-2.5 backdrop-blur-sm">
                 <Sparkles className="h-4 w-4 text-cyan-400" />
                 <div>
@@ -609,6 +673,50 @@ export default function Store() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Historique EXCHANGE + ADMIN_GRANT */}
+            <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0B0D13]/90">
+              <div className="flex items-center gap-2 border-b border-white/[0.06] px-6 py-4">
+                <History className="h-4 w-4 text-cyan-400" />
+                <h2 className="text-sm font-bold text-white">Historique des gains</h2>
+              </div>
+              {walletHistoryLoading ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="h-8 w-8 animate-spin text-cyan-500/60" />
+                </div>
+              ) : walletHistory.length === 0 ? (
+                <p className="px-6 py-8 text-center text-sm text-slate-500">
+                  Aucun mouvement récent (échanges OC → Jepy ou récompenses admin).
+                </p>
+              ) : (
+                <ul className="divide-y divide-white/[0.04]">
+                  {walletHistory.map((row) => (
+                    <li
+                      key={row.id}
+                      className="flex flex-col gap-2 px-6 py-4 sm:flex-row sm:items-start sm:justify-between"
+                    >
+                      <div className="min-w-0">
+                        <span
+                          className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                            row.type === 'EXCHANGE'
+                              ? 'bg-blue-500/15 text-blue-300'
+                              : 'bg-emerald-500/15 text-emerald-300'
+                          }`}
+                        >
+                          {row.type === 'EXCHANGE' ? 'Échange' : 'Récompense admin'}
+                        </span>
+                        <p className="mt-1.5 text-sm text-slate-300">
+                          {row.description ?? '—'}
+                        </p>
+                      </div>
+                      <p className="shrink-0 text-xs tabular-nums text-slate-500">
+                        {new Date(row.created_at).toLocaleString('fr-FR')}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {/* Rewards table */}

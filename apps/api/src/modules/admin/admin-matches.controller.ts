@@ -246,7 +246,7 @@ export class AdminMatchesController {
     const matchLabel = `${match.homeTeam.name} vs ${match.awayTeam.name}`;
     const notifTitle = '⚠️ Match en litige';
     const notifMsg = `Le match ${matchLabel} a été placé en litige par l'administration. Vous serez contacté pour la suite.`;
-    const metadata = { match_id: id };
+    const metadata = { match_id: id, type: 'MATCH_DISPUTED', category: 'MATCH' as const };
 
     await Promise.all([
       this.notificationsService.sendToTeamManagers(match.home_team_id, notifTitle, notifMsg, metadata),
@@ -309,7 +309,12 @@ export class AdminMatchesController {
     });
     const notifTitle = '📅 Match reprogrammé';
     const notifMsg = `Le match ${matchLabel} a été reprogrammé au ${dateStr}.`;
-    const metadata = { match_id: id, scheduled_at: dto.scheduled_at };
+    const metadata = {
+      match_id: id,
+      scheduled_at: dto.scheduled_at,
+      type: 'MATCH_RESCHEDULED',
+      category: 'MATCH',
+    };
 
     await Promise.all([
       this.notificationsService.sendToTeamManagers(match.home_team_id, notifTitle, notifMsg, metadata),
