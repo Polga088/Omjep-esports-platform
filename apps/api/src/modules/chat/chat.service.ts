@@ -153,7 +153,10 @@ export class ChatService {
       take: 200,
       orderBy: { ea_persona_name: 'asc' },
     });
-    return users;
+    return users.map((u) => ({
+      ...u,
+      level: u.level ?? 1,
+    }));
   }
 
   serializeMessage(m: {

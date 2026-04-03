@@ -13,7 +13,13 @@ export default function ChatPage() {
   useEffect(() => {
     api
       .get<Me>('/auth/me')
-      .then((r) => setMe(r.data))
+      .then((r) => {
+        const d = r.data;
+        setMe({
+          ...d,
+          level: typeof d.level === 'number' && Number.isFinite(d.level) ? d.level : 1,
+        });
+      })
       .catch(() => setErr('Session invalide.'));
   }, []);
 
@@ -34,14 +40,14 @@ export default function ChatPage() {
   }
   if (!me) {
     return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+      <div className="relative z-0 flex min-h-[40vh] items-center justify-center py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-amber-400" aria-label="Chargement" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="relative z-0 space-y-6">
       <div>
         <h1 className="ea-fc-hero-neon font-display text-2xl font-black tracking-tight">Tactical Link</h1>
         <p className="mt-1 text-xs text-slate-500">Messagerie sécurisée — salon club &amp; MP managers</p>
