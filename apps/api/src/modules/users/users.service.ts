@@ -3,10 +3,13 @@ import {
   ConflictException,
   ForbiddenException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
+/// <reference types="multer" />
+import { unlink } from 'fs/promises';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@api/prisma/prisma.service';
-import { Prisma } from '@omjep/database';
+import { Prisma, AvatarRarity } from '@omjep/database';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AdminCreateUserDto } from './dto/admin-create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
@@ -14,6 +17,20 @@ import { LevelingService } from '../leveling/leveling.service';
 import { withWalletDefaults } from '../auth/wallet.util';
 
 const SALT_ROUNDS = 10;
+
+function mapAvatarRarityJson(
+  r: AvatarRarity,
+): 'common' | 'premium' | 'legendary' {
+  switch (r) {
+    case AvatarRarity.LEGENDARY:
+      return 'legendary';
+    case AvatarRarity.PREMIUM:
+      return 'premium';
+    case AvatarRarity.COMMON:
+    default:
+      return 'common';
+  }
+}
 
 @Injectable()
 export class UsersService {
@@ -200,8 +217,24 @@ export class UsersService {
     if (dto.ea_persona_name !== undefined) data.ea_persona_name = dto.ea_persona_name;
     if (dto.preferred_position !== undefined) data.preferred_position = dto.preferred_position;
     if (dto.nationality !== undefined) data.nationality = dto.nationality;
+    if (dto.activeBannerUrl !== undefined) data.activeBannerUrl = dto.activeBannerUrl;
+    if (dto.activeFrameUrl !== undefined) data.activeFrameUrl = dto.activeFrameUrl;
+    if (dto.activeJerseyId !== undefined) {
+      data.activeJersey = dto.activeJerseyId
+        ? { connect: { id: dto.activeJerseyId } }
+        : { disconnect: true };
+    }
+    if (dto.avatarRarity !== undefined) {
+      data.avatarRarity =
+        dto.avatarRarity === 'legendary'
+          ? AvatarRarity.LEGENDARY
+          : dto.avatarRarity === 'premium'
+            ? AvatarRarity.PREMIUM
+            : AvatarRarity.COMMON;
+    }
+    if (dto.avatarUrl !== undefined) data.avatarUrl = dto.avatarUrl;
 
-    return this.prisma.user.update({
+    const updated = await this.prisma.user.update({
       where: { id: userId },
       data,
       select: {
@@ -211,8 +244,69 @@ export class UsersService {
         ea_persona_name: true,
         preferred_position: true,
         nationality: true,
+        activeBannerUrl: true,
+        activeFrameUrl: true,
+        activeJerseyId: true,
+        avatarRarity: true,
+        avatarUrl: true,
       },
     });
+
+    return {
+      ...updated,
+      avatarRarity: mapAvatarRarityJson(updated.avatarRarity),
+    };
+  }
+
+  private async removeFileIfExists(path: string | undefined) {
+    if (!path) return;
+    try {
+      await unlink(path);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  /** Persiste un fichier avatar déjà écrit sur disque par Multer. */
+  async saveAvatarFromUpload(userId: string, file?: Express.Multer.File) {
+    if (!file?.filename) {
+      await this.removeFileIfExists(file?.path);
+      throw new BadRequestException('Fichier avatar requis.');
+    }
+    const ok = /^image\/(jpeg|pjpeg|png|gif|webp)$/i.test(file.mimetype);
+    if (!ok) {
+      await this.removeFileIfExists(file.path);
+      throw new BadRequestException('Image requise : JPEG, PNG, GIF ou WebP.');
+    }
+    const publicUrl = `/api/v1/uploads/avatars/${file.filename}`;
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl: publicUrl },
+      select: { avatarUrl: true },
+    });
+    return { avatarUrl: updated.avatarUrl };
+  }
+
+  /** Persiste une bannière (image ou vidéo courte) uploadée. */
+  async saveBannerFromUpload(userId: string, file?: Express.Multer.File) {
+    if (!file?.filename) {
+      await this.removeFileIfExists(file?.path);
+      throw new BadRequestException('Fichier bannière requis.');
+    }
+    const ok =
+      /^image\/(jpeg|pjpeg|png|gif|webp)$/i.test(file.mimetype) ||
+      /^video\/(mp4|webm|quicktime)$/i.test(file.mimetype);
+    if (!ok) {
+      await this.removeFileIfExists(file.path);
+      throw new BadRequestException('Bannière : image (JPEG, PNG, WebP…) ou vidéo MP4/WebM.');
+    }
+    const publicUrl = `/api/v1/uploads/banners/${file.filename}`;
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { activeBannerUrl: publicUrl },
+      select: { activeBannerUrl: true },
+    });
+    return { activeBannerUrl: updated.activeBannerUrl };
   }
 
   async getProfileCard(id: string) {
@@ -330,6 +424,45 @@ export class UsersService {
         xpBonus,
       },
     };
+  }
+
+  /**
+   * Recherche admin : pseudo (ea_persona_name) ou email contient la chaîne.
+   * Avatar = logo du club du dernier membership (sinon null).
+   */
+  async searchForAdmin(rawQuery: string) {
+    const query = rawQuery.trim();
+    if (query.length === 0) {
+      return [] as { id: string; username: string; avatar: string | null }[];
+    }
+    const take = 10;
+    const rows = await this.prisma.user.findMany({
+      where: {
+        OR: [
+          { ea_persona_name: { contains: query, mode: 'insensitive' } },
+          { email: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+      take,
+      orderBy: [{ ea_persona_name: 'asc' }, { email: 'asc' }],
+      select: {
+        id: true,
+        ea_persona_name: true,
+        email: true,
+        teamMemberships: {
+          take: 1,
+          orderBy: { joined_at: 'desc' },
+          select: {
+            team: { select: { logo_url: true } },
+          },
+        },
+      },
+    });
+    return rows.map((u) => ({
+      id: u.id,
+      username: u.ea_persona_name ?? u.email.split('@')[0] ?? '—',
+      avatar: u.teamMemberships[0]?.team?.logo_url ?? null,
+    }));
   }
 
   /**

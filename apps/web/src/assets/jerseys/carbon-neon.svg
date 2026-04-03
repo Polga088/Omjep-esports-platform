@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="cn-neon-a" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="50%" stop-color="#a5f3fc"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="cn-neon-b" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <filter id="cn-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="0.8" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="cn-fiber" width="4" height="4" patternUnits="userSpaceOnUse">
+      <path d="M0 4 L4 0 M-1 1 L1 -1 M3 5 L5 3" stroke="#0e7490" stroke-width="0.15" opacity="0.35"/>
+    </pattern>
+  </defs>
+  <!-- Base carbone (zone maillot) -->
+  <path fill="#070b10" d="M12 38c12-8 26-12 38-12s26 4 38 12l8 4v52H4V42l8-4z"/>
+  <path fill="url(#cn-fiber)" opacity="0.5" d="M12 38c12-8 26-12 38-12s26 4 38 12l8 4v52H4V42l8-4z"/>
+  <ellipse cx="50" cy="28" rx="22" ry="10" fill="#0c1220"/>
+
+  <!-- Lignes n�on  circuit / racing -->
+  <g fill="none" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" filter="url(#cn-glow)">
+    <path stroke="url(#cn-neon-a)" d="M18 44h64M22 52h56M26 60h48M30 68h40"/>
+    <path stroke="url(#cn-neon-b)" d="M14 48 L22 42 M86 48 L78 42 M14 56 L22 62 M86 56 L78 62"/>
+    <path stroke="#22d3ee" stroke-width="0.6" d="M38 36c4-2 10-3 12-3s8 1 12 3"/>
+    <path stroke="#a5f3fc" stroke-width="0.55" opacity="0.95" d="M32 72 L36 88 M50 74 L50 92 M68 72 L64 88"/>
+    <path stroke="#22d3ee" stroke-width="0.5" d="M44 78h12"/>
+    <path stroke="#67e8f9" stroke-width="0.45" opacity="0.9" d="M20 64 Q50 58 80 64"/>
+    <path stroke="#06b6d4" stroke-width="0.4" d="M24 36 L30 32 M76 36 L70 32"/>
+  </g>
+  <!-- Points lumineux -->
+  <circle cx="28" cy="50" r="1.2" fill="#ecfeff" opacity="0.95"/>
+  <circle cx="72" cy="50" r="1.2" fill="#ecfeff" opacity="0.95"/>
+  <circle cx="50" cy="58" r="1" fill="#a5f3fc" opacity="0.85"/>
+</svg>

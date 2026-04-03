@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   ShoppingBag,
   Loader2,
@@ -16,22 +17,18 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
+import {
+  ProfileShowcaseHeroMedia,
+  useResolvedShowcaseBanner,
+  useShowcaseVortexHue,
+} from '@/components/ProfileShowcaseHeroMedia';
 import { formatCurrency } from '@/utils/formatCurrency';
 import ExchangeModal from './ExchangeModal';
+import IdentityPreview, { inferStoreItemRarity, type StoreItemRow } from './IdentityPreview';
 
 type StoreCategory = 'BANNER' | 'AVATAR_FRAME' | 'BADGE';
 
 type StoreTab = 'cosmetics' | 'vip' | 'rewards';
-
-interface StoreItemRow {
-  id: string;
-  name: string;
-  description: string;
-  priceJepy: number;
-  category: StoreCategory;
-  imageUrl: string;
-  isAvailable: boolean;
-}
 
 interface SubscriptionPlanRow {
   id: string;
@@ -89,8 +86,16 @@ function formatEndDate(iso: string): string {
 }
 
 export default function Store() {
-  const { user, patchUser } = useAuthStore();
+  const { user, patchUser, updateProfileCosmetics } = useAuthStore();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<StoreTab>('cosmetics');
+
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    if (t === 'cosmetics' || t === 'vip' || t === 'rewards') {
+      setTab(t);
+    }
+  }, [searchParams]);
   const [items, setItems] = useState<StoreItemRow[]>([]);
   const [ownedIds, setOwnedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -103,6 +108,8 @@ export default function Store() {
   const [exchangeOpen, setExchangeOpen] = useState(false);
   const [walletHistory, setWalletHistory] = useState<WalletHistoryRow[]>([]);
   const [walletHistoryLoading, setWalletHistoryLoading] = useState(false);
+  const [previewItemId, setPreviewItemId] = useState<string | null>(null);
+  const [prestigeBlend, setPrestigeBlend] = useState(0);
 
   const syncWallet = useCallback(async () => {
     try {
@@ -249,6 +256,20 @@ export default function Store() {
         });
       }
       setOwnedIds((prev) => new Set(prev).add(item.id));
+      if (item.category === 'BANNER' || item.category === 'AVATAR_FRAME') {
+        try {
+          if (item.category === 'BANNER') {
+            await updateProfileCosmetics({ activeBannerUrl: item.imageUrl });
+          } else {
+            await updateProfileCosmetics({
+              activeFrameUrl: item.imageUrl,
+              avatarRarity: inferStoreItemRarity(item),
+            });
+          }
+        } catch {
+          toast.error("Cosmétique acheté — synchronisation de l'équipement impossible pour le moment.");
+        }
+      }
     } catch (e: unknown) {
       const msg = (e as { response?: { data?: { message?: string | string[] } } })?.response?.data
         ?.message;
@@ -290,6 +311,51 @@ export default function Store() {
         a.category === b.category ? a.priceJepy - b.priceJepy : a.category.localeCompare(b.category),
       ),
     [items],
+  );
+
+  const previewSelectedItem = useMemo(
+    () => (previewItemId ? sortedItems.find((i) => i.id === previewItemId) ?? null : null),
+    [sortedItems, previewItemId],
+  );
+
+  const resolvedStoreBannerPreview = useResolvedShowcaseBanner(null);
+  const storeVortexHud = useShowcaseVortexHue();
+
+  const selectCosmeticItem = useCallback(
+    (item: StoreItemRow) => {
+      setPreviewItemId(item.id);
+      setSearchParams(
+        (prev) => {
+          const p = new URLSearchParams(prev);
+          p.set('tab', 'cosmetics');
+          if (item.category === 'BANNER') {
+            p.set('bannerPreview', item.imageUrl);
+            if (/vortex/i.test(item.name)) p.set('bannerHue', 'vortex');
+            else p.delete('bannerHue');
+          } else {
+            p.delete('bannerPreview');
+            p.delete('bannerHue');
+          }
+          return p;
+        },
+        { replace: true },
+      );
+      if (ownedIds.has(item.id)) {
+        if (item.category === 'BANNER') {
+          void updateProfileCosmetics({ activeBannerUrl: item.imageUrl }).catch(() => {
+            toast.error("Impossible d'équiper la bannière pour le moment.");
+          });
+        } else if (item.category === 'AVATAR_FRAME') {
+          void updateProfileCosmetics({
+            activeFrameUrl: item.imageUrl,
+            avatarRarity: inferStoreItemRarity(item),
+          }).catch(() => {
+            toast.error("Impossible d'équiper le cadre pour le moment.");
+          });
+        }
+      }
+    },
+    [setSearchParams, ownedIds, updateProfileCosmetics],
   );
 
   const sortedPlans = useMemo(
@@ -410,16 +476,56 @@ export default function Store() {
             transition={{ duration: 0.22 }}
             className="space-y-6"
           >
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 xl:grid-cols-12">
+              <div
+                className={`xl:col-span-5 xl:sticky xl:top-6 xl:self-start ${storeVortexHud ? 'showcase-hud-vortex' : ''}`}
+              >
+                {searchParams.get('bannerPreview') ? (
+                  <div className="relative mb-4 h-44 overflow-hidden rounded-2xl border border-cyan-500/20 shadow-[0_20px_60px_rgba(0,0,0,0.45)] sm:h-52">
+                    <ProfileShowcaseHeroMedia bannerUrl={resolvedStoreBannerPreview} />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0D13] via-transparent to-transparent" />
+                    <p className="pointer-events-none absolute bottom-2 left-3 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/80">
+                      Aperçu profil
+                    </p>
+                  </div>
+                ) : null}
+                <IdentityPreview
+                  user={user}
+                  selectedItem={previewSelectedItem}
+                  prestigeBlend={prestigeBlend}
+                  onPrestigeBlendChange={setPrestigeBlend}
+                  jepy={jepy}
+                  owned={previewSelectedItem ? ownedIds.has(previewSelectedItem.id) : false}
+                  buying={previewSelectedItem ? buyingId === previewSelectedItem.id : false}
+                  canAfford={previewSelectedItem ? jepy >= previewSelectedItem.priceJepy : false}
+                  onUnlock={() => {
+                    if (previewSelectedItem) void buy(previewSelectedItem);
+                  }}
+                />
+              </div>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:col-span-7">
               {sortedItems.map((item) => {
                 const owned = ownedIds.has(item.id);
                 const canAfford = jepy >= item.priceJepy;
                 const busy = buyingId === item.id;
+                const isPreviewSelected = previewItemId === item.id;
 
                 return (
                   <article
                     key={item.id}
-                    className="group flex flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0B0D13]/90 shadow-lg shadow-black/30 backdrop-blur-md transition hover:border-amber-400/20"
+                    tabIndex={0}
+                    onClick={() => selectCosmeticItem(item)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectCosmeticItem(item);
+                      }
+                    }}
+                    className={`group flex cursor-pointer flex-col overflow-hidden rounded-2xl border bg-[#0B0D13]/90 shadow-lg shadow-black/30 backdrop-blur-md outline-none transition hover:border-amber-400/20 focus-visible:ring-2 focus-visible:ring-amber-400/40 ${
+                      isPreviewSelected
+                        ? 'border-amber-400/45 ring-2 ring-amber-400/35'
+                        : 'border-white/[0.06]'
+                    }`}
                   >
                     <div className="relative aspect-[16/10] overflow-hidden bg-slate-900/50">
                       <img
@@ -448,7 +554,10 @@ export default function Store() {
                           <button
                             type="button"
                             disabled={!item.isAvailable || busy || !canAfford}
-                            onClick={() => void buy(item)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void buy(item);
+                            }}
                             className="rounded-lg bg-gradient-to-r from-amber-400 to-amber-600 px-4 py-2 text-xs font-bold text-[#0B0D13] shadow-md shadow-amber-500/10 transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             {busy ? (
@@ -465,6 +574,7 @@ export default function Store() {
                   </article>
                 );
               })}
+              </div>
             </div>
 
             {sortedItems.length === 0 && (

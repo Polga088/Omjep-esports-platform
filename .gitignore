@@ -45,5 +45,8 @@ coverage
 # Prisma
 packages/database/prisma/migrations/
 
+# API — fichiers utilisateur (avatars / bannières)
+apps/api/uploads/
+
 # Misc
 *.tsbuildinfo

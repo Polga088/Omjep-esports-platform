@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import { BarChart3, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
+import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
 
 export type PredictStatsPayload = {
   currentJepy: number;
@@ -96,9 +97,7 @@ export default function PredictStats({ refreshKey = 0 }: PredictStatsProps) {
 
   if (error || !data) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-900/50 backdrop-blur-md px-6 py-8 text-center text-sm text-slate-500">
-        Statistiques indisponibles pour le moment.
-      </div>
+      <MaintenancePrestige title="Statistiques" message={PRESTIGE_MSG} />
     );
   }
 

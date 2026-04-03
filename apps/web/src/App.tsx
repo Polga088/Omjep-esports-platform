@@ -22,8 +22,10 @@ import Stats from '@/pages/Dashboard/Stats';
 import ProfileDetail from '@/pages/Dashboard/ProfileDetail';
 import Settings from '@/pages/Dashboard/Settings';
 import Store from '@/pages/Store/Store';
+import Vault from '@/pages/Dashboard/Vault';
 import TransferMarket from '@/pages/Dashboard/TransferMarket';
 import Gamification from '@/pages/Dashboard/Gamification';
+import Leaderboard from '@/pages/Dashboard/Leaderboard';
 import Predictions from '@/pages/Predictions/Predictions';
 import ManagerClub from '@/pages/Dashboard/ManagerClub';
 import AdminDashboard from '@/pages/Admin/Dashboard';
@@ -94,6 +96,7 @@ export default function App() {
           <Route path="/dashboard/profile/:id" element={<ProfileDetail />} />
           <Route path="/dashboard/settings" element={<Settings />} />
           <Route path="/dashboard/store" element={<Store />} />
+          <Route path="/dashboard/vault" element={<Vault />} />
           <Route path="/dashboard/transfers" element={<TransferMarket />} />
           <Route
             path="/dashboard/chat"
@@ -104,6 +107,7 @@ export default function App() {
             }
           />
           <Route path="/dashboard/gamification" element={<Gamification />} />
+          <Route path="/dashboard/leaderboard" element={<Leaderboard />} />
           <Route path="/dashboard/predictions" element={<Predictions />} />
           <Route
             path="/dashboard/manager/club"

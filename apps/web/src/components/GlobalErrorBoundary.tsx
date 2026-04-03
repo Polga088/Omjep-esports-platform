@@ -1,11 +1,13 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import MaintenancePrestige, { PRESTIGE_MSG } from './MaintenancePrestige';
 
 type Props = { children: ReactNode };
 
 type State = { error: Error | null; info: ErrorInfo | null };
 
 /**
- * Affiche l’erreur et la stack à l’écran au lieu d’un écran noir silencieux.
+ * Remplace l’écran d’erreur React « rouge » par le fallback Prestige (message d’initialisation).
+ * Détails techniques repliables pour le debug.
  */
 export class GlobalErrorBoundary extends Component<Props, State> {
   override state: State = { error: null, info: null };
@@ -23,37 +25,41 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     const { error, info } = this.state;
     if (error) {
       return (
-        <div className="min-h-screen bg-[#050810] text-slate-200 p-6 md:p-10">
-          <h1 className="text-lg font-black text-red-400 mb-2 tracking-tight">Erreur de rendu React</h1>
-          <p className="text-xs text-slate-500 mb-4">
-            Corrigez l’erreur ci-dessous ou ouvrez la console (F12) pour plus de détails.
-          </p>
-          <pre className="rounded-xl border border-red-500/30 bg-black/40 p-4 text-sm text-red-200/95 whitespace-pre-wrap break-words font-mono">
-            {error.toString()}
-          </pre>
-          {error.stack ? (
-            <details className="mt-4">
-              <summary className="cursor-pointer text-xs text-amber-500/90 font-semibold">Stack trace</summary>
-              <pre className="mt-2 text-[11px] text-slate-500 whitespace-pre-wrap break-words font-mono p-3 rounded-lg bg-white/[0.03] border border-white/10">
-                {error.stack}
+        <div className="flex min-h-screen items-center justify-center bg-[#050810] p-6 md:p-10">
+          <div className="w-full max-w-lg space-y-6">
+            <MaintenancePrestige
+              title="OMJEP"
+              message={PRESTIGE_MSG}
+              icon="rings"
+            >
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="rounded-xl border border-amber-400/40 bg-gradient-to-r from-amber-400/20 to-amber-600/15 px-5 py-2.5 text-sm font-bold text-amber-200 transition hover:brightness-110"
+              >
+                Recharger la page
+              </button>
+            </MaintenancePrestige>
+
+            <details className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-left">
+              <summary className="cursor-pointer text-xs font-semibold text-slate-500">
+                Détails techniques (développement)
+              </summary>
+              <pre className="mt-3 max-h-40 overflow-auto text-[11px] text-slate-500 whitespace-pre-wrap break-words font-mono">
+                {error.toString()}
               </pre>
+              {error.stack ? (
+                <pre className="mt-2 max-h-32 overflow-auto text-[10px] text-slate-600 whitespace-pre-wrap break-words font-mono">
+                  {error.stack}
+                </pre>
+              ) : null}
+              {info?.componentStack ? (
+                <pre className="mt-2 max-h-32 overflow-auto text-[10px] text-slate-600 whitespace-pre-wrap break-words font-mono">
+                  {info.componentStack}
+                </pre>
+              ) : null}
             </details>
-          ) : null}
-          {info?.componentStack ? (
-            <details className="mt-4">
-              <summary className="cursor-pointer text-xs text-amber-500/90 font-semibold">Arbre des composants</summary>
-              <pre className="mt-2 text-[11px] text-slate-500 whitespace-pre-wrap break-words font-mono p-3 rounded-lg bg-white/[0.03] border border-white/10">
-                {info.componentStack}
-              </pre>
-            </details>
-          ) : null}
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="mt-8 px-4 py-2 rounded-lg bg-amber-500 text-[#0a0a0a] text-sm font-bold hover:bg-amber-400"
-          >
-            Recharger la page
-          </button>
+          </div>
         </div>
       );
     }

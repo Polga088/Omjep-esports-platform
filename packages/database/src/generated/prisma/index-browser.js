@@ -137,7 +137,12 @@ exports.Prisma.UserScalarFieldEnum = {
   xp: 'xp',
   omjepCoins: 'omjepCoins',
   jepyCoins: 'jepyCoins',
-  isPremium: 'isPremium'
+  isPremium: 'isPremium',
+  avatarUrl: 'avatarUrl',
+  avatarRarity: 'avatarRarity',
+  activeFrameUrl: 'activeFrameUrl',
+  activeBannerUrl: 'activeBannerUrl',
+  activeJerseyId: 'activeJerseyId'
 };
 
 exports.Prisma.ClubScalarFieldEnum = {
@@ -154,7 +159,9 @@ exports.Prisma.ClubScalarFieldEnum = {
   description: 'description',
   manager_id: 'manager_id',
   validation_status: 'validation_status',
-  presidentPremium: 'presidentPremium'
+  presidentPremium: 'presidentPremium',
+  primaryColor: 'primaryColor',
+  secondaryColor: 'secondaryColor'
 };
 
 exports.Prisma.TeamMemberScalarFieldEnum = {
@@ -297,7 +304,8 @@ exports.Prisma.StoreItemScalarFieldEnum = {
   priceJepy: 'priceJepy',
   category: 'category',
   imageUrl: 'imageUrl',
-  isAvailable: 'isAvailable'
+  isAvailable: 'isAvailable',
+  clubId: 'clubId'
 };
 
 exports.Prisma.UserInventoryScalarFieldEnum = {
@@ -402,6 +410,12 @@ exports.Position = exports.$Enums.Position = {
   MD: 'MD',
   BU: 'BU',
   ATT: 'ATT'
+};
+
+exports.AvatarRarity = exports.$Enums.AvatarRarity = {
+  COMMON: 'COMMON',
+  PREMIUM: 'PREMIUM',
+  LEGENDARY: 'LEGENDARY'
 };
 
 exports.Platform = exports.$Enums.Platform = {

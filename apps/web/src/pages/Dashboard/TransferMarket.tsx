@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import { refreshEconomyFromApi } from '@/lib/refreshEconomyFromApi';
 import GoldConfetti from '@/components/GoldConfetti';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/formatCurrency';
@@ -73,22 +74,6 @@ const statusConfig = {
     icon: X,
   },
 } as const;
-
-async function refreshWalletFromApi(patchUser: (p: { omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }) => void) {
-  try {
-    const { data } = await api.get<{ omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }>('/auth/me');
-    if (!data) return;
-    patchUser({
-      omjepCoins:
-        typeof data.omjepCoins === 'number' && Number.isFinite(data.omjepCoins) ? data.omjepCoins : undefined,
-      jepyCoins:
-        typeof data.jepyCoins === 'number' && Number.isFinite(data.jepyCoins) ? data.jepyCoins : undefined,
-      isPremium: data.isPremium === true,
-    });
-  } catch {
-    /* ignore */
-  }
-}
 
 export default function TransferMarket() {
   const { user, patchUser } = useAuthStore();
@@ -179,7 +164,7 @@ export default function TransferMarket() {
         await api.patch(`/transfers/offer/${offerId}/player-respond`, body);
       }
       toast.success('Réponse envoyée.');
-      await refreshWalletFromApi(patchUser);
+      await refreshEconomyFromApi(patchUser, user?.xp);
       await fetchData();
     } catch (err: unknown) {
       const raw =
@@ -222,7 +207,7 @@ export default function TransferMarket() {
         setShowConfetti(true);
         setTimeout(() => setShowConfetti(false), 4000);
       }
-      await refreshWalletFromApi(patchUser);
+      await refreshEconomyFromApi(patchUser, user?.xp);
       await fetchData();
     } catch (err: unknown) {
       const raw =
@@ -686,7 +671,10 @@ export default function TransferMarket() {
           onClose={handleCloseOfferModal}
           player={selectedPlayer}
           myTeam={myTeam}
-          onSuccess={() => void fetchData()}
+          onSuccess={() => {
+            void refreshEconomyFromApi(patchUser, user?.xp);
+            void fetchData();
+          }}
           pendingOfferFromMyClub={pendingRecapForModal}
         />
       )}

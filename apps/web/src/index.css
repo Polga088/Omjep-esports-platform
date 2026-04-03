@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Michroma&family=Orbitron:wght@700;800;900&family=Rajdhani:wght@500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -82,4 +82,643 @@ body {
 
 .predict-match-submit-pulse {
   animation: predict-btn-neon-pulse 2.3s ease-in-out infinite;
+}
+
+/* Top Scorer — anneau circulaire SVG (stroke-dasharray / dashoffset) */
+@keyframes trophy-ring-dash {
+  0% {
+    stroke-dashoffset: 260;
+  }
+  100% {
+    stroke-dashoffset: -260;
+  }
+}
+
+.dashboard-trophy-ring {
+  stroke-dasharray: 72 200;
+  stroke-dashoffset: 0;
+  animation: trophy-ring-dash 1.85s linear infinite;
+}
+
+/* Dashboard — fond uni (pas de grille) */
+.dashboard-tactical-hud {
+  background-color: #070b12;
+}
+
+/* DashboardLayout — zone scroll principale : piste noire, curseur cyan néon */
+.dashboard-layout-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #06b6d4 #000000;
+}
+
+.dashboard-layout-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.dashboard-layout-scroll::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+.dashboard-layout-scroll::-webkit-scrollbar-thumb {
+  background: #06b6d4;
+  border-radius: 9999px;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.55);
+}
+
+.dashboard-layout-scroll::-webkit-scrollbar-thumb:hover {
+  background: #22d3ee;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.45);
+}
+
+.dashboard-layout-scroll::-webkit-scrollbar-corner {
+  background: #000000;
+}
+
+/* Dashboard hero (h-96) — grille tech + balayage scanline */
+.dashboard-hero-tech-grid {
+  opacity: 0.1;
+  background-image:
+    linear-gradient(rgba(103, 232, 249, 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103, 232, 249, 1) 1px, transparent 1px),
+    linear-gradient(-18deg, transparent 48%, rgba(56, 189, 248, 0.35) 49%, transparent 52%);
+  background-size:
+    26px 26px,
+    26px 26px,
+    100% 100%;
+}
+
+@keyframes dashboard-hero-scanline-sweep {
+  0% {
+    left: -48%;
+  }
+  100% {
+    left: 148%;
+  }
+}
+
+.dashboard-hero-scanline-sweep {
+  position: absolute;
+  top: 0;
+  width: 38%;
+  max-width: 420px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(34, 211, 238, 0) 22%,
+    rgba(165, 243, 254, 0.1) 45%,
+    rgba(224, 242, 254, 0.2) 50%,
+    rgba(165, 243, 254, 0.1) 55%,
+    rgba(34, 211, 238, 0) 78%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 32px rgba(34, 211, 238, 0.06),
+    inset 0 0 20px rgba(255, 255, 255, 0.03);
+  animation: dashboard-hero-scanline-sweep 4s linear infinite;
+  will-change: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-hero-scanline-sweep {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Lignes laser data-flow */
+@keyframes hud-laser-dash {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+.hud-laser-path {
+  stroke-dasharray: 6 10;
+  stroke-dashoffset: 0;
+  animation: hud-laser-dash 1.1s linear infinite;
+}
+
+/* PlayerIdentity — aura (or / néon) qui respire */
+@keyframes player-id-aura-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+.player-identity-aura {
+  animation: player-id-aura-pulse 3.2s ease-in-out infinite;
+}
+
+/* Royal Eagle / cadre holographique — aura synchronisée 4s avec le cadre */
+.player-identity-hologram-sync .player-identity-aura {
+  animation-duration: 4s;
+}
+
+/* ─── Electric Storm (legendary / premium) — pulsation 4s cadre Royal Eagle ─── */
+@keyframes player-id-electric-storm-pulse {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+.player-identity-electric-storm-core {
+  animation: player-id-electric-storm-pulse 4s ease-in-out infinite;
+}
+
+/* Profil — aura Golden Boot : même pulsation 4s que l’avatar (player-id-electric-storm-pulse) */
+.golden-boot-trophy-aura {
+  animation: player-id-electric-storm-pulse 4s ease-in-out infinite;
+}
+
+.player-identity-hologram-sync .player-identity-electric-storm-core {
+  animation-duration: 4s;
+}
+
+/* Aberration chromatique cyber (rouge / bleu décalés) */
+.player-identity-electric-storm-ca--red {
+  transform: translate(-3px, 2px);
+  background: radial-gradient(
+    circle at 28% 35%,
+    rgba(255, 60, 100, 0.42) 0%,
+    rgba(255, 40, 60, 0.12) 45%,
+    transparent 62%
+  );
+}
+
+.player-identity-electric-storm-ca--blue {
+  transform: translate(3px, -2px);
+  background: radial-gradient(
+    circle at 72% 58%,
+    rgba(60, 130, 255, 0.42) 0%,
+    rgba(40, 120, 255, 0.12) 45%,
+    transparent 62%
+  );
+}
+
+/* Particules — orbites variées (alias logique « animate-float ») */
+.player-id-storm-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(200, 240, 255, 0.95) 40%, rgba(34, 211, 238, 0.5) 100%);
+  box-shadow:
+    0 0 10px rgba(200, 240, 255, 0.95),
+    0 0 4px rgba(255, 255, 255, 0.9);
+  will-change: transform;
+}
+
+@keyframes player-id-storm-orbit-1 {
+  from {
+    transform: rotate(0deg) translateX(46%) rotate(0deg);
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: rotate(360deg) translateX(46%) rotate(-360deg);
+    opacity: 0.72;
+  }
+}
+
+@keyframes player-id-storm-orbit-2 {
+  from {
+    transform: rotate(120deg) translateX(52%) rotate(-120deg);
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: rotate(480deg) translateX(52%) rotate(-480deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes player-id-storm-orbit-3 {
+  from {
+    transform: rotate(0deg) translate(38%, -10%) rotate(0deg);
+    opacity: 0.7;
+  }
+  33% {
+    transform: rotate(120deg) translate(44%, 6%) rotate(-120deg);
+    opacity: 0.95;
+  }
+  66% {
+    transform: rotate(240deg) translate(36%, 8%) rotate(-240deg);
+    opacity: 0.85;
+  }
+  to {
+    transform: rotate(360deg) translate(38%, -10%) rotate(-360deg);
+    opacity: 0.7;
+  }
+}
+
+@keyframes player-id-storm-orbit-4 {
+  from {
+    transform: rotate(200deg) translateX(42%) rotate(-200deg);
+    opacity: 0.68;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: rotate(560deg) translateX(42%) rotate(-560deg);
+    opacity: 0.68;
+  }
+}
+
+@keyframes player-id-storm-orbit-5 {
+  from {
+    transform: rotate(60deg) translateX(48%) rotate(-60deg) scale(0.92);
+    opacity: 0.75;
+  }
+  50% {
+    transform: rotate(240deg) translateX(50%) rotate(-240deg) scale(1.05);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(420deg) translateX(48%) rotate(-420deg) scale(0.92);
+    opacity: 0.75;
+  }
+}
+
+.player-id-storm-particle--1 {
+  animation: player-id-storm-orbit-1 9.5s linear infinite;
+}
+.player-id-storm-particle--2 {
+  animation: player-id-storm-orbit-2 11.2s linear infinite;
+  animation-delay: -1.2s;
+}
+.player-id-storm-particle--3 {
+  animation: player-id-storm-orbit-3 8s ease-in-out infinite;
+  animation-delay: -0.4s;
+}
+.player-id-storm-particle--4 {
+  animation: player-id-storm-orbit-4 12.8s linear infinite;
+  animation-delay: -2.1s;
+}
+.player-id-storm-particle--5 {
+  animation: player-id-storm-orbit-5 10.4s ease-in-out infinite;
+  animation-delay: -0.9s;
+}
+
+/* Classement — focus au survol : aura plus présente */
+.leaderboard-row:hover .player-identity-aura {
+  opacity: 1 !important;
+  animation-duration: 4.5s;
+}
+
+.leaderboard-row:hover .player-identity-electric-storm {
+  filter: brightness(1.07);
+}
+
+/* PlayerIdentity — cadre néon premium (pulsation) */
+@keyframes player-id-premium-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.45),
+      0 0 14px rgba(34, 211, 238, 0.18);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(34, 211, 238, 0.85),
+      0 0 28px rgba(34, 211, 238, 0.42);
+  }
+}
+
+.player-identity-premium-frame {
+  animation: player-id-premium-glow 2.2s ease-in-out infinite;
+}
+
+/* PlayerIdentity — balayage lumineux sur le cadre legendary */
+@keyframes player-id-legendary-shimmer {
+  0% {
+    background-position: -120% 50%;
+  }
+  100% {
+    background-position: 220% 50%;
+  }
+}
+
+.player-identity-legendary-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.player-identity-legendary-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 255, 255, 0.72) 50%,
+    transparent 62%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  background-position: -120% 50%;
+  mix-blend-mode: screen;
+  animation: player-id-legendary-shimmer 4s ease-in-out infinite;
+}
+
+/* Particules bleues du cadre — même rythme 4s que l’aura */
+@keyframes player-id-frame-cyan-pulse {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.92;
+    transform: scale(1.02);
+  }
+}
+
+.player-identity-frame-hologram {
+  position: absolute;
+}
+
+.player-identity-frame-hologram::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(34, 211, 238, 0.55) 0%, transparent 7%),
+    radial-gradient(circle at 80% 75%, rgba(56, 189, 248, 0.45) 0%, transparent 7%),
+    radial-gradient(circle at 50% 12%, rgba(165, 243, 252, 0.4) 0%, transparent 6%),
+    radial-gradient(circle at 12% 70%, rgba(34, 211, 238, 0.35) 0%, transparent 6%),
+    radial-gradient(circle at 88% 30%, rgba(125, 211, 252, 0.3) 0%, transparent 5%);
+  mix-blend-mode: screen;
+  animation: player-id-frame-cyan-pulse 4s ease-in-out infinite;
+}
+
+/* —— Profil EA FC Pro Showcase —— */
+@keyframes ea-fc-neon-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    filter: blur(28px);
+  }
+  50% {
+    opacity: 0.85;
+    filter: blur(36px);
+  }
+}
+
+@keyframes ea-fc-geo-shift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(-2%, 1%) rotate(2deg);
+  }
+}
+
+@keyframes ea-fc-radar-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ea-fc-hero-neon {
+  background: radial-gradient(
+      ellipse 80% 60% at 50% 100%,
+      rgba(234, 179, 8, 0.35) 0%,
+      transparent 55%
+    ),
+    radial-gradient(ellipse 70% 50% at 30% 20%, rgba(34, 211, 238, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 45% at 75% 30%, rgba(56, 189, 248, 0.25) 0%, transparent 45%);
+  animation: ea-fc-neon-pulse 3.2s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+/* Titres dashboard (Classement, Matchs, etc.) — pulsation néon alignée sur le hero */
+@keyframes ea-fc-title-neon-pulse {
+  0%,
+  100% {
+    text-shadow:
+      0 0 18px rgba(34, 211, 238, 0.42),
+      0 0 34px rgba(234, 179, 8, 0.14),
+      0 1px 0 rgba(0, 0, 0, 0.85);
+  }
+  50% {
+    text-shadow:
+      0 0 28px rgba(34, 211, 238, 0.72),
+      0 0 52px rgba(234, 179, 8, 0.26),
+      0 1px 0 rgba(0, 0, 0, 0.85);
+  }
+}
+
+h1.ea-fc-hero-neon,
+h2.ea-fc-hero-neon,
+h3.ea-fc-hero-neon {
+  background: none !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  animation: ea-fc-title-neon-pulse 3.2s ease-in-out infinite;
+  color: #f8fafc;
+}
+
+/* Mercato Live ticker — même courbe de pulsation que les titres EA FC */
+span.mercato-live-badge-ea-pulse {
+  animation: ea-fc-title-neon-pulse 3.2s ease-in-out infinite;
+}
+
+/* Timeline Gamification — vague lumineuse le long du tracé SVG */
+@keyframes neon-milestone-flow-dash {
+  to {
+    stroke-dashoffset: -140;
+  }
+}
+
+.neon-milestone-path-flow {
+  stroke-dasharray: 28 112;
+  animation: neon-milestone-flow-dash 1.15s linear forwards;
+  opacity: 0.95;
+}
+
+.ea-fc-geo-layer {
+  animation: ea-fc-geo-shift 18s ease-in-out infinite alternate;
+}
+
+.ea-fc-carbon-card {
+  background-color: #08090c;
+  background-image:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 42%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(255, 255, 255, 0.018) 1px,
+      rgba(255, 255, 255, 0.018) 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 1px,
+      rgba(255, 255, 255, 0.012) 1px,
+      rgba(255, 255, 255, 0.012) 2px
+    ),
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(34, 211, 238, 0.08) 0%, transparent 55%);
+}
+
+.ea-fc-stat-radar-sweep {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ea-fc-radar-spin 8s linear infinite;
+}
+
+.ea-fc-ambient-glow {
+  background: radial-gradient(
+    ellipse 55% 35% at 50% 0%,
+    rgba(34, 211, 238, 0.22) 0%,
+    rgba(14, 165, 233, 0.08) 35%,
+    transparent 70%
+  );
+}
+
+/* Profil Tactical HUD — colonne de lumière bleue stade + avatar vers le bas */
+.ea-fc-tactical-beam {
+  background: radial-gradient(
+      ellipse 65% 28% at 50% 8%,
+      rgba(56, 189, 248, 0.38) 0%,
+      rgba(34, 211, 238, 0.14) 22%,
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(34, 211, 238, 0.1) 0%,
+      rgba(14, 165, 233, 0.05) 18%,
+      rgba(10, 14, 26, 0) 45%,
+      rgba(8, 12, 22, 0.03) 100%
+    );
+}
+
+/* Cartes collection — carbone mat renforcé + grain HUD */
+.ea-fc-bento-collection.ea-fc-carbon-card {
+  background-color: #050608;
+  background-image:
+    radial-gradient(ellipse 100% 80% at 10% 0%, rgba(34, 211, 238, 0.07) 0%, transparent 45%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgba(234, 179, 8, 0.06) 0%, transparent 50%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, transparent 38%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(255, 255, 255, 0.02) 1px,
+      rgba(255, 255, 255, 0.02) 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 1px,
+      rgba(255, 255, 255, 0.015) 1px,
+      rgba(255, 255, 255, 0.015) 2px
+    );
+}
+
+.ea-fc-bento-collection::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* MaintenancePrestige — anneaux néon */
+@keyframes maintenance-prestige-ring-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.25);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+    box-shadow: 0 0 28px 2px rgba(34, 211, 238, 0.35), 0 0 48px rgba(234, 179, 8, 0.12);
+  }
+}
+
+.maintenance-prestige-aura {
+  animation: ea-fc-neon-pulse 3.6s ease-in-out infinite;
+}
+
+.maintenance-prestige-grid {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.maintenance-prestige-ring {
+  animation: maintenance-prestige-ring-pulse 2.8s ease-in-out infinite;
+}
+
+.maintenance-prestige-ring--outer {
+  animation-delay: 0s;
+}
+
+.maintenance-prestige-ring--mid {
+  animation-delay: 0.35s;
+}
+
+.maintenance-prestige-ring--inner {
+  animation-delay: 0.7s;
+}
+
+.maintenance-prestige-lock {
+  animation: maintenance-prestige-ring-pulse 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(34, 211, 238, 0.65));
+}
+
+/* Showcase HUD — harmonisation violette (bannière Vortex) */
+.showcase-hud-vortex .showcase-ambient-glow {
+  filter: hue-rotate(42deg) saturate(1.12);
+}
+.showcase-hud-vortex .showcase-tactical-beam {
+  filter: hue-rotate(36deg) saturate(1.08);
+}
+.showcase-hud-vortex .showcase-vertical-glow {
+  filter: hue-rotate(32deg) saturate(1.06);
+}
+.showcase-hud-vortex .showcase-neon-link,
+.showcase-hud-vortex .showcase-neon-submit {
+  filter: hue-rotate(48deg) saturate(1.12);
 }

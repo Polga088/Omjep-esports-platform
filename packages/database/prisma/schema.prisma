@@ -25,6 +25,14 @@ model User {
   omjepCoins          Int                @default(1000) @map("omjep_coins")
   jepyCoins           Int                @default(0) @map("jepy_coins")
   isPremium           Boolean            @default(false) @map("is_premium")
+  /// Photo de profil ; si null, l’API renvoie une URL Dicebear par défaut
+  avatarUrl           String?            @map("avatar_url")
+  avatarRarity        AvatarRarity       @default(COMMON) @map("avatar_rarity")
+  activeFrameUrl      String?            @map("active_frame_url")
+  /// Bannière profil / showcase (image ou URL vidéo)
+  activeBannerUrl     String?            @map("active_banner_url")
+  activeJerseyId      String?            @db.Uuid @map("active_jersey_id")
+  activeJersey        StoreItem?         @relation("UserActiveJersey", fields: [activeJerseyId], references: [id], onDelete: SetNull)
   contracts           Contract[]
   receivedInvitations Invitation[]       @relation("InvitationInvitee")
   sentInvitations     Invitation[]       @relation("InvitationInviter")
@@ -62,6 +70,9 @@ model Club {
   manager_id        String?            @db.Uuid
   validation_status ValidationStatus   @default(PENDING)
   presidentPremium  Boolean            @default(false) @map("president_premium")
+  primaryColor      String?            @map("primary_color")
+  secondaryColor    String?            @map("secondary_color")
+  storeItems        StoreItem[]
   competitions      CompetitionTeam[]
   contracts         Contract[]
   invitations       Invitation[]
@@ -291,8 +302,10 @@ model StoreItem {
   category    StoreItemCategory
   imageUrl    String            @map("image_url")
   isAvailable Boolean           @default(true) @map("is_available")
-
-  inventory UserInventory[]
+  clubId      String?           @db.Uuid @map("club_id")
+  club        Club?             @relation(fields: [clubId], references: [id], onDelete: SetNull)
+  inventory   UserInventory[]
+  equippedBy  User[]            @relation("UserActiveJersey")
 
   @@map("store_items")
 }
@@ -330,6 +343,12 @@ enum UserRole {
   MANAGER
   PLAYER
   MODERATOR
+}
+
+enum AvatarRarity {
+  COMMON
+  PREMIUM
+  LEGENDARY
 }
 
 enum Position {

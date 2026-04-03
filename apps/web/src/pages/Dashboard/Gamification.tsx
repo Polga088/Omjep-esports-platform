@@ -11,6 +11,40 @@ import { useAuthStore } from '@/store/useAuthStore';
 import PlayerCard from '@/components/PlayerCard';
 import LevelUpOverlay from '@/components/LevelUpOverlay';
 import { formatCurrency } from '@/utils/formatCurrency';
+import {
+  LeaderboardRow,
+  LEADERBOARD_ROW_GRID_CLASS,
+  type LeaderboardEntry,
+} from '@/pages/Dashboard/Leaderboard';
+import { useLeaderboardRankDeltas } from '@/hooks/useLeaderboardRankDeltas';
+import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
+import { NeonMilestoneTimeline } from '@/components/NeonMilestoneTimeline';
+import { OMJEP_XP_FLOW_EVENT, type XpFlowDetail } from '@/lib/refreshEconomyFromApi';
+
+function GamificationPageHeader({ subtitle }: { subtitle?: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8">
+      <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-amber-400/5 blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-amber-600/5 blur-[80px] pointer-events-none" />
+      <div className="relative flex items-center gap-4">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-400/20 border border-amber-400/30">
+          <Trophy className="w-7 h-7 text-[#0A0E1A]" />
+        </div>
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="ea-fc-hero-neon font-display text-3xl font-black tracking-tight">Mon Parcours</h1>
+            <span className="text-xs font-bold uppercase tracking-widest text-amber-400/60 px-2 py-1 rounded-full bg-amber-400/10 border border-amber-400/15">
+              Saison 1
+            </span>
+          </div>
+          <p className="mt-1 text-sm text-slate-500">
+            {subtitle ?? 'Progression, Achievements et Classement'}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -46,20 +80,6 @@ interface Milestone {
   xpRequired: number;
   reached: boolean;
   level: number;
-}
-
-interface LeaderboardEntry {
-  rank: number;
-  id: string;
-  name: string;
-  position: string | null;
-  level: number;
-  xp: number;
-  goals: number;
-  assists: number;
-  matchesPlayed: number;
-  averageRating: number;
-  team: { id: string; name: string; logo_url: string | null } | null;
 }
 
 interface GamificationData {
@@ -251,56 +271,6 @@ function StatsRadar({ stats }: { stats: GamificationData['stats'] }) {
   );
 }
 
-// ─── XP Milestone Timeline ─────────────────────────────────
-
-function MilestoneTimeline({ milestones, currentXp }: { milestones: Milestone[]; currentXp: number }) {
-  const maxXp = milestones[milestones.length - 1]?.xpRequired ?? 1;
-  const progress = Math.min((currentXp / maxXp) * 100, 100);
-
-  return (
-    <div className="relative">
-      {/* Track */}
-      <div className="relative h-2 rounded-full bg-white/5 overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 1.5, ease: 'easeOut' }}
-          className="absolute inset-y-0 left-0 rounded-full"
-          style={{
-            background: 'linear-gradient(90deg, #B8860B 0%, #FFD700 50%, #FFF8DC 100%)',
-            boxShadow: '0 0 12px rgba(255,215,0,0.4)',
-          }}
-        />
-      </div>
-
-      {/* Milestone markers */}
-      <div className="relative mt-3 flex justify-between px-1">
-        {milestones.map((m) => {
-          const position = (m.xpRequired / maxXp) * 100;
-          return (
-            <div
-              key={m.level}
-              className="flex flex-col items-center"
-              style={{ position: 'absolute', left: `${position}%`, transform: 'translateX(-50%)' }}
-            >
-              <div
-                className={`w-3 h-3 rounded-full border-2 transition-all ${
-                  m.reached
-                    ? 'bg-amber-400 border-amber-400 shadow-lg shadow-amber-400/40'
-                    : 'bg-transparent border-slate-600'
-                }`}
-              />
-              <span className={`text-[9px] mt-1 font-bold ${m.reached ? 'text-amber-400' : 'text-slate-600'}`}>
-                {m.level}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 // ─── Achievement Badge ─────────────────────────────────────
 
 function AchievementBadge({ achievement }: { achievement: Achievement }) {
@@ -356,73 +326,6 @@ function AchievementBadge({ achievement }: { achievement: Achievement }) {
   );
 }
 
-// ─── Leaderboard Row ───────────────────────────────────────
-
-function LeaderboardRow({ entry, isMe }: { entry: LeaderboardEntry; isMe: boolean }) {
-  const rankColors: Record<number, string> = {
-    1: 'from-amber-400 to-amber-600 text-amber-900',
-    2: 'from-slate-300 to-slate-400 text-slate-800',
-    3: 'from-amber-700 to-amber-800 text-amber-200',
-  };
-
-  return (
-    <Link
-      to={`/dashboard/profile/${entry.id}`}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-        isMe
-          ? 'bg-amber-400/10 border border-amber-400/20'
-          : 'hover:bg-white/[0.03] border border-transparent'
-      }`}
-    >
-      {/* Rank */}
-      <div className="w-8 shrink-0 text-center">
-        {entry.rank <= 3 ? (
-          <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${rankColors[entry.rank]} flex items-center justify-center text-xs font-black mx-auto`}>
-            {entry.rank}
-          </div>
-        ) : (
-          <span className="text-sm font-bold text-slate-500 tabular-nums">{entry.rank}</span>
-        )}
-      </div>
-
-      {/* Avatar */}
-      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400/15 to-amber-600/10 border border-white/10 flex items-center justify-center text-xs font-bold text-amber-400 uppercase shrink-0">
-        {entry.name.charAt(0)}
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className={`text-sm font-semibold truncate ${isMe ? 'text-amber-400' : 'text-white group-hover:text-amber-300'} transition-colors`}>
-            {entry.name}
-          </span>
-          {isMe && (
-            <span className="text-[9px] font-bold uppercase tracking-wider text-amber-500/70 px-1.5 py-0.5 rounded bg-amber-500/10">
-              Vous
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2 text-[10px] text-slate-500">
-          {entry.team && <span>{entry.team.name}</span>}
-          {entry.position && <span>• {entry.position}</span>}
-        </div>
-      </div>
-
-      {/* Level badge */}
-      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 via-amber-500 to-amber-700 flex flex-col items-center justify-center shrink-0 border border-amber-400/30">
-        <span className="text-[7px] font-bold uppercase text-amber-900/70">Niv</span>
-        <span className="text-sm font-black text-white leading-none tabular-nums">{entry.level}</span>
-      </div>
-
-      {/* XP */}
-      <div className="text-right shrink-0 w-16">
-        <p className="text-xs font-black text-amber-400 tabular-nums">{entry.xp.toLocaleString('fr-FR')}</p>
-        <p className="text-[9px] text-slate-600">XP</p>
-      </div>
-    </Link>
-  );
-}
-
 // ─── Main Page ─────────────────────────────────────────────
 
 export default function Gamification() {
@@ -433,7 +336,27 @@ export default function Gamification() {
   const [error, setError] = useState<string | null>(null);
   const [achievementFilter, setAchievementFilter] = useState<AchievementFilter>('all');
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [timelineFlow, setTimelineFlow] = useState(false);
   const prevLevelRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    let flowTimeout: ReturnType<typeof setTimeout> | undefined;
+    const onXpFlow = (e: Event) => {
+      const d = (e as CustomEvent<XpFlowDetail>).detail;
+      if (d?.xp === undefined) return;
+      setTimelineFlow(true);
+      void api.get<GamificationData>('/gamification/profile').then(({ data }) => {
+        setData(data);
+      });
+      if (flowTimeout) clearTimeout(flowTimeout);
+      flowTimeout = setTimeout(() => setTimelineFlow(false), 1250);
+    };
+    window.addEventListener(OMJEP_XP_FLOW_EVENT, onXpFlow);
+    return () => {
+      window.removeEventListener(OMJEP_XP_FLOW_EVENT, onXpFlow);
+      if (flowTimeout) clearTimeout(flowTimeout);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -475,13 +398,15 @@ export default function Gamification() {
 
   const unlockedCount = data?.achievements.filter((a) => a.unlocked).length ?? 0;
   const totalAchievements = data?.achievements.length ?? 0;
+  const rankDeltas = useLeaderboardRankDeltas(leaderboard);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 text-amber-400 animate-spin" />
-          <p className="text-sm text-slate-500">Chargement de votre profil...</p>
+      <div className="space-y-8 pb-8">
+        <GamificationPageHeader subtitle="Chargement de votre profil…" />
+        <div className="flex min-h-[45vh] flex-col items-center justify-center gap-4 rounded-2xl border border-white/5 bg-[#0D1221]/40 py-16">
+          <Loader2 className="h-10 w-10 animate-spin text-amber-400" />
+          <p className="text-sm text-slate-500">Synchronisation des données…</p>
         </div>
       </div>
     );
@@ -489,8 +414,9 @@ export default function Gamification() {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-500/20 bg-red-500/5 px-6 py-8 text-center">
-        <p className="text-sm text-red-400">{error}</p>
+      <div className="space-y-8 pb-8">
+        <GamificationPageHeader />
+        <MaintenancePrestige overlay title="Mon Parcours" message={PRESTIGE_MSG} className="border-white/10" />
       </div>
     );
   }
@@ -506,26 +432,9 @@ export default function Gamification() {
       />
 
       {/* ═══════════════════ HEADER ═══════════════════ */}
-      <div className="relative rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8 overflow-hidden">
-        <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-amber-400/5 blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-amber-600/5 blur-[80px] pointer-events-none" />
-        <div className="relative flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-400/20 border border-amber-400/30">
-            <Trophy className="w-7 h-7 text-[#0A0E1A]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-black text-white tracking-tight">Mon Parcours</h1>
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-400/60 px-2 py-1 rounded-full bg-amber-400/10 border border-amber-400/15">
-                Saison 1
-              </span>
-            </div>
-            <p className="mt-1 text-sm text-slate-500">
-              Progression, Achievements et Classement — {data.player.name}
-            </p>
-          </div>
-        </div>
-      </div>
+      <GamificationPageHeader
+        subtitle={`Progression, Achievements et Classement — ${data.player.name}`}
+      />
 
       {/* ═══════════════════ TOP GRID: Card + XP + Ranking ═══════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -641,7 +550,11 @@ export default function Gamification() {
               <Flame className="w-4 h-4 text-amber-400" />
               <h3 className="text-sm font-bold text-white">Jalons de Carrière</h3>
             </div>
-            <MilestoneTimeline milestones={data.milestones} currentXp={data.player.xp} />
+            <NeonMilestoneTimeline
+              milestones={data.milestones}
+              currentXp={data.player.xp}
+              flowActive={timelineFlow}
+            />
           </div>
         </div>
 
@@ -861,27 +774,48 @@ export default function Gamification() {
       </div>
 
       {/* ═══════════════════ LEADERBOARD ═══════════════════ */}
-      <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-        <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+      <div className="overflow-hidden rounded-[12px] border-[0.5px] border-white/10 bg-[#08090c]">
+        <div className="flex items-center justify-between border-b-[0.5px] border-white/[0.05] px-3 py-3 sm:px-4">
           <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-amber-400" />
-            <h2 className="text-sm font-bold text-white">Classement XP</h2>
+            <Users className="h-3.5 w-3.5 text-white/30" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Classement XP</h2>
           </div>
           <Link
-            to="/dashboard/ladder"
-            className="flex items-center gap-1.5 text-xs font-semibold text-amber-400/60 hover:text-amber-400 transition-colors"
+            to="/dashboard/leaderboard"
+            className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/35 transition-colors hover:text-white/55"
           >
             Voir tout
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
 
-        <div className="p-4 space-y-1">
-          {leaderboard.slice(0, 10).map((entry) => (
-            <LeaderboardRow key={entry.id} entry={entry} isMe={entry.id === user?.id} />
+        <div
+          className={`hidden sm:grid ${LEADERBOARD_ROW_GRID_CLASS} border-b-[0.5px] border-white/[0.05] text-[10px] font-semibold uppercase tracking-widest text-white/30`}
+        >
+          <span className="text-center">#</span>
+          <span className="text-center" aria-hidden>
+            ∆
+          </span>
+          <span>Joueur</span>
+          <span className="text-right">Niv</span>
+          <span className="text-right">Pts</span>
+          <span className="text-right" title="Matchs joués">
+            Mj
+          </span>
+        </div>
+
+        <div>
+          {leaderboard.slice(0, 10).map((entry, i, arr) => (
+            <LeaderboardRow
+              key={entry.id}
+              entry={entry}
+              isMe={entry.id === user?.id}
+              rankDelta={rankDeltas[entry.id]}
+              isLast={i === arr.length - 1}
+            />
           ))}
           {leaderboard.length === 0 && (
-            <p className="text-sm text-slate-600 text-center py-8">Aucun joueur dans le classement</p>
+            <p className="py-8 text-center text-sm text-white/35">Aucun joueur dans le classement</p>
           )}
         </div>
       </div>

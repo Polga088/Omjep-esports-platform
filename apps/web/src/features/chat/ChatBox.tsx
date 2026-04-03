@@ -4,11 +4,14 @@ import {
   type ChatMessagePayload,
 } from '@omjep/shared';
 import api from '@/lib/api';
-import { Loader2, MessageCircle, Send, Users, ChevronUp } from 'lucide-react';
+import { Loader2, MessageCircle, Radio, Send, Users, ChevronUp } from 'lucide-react';
 import { useChatSocket } from './useChatSocket';
+import { ChatContactAvatar, type ChatContactRow } from './ChatContactAvatar';
+import RankBadge from '@/components/RankBadge';
+import { ChatTacticalIncomingBody } from './ChatTacticalIncomingBody';
 
-type Me = { id: string; email: string; role?: string };
-type Contact = { id: string; email: string; ea_persona_name: string | null; role: string };
+type Me = { id: string; email: string; role?: string; level?: number };
+type Contact = ChatContactRow;
 type MyTeamRes = { id: string; name: string } | null;
 
 export default function ChatBox({ me }: { me: Me }) {
@@ -24,6 +27,8 @@ export default function ChatBox({ me }: { me: Me }) {
   const [sending, setSending] = useState(false);
   const [draft, setDraft] = useState('');
   const [typingPeer, setTypingPeer] = useState(false);
+  /** Messages entrants temps réel : effet decrypt + typewriter */
+  const [tacticalIncomingIds, setTacticalIncomingIds] = useState<Set<string>>(() => new Set());
   const { socket, isConnected } = useChatSocket(me.id);
   const listRef = useRef<HTMLDivElement>(null);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -93,6 +98,13 @@ export default function ChatBox({ me }: { me: Me }) {
         if (prev.some((m) => m.id === msg.id)) return prev;
         return [...prev, msg];
       });
+      if (msg.sender_id !== me.id) {
+        setTacticalIncomingIds((prev) => {
+          const next = new Set(prev);
+          next.add(msg.id);
+          return next;
+        });
+      }
       scrollBottom();
     };
     const onTyping = (t: { userId: string; isTyping: boolean }) => {
@@ -203,12 +215,29 @@ export default function ChatBox({ me }: { me: Me }) {
     );
   }
 
+  const clearTactical = useCallback((messageId: string) => {
+    setTacticalIncomingIds((prev) => {
+      const next = new Set(prev);
+      next.delete(messageId);
+      return next;
+    });
+  }, []);
+
+  const glassShell =
+    'relative overflow-hidden rounded-2xl border border-cyan-500/20 bg-[#050910]/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl';
+
   return (
-    <div className="grid lg:grid-cols-[280px_1fr] gap-6 min-h-[70vh]">
-      <aside className="rounded-2xl border border-amber-500/15 bg-[#070a12] p-4 space-y-4">
-        <div className="flex items-center gap-2 text-amber-400/90">
-          <Users className="w-4 h-4" />
-          <span className="text-xs font-bold uppercase tracking-widest">Contacts</span>
+    <div className="grid min-h-[70vh] gap-6 lg:grid-cols-[300px_1fr]">
+      <aside className={`${glassShell} p-4`}>
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.09] dashboard-hero-tech-grid" aria-hidden />
+        <div className="relative z-[1] space-y-4">
+        <div className="flex items-center gap-2 text-cyan-300/90">
+          <Radio className="h-4 w-4" />
+          <span className="text-xs font-bold uppercase tracking-widest">Tactical Link</span>
+        </div>
+        <div className="flex items-center gap-2 text-amber-400/80">
+          <Users className="h-4 w-4" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Contacts</span>
         </div>
         {team && (
           <button
@@ -217,16 +246,16 @@ export default function ChatBox({ me }: { me: Me }) {
               setMode('team');
               setPeerId(null);
             }}
-            className={`w-full text-left px-3 py-2 rounded-xl text-sm border transition-colors ${
+            className={`w-full rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
               mode === 'team'
-                ? 'border-amber-400/40 bg-amber-500/10 text-amber-100'
-                : 'border-white/5 text-slate-400 hover:border-amber-500/20'
+                ? 'border-cyan-400/35 bg-cyan-500/10 text-cyan-50'
+                : 'border-white/[0.08] text-slate-400 hover:border-cyan-500/25'
             }`}
           >
             Salon · {team.name}
           </button>
         )}
-        <div className="space-y-1 max-h-[45vh] overflow-y-auto pr-1">
+        <div className="max-h-[45vh] space-y-1 overflow-y-auto pr-1">
           {contacts.map((c) => {
             const online = onlineManagers.includes(c.id);
             return (
@@ -237,33 +266,50 @@ export default function ChatBox({ me }: { me: Me }) {
                   setMode('dm');
                   setPeerId(c.id);
                 }}
-                className={`w-full text-left px-3 py-2 rounded-xl text-sm border transition-colors flex items-center gap-2 ${
+                className={`flex w-full items-center gap-2 rounded-xl border px-2 py-2 text-left text-sm transition-colors ${
                   mode === 'dm' && peerId === c.id
-                    ? 'border-amber-400/40 bg-amber-500/10 text-amber-100'
-                    : 'border-white/5 text-slate-400 hover:border-amber-500/20'
+                    ? 'border-cyan-400/35 bg-cyan-500/10 text-cyan-50'
+                    : 'border-white/[0.06] text-slate-400 hover:border-cyan-500/20'
                 }`}
               >
+                <ChatContactAvatar contact={c} />
+                <RankBadge level={c.level ?? 1} size="sm" showLabel={false} className="shrink-0" />
                 <span
-                  className={`w-2 h-2 rounded-full shrink-0 ${online ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-slate-600'}`}
+                  className={`mt-[2px] h-2 w-2 shrink-0 rounded-full ${online ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-slate-600'}`}
                 />
-                <span className="truncate">{c.ea_persona_name ?? c.email}</span>
+                <span className="min-w-0 flex-1 truncate font-medium">{c.ea_persona_name ?? c.email}</span>
               </button>
             );
           })}
         </div>
-        <p className="text-[10px] text-slate-600 leading-relaxed">
+        <p className="text-[10px] leading-relaxed text-slate-600">
           {CHAT_MESSAGES_PAGE_SIZE} derniers messages par chargement — bouton « Charger plus » pour l’historique.
         </p>
+        </div>
       </aside>
 
-      <section className="flex flex-col rounded-2xl border border-amber-500/15 bg-gradient-to-b from-[#0a0f18] to-[#060910] min-h-[420px]">
-        <header className="px-4 py-3 border-b border-amber-500/10 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-amber-400" />
-          <h2 className="text-sm font-bold text-white">
-            {mode === 'team' && team ? `Salon ${team.name}` : mode === 'dm' && peerId ? `MP · ${peerLabel}` : 'Conversation'}
-          </h2>
+      <section className={`${glassShell} flex min-h-[420px] flex-col`}>
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.07] dashboard-hero-tech-grid" aria-hidden />
+        <header className="relative z-[1] flex min-w-0 items-center gap-2 border-b border-cyan-500/15 px-4 py-3">
+          <MessageCircle className="h-5 w-5 shrink-0 text-cyan-400" />
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <h2 className="min-w-0 truncate text-sm font-bold text-white">
+              {mode === 'team' && team ? `Salon ${team.name}` : mode === 'dm' && peerId ? `MP · ${peerLabel}` : 'Conversation'}
+            </h2>
+            {mode === 'team' && typeof me.level === 'number' && (
+              <RankBadge level={me.level} size="sm" showLabel={false} className="shrink-0" />
+            )}
+            {mode === 'dm' && peerId ? (
+              <RankBadge
+                level={contacts.find((x) => x.id === peerId)?.level ?? 1}
+                size="sm"
+                showLabel={false}
+                className="shrink-0"
+              />
+            ) : null}
+          </div>
           <span
-            className={`ml-auto inline-flex items-center gap-1.5 text-[10px] font-semibold ${
+            className={`inline-flex shrink-0 items-center gap-1.5 text-[10px] font-semibold ${
               isConnected ? 'text-emerald-400' : 'text-orange-400'
             }`}
             title={isConnected ? 'Socket temps réel actif' : 'Reconnexion au serveur…'}
@@ -282,7 +328,7 @@ export default function ChatBox({ me }: { me: Me }) {
 
         <div
           ref={listRef}
-          className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-[280px] max-h-[50vh]"
+          className="relative z-[1] max-h-[50vh] min-h-[280px] flex-1 space-y-3 overflow-y-auto px-4 py-3"
         >
           {nextCursor && (
             <div className="flex justify-center">
@@ -299,22 +345,32 @@ export default function ChatBox({ me }: { me: Me }) {
           )}
           {messages.map((m) => {
             const mine = m.sender_id === me.id;
+            const tactical = !mine && tacticalIncomingIds.has(m.id);
             return (
               <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm border ${
+                  className={`max-w-[85%] rounded-2xl border px-3 py-2 text-sm ${
                     mine
-                      ? 'bg-amber-500/15 border-amber-500/25 text-amber-50'
-                      : 'bg-white/[0.04] border-white/10 text-slate-200'
+                      ? 'border-amber-500/25 bg-amber-500/15 text-amber-50'
+                      : tactical
+                        ? 'border-cyan-500/30 bg-cyan-950/25 text-slate-100 shadow-[0_0_24px_rgba(34,211,238,0.08)]'
+                        : 'border-white/10 bg-white/[0.05] text-slate-200'
                   }`}
                 >
                   {!mine && (
-                    <p className="text-[10px] text-amber-500/80 font-semibold mb-1">
+                    <p className="mb-1 text-[10px] font-semibold text-cyan-400/85">
                       {m.sender?.ea_persona_name ?? m.sender?.email ?? '…'}
                     </p>
                   )}
-                  <p className="whitespace-pre-wrap break-words">{m.content}</p>
-                  <div className="flex items-center justify-end gap-2 mt-1 text-[9px] text-slate-500">
+                  {tactical ? (
+                    <ChatTacticalIncomingBody
+                      content={m.content}
+                      onAnimationEnd={() => clearTactical(m.id)}
+                    />
+                  ) : (
+                    <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                  )}
+                  <div className="mt-1 flex items-center justify-end gap-2 text-[9px] text-slate-500">
                     <span>{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     {mine && mode === 'dm' && (
                       <span className={m.is_read ? 'text-emerald-400/80' : ''}>{m.is_read ? 'Lu' : '…'}</span>
@@ -325,11 +381,11 @@ export default function ChatBox({ me }: { me: Me }) {
             );
           })}
           {typingPeer && (
-            <p className="text-[11px] text-amber-500/70 italic pl-1">En train d’écrire…</p>
+            <p className="pl-1 text-[11px] italic text-cyan-500/70">En train d’écrire…</p>
           )}
         </div>
 
-        <footer className="p-3 border-t border-amber-500/10 flex gap-2">
+        <footer className="relative z-[1] flex gap-2 border-t border-cyan-500/15 p-3">
           <textarea
             value={draft}
             onChange={(e) => onDraftChange(e.target.value)}
@@ -348,13 +404,13 @@ export default function ChatBox({ me }: { me: Me }) {
             }
             disabled={(mode === 'team' && !team) || (mode === 'dm' && !peerId)}
             rows={2}
-            className="flex-1 rounded-xl bg-black/30 border border-white/10 text-sm text-slate-200 px-3 py-2 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500/30 resize-none"
+            className="flex-1 resize-none rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/35"
           />
           <button
             type="button"
             onClick={() => void send()}
             disabled={sending || (mode === 'team' && !team) || (mode === 'dm' && !peerId)}
-            className="self-end px-4 py-2 rounded-xl bg-amber-500 text-[#0a0a0a] font-bold text-sm hover:bg-amber-400 disabled:opacity-40 inline-flex items-center gap-2"
+            className="inline-flex items-center gap-2 self-end rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-[#041016] hover:bg-cyan-400 disabled:opacity-40"
           >
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </button>

@@ -1,5 +1,32 @@
 import { Injectable } from '@nestjs/common';
+import { AvatarRarity } from '@omjep/database';
 import { PrismaService } from '@api/prisma/prisma.service';
+
+function mapAvatarRarityJson(
+  r: AvatarRarity,
+): 'common' | 'premium' | 'legendary' {
+  switch (r) {
+    case AvatarRarity.PREMIUM:
+      return 'premium';
+    case AvatarRarity.LEGENDARY:
+      return 'legendary';
+    case AvatarRarity.COMMON:
+    default:
+      return 'common';
+  }
+}
+
+function defaultDicebearAvatarUrl(user: {
+  email: string;
+  ea_persona_name: string | null;
+  id: string;
+}): string {
+  const raw =
+    (user.ea_persona_name && user.ea_persona_name.trim()) ||
+    user.email.split('@')[0] ||
+    user.id;
+  return `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(raw)}`;
+}
 
 export interface Achievement {
   id: string;
@@ -358,31 +385,55 @@ export class GamificationService {
       take: limit,
       select: {
         id: true,
+        email: true,
         ea_persona_name: true,
         preferred_position: true,
         level: true,
         xp: true,
         stats: true,
+        avatarUrl: true,
+        avatarRarity: true,
+        activeFrameUrl: true,
+        activeJerseyId: true,
         teamMemberships: {
           take: 1,
           orderBy: { joined_at: 'desc' },
-          include: { team: { select: { id: true, name: true, logo_url: true } } },
+          include: {
+            team: {
+              select: {
+                id: true,
+                name: true,
+                logo_url: true,
+                primaryColor: true,
+                secondaryColor: true,
+              },
+            },
+          },
         },
       },
     });
 
-    return players.map((p, idx) => ({
-      rank: idx + 1,
-      id: p.id,
-      name: p.ea_persona_name ?? 'Anonyme',
-      position: p.preferred_position,
-      level: p.level,
-      xp: p.xp,
-      goals: p.stats?.goals ?? 0,
-      assists: p.stats?.assists ?? 0,
-      matchesPlayed: p.stats?.matches_played ?? 0,
-      averageRating: p.stats?.average_rating ?? 0,
-      team: p.teamMemberships[0]?.team ?? null,
-    }));
+    return players.map((p, idx) => {
+      const team = p.teamMemberships[0]?.team ?? null;
+      return {
+        rank: idx + 1,
+        id: p.id,
+        name: p.ea_persona_name ?? 'Anonyme',
+        position: p.preferred_position,
+        level: p.level,
+        xp: p.xp,
+        goals: p.stats?.goals ?? 0,
+        assists: p.stats?.assists ?? 0,
+        matchesPlayed: p.stats?.matches_played ?? 0,
+        averageRating: p.stats?.average_rating ?? 0,
+        team,
+        avatarUrl: p.avatarUrl ?? defaultDicebearAvatarUrl(p),
+        avatarRarity: mapAvatarRarityJson(p.avatarRarity),
+        activeFrameUrl: p.activeFrameUrl,
+        activeJerseyId: p.activeJerseyId,
+        teamPrimaryColor: team?.primaryColor ?? undefined,
+        teamSecondaryColor: team?.secondaryColor ?? undefined,
+      };
+    });
   }
 }

@@ -10,10 +10,17 @@ import { CompetitionsService } from '../competitions/competitions.service';
 
 const CLUB_STAFF_ROLES = ['FOUNDER', 'MANAGER', 'CO_MANAGER'] as const;
 
+const TEAM_WITH_MANAGER = {
+  id: true,
+  name: true,
+  logo_url: true,
+  manager: { select: { level: true } },
+} as const;
+
 const MATCH_INCLUDE = {
   competition: { select: { id: true, name: true, type: true } },
-  homeTeam: { select: { id: true, name: true, logo_url: true } },
-  awayTeam: { select: { id: true, name: true, logo_url: true } },
+  homeTeam: { select: TEAM_WITH_MANAGER },
+  awayTeam: { select: TEAM_WITH_MANAGER },
 } as const;
 
 const UPCOMING_STATUSES: MatchStatus[] = ['SCHEDULED', 'LIVE'];

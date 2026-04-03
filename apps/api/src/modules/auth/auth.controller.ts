@@ -8,8 +8,10 @@ import {
   Request,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import type { JwtRequestUser } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -32,15 +34,17 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  getMe(@Request() req: { user: unknown }) {
-    return req.user;
+  async getMe(@Request() req: { user: JwtRequestUser }) {
+    const user = await this.authService.getPublicUser(req.user.id);
+    if (!user) throw new UnauthorizedException();
+    return user;
   }
 
   /** Complète le profil après l'inscription (poste, nationalité, gamertags) */
   @Patch('onboarding')
   @UseGuards(JwtAuthGuard)
   completeOnboarding(
-    @Request() req: { user: { id: string } },
+    @Request() req: { user: JwtRequestUser },
     @Body() dto: OnboardingDto,
   ) {
     return this.authService.completeOnboarding(req.user.id, dto);

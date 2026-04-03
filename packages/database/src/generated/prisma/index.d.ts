@@ -139,6 +139,15 @@ export namespace $Enums {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const AvatarRarity: {
+  COMMON: 'COMMON',
+  PREMIUM: 'PREMIUM',
+  LEGENDARY: 'LEGENDARY'
+};
+
+export type AvatarRarity = (typeof AvatarRarity)[keyof typeof AvatarRarity]
+
+
 export const Position: {
   GK: 'GK',
   DC: 'DC',
@@ -330,6 +339,10 @@ export type NewsEventType = (typeof NewsEventType)[keyof typeof NewsEventType]
 export type UserRole = $Enums.UserRole
 
 export const UserRole: typeof $Enums.UserRole
+
+export type AvatarRarity = $Enums.AvatarRarity
+
+export const AvatarRarity: typeof $Enums.AvatarRarity
 
 export type Position = $Enums.Position
 
@@ -3221,6 +3234,7 @@ export namespace Prisma {
    */
 
   export type ClubCountOutputType = {
+    storeItems: number
     competitions: number
     contracts: number
     invitations: number
@@ -3237,6 +3251,7 @@ export namespace Prisma {
   }
 
   export type ClubCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    storeItems?: boolean | ClubCountOutputTypeCountStoreItemsArgs
     competitions?: boolean | ClubCountOutputTypeCountCompetitionsArgs
     contracts?: boolean | ClubCountOutputTypeCountContractsArgs
     invitations?: boolean | ClubCountOutputTypeCountInvitationsArgs
@@ -3261,6 +3276,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the ClubCountOutputType
      */
     select?: ClubCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountStoreItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoreItemWhereInput
   }
 
   /**
@@ -3450,10 +3472,12 @@ export namespace Prisma {
 
   export type StoreItemCountOutputType = {
     inventory: number
+    equippedBy: number
   }
 
   export type StoreItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     inventory?: boolean | StoreItemCountOutputTypeCountInventoryArgs
+    equippedBy?: boolean | StoreItemCountOutputTypeCountEquippedByArgs
   }
 
   // Custom InputTypes
@@ -3472,6 +3496,13 @@ export namespace Prisma {
    */
   export type StoreItemCountOutputTypeCountInventoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserInventoryWhereInput
+  }
+
+  /**
+   * StoreItemCountOutputType without action
+   */
+  export type StoreItemCountOutputTypeCountEquippedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -3553,6 +3584,11 @@ export namespace Prisma {
     omjepCoins: number | null
     jepyCoins: number | null
     isPremium: boolean | null
+    avatarUrl: string | null
+    avatarRarity: $Enums.AvatarRarity | null
+    activeFrameUrl: string | null
+    activeBannerUrl: string | null
+    activeJerseyId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3572,6 +3608,11 @@ export namespace Prisma {
     omjepCoins: number | null
     jepyCoins: number | null
     isPremium: boolean | null
+    avatarUrl: string | null
+    avatarRarity: $Enums.AvatarRarity | null
+    activeFrameUrl: string | null
+    activeBannerUrl: string | null
+    activeJerseyId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3591,6 +3632,11 @@ export namespace Prisma {
     omjepCoins: number
     jepyCoins: number
     isPremium: number
+    avatarUrl: number
+    avatarRarity: number
+    activeFrameUrl: number
+    activeBannerUrl: number
+    activeJerseyId: number
     _all: number
   }
 
@@ -3626,6 +3672,11 @@ export namespace Prisma {
     omjepCoins?: true
     jepyCoins?: true
     isPremium?: true
+    avatarUrl?: true
+    avatarRarity?: true
+    activeFrameUrl?: true
+    activeBannerUrl?: true
+    activeJerseyId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3645,6 +3696,11 @@ export namespace Prisma {
     omjepCoins?: true
     jepyCoins?: true
     isPremium?: true
+    avatarUrl?: true
+    avatarRarity?: true
+    activeFrameUrl?: true
+    activeBannerUrl?: true
+    activeJerseyId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3664,6 +3720,11 @@ export namespace Prisma {
     omjepCoins?: true
     jepyCoins?: true
     isPremium?: true
+    avatarUrl?: true
+    avatarRarity?: true
+    activeFrameUrl?: true
+    activeBannerUrl?: true
+    activeJerseyId?: true
     _all?: true
   }
 
@@ -3770,6 +3831,11 @@ export namespace Prisma {
     omjepCoins: number
     jepyCoins: number
     isPremium: boolean
+    avatarUrl: string | null
+    avatarRarity: $Enums.AvatarRarity
+    activeFrameUrl: string | null
+    activeBannerUrl: string | null
+    activeJerseyId: string | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -3808,6 +3874,12 @@ export namespace Prisma {
     omjepCoins?: boolean
     jepyCoins?: boolean
     isPremium?: boolean
+    avatarUrl?: boolean
+    avatarRarity?: boolean
+    activeFrameUrl?: boolean
+    activeBannerUrl?: boolean
+    activeJerseyId?: boolean
+    activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
@@ -3845,6 +3917,12 @@ export namespace Prisma {
     omjepCoins?: boolean
     jepyCoins?: boolean
     isPremium?: boolean
+    avatarUrl?: boolean
+    avatarRarity?: boolean
+    activeFrameUrl?: boolean
+    activeBannerUrl?: boolean
+    activeJerseyId?: boolean
+    activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3864,6 +3942,12 @@ export namespace Prisma {
     omjepCoins?: boolean
     jepyCoins?: boolean
     isPremium?: boolean
+    avatarUrl?: boolean
+    avatarRarity?: boolean
+    activeFrameUrl?: boolean
+    activeBannerUrl?: boolean
+    activeJerseyId?: boolean
+    activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -3883,10 +3967,16 @@ export namespace Prisma {
     omjepCoins?: boolean
     jepyCoins?: boolean
     isPremium?: boolean
+    avatarUrl?: boolean
+    avatarRarity?: boolean
+    activeFrameUrl?: boolean
+    activeBannerUrl?: boolean
+    activeJerseyId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password_hash" | "role" | "created_at" | "ea_persona_name" | "gamertag_psn" | "gamertag_xbox" | "preferred_position" | "nationality" | "external_id" | "level" | "xp" | "omjepCoins" | "jepyCoins" | "isPremium", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password_hash" | "role" | "created_at" | "ea_persona_name" | "gamertag_psn" | "gamertag_xbox" | "preferred_position" | "nationality" | "external_id" | "level" | "xp" | "omjepCoins" | "jepyCoins" | "isPremium" | "avatarUrl" | "avatarRarity" | "activeFrameUrl" | "activeBannerUrl" | "activeJerseyId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
@@ -3906,12 +3996,17 @@ export namespace Prisma {
     walletTransactions?: boolean | User$walletTransactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
+  }
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
+  }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      activeJersey: Prisma.$StoreItemPayload<ExtArgs> | null
       contracts: Prisma.$ContractPayload<ExtArgs>[]
       receivedInvitations: Prisma.$InvitationPayload<ExtArgs>[]
       sentInvitations: Prisma.$InvitationPayload<ExtArgs>[]
@@ -3947,6 +4042,17 @@ export namespace Prisma {
       omjepCoins: number
       jepyCoins: number
       isPremium: boolean
+      /**
+       * Photo de profil ; si null, l’API renvoie une URL Dicebear par défaut
+       */
+      avatarUrl: string | null
+      avatarRarity: $Enums.AvatarRarity
+      activeFrameUrl: string | null
+      /**
+       * Bannière profil / showcase (image ou URL vidéo)
+       */
+      activeBannerUrl: string | null
+      activeJerseyId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -4341,6 +4447,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    activeJersey<T extends User$activeJerseyArgs<ExtArgs> = {}>(args?: Subset<T, User$activeJerseyArgs<ExtArgs>>): Prisma__StoreItemClient<$Result.GetResult<Prisma.$StoreItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     contracts<T extends User$contractsArgs<ExtArgs> = {}>(args?: Subset<T, User$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedInvitations<T extends User$receivedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4403,6 +4510,11 @@ export namespace Prisma {
     readonly omjepCoins: FieldRef<"User", 'Int'>
     readonly jepyCoins: FieldRef<"User", 'Int'>
     readonly isPremium: FieldRef<"User", 'Boolean'>
+    readonly avatarUrl: FieldRef<"User", 'String'>
+    readonly avatarRarity: FieldRef<"User", 'AvatarRarity'>
+    readonly activeFrameUrl: FieldRef<"User", 'String'>
+    readonly activeBannerUrl: FieldRef<"User", 'String'>
+    readonly activeJerseyId: FieldRef<"User", 'String'>
   }
     
 
@@ -4652,6 +4764,10 @@ export namespace Prisma {
      */
     data: UserCreateManyInput | UserCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4722,6 +4838,10 @@ export namespace Prisma {
      * Limit how many Users to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4788,6 +4908,25 @@ export namespace Prisma {
      * Limit how many Users to delete.
      */
     limit?: number
+  }
+
+  /**
+   * User.activeJersey
+   */
+  export type User$activeJerseyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreItem
+     */
+    select?: StoreItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreItem
+     */
+    omit?: StoreItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoreItemInclude<ExtArgs> | null
+    where?: StoreItemWhereInput
   }
 
   /**
@@ -5251,6 +5390,8 @@ export namespace Prisma {
     manager_id: string | null
     validation_status: $Enums.ValidationStatus | null
     presidentPremium: boolean | null
+    primaryColor: string | null
+    secondaryColor: string | null
   }
 
   export type ClubMaxAggregateOutputType = {
@@ -5268,6 +5409,8 @@ export namespace Prisma {
     manager_id: string | null
     validation_status: $Enums.ValidationStatus | null
     presidentPremium: boolean | null
+    primaryColor: string | null
+    secondaryColor: string | null
   }
 
   export type ClubCountAggregateOutputType = {
@@ -5285,6 +5428,8 @@ export namespace Prisma {
     manager_id: number
     validation_status: number
     presidentPremium: number
+    primaryColor: number
+    secondaryColor: number
     _all: number
   }
 
@@ -5316,6 +5461,8 @@ export namespace Prisma {
     manager_id?: true
     validation_status?: true
     presidentPremium?: true
+    primaryColor?: true
+    secondaryColor?: true
   }
 
   export type ClubMaxAggregateInputType = {
@@ -5333,6 +5480,8 @@ export namespace Prisma {
     manager_id?: true
     validation_status?: true
     presidentPremium?: true
+    primaryColor?: true
+    secondaryColor?: true
   }
 
   export type ClubCountAggregateInputType = {
@@ -5350,6 +5499,8 @@ export namespace Prisma {
     manager_id?: true
     validation_status?: true
     presidentPremium?: true
+    primaryColor?: true
+    secondaryColor?: true
     _all?: true
   }
 
@@ -5454,6 +5605,8 @@ export namespace Prisma {
     manager_id: string | null
     validation_status: $Enums.ValidationStatus
     presidentPremium: boolean
+    primaryColor: string | null
+    secondaryColor: string | null
     _count: ClubCountAggregateOutputType | null
     _avg: ClubAvgAggregateOutputType | null
     _sum: ClubSumAggregateOutputType | null
@@ -5490,6 +5643,9 @@ export namespace Prisma {
     manager_id?: boolean
     validation_status?: boolean
     presidentPremium?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
+    storeItems?: boolean | Club$storeItemsArgs<ExtArgs>
     competitions?: boolean | Club$competitionsArgs<ExtArgs>
     contracts?: boolean | Club$contractsArgs<ExtArgs>
     invitations?: boolean | Club$invitationsArgs<ExtArgs>
@@ -5522,6 +5678,8 @@ export namespace Prisma {
     manager_id?: boolean
     validation_status?: boolean
     presidentPremium?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
     manager?: boolean | Club$managerArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -5540,6 +5698,8 @@ export namespace Prisma {
     manager_id?: boolean
     validation_status?: boolean
     presidentPremium?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
     manager?: boolean | Club$managerArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -5558,10 +5718,13 @@ export namespace Prisma {
     manager_id?: boolean
     validation_status?: boolean
     presidentPremium?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
   }
 
-  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform" | "proclubs_url" | "budget" | "prestige_level" | "xp" | "description" | "manager_id" | "validation_status" | "presidentPremium", ExtArgs["result"]["club"]>
+  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "logo_url" | "created_at" | "ea_club_id" | "platform" | "proclubs_url" | "budget" | "prestige_level" | "xp" | "description" | "manager_id" | "validation_status" | "presidentPremium" | "primaryColor" | "secondaryColor", ExtArgs["result"]["club"]>
   export type ClubInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    storeItems?: boolean | Club$storeItemsArgs<ExtArgs>
     competitions?: boolean | Club$competitionsArgs<ExtArgs>
     contracts?: boolean | Club$contractsArgs<ExtArgs>
     invitations?: boolean | Club$invitationsArgs<ExtArgs>
@@ -5588,6 +5751,7 @@ export namespace Prisma {
   export type $ClubPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Club"
     objects: {
+      storeItems: Prisma.$StoreItemPayload<ExtArgs>[]
       competitions: Prisma.$CompetitionTeamPayload<ExtArgs>[]
       contracts: Prisma.$ContractPayload<ExtArgs>[]
       invitations: Prisma.$InvitationPayload<ExtArgs>[]
@@ -5618,6 +5782,8 @@ export namespace Prisma {
       manager_id: string | null
       validation_status: $Enums.ValidationStatus
       presidentPremium: boolean
+      primaryColor: string | null
+      secondaryColor: string | null
     }, ExtArgs["result"]["club"]>
     composites: {}
   }
@@ -6012,6 +6178,7 @@ export namespace Prisma {
    */
   export interface Prisma__ClubClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    storeItems<T extends Club$storeItemsArgs<ExtArgs> = {}>(args?: Subset<T, Club$storeItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoreItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     competitions<T extends Club$competitionsArgs<ExtArgs> = {}>(args?: Subset<T, Club$competitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionTeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     contracts<T extends Club$contractsArgs<ExtArgs> = {}>(args?: Subset<T, Club$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invitations<T extends Club$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, Club$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6069,6 +6236,8 @@ export namespace Prisma {
     readonly manager_id: FieldRef<"Club", 'String'>
     readonly validation_status: FieldRef<"Club", 'ValidationStatus'>
     readonly presidentPremium: FieldRef<"Club", 'Boolean'>
+    readonly primaryColor: FieldRef<"Club", 'String'>
+    readonly secondaryColor: FieldRef<"Club", 'String'>
   }
     
 
@@ -6462,6 +6631,30 @@ export namespace Prisma {
      * Limit how many Clubs to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Club.storeItems
+   */
+  export type Club$storeItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreItem
+     */
+    select?: StoreItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreItem
+     */
+    omit?: StoreItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoreItemInclude<ExtArgs> | null
+    where?: StoreItemWhereInput
+    orderBy?: StoreItemOrderByWithRelationInput | StoreItemOrderByWithRelationInput[]
+    cursor?: StoreItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StoreItemScalarFieldEnum | StoreItemScalarFieldEnum[]
   }
 
   /**
@@ -21619,6 +21812,7 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory | null
     imageUrl: string | null
     isAvailable: boolean | null
+    clubId: string | null
   }
 
   export type StoreItemMaxAggregateOutputType = {
@@ -21629,6 +21823,7 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory | null
     imageUrl: string | null
     isAvailable: boolean | null
+    clubId: string | null
   }
 
   export type StoreItemCountAggregateOutputType = {
@@ -21639,6 +21834,7 @@ export namespace Prisma {
     category: number
     imageUrl: number
     isAvailable: number
+    clubId: number
     _all: number
   }
 
@@ -21659,6 +21855,7 @@ export namespace Prisma {
     category?: true
     imageUrl?: true
     isAvailable?: true
+    clubId?: true
   }
 
   export type StoreItemMaxAggregateInputType = {
@@ -21669,6 +21866,7 @@ export namespace Prisma {
     category?: true
     imageUrl?: true
     isAvailable?: true
+    clubId?: true
   }
 
   export type StoreItemCountAggregateInputType = {
@@ -21679,6 +21877,7 @@ export namespace Prisma {
     category?: true
     imageUrl?: true
     isAvailable?: true
+    clubId?: true
     _all?: true
   }
 
@@ -21776,6 +21975,7 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory
     imageUrl: string
     isAvailable: boolean
+    clubId: string | null
     _count: StoreItemCountAggregateOutputType | null
     _avg: StoreItemAvgAggregateOutputType | null
     _sum: StoreItemSumAggregateOutputType | null
@@ -21805,7 +22005,10 @@ export namespace Prisma {
     category?: boolean
     imageUrl?: boolean
     isAvailable?: boolean
+    clubId?: boolean
+    club?: boolean | StoreItem$clubArgs<ExtArgs>
     inventory?: boolean | StoreItem$inventoryArgs<ExtArgs>
+    equippedBy?: boolean | StoreItem$equippedByArgs<ExtArgs>
     _count?: boolean | StoreItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["storeItem"]>
 
@@ -21817,6 +22020,8 @@ export namespace Prisma {
     category?: boolean
     imageUrl?: boolean
     isAvailable?: boolean
+    clubId?: boolean
+    club?: boolean | StoreItem$clubArgs<ExtArgs>
   }, ExtArgs["result"]["storeItem"]>
 
   export type StoreItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -21827,6 +22032,8 @@ export namespace Prisma {
     category?: boolean
     imageUrl?: boolean
     isAvailable?: boolean
+    clubId?: boolean
+    club?: boolean | StoreItem$clubArgs<ExtArgs>
   }, ExtArgs["result"]["storeItem"]>
 
   export type StoreItemSelectScalar = {
@@ -21837,20 +22044,29 @@ export namespace Prisma {
     category?: boolean
     imageUrl?: boolean
     isAvailable?: boolean
+    clubId?: boolean
   }
 
-  export type StoreItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "priceJepy" | "category" | "imageUrl" | "isAvailable", ExtArgs["result"]["storeItem"]>
+  export type StoreItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "priceJepy" | "category" | "imageUrl" | "isAvailable" | "clubId", ExtArgs["result"]["storeItem"]>
   export type StoreItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | StoreItem$clubArgs<ExtArgs>
     inventory?: boolean | StoreItem$inventoryArgs<ExtArgs>
+    equippedBy?: boolean | StoreItem$equippedByArgs<ExtArgs>
     _count?: boolean | StoreItemCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type StoreItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type StoreItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type StoreItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | StoreItem$clubArgs<ExtArgs>
+  }
+  export type StoreItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | StoreItem$clubArgs<ExtArgs>
+  }
 
   export type $StoreItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "StoreItem"
     objects: {
+      club: Prisma.$ClubPayload<ExtArgs> | null
       inventory: Prisma.$UserInventoryPayload<ExtArgs>[]
+      equippedBy: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -21860,6 +22076,7 @@ export namespace Prisma {
       category: $Enums.StoreItemCategory
       imageUrl: string
       isAvailable: boolean
+      clubId: string | null
     }, ExtArgs["result"]["storeItem"]>
     composites: {}
   }
@@ -22254,7 +22471,9 @@ export namespace Prisma {
    */
   export interface Prisma__StoreItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends StoreItem$clubArgs<ExtArgs> = {}>(args?: Subset<T, StoreItem$clubArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     inventory<T extends StoreItem$inventoryArgs<ExtArgs> = {}>(args?: Subset<T, StoreItem$inventoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInventoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    equippedBy<T extends StoreItem$equippedByArgs<ExtArgs> = {}>(args?: Subset<T, StoreItem$equippedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -22291,6 +22510,7 @@ export namespace Prisma {
     readonly category: FieldRef<"StoreItem", 'StoreItemCategory'>
     readonly imageUrl: FieldRef<"StoreItem", 'String'>
     readonly isAvailable: FieldRef<"StoreItem", 'Boolean'>
+    readonly clubId: FieldRef<"StoreItem", 'String'>
   }
     
 
@@ -22540,6 +22760,10 @@ export namespace Prisma {
      */
     data: StoreItemCreateManyInput | StoreItemCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoreItemIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -22610,6 +22834,10 @@ export namespace Prisma {
      * Limit how many StoreItems to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoreItemIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -22679,6 +22907,25 @@ export namespace Prisma {
   }
 
   /**
+   * StoreItem.club
+   */
+  export type StoreItem$clubArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Club
+     */
+    select?: ClubSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Club
+     */
+    omit?: ClubOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubInclude<ExtArgs> | null
+    where?: ClubWhereInput
+  }
+
+  /**
    * StoreItem.inventory
    */
   export type StoreItem$inventoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22700,6 +22947,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserInventoryScalarFieldEnum | UserInventoryScalarFieldEnum[]
+  }
+
+  /**
+   * StoreItem.equippedBy
+   */
+  export type StoreItem$equippedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -29292,7 +29563,12 @@ export namespace Prisma {
     xp: 'xp',
     omjepCoins: 'omjepCoins',
     jepyCoins: 'jepyCoins',
-    isPremium: 'isPremium'
+    isPremium: 'isPremium',
+    avatarUrl: 'avatarUrl',
+    avatarRarity: 'avatarRarity',
+    activeFrameUrl: 'activeFrameUrl',
+    activeBannerUrl: 'activeBannerUrl',
+    activeJerseyId: 'activeJerseyId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -29312,7 +29588,9 @@ export namespace Prisma {
     description: 'description',
     manager_id: 'manager_id',
     validation_status: 'validation_status',
-    presidentPremium: 'presidentPremium'
+    presidentPremium: 'presidentPremium',
+    primaryColor: 'primaryColor',
+    secondaryColor: 'secondaryColor'
   };
 
   export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
@@ -29497,7 +29775,8 @@ export namespace Prisma {
     priceJepy: 'priceJepy',
     category: 'category',
     imageUrl: 'imageUrl',
-    isAvailable: 'isAvailable'
+    isAvailable: 'isAvailable',
+    clubId: 'clubId'
   };
 
   export type StoreItemScalarFieldEnum = (typeof StoreItemScalarFieldEnum)[keyof typeof StoreItemScalarFieldEnum]
@@ -29703,6 +29982,20 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'AvatarRarity'
+   */
+  export type EnumAvatarRarityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AvatarRarity'>
+    
+
+
+  /**
+   * Reference to a field of type 'AvatarRarity[]'
+   */
+  export type ListEnumAvatarRarityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AvatarRarity[]'>
     
 
 
@@ -30009,6 +30302,12 @@ export namespace Prisma {
     omjepCoins?: IntFilter<"User"> | number
     jepyCoins?: IntFilter<"User"> | number
     isPremium?: BoolFilter<"User"> | boolean
+    avatarUrl?: StringNullableFilter<"User"> | string | null
+    avatarRarity?: EnumAvatarRarityFilter<"User"> | $Enums.AvatarRarity
+    activeFrameUrl?: StringNullableFilter<"User"> | string | null
+    activeBannerUrl?: StringNullableFilter<"User"> | string | null
+    activeJerseyId?: UuidNullableFilter<"User"> | string | null
+    activeJersey?: XOR<StoreItemNullableScalarRelationFilter, StoreItemWhereInput> | null
     contracts?: ContractListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
     sentInvitations?: InvitationListRelationFilter
@@ -30045,6 +30344,12 @@ export namespace Prisma {
     omjepCoins?: SortOrder
     jepyCoins?: SortOrder
     isPremium?: SortOrder
+    avatarUrl?: SortOrderInput | SortOrder
+    avatarRarity?: SortOrder
+    activeFrameUrl?: SortOrderInput | SortOrder
+    activeBannerUrl?: SortOrderInput | SortOrder
+    activeJerseyId?: SortOrderInput | SortOrder
+    activeJersey?: StoreItemOrderByWithRelationInput
     contracts?: ContractOrderByRelationAggregateInput
     receivedInvitations?: InvitationOrderByRelationAggregateInput
     sentInvitations?: InvitationOrderByRelationAggregateInput
@@ -30084,6 +30389,12 @@ export namespace Prisma {
     omjepCoins?: IntFilter<"User"> | number
     jepyCoins?: IntFilter<"User"> | number
     isPremium?: BoolFilter<"User"> | boolean
+    avatarUrl?: StringNullableFilter<"User"> | string | null
+    avatarRarity?: EnumAvatarRarityFilter<"User"> | $Enums.AvatarRarity
+    activeFrameUrl?: StringNullableFilter<"User"> | string | null
+    activeBannerUrl?: StringNullableFilter<"User"> | string | null
+    activeJerseyId?: UuidNullableFilter<"User"> | string | null
+    activeJersey?: XOR<StoreItemNullableScalarRelationFilter, StoreItemWhereInput> | null
     contracts?: ContractListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
     sentInvitations?: InvitationListRelationFilter
@@ -30120,6 +30431,11 @@ export namespace Prisma {
     omjepCoins?: SortOrder
     jepyCoins?: SortOrder
     isPremium?: SortOrder
+    avatarUrl?: SortOrderInput | SortOrder
+    avatarRarity?: SortOrder
+    activeFrameUrl?: SortOrderInput | SortOrder
+    activeBannerUrl?: SortOrderInput | SortOrder
+    activeJerseyId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -30147,6 +30463,11 @@ export namespace Prisma {
     omjepCoins?: IntWithAggregatesFilter<"User"> | number
     jepyCoins?: IntWithAggregatesFilter<"User"> | number
     isPremium?: BoolWithAggregatesFilter<"User"> | boolean
+    avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    avatarRarity?: EnumAvatarRarityWithAggregatesFilter<"User"> | $Enums.AvatarRarity
+    activeFrameUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    activeBannerUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    activeJerseyId?: UuidNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type ClubWhereInput = {
@@ -30167,6 +30488,9 @@ export namespace Prisma {
     manager_id?: UuidNullableFilter<"Club"> | string | null
     validation_status?: EnumValidationStatusFilter<"Club"> | $Enums.ValidationStatus
     presidentPremium?: BoolFilter<"Club"> | boolean
+    primaryColor?: StringNullableFilter<"Club"> | string | null
+    secondaryColor?: StringNullableFilter<"Club"> | string | null
+    storeItems?: StoreItemListRelationFilter
     competitions?: CompetitionTeamListRelationFilter
     contracts?: ContractListRelationFilter
     invitations?: InvitationListRelationFilter
@@ -30198,6 +30522,9 @@ export namespace Prisma {
     manager_id?: SortOrderInput | SortOrder
     validation_status?: SortOrder
     presidentPremium?: SortOrder
+    primaryColor?: SortOrderInput | SortOrder
+    secondaryColor?: SortOrderInput | SortOrder
+    storeItems?: StoreItemOrderByRelationAggregateInput
     competitions?: CompetitionTeamOrderByRelationAggregateInput
     contracts?: ContractOrderByRelationAggregateInput
     invitations?: InvitationOrderByRelationAggregateInput
@@ -30232,6 +30559,9 @@ export namespace Prisma {
     manager_id?: UuidNullableFilter<"Club"> | string | null
     validation_status?: EnumValidationStatusFilter<"Club"> | $Enums.ValidationStatus
     presidentPremium?: BoolFilter<"Club"> | boolean
+    primaryColor?: StringNullableFilter<"Club"> | string | null
+    secondaryColor?: StringNullableFilter<"Club"> | string | null
+    storeItems?: StoreItemListRelationFilter
     competitions?: CompetitionTeamListRelationFilter
     contracts?: ContractListRelationFilter
     invitations?: InvitationListRelationFilter
@@ -30263,6 +30593,8 @@ export namespace Prisma {
     manager_id?: SortOrderInput | SortOrder
     validation_status?: SortOrder
     presidentPremium?: SortOrder
+    primaryColor?: SortOrderInput | SortOrder
+    secondaryColor?: SortOrderInput | SortOrder
     _count?: ClubCountOrderByAggregateInput
     _avg?: ClubAvgOrderByAggregateInput
     _max?: ClubMaxOrderByAggregateInput
@@ -30288,6 +30620,8 @@ export namespace Prisma {
     manager_id?: UuidNullableWithAggregatesFilter<"Club"> | string | null
     validation_status?: EnumValidationStatusWithAggregatesFilter<"Club"> | $Enums.ValidationStatus
     presidentPremium?: BoolWithAggregatesFilter<"Club"> | boolean
+    primaryColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    secondaryColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
   }
 
   export type TeamMemberWhereInput = {
@@ -31235,7 +31569,10 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryFilter<"StoreItem"> | $Enums.StoreItemCategory
     imageUrl?: StringFilter<"StoreItem"> | string
     isAvailable?: BoolFilter<"StoreItem"> | boolean
+    clubId?: UuidNullableFilter<"StoreItem"> | string | null
+    club?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
     inventory?: UserInventoryListRelationFilter
+    equippedBy?: UserListRelationFilter
   }
 
   export type StoreItemOrderByWithRelationInput = {
@@ -31246,7 +31583,10 @@ export namespace Prisma {
     category?: SortOrder
     imageUrl?: SortOrder
     isAvailable?: SortOrder
+    clubId?: SortOrderInput | SortOrder
+    club?: ClubOrderByWithRelationInput
     inventory?: UserInventoryOrderByRelationAggregateInput
+    equippedBy?: UserOrderByRelationAggregateInput
   }
 
   export type StoreItemWhereUniqueInput = Prisma.AtLeast<{
@@ -31260,7 +31600,10 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryFilter<"StoreItem"> | $Enums.StoreItemCategory
     imageUrl?: StringFilter<"StoreItem"> | string
     isAvailable?: BoolFilter<"StoreItem"> | boolean
+    clubId?: UuidNullableFilter<"StoreItem"> | string | null
+    club?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
     inventory?: UserInventoryListRelationFilter
+    equippedBy?: UserListRelationFilter
   }, "id">
 
   export type StoreItemOrderByWithAggregationInput = {
@@ -31271,6 +31614,7 @@ export namespace Prisma {
     category?: SortOrder
     imageUrl?: SortOrder
     isAvailable?: SortOrder
+    clubId?: SortOrderInput | SortOrder
     _count?: StoreItemCountOrderByAggregateInput
     _avg?: StoreItemAvgOrderByAggregateInput
     _max?: StoreItemMaxOrderByAggregateInput
@@ -31289,6 +31633,7 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryWithAggregatesFilter<"StoreItem"> | $Enums.StoreItemCategory
     imageUrl?: StringWithAggregatesFilter<"StoreItem"> | string
     isAvailable?: BoolWithAggregatesFilter<"StoreItem"> | boolean
+    clubId?: UuidNullableWithAggregatesFilter<"StoreItem"> | string | null
   }
 
   export type UserInventoryWhereInput = {
@@ -31691,6 +32036,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -31727,6 +32077,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -31763,6 +32118,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -31799,6 +32159,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -31835,6 +32200,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -31854,6 +32224,10 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -31873,6 +32247,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClubCreateInput = {
@@ -31889,6 +32268,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -31920,6 +32302,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -31949,6 +32334,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -31980,6 +32368,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -32010,6 +32401,8 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
   }
 
   export type ClubUpdateManyMutationInput = {
@@ -32026,6 +32419,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClubUncheckedUpdateManyInput = {
@@ -32043,6 +32438,8 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TeamMemberCreateInput = {
@@ -32977,7 +33374,9 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory
     imageUrl: string
     isAvailable?: boolean
+    club?: ClubCreateNestedOneWithoutStoreItemsInput
     inventory?: UserInventoryCreateNestedManyWithoutItemInput
+    equippedBy?: UserCreateNestedManyWithoutActiveJerseyInput
   }
 
   export type StoreItemUncheckedCreateInput = {
@@ -32988,7 +33387,9 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory
     imageUrl: string
     isAvailable?: boolean
+    clubId?: string | null
     inventory?: UserInventoryUncheckedCreateNestedManyWithoutItemInput
+    equippedBy?: UserUncheckedCreateNestedManyWithoutActiveJerseyInput
   }
 
   export type StoreItemUpdateInput = {
@@ -32999,7 +33400,9 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
     imageUrl?: StringFieldUpdateOperationsInput | string
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutStoreItemsNestedInput
     inventory?: UserInventoryUpdateManyWithoutItemNestedInput
+    equippedBy?: UserUpdateManyWithoutActiveJerseyNestedInput
   }
 
   export type StoreItemUncheckedUpdateInput = {
@@ -33010,7 +33413,9 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
     imageUrl?: StringFieldUpdateOperationsInput | string
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: NullableStringFieldUpdateOperationsInput | string | null
     inventory?: UserInventoryUncheckedUpdateManyWithoutItemNestedInput
+    equippedBy?: UserUncheckedUpdateManyWithoutActiveJerseyNestedInput
   }
 
   export type StoreItemCreateManyInput = {
@@ -33021,6 +33426,7 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory
     imageUrl: string
     isAvailable?: boolean
+    clubId?: string | null
   }
 
   export type StoreItemUpdateManyMutationInput = {
@@ -33041,6 +33447,7 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
     imageUrl?: StringFieldUpdateOperationsInput | string
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserInventoryCreateInput = {
@@ -33506,6 +33913,30 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type EnumAvatarRarityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AvatarRarity | EnumAvatarRarityFieldRefInput<$PrismaModel>
+    in?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAvatarRarityFilter<$PrismaModel> | $Enums.AvatarRarity
+  }
+
+  export type UuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type StoreItemNullableScalarRelationFilter = {
+    is?: StoreItemWhereInput | null
+    isNot?: StoreItemWhereInput | null
+  }
+
   export type ContractListRelationFilter = {
     every?: ContractWhereInput
     some?: ContractWhereInput
@@ -33673,6 +34104,11 @@ export namespace Prisma {
     omjepCoins?: SortOrder
     jepyCoins?: SortOrder
     isPremium?: SortOrder
+    avatarUrl?: SortOrder
+    avatarRarity?: SortOrder
+    activeFrameUrl?: SortOrder
+    activeBannerUrl?: SortOrder
+    activeJerseyId?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -33699,6 +34135,11 @@ export namespace Prisma {
     omjepCoins?: SortOrder
     jepyCoins?: SortOrder
     isPremium?: SortOrder
+    avatarUrl?: SortOrder
+    avatarRarity?: SortOrder
+    activeFrameUrl?: SortOrder
+    activeBannerUrl?: SortOrder
+    activeJerseyId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -33718,6 +34159,11 @@ export namespace Prisma {
     omjepCoins?: SortOrder
     jepyCoins?: SortOrder
     isPremium?: SortOrder
+    avatarUrl?: SortOrder
+    avatarRarity?: SortOrder
+    activeFrameUrl?: SortOrder
+    activeBannerUrl?: SortOrder
+    activeJerseyId?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -33836,6 +34282,31 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type EnumAvatarRarityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AvatarRarity | EnumAvatarRarityFieldRefInput<$PrismaModel>
+    in?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAvatarRarityWithAggregatesFilter<$PrismaModel> | $Enums.AvatarRarity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAvatarRarityFilter<$PrismaModel>
+    _max?: NestedEnumAvatarRarityFilter<$PrismaModel>
+  }
+
+  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type EnumPlatformFilter<$PrismaModel = never> = {
     equals?: $Enums.Platform | EnumPlatformFieldRefInput<$PrismaModel>
     in?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
@@ -33854,23 +34325,17 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type UuidNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
-  }
-
   export type EnumValidationStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ValidationStatus | EnumValidationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ValidationStatus[] | ListEnumValidationStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.ValidationStatus[] | ListEnumValidationStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumValidationStatusFilter<$PrismaModel> | $Enums.ValidationStatus
+  }
+
+  export type StoreItemListRelationFilter = {
+    every?: StoreItemWhereInput
+    some?: StoreItemWhereInput
+    none?: StoreItemWhereInput
   }
 
   export type CompetitionTeamListRelationFilter = {
@@ -33888,6 +34353,10 @@ export namespace Prisma {
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
+  }
+
+  export type StoreItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type CompetitionTeamOrderByRelationAggregateInput = {
@@ -33913,6 +34382,8 @@ export namespace Prisma {
     manager_id?: SortOrder
     validation_status?: SortOrder
     presidentPremium?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
   }
 
   export type ClubAvgOrderByAggregateInput = {
@@ -33936,6 +34407,8 @@ export namespace Prisma {
     manager_id?: SortOrder
     validation_status?: SortOrder
     presidentPremium?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
   }
 
   export type ClubMinOrderByAggregateInput = {
@@ -33953,6 +34426,8 @@ export namespace Prisma {
     manager_id?: SortOrder
     validation_status?: SortOrder
     presidentPremium?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
   }
 
   export type ClubSumOrderByAggregateInput = {
@@ -33985,21 +34460,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type EnumValidationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -34827,6 +35287,16 @@ export namespace Prisma {
     not?: NestedEnumStoreItemCategoryFilter<$PrismaModel> | $Enums.StoreItemCategory
   }
 
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type StoreItemCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -34835,6 +35305,7 @@ export namespace Prisma {
     category?: SortOrder
     imageUrl?: SortOrder
     isAvailable?: SortOrder
+    clubId?: SortOrder
   }
 
   export type StoreItemAvgOrderByAggregateInput = {
@@ -34849,6 +35320,7 @@ export namespace Prisma {
     category?: SortOrder
     imageUrl?: SortOrder
     isAvailable?: SortOrder
+    clubId?: SortOrder
   }
 
   export type StoreItemMinOrderByAggregateInput = {
@@ -34859,6 +35331,7 @@ export namespace Prisma {
     category?: SortOrder
     imageUrl?: SortOrder
     isAvailable?: SortOrder
+    clubId?: SortOrder
   }
 
   export type StoreItemSumOrderByAggregateInput = {
@@ -35195,6 +35668,12 @@ export namespace Prisma {
     _max?: NestedEnumNewsEventTypeFilter<$PrismaModel>
   }
 
+  export type StoreItemCreateNestedOneWithoutEquippedByInput = {
+    create?: XOR<StoreItemCreateWithoutEquippedByInput, StoreItemUncheckedCreateWithoutEquippedByInput>
+    connectOrCreate?: StoreItemCreateOrConnectWithoutEquippedByInput
+    connect?: StoreItemWhereUniqueInput
+  }
+
   export type ContractCreateNestedManyWithoutUserInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -35461,6 +35940,20 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type EnumAvatarRarityFieldUpdateOperationsInput = {
+    set?: $Enums.AvatarRarity
+  }
+
+  export type StoreItemUpdateOneWithoutEquippedByNestedInput = {
+    create?: XOR<StoreItemCreateWithoutEquippedByInput, StoreItemUncheckedCreateWithoutEquippedByInput>
+    connectOrCreate?: StoreItemCreateOrConnectWithoutEquippedByInput
+    upsert?: StoreItemUpsertWithoutEquippedByInput
+    disconnect?: StoreItemWhereInput | boolean
+    delete?: StoreItemWhereInput | boolean
+    connect?: StoreItemWhereUniqueInput
+    update?: XOR<XOR<StoreItemUpdateToOneWithWhereWithoutEquippedByInput, StoreItemUpdateWithoutEquippedByInput>, StoreItemUncheckedUpdateWithoutEquippedByInput>
   }
 
   export type ContractUpdateManyWithoutUserNestedInput = {
@@ -35931,6 +36424,13 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type StoreItemCreateNestedManyWithoutClubInput = {
+    create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
+    createMany?: StoreItemCreateManyClubInputEnvelope
+    connect?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+  }
+
   export type CompetitionTeamCreateNestedManyWithoutTeamInput = {
     create?: XOR<CompetitionTeamCreateWithoutTeamInput, CompetitionTeamUncheckedCreateWithoutTeamInput> | CompetitionTeamCreateWithoutTeamInput[] | CompetitionTeamUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: CompetitionTeamCreateOrConnectWithoutTeamInput | CompetitionTeamCreateOrConnectWithoutTeamInput[]
@@ -36026,6 +36526,13 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutTeamInput | MessageCreateOrConnectWithoutTeamInput[]
     createMany?: MessageCreateManyTeamInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type StoreItemUncheckedCreateNestedManyWithoutClubInput = {
+    create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
+    createMany?: StoreItemCreateManyClubInputEnvelope
+    connect?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
   }
 
   export type CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput = {
@@ -36133,6 +36640,20 @@ export namespace Prisma {
 
   export type EnumValidationStatusFieldUpdateOperationsInput = {
     set?: $Enums.ValidationStatus
+  }
+
+  export type StoreItemUpdateManyWithoutClubNestedInput = {
+    create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
+    upsert?: StoreItemUpsertWithWhereUniqueWithoutClubInput | StoreItemUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: StoreItemCreateManyClubInputEnvelope
+    set?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    disconnect?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    delete?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    connect?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    update?: StoreItemUpdateWithWhereUniqueWithoutClubInput | StoreItemUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: StoreItemUpdateManyWithWhereWithoutClubInput | StoreItemUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: StoreItemScalarWhereInput | StoreItemScalarWhereInput[]
   }
 
   export type CompetitionTeamUpdateManyWithoutTeamNestedInput = {
@@ -36325,6 +36846,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutTeamInput | MessageUpdateWithWhereUniqueWithoutTeamInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutTeamInput | MessageUpdateManyWithWhereWithoutTeamInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type StoreItemUncheckedUpdateManyWithoutClubNestedInput = {
+    create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
+    upsert?: StoreItemUpsertWithWhereUniqueWithoutClubInput | StoreItemUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: StoreItemCreateManyClubInputEnvelope
+    set?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    disconnect?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    delete?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    connect?: StoreItemWhereUniqueInput | StoreItemWhereUniqueInput[]
+    update?: StoreItemUpdateWithWhereUniqueWithoutClubInput | StoreItemUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: StoreItemUpdateManyWithWhereWithoutClubInput | StoreItemUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: StoreItemScalarWhereInput | StoreItemScalarWhereInput[]
   }
 
   export type CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput = {
@@ -37163,11 +37698,24 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
   }
 
+  export type ClubCreateNestedOneWithoutStoreItemsInput = {
+    create?: XOR<ClubCreateWithoutStoreItemsInput, ClubUncheckedCreateWithoutStoreItemsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutStoreItemsInput
+    connect?: ClubWhereUniqueInput
+  }
+
   export type UserInventoryCreateNestedManyWithoutItemInput = {
     create?: XOR<UserInventoryCreateWithoutItemInput, UserInventoryUncheckedCreateWithoutItemInput> | UserInventoryCreateWithoutItemInput[] | UserInventoryUncheckedCreateWithoutItemInput[]
     connectOrCreate?: UserInventoryCreateOrConnectWithoutItemInput | UserInventoryCreateOrConnectWithoutItemInput[]
     createMany?: UserInventoryCreateManyItemInputEnvelope
     connect?: UserInventoryWhereUniqueInput | UserInventoryWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutActiveJerseyInput = {
+    create?: XOR<UserCreateWithoutActiveJerseyInput, UserUncheckedCreateWithoutActiveJerseyInput> | UserCreateWithoutActiveJerseyInput[] | UserUncheckedCreateWithoutActiveJerseyInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutActiveJerseyInput | UserCreateOrConnectWithoutActiveJerseyInput[]
+    createMany?: UserCreateManyActiveJerseyInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type UserInventoryUncheckedCreateNestedManyWithoutItemInput = {
@@ -37177,8 +37725,25 @@ export namespace Prisma {
     connect?: UserInventoryWhereUniqueInput | UserInventoryWhereUniqueInput[]
   }
 
+  export type UserUncheckedCreateNestedManyWithoutActiveJerseyInput = {
+    create?: XOR<UserCreateWithoutActiveJerseyInput, UserUncheckedCreateWithoutActiveJerseyInput> | UserCreateWithoutActiveJerseyInput[] | UserUncheckedCreateWithoutActiveJerseyInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutActiveJerseyInput | UserCreateOrConnectWithoutActiveJerseyInput[]
+    createMany?: UserCreateManyActiveJerseyInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type EnumStoreItemCategoryFieldUpdateOperationsInput = {
     set?: $Enums.StoreItemCategory
+  }
+
+  export type ClubUpdateOneWithoutStoreItemsNestedInput = {
+    create?: XOR<ClubCreateWithoutStoreItemsInput, ClubUncheckedCreateWithoutStoreItemsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutStoreItemsInput
+    upsert?: ClubUpsertWithoutStoreItemsInput
+    disconnect?: ClubWhereInput | boolean
+    delete?: ClubWhereInput | boolean
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutStoreItemsInput, ClubUpdateWithoutStoreItemsInput>, ClubUncheckedUpdateWithoutStoreItemsInput>
   }
 
   export type UserInventoryUpdateManyWithoutItemNestedInput = {
@@ -37195,6 +37760,20 @@ export namespace Prisma {
     deleteMany?: UserInventoryScalarWhereInput | UserInventoryScalarWhereInput[]
   }
 
+  export type UserUpdateManyWithoutActiveJerseyNestedInput = {
+    create?: XOR<UserCreateWithoutActiveJerseyInput, UserUncheckedCreateWithoutActiveJerseyInput> | UserCreateWithoutActiveJerseyInput[] | UserUncheckedCreateWithoutActiveJerseyInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutActiveJerseyInput | UserCreateOrConnectWithoutActiveJerseyInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutActiveJerseyInput | UserUpsertWithWhereUniqueWithoutActiveJerseyInput[]
+    createMany?: UserCreateManyActiveJerseyInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutActiveJerseyInput | UserUpdateWithWhereUniqueWithoutActiveJerseyInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutActiveJerseyInput | UserUpdateManyWithWhereWithoutActiveJerseyInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
   export type UserInventoryUncheckedUpdateManyWithoutItemNestedInput = {
     create?: XOR<UserInventoryCreateWithoutItemInput, UserInventoryUncheckedCreateWithoutItemInput> | UserInventoryCreateWithoutItemInput[] | UserInventoryUncheckedCreateWithoutItemInput[]
     connectOrCreate?: UserInventoryCreateOrConnectWithoutItemInput | UserInventoryCreateOrConnectWithoutItemInput[]
@@ -37207,6 +37786,20 @@ export namespace Prisma {
     update?: UserInventoryUpdateWithWhereUniqueWithoutItemInput | UserInventoryUpdateWithWhereUniqueWithoutItemInput[]
     updateMany?: UserInventoryUpdateManyWithWhereWithoutItemInput | UserInventoryUpdateManyWithWhereWithoutItemInput[]
     deleteMany?: UserInventoryScalarWhereInput | UserInventoryScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutActiveJerseyNestedInput = {
+    create?: XOR<UserCreateWithoutActiveJerseyInput, UserUncheckedCreateWithoutActiveJerseyInput> | UserCreateWithoutActiveJerseyInput[] | UserUncheckedCreateWithoutActiveJerseyInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutActiveJerseyInput | UserCreateOrConnectWithoutActiveJerseyInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutActiveJerseyInput | UserUpsertWithWhereUniqueWithoutActiveJerseyInput[]
+    createMany?: UserCreateManyActiveJerseyInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutActiveJerseyInput | UserUpdateWithWhereUniqueWithoutActiveJerseyInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutActiveJerseyInput | UserUpdateManyWithWhereWithoutActiveJerseyInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutInventoryInput = {
@@ -37477,6 +38070,24 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedEnumAvatarRarityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AvatarRarity | EnumAvatarRarityFieldRefInput<$PrismaModel>
+    in?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAvatarRarityFilter<$PrismaModel> | $Enums.AvatarRarity
+  }
+
+  export type NestedUuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -37605,14 +38216,17 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedEnumPlatformFilter<$PrismaModel = never> = {
-    equals?: $Enums.Platform | EnumPlatformFieldRefInput<$PrismaModel>
-    in?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
-    not?: NestedEnumPlatformFilter<$PrismaModel> | $Enums.Platform
+  export type NestedEnumAvatarRarityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AvatarRarity | EnumAvatarRarityFieldRefInput<$PrismaModel>
+    in?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AvatarRarity[] | ListEnumAvatarRarityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAvatarRarityWithAggregatesFilter<$PrismaModel> | $Enums.AvatarRarity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAvatarRarityFilter<$PrismaModel>
+    _max?: NestedEnumAvatarRarityFilter<$PrismaModel>
   }
 
-  export type NestedUuidNullableFilter<$PrismaModel = never> = {
+  export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -37620,7 +38234,17 @@ export namespace Prisma {
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
     gte?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPlatformFilter<$PrismaModel = never> = {
+    equals?: $Enums.Platform | EnumPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Platform[] | ListEnumPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlatformFilter<$PrismaModel> | $Enums.Platform
   }
 
   export type NestedEnumValidationStatusFilter<$PrismaModel = never> = {
@@ -37654,20 +38278,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumValidationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -38050,6 +38660,35 @@ export namespace Prisma {
     _max?: NestedEnumNewsEventTypeFilter<$PrismaModel>
   }
 
+  export type StoreItemCreateWithoutEquippedByInput = {
+    id?: string
+    name: string
+    description: string
+    priceJepy: number
+    category: $Enums.StoreItemCategory
+    imageUrl: string
+    isAvailable?: boolean
+    club?: ClubCreateNestedOneWithoutStoreItemsInput
+    inventory?: UserInventoryCreateNestedManyWithoutItemInput
+  }
+
+  export type StoreItemUncheckedCreateWithoutEquippedByInput = {
+    id?: string
+    name: string
+    description: string
+    priceJepy: number
+    category: $Enums.StoreItemCategory
+    imageUrl: string
+    isAvailable?: boolean
+    clubId?: string | null
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutItemInput
+  }
+
+  export type StoreItemCreateOrConnectWithoutEquippedByInput = {
+    where: StoreItemWhereUniqueInput
+    create: XOR<StoreItemCreateWithoutEquippedByInput, StoreItemUncheckedCreateWithoutEquippedByInput>
+  }
+
   export type ContractCreateWithoutUserInput = {
     id?: string
     salary: number
@@ -38281,6 +38920,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -38310,6 +38952,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -38557,6 +39202,41 @@ export namespace Prisma {
   export type TransactionCreateManyUserInputEnvelope = {
     data: TransactionCreateManyUserInput | TransactionCreateManyUserInput[]
     skipDuplicates?: boolean
+  }
+
+  export type StoreItemUpsertWithoutEquippedByInput = {
+    update: XOR<StoreItemUpdateWithoutEquippedByInput, StoreItemUncheckedUpdateWithoutEquippedByInput>
+    create: XOR<StoreItemCreateWithoutEquippedByInput, StoreItemUncheckedCreateWithoutEquippedByInput>
+    where?: StoreItemWhereInput
+  }
+
+  export type StoreItemUpdateToOneWithWhereWithoutEquippedByInput = {
+    where?: StoreItemWhereInput
+    data: XOR<StoreItemUpdateWithoutEquippedByInput, StoreItemUncheckedUpdateWithoutEquippedByInput>
+  }
+
+  export type StoreItemUpdateWithoutEquippedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    priceJepy?: IntFieldUpdateOperationsInput | number
+    category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutStoreItemsNestedInput
+    inventory?: UserInventoryUpdateManyWithoutItemNestedInput
+  }
+
+  export type StoreItemUncheckedUpdateWithoutEquippedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    priceJepy?: IntFieldUpdateOperationsInput | number
+    category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: NullableStringFieldUpdateOperationsInput | string | null
+    inventory?: UserInventoryUncheckedUpdateManyWithoutItemNestedInput
   }
 
   export type ContractUpsertWithWhereUniqueWithoutUserInput = {
@@ -38812,6 +39492,8 @@ export namespace Prisma {
     manager_id?: UuidNullableFilter<"Club"> | string | null
     validation_status?: EnumValidationStatusFilter<"Club"> | $Enums.ValidationStatus
     presidentPremium?: BoolFilter<"Club"> | boolean
+    primaryColor?: StringNullableFilter<"Club"> | string | null
+    secondaryColor?: StringNullableFilter<"Club"> | string | null
   }
 
   export type TransferOfferUpsertWithWhereUniqueWithoutPlayerInput = {
@@ -39031,6 +39713,40 @@ export namespace Prisma {
     type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
     description?: StringNullableFilter<"Transaction"> | string | null
     created_at?: DateTimeFilter<"Transaction"> | Date | string
+  }
+
+  export type StoreItemCreateWithoutClubInput = {
+    id?: string
+    name: string
+    description: string
+    priceJepy: number
+    category: $Enums.StoreItemCategory
+    imageUrl: string
+    isAvailable?: boolean
+    inventory?: UserInventoryCreateNestedManyWithoutItemInput
+    equippedBy?: UserCreateNestedManyWithoutActiveJerseyInput
+  }
+
+  export type StoreItemUncheckedCreateWithoutClubInput = {
+    id?: string
+    name: string
+    description: string
+    priceJepy: number
+    category: $Enums.StoreItemCategory
+    imageUrl: string
+    isAvailable?: boolean
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutItemInput
+    equippedBy?: UserUncheckedCreateNestedManyWithoutActiveJerseyInput
+  }
+
+  export type StoreItemCreateOrConnectWithoutClubInput = {
+    where: StoreItemWhereUniqueInput
+    create: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput>
+  }
+
+  export type StoreItemCreateManyClubInputEnvelope = {
+    data: StoreItemCreateManyClubInput | StoreItemCreateManyClubInput[]
+    skipDuplicates?: boolean
   }
 
   export type CompetitionTeamCreateWithoutTeamInput = {
@@ -39294,6 +40010,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -39329,6 +40050,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -39506,6 +40232,36 @@ export namespace Prisma {
   export type MessageCreateManyTeamInputEnvelope = {
     data: MessageCreateManyTeamInput | MessageCreateManyTeamInput[]
     skipDuplicates?: boolean
+  }
+
+  export type StoreItemUpsertWithWhereUniqueWithoutClubInput = {
+    where: StoreItemWhereUniqueInput
+    update: XOR<StoreItemUpdateWithoutClubInput, StoreItemUncheckedUpdateWithoutClubInput>
+    create: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput>
+  }
+
+  export type StoreItemUpdateWithWhereUniqueWithoutClubInput = {
+    where: StoreItemWhereUniqueInput
+    data: XOR<StoreItemUpdateWithoutClubInput, StoreItemUncheckedUpdateWithoutClubInput>
+  }
+
+  export type StoreItemUpdateManyWithWhereWithoutClubInput = {
+    where: StoreItemScalarWhereInput
+    data: XOR<StoreItemUpdateManyMutationInput, StoreItemUncheckedUpdateManyWithoutClubInput>
+  }
+
+  export type StoreItemScalarWhereInput = {
+    AND?: StoreItemScalarWhereInput | StoreItemScalarWhereInput[]
+    OR?: StoreItemScalarWhereInput[]
+    NOT?: StoreItemScalarWhereInput | StoreItemScalarWhereInput[]
+    id?: UuidFilter<"StoreItem"> | string
+    name?: StringFilter<"StoreItem"> | string
+    description?: StringFilter<"StoreItem"> | string
+    priceJepy?: IntFilter<"StoreItem"> | number
+    category?: EnumStoreItemCategoryFilter<"StoreItem"> | $Enums.StoreItemCategory
+    imageUrl?: StringFilter<"StoreItem"> | string
+    isAvailable?: BoolFilter<"StoreItem"> | boolean
+    clubId?: UuidNullableFilter<"StoreItem"> | string | null
   }
 
   export type CompetitionTeamUpsertWithWhereUniqueWithoutTeamInput = {
@@ -39691,6 +40447,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -39726,6 +40487,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -39838,6 +40604,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -39868,6 +40637,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -39904,6 +40676,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -39939,6 +40716,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -39987,6 +40769,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -40017,6 +40802,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -40059,6 +40847,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -40094,6 +40887,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -40129,6 +40927,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -40164,6 +40967,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -40215,6 +41023,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -40250,6 +41063,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -40405,6 +41223,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
@@ -40435,6 +41256,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
@@ -40512,6 +41336,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
@@ -40542,6 +41369,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
@@ -40626,6 +41456,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -40656,6 +41489,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -40716,6 +41552,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -40746,6 +41585,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -40852,6 +41694,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -40882,6 +41727,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -40954,6 +41802,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -40984,6 +41835,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -41067,6 +41921,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -41097,6 +41954,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -41133,6 +41993,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -41168,6 +42033,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -41261,6 +42131,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -41291,6 +42164,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -41333,6 +42209,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -41368,6 +42249,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -41442,6 +42328,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -41477,6 +42368,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -41514,6 +42410,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -41544,6 +42443,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -41636,6 +42538,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -41671,6 +42578,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -41714,6 +42626,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -41744,6 +42659,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -41775,6 +42693,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -41810,6 +42733,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -41847,6 +42775,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -41877,6 +42808,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -41924,6 +42858,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -41959,6 +42898,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -42002,6 +42946,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -42032,6 +42979,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -42063,6 +43013,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
@@ -42098,6 +43053,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
@@ -42138,6 +43098,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
@@ -42173,6 +43138,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
@@ -42210,6 +43180,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
@@ -42240,6 +43213,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
@@ -42287,6 +43263,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
@@ -42322,6 +43303,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
@@ -42368,6 +43354,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
@@ -42403,6 +43394,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
@@ -42446,6 +43442,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
@@ -42476,6 +43475,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
@@ -42504,6 +43506,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
@@ -42534,6 +43539,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
@@ -42570,6 +43578,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
@@ -42605,6 +43618,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
@@ -42653,6 +43671,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
@@ -42683,6 +43704,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
@@ -42725,6 +43749,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
@@ -42760,6 +43789,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
@@ -42792,6 +43826,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -42822,6 +43859,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -42858,6 +43898,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -42893,6 +43938,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -42941,6 +43991,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -42971,6 +44024,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -43013,6 +44069,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -43048,6 +44109,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -43080,6 +44146,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -43110,6 +44179,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -43146,6 +44218,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -43181,6 +44258,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -43218,6 +44300,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -43248,6 +44333,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -43292,6 +44380,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -43322,6 +44413,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -43364,6 +44458,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -43399,6 +44498,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -43442,6 +44546,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -43472,6 +44579,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -43503,6 +44613,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -43538,6 +44653,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -43589,6 +44709,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -43624,6 +44749,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -43640,6 +44770,75 @@ export namespace Prisma {
     messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ClubCreateWithoutStoreItemsInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    manager?: UserCreateNestedOneWithoutManagedClubsInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
+  }
+
+  export type ClubUncheckedCreateWithoutStoreItemsInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    manager_id?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type ClubCreateOrConnectWithoutStoreItemsInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutStoreItemsInput, ClubUncheckedCreateWithoutStoreItemsInput>
   }
 
   export type UserInventoryCreateWithoutItemInput = {
@@ -43664,6 +44863,171 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserCreateWithoutActiveJerseyInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    managedClubs?: ClubCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryCreateNestedManyWithoutUserInput
+    predictions?: PredictionCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutActiveJerseyInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    managedClubs?: ClubUncheckedCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutActiveJerseyInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutActiveJerseyInput, UserUncheckedCreateWithoutActiveJerseyInput>
+  }
+
+  export type UserCreateManyActiveJerseyInputEnvelope = {
+    data: UserCreateManyActiveJerseyInput | UserCreateManyActiveJerseyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubUpsertWithoutStoreItemsInput = {
+    update: XOR<ClubUpdateWithoutStoreItemsInput, ClubUncheckedUpdateWithoutStoreItemsInput>
+    create: XOR<ClubCreateWithoutStoreItemsInput, ClubUncheckedCreateWithoutStoreItemsInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutStoreItemsInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutStoreItemsInput, ClubUncheckedUpdateWithoutStoreItemsInput>
+  }
+
+  export type ClubUpdateWithoutStoreItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    manager?: UserUpdateOneWithoutManagedClubsNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutStoreItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    manager_id?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
   export type UserInventoryUpsertWithWhereUniqueWithoutItemInput = {
     where: UserInventoryWhereUniqueInput
     update: XOR<UserInventoryUpdateWithoutItemInput, UserInventoryUncheckedUpdateWithoutItemInput>
@@ -43678,6 +45042,49 @@ export namespace Prisma {
   export type UserInventoryUpdateManyWithWhereWithoutItemInput = {
     where: UserInventoryScalarWhereInput
     data: XOR<UserInventoryUpdateManyMutationInput, UserInventoryUncheckedUpdateManyWithoutItemInput>
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutActiveJerseyInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutActiveJerseyInput, UserUncheckedUpdateWithoutActiveJerseyInput>
+    create: XOR<UserCreateWithoutActiveJerseyInput, UserUncheckedCreateWithoutActiveJerseyInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutActiveJerseyInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutActiveJerseyInput, UserUncheckedUpdateWithoutActiveJerseyInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutActiveJerseyInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutActiveJerseyInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: UuidFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    password_hash?: StringFilter<"User"> | string
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    created_at?: DateTimeFilter<"User"> | Date | string
+    ea_persona_name?: StringNullableFilter<"User"> | string | null
+    gamertag_psn?: StringNullableFilter<"User"> | string | null
+    gamertag_xbox?: StringNullableFilter<"User"> | string | null
+    preferred_position?: EnumPositionNullableFilter<"User"> | $Enums.Position | null
+    nationality?: StringNullableFilter<"User"> | string | null
+    external_id?: StringNullableFilter<"User"> | string | null
+    level?: IntFilter<"User"> | number
+    xp?: IntFilter<"User"> | number
+    omjepCoins?: IntFilter<"User"> | number
+    jepyCoins?: IntFilter<"User"> | number
+    isPremium?: BoolFilter<"User"> | boolean
+    avatarUrl?: StringNullableFilter<"User"> | string | null
+    avatarRarity?: EnumAvatarRarityFilter<"User"> | $Enums.AvatarRarity
+    activeFrameUrl?: StringNullableFilter<"User"> | string | null
+    activeBannerUrl?: StringNullableFilter<"User"> | string | null
+    activeJerseyId?: UuidNullableFilter<"User"> | string | null
   }
 
   export type UserCreateWithoutInventoryInput = {
@@ -43697,6 +45104,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -43732,6 +45144,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -43763,6 +45180,8 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory
     imageUrl: string
     isAvailable?: boolean
+    club?: ClubCreateNestedOneWithoutStoreItemsInput
+    equippedBy?: UserCreateNestedManyWithoutActiveJerseyInput
   }
 
   export type StoreItemUncheckedCreateWithoutInventoryInput = {
@@ -43773,6 +45192,8 @@ export namespace Prisma {
     category: $Enums.StoreItemCategory
     imageUrl: string
     isAvailable?: boolean
+    clubId?: string | null
+    equippedBy?: UserUncheckedCreateNestedManyWithoutActiveJerseyInput
   }
 
   export type StoreItemCreateOrConnectWithoutInventoryInput = {
@@ -43808,6 +45229,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -43843,6 +45269,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -43880,6 +45311,8 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
     imageUrl?: StringFieldUpdateOperationsInput | string
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutStoreItemsNestedInput
+    equippedBy?: UserUpdateManyWithoutActiveJerseyNestedInput
   }
 
   export type StoreItemUncheckedUpdateWithoutInventoryInput = {
@@ -43890,6 +45323,8 @@ export namespace Prisma {
     category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
     imageUrl?: StringFieldUpdateOperationsInput | string
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: NullableStringFieldUpdateOperationsInput | string | null
+    equippedBy?: UserUncheckedUpdateManyWithoutActiveJerseyNestedInput
   }
 
   export type UserCreateWithoutPredictionsInput = {
@@ -43909,6 +45344,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -43944,6 +45384,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -44034,6 +45479,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -44069,6 +45519,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -44191,6 +45646,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -44226,6 +45686,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -44300,6 +45765,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -44335,6 +45805,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -44399,6 +45874,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -44434,6 +45914,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -44474,6 +45959,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -44509,6 +45999,11 @@ export namespace Prisma {
     omjepCoins?: number
     jepyCoins?: number
     isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -44546,6 +46041,9 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
     contracts?: ContractCreateNestedManyWithoutTeamInput
     invitations?: InvitationCreateNestedManyWithoutTeamInput
@@ -44576,6 +46074,9 @@ export namespace Prisma {
     manager_id?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
     competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
     contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
@@ -44623,6 +46124,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -44658,6 +46164,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -44704,6 +46215,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -44739,6 +46255,11 @@ export namespace Prisma {
     omjepCoins?: IntFieldUpdateOperationsInput | number
     jepyCoins?: IntFieldUpdateOperationsInput | number
     isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -44782,6 +46303,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -44812,6 +46336,9 @@ export namespace Prisma {
     manager_id?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -44901,6 +46428,8 @@ export namespace Prisma {
     description?: string | null
     validation_status?: $Enums.ValidationStatus
     presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
   }
 
   export type TransferOfferCreateManyPlayerInput = {
@@ -45172,6 +46701,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
     contracts?: ContractUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUpdateManyWithoutTeamNestedInput
@@ -45201,6 +46733,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
     competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
@@ -45230,6 +46765,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TransferOfferUpdateWithoutPlayerInput = {
@@ -45448,6 +46985,16 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StoreItemCreateManyClubInput = {
+    id?: string
+    name: string
+    description: string
+    priceJepy: number
+    category: $Enums.StoreItemCategory
+    imageUrl: string
+    isAvailable?: boolean
+  }
+
   export type CompetitionTeamCreateManyTeamInput = {
     competition_id: string
     joined_at?: Date | string
@@ -45575,6 +47122,40 @@ export namespace Prisma {
     content: string
     is_read?: boolean
     created_at?: Date | string
+  }
+
+  export type StoreItemUpdateWithoutClubInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    priceJepy?: IntFieldUpdateOperationsInput | number
+    category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    inventory?: UserInventoryUpdateManyWithoutItemNestedInput
+    equippedBy?: UserUpdateManyWithoutActiveJerseyNestedInput
+  }
+
+  export type StoreItemUncheckedUpdateWithoutClubInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    priceJepy?: IntFieldUpdateOperationsInput | number
+    category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    inventory?: UserInventoryUncheckedUpdateManyWithoutItemNestedInput
+    equippedBy?: UserUncheckedUpdateManyWithoutActiveJerseyNestedInput
+  }
+
+  export type StoreItemUncheckedUpdateManyWithoutClubInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    priceJepy?: IntFieldUpdateOperationsInput | number
+    category?: EnumStoreItemCategoryFieldUpdateOperationsInput | $Enums.StoreItemCategory
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompetitionTeamUpdateWithoutTeamInput = {
@@ -46176,6 +47757,29 @@ export namespace Prisma {
     purchased_at?: Date | string
   }
 
+  export type UserCreateManyActiveJerseyInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+  }
+
   export type UserInventoryUpdateWithoutItemInput = {
     id?: StringFieldUpdateOperationsInput | string
     purchased_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46192,6 +47796,109 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     purchased_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpdateWithoutActiveJerseyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutActiveJerseyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUncheckedUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutActiveJerseyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserSubscriptionCreateManyPlanInput = {

@@ -8,9 +8,11 @@ import {
   Medal,
   MessageCircle,
   Coins,
+  Archive,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import NotificationBell from '@/components/NotificationBell';
+import LiveTicker from '@/components/LiveTicker';
 import GoldConfetti from '@/components/GoldConfetti';
 import { useTransferNotifications } from '@/hooks/useTransferNotifications';
 import { useAppNotifications } from '@/hooks/useAppNotifications';
@@ -29,14 +31,16 @@ type SidebarLink = {
 const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard, exact: true },
   { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
-  { to: '/dashboard/ladder', label: 'Classement', icon: Trophy },
+  { to: '/dashboard/ladder', label: 'Classement clubs', icon: Trophy },
+  { to: '/dashboard/leaderboard', label: 'Classement global', icon: Medal },
   { to: '/hall-of-fame', label: 'Palmarès', icon: Medal },
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
   { to: '/dashboard/gamification', label: 'Mon Parcours', icon: Gamepad2 },
   { to: '/dashboard/predictions', label: 'Predict & Win', icon: Dices },
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
+  { to: '/dashboard/vault', label: 'The Vault', icon: Archive },
   { to: '/dashboard/transfers', label: 'Mercato Live', icon: Repeat },
-  { to: '/dashboard/chat', label: 'Messagerie', icon: MessageCircle },
+  { to: '/dashboard/chat', label: 'Tactical Link', icon: MessageCircle },
   { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
   { to: '/dashboard/settings', label: 'Paramètres', icon: Settings },
   { to: '/dashboard/manager/club', label: 'Créer mon club', icon: Building2, managerOnly: true },
@@ -45,13 +49,15 @@ const sidebarLinks: SidebarLink[] = [
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Vue d\'ensemble',
   '/dashboard/team': 'Mon Équipe',
-  '/dashboard/ladder': 'Classement',
+  '/dashboard/ladder': 'Classement clubs',
+  '/dashboard/leaderboard': 'Classement global',
   '/dashboard/matches': 'Matchs',
   '/dashboard/gamification': 'Mon Parcours',
   '/dashboard/predictions': 'Predict & Win',
   '/dashboard/store': 'Boutique',
+  '/dashboard/vault': 'The Vault',
   '/dashboard/transfers': 'Mercato Live',
-  '/dashboard/chat': 'Messagerie',
+  '/dashboard/chat': 'Tactical Link',
   '/dashboard/profile': 'Mon Profil',
   '/dashboard/settings': 'Paramètres',
   '/dashboard/manager/club': 'Créer mon club',
@@ -84,7 +90,18 @@ export default function DashboardLayout() {
     const onTransfers = () => {
       refreshTeamBudget();
       void api
-        .get<{ omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }>('/auth/me')
+        .get<{
+          omjepCoins?: number;
+          jepyCoins?: number;
+          isPremium?: boolean;
+          avatarUrl?: string | null;
+          avatarRarity?: 'common' | 'premium' | 'legendary';
+          activeBannerUrl?: string | null;
+          activeFrameUrl?: string | null;
+          activeJerseyId?: string | null;
+          teamPrimaryColor?: string;
+          teamSecondaryColor?: string;
+        }>('/auth/me')
         .then(({ data }) => {
           if (!data) return;
           patchUser({
@@ -93,6 +110,13 @@ export default function DashboardLayout() {
             jepyCoins:
               typeof data.jepyCoins === 'number' && Number.isFinite(data.jepyCoins) ? data.jepyCoins : undefined,
             isPremium: data.isPremium === true,
+            avatarUrl: data.avatarUrl ?? undefined,
+            avatarRarity: data.avatarRarity,
+            activeBannerUrl: data.activeBannerUrl ?? undefined,
+            activeFrameUrl: data.activeFrameUrl ?? undefined,
+            activeJerseyId: data.activeJerseyId ?? undefined,
+            teamPrimaryColor: data.teamPrimaryColor,
+            teamSecondaryColor: data.teamSecondaryColor,
           });
         })
         .catch(() => {});
@@ -105,7 +129,18 @@ export default function DashboardLayout() {
   useEffect(() => {
     let cancelled = false;
     api
-      .get<{ omjepCoins?: number; jepyCoins?: number; isPremium?: boolean }>('/auth/me')
+      .get<{
+        omjepCoins?: number;
+        jepyCoins?: number;
+        isPremium?: boolean;
+        avatarUrl?: string | null;
+        avatarRarity?: 'common' | 'premium' | 'legendary';
+        activeBannerUrl?: string | null;
+        activeFrameUrl?: string | null;
+        activeJerseyId?: string | null;
+        teamPrimaryColor?: string;
+        teamSecondaryColor?: string;
+      }>('/auth/me')
       .then(({ data }) => {
         if (cancelled || !data) return;
         const o = data.omjepCoins;
@@ -116,6 +151,13 @@ export default function DashboardLayout() {
           jepyCoins:
             typeof j === 'number' && Number.isFinite(j) ? j : 0,
           isPremium: data.isPremium === true,
+          avatarUrl: data.avatarUrl ?? undefined,
+          avatarRarity: data.avatarRarity,
+          activeBannerUrl: data.activeBannerUrl ?? undefined,
+          activeFrameUrl: data.activeFrameUrl ?? undefined,
+          activeJerseyId: data.activeJerseyId ?? undefined,
+          teamPrimaryColor: data.teamPrimaryColor,
+          teamSecondaryColor: data.teamSecondaryColor,
         });
       })
       .catch(() => {});
@@ -204,7 +246,19 @@ export default function DashboardLayout() {
               }`}
             >
               <span className="relative shrink-0">
-                <Icon className={`w-4 h-4 ${active ? 'text-amber-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                <Icon
+                  className={`w-4 h-4 transition-colors duration-200 ${
+                    active ? 'text-amber-400' : 'text-slate-500 group-hover:text-slate-300'
+                  }`}
+                  style={
+                    active
+                      ? {
+                          filter:
+                            'drop-shadow(0 0 3px rgba(34, 211, 238, 0.35)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.1))',
+                        }
+                      : undefined
+                  }
+                />
                 {mercatoPulse && (
                   <span
                     className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#020617]"
@@ -228,7 +282,17 @@ export default function DashboardLayout() {
                 : 'text-slate-400 hover:text-cyan-300 hover:bg-cyan-400/5 border-transparent'
             }`}
           >
-            <Scale className="w-4 h-4 shrink-0" />
+            <Scale
+              className="w-4 h-4 shrink-0"
+              style={
+                location.pathname.startsWith('/moderator')
+                  ? {
+                      filter:
+                        'drop-shadow(0 0 3px rgba(34, 211, 238, 0.4)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.12))',
+                    }
+                  : undefined
+              }
+            />
             <span className="flex-1">Commissaire de ligue</span>
             {location.pathname.startsWith('/moderator') && (
               <ChevronRight className="w-3.5 h-3.5 text-cyan-400/60" />
@@ -251,7 +315,7 @@ export default function DashboardLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0A0E1A] text-slate-100 flex">
+    <div className="min-h-screen bg-[#070b12] text-slate-100 flex">
       <GoldConfetti active={showConfetti} />
 
       {/* Mobile overlay */}
@@ -278,7 +342,7 @@ export default function DashboardLayout() {
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="h-16 border-b border-amber-400/10 bg-[#0A0E1A]/80 backdrop-blur-md flex items-center px-4 lg:px-8 gap-4 sticky top-0 z-10">
+        <header className="dashboard-top-glass sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-white/[0.07] bg-[#070b12]/45 px-4 shadow-[0_10px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl backdrop-saturate-150 lg:px-8">
           {/* Mobile hamburger */}
           <button
             onClick={() => setSidebarOpen(true)}
@@ -341,7 +405,11 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <div className="flex-1 p-4 lg:p-8 overflow-auto">
+        <div className="shrink-0">
+          <LiveTicker />
+        </div>
+
+        <div className="dashboard-layout-scroll flex-1 overflow-auto p-4 lg:p-8">
           <Outlet />
         </div>
       </main>

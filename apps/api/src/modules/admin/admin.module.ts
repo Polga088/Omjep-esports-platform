@@ -14,6 +14,8 @@ import { RewardsModule } from '../rewards/rewards.module';
 import { PlayerStatsModule } from '../player-stats/player-stats.module';
 import { WalletsModule } from '../wallets/wallets.module';
 import { AdminWalletsController } from './admin-wallets.controller';
+import { UsersModule } from '../users/users.module';
+import { AdminUsersController } from './admin-users.controller';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { AdminWalletsController } from './admin-wallets.controller';
     RewardsModule,
     PlayerStatsModule,
     WalletsModule,
+    UsersModule,
   ],
   controllers: [
     AdminCompetitionsController,
@@ -31,6 +34,7 @@ import { AdminWalletsController } from './admin-wallets.controller';
     AdminClubsController,
     AdminStoreController,
     AdminWalletsController,
+    AdminUsersController,
   ],
   providers: [AdminStoreService, AdminCompetitionsService, DrawService],
 })

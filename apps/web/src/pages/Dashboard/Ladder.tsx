@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Search, Users, ShieldAlert } from 'lucide-react';
 import api from '@/lib/api';
+import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
 
 interface LadderTeam {
   id: string;
@@ -109,7 +110,7 @@ export default function Ladder() {
             </div>
             <span className="text-xs font-semibold uppercase tracking-widest text-amber-400/70">Ligue</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Classement</h1>
+          <h1 className="ea-fc-hero-neon font-display text-3xl font-black tracking-tight">Classement</h1>
           <p className="mt-1 text-sm text-slate-500">
             {loading ? '\u00a0' : `${teams.length} club${teams.length > 1 ? 's' : ''} enregistré${teams.length > 1 ? 's' : ''}`}
           </p>
@@ -128,19 +129,15 @@ export default function Ladder() {
         </div>
       </div>
 
-      {/* Error */}
-      {error && !loading && (
-        <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-4 text-sm text-red-400">
-          {error}
-        </div>
-      )}
-
-      {/* Table */}
+      {/* Table + erreur en overlay Prestige */}
+      {error && !loading ? (
+        <MaintenancePrestige overlay title="Classement clubs" message={PRESTIGE_MSG} className="border-white/10" />
+      ) : (
       <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
         <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Trophy className="w-4 h-4 text-amber-400" />
-            <h2 className="text-sm font-semibold text-white">Leaderboard</h2>
+            <h2 className="ea-fc-hero-neon font-display text-sm font-semibold text-white">Leaderboard</h2>
           </div>
           <span className="text-xs text-slate-600 bg-white/5 px-2.5 py-1 rounded-full">
             Saison 2025
@@ -273,6 +270,7 @@ export default function Ladder() {
           <span className="text-xs text-slate-700">Données live — v1.0</span>
         </div>
       </div>
+      )}
     </div>
   );
 }

@@ -2,13 +2,19 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '@api/prisma/prisma.service';
-import { withWalletDefaults } from './wallet.util';
 
 export interface JwtPayload {
   sub: string;
   email: string;
   role: string;
 }
+
+/** Objet minimal sur `req.user` (id / email / role) — le détail cosmétique est via `GET /auth/me`. */
+export type JwtRequestUser = {
+  id: string;
+  email: string;
+  role: string;
+};
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -20,22 +26,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload) {
+  async validate(payload: JwtPayload): Promise<JwtRequestUser> {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
       select: {
         id: true,
         email: true,
         role: true,
-        ea_persona_name: true,
-        gamertag_psn: true,
-        gamertag_xbox: true,
-        preferred_position: true,
-        nationality: true,
-        created_at: true,
-        omjepCoins: true,
-        jepyCoins: true,
-        isPremium: true,
       },
     });
 
@@ -43,6 +40,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Token invalide ou utilisateur introuvable.');
     }
 
-    return withWalletDefaults(user);
+    return user;
   }
 }

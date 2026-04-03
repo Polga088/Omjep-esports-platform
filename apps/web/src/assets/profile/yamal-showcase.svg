@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0c1220"/>
+      <stop offset="50%" style="stop-color:#1a2744"/>
+      <stop offset="100%" style="stop-color:#0a0f18"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22d3ee"/>
+      <stop offset="50%" style="stop-color:#eab308"/>
+      <stop offset="100%" style="stop-color:#38bdf8"/>
+    </linearGradient>
+    <radialGradient id="face" cx="50%" cy="35%" r="55%">
+      <stop offset="0%" style="stop-color:#3d4a63"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <circle cx="200" cy="200" r="198" fill="url(#bg)"/>
+  <circle cx="200" cy="200" r="192" fill="none" stroke="url(#rim)" stroke-width="4" opacity="0.9"/>
+  <!-- Stylized showcase portrait  remplacez par une photo JPG/WebP locale si besoin -->
+  <ellipse cx="200" cy="175" rx="95" ry="110" fill="url(#face)"/>
+  <path d="M115 200 Q200 255 285 200 L275 320 Q200 360 125 320 Z" fill="#1e293b"/>
+  <ellipse cx="200" cy="155" rx="72" ry="78" fill="#2d3a52"/>
+  <path d="M145 140 Q200 125 255 140 Q248 175 200 185 Q152 175 145 140" fill="#1a2332"/>
+  <ellipse cx="168" cy="148" rx="12" ry="8" fill="#0f172a"/>
+  <ellipse cx="232" cy="148" rx="12" ry="8" fill="#0f172a"/>
+  <path d="M185 168 Q200 178 215 168" fill="none" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+  <text x="200" y="305" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="900" font-size="52" fill="url(#rim)" filter="url(#glow)">19</text>
+  <text x="200" y="345" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="700" font-size="14" letter-spacing="0.35em" fill="#94a3b8">SHOWCASE</text>
+</svg>
