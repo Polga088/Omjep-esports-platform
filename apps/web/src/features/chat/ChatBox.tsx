@@ -33,12 +33,6 @@ export default function ChatBox({ me }: { me: Me }) {
   const listRef = useRef<HTMLDivElement>(null);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const scrollBottom = () => {
-    requestAnimationFrame(() => {
-      listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
-    });
-  };
-
   const loadTeamMessages = useCallback(
     async (cursor?: string) => {
       if (!team?.id) return;
@@ -68,23 +62,50 @@ export default function ChatBox({ me }: { me: Me }) {
     [],
   );
 
+  const clearTactical = useCallback((messageId: string) => {
+    setTacticalIncomingIds((prev) => {
+      const next = new Set(prev);
+      next.delete(messageId);
+      return next;
+    });
+  }, []);
+
+  const peerLabel = useMemo(() => {
+    if (!peerId) return '';
+    return contacts.find((c) => c.id === peerId)?.ea_persona_name ?? contacts.find((c) => c.id === peerId)?.email ?? peerId;
+  }, [contacts, peerId]);
+
   useEffect(() => {
     let cancelled = false;
+    console.log('🛠️ CHAT DEBUG: Initialisation lancée...');
+    const forceUnlockTimer = window.setTimeout(() => {
+      if (!cancelled) {
+        console.log('🛠️ CHAT DEBUG: Force unlock 5s (setLoading false)');
+        setLoading(false);
+      }
+    }, 5000);
     (async () => {
       try {
+        console.log('📡 CHAT DEBUG: Appel API /chat/contacts/managers...');
         const [teamRes, contactsRes] = await Promise.all([
           api.get<MyTeamRes>('/teams/my-team').catch(() => ({ data: null as MyTeamRes })),
-          api.get<Contact[]>('/chat/contacts/managers'),
+          api.get<Contact[]>('/chat/contacts/managers').catch(() => ({ data: [] as Contact[] })),
         ]);
         if (cancelled) return;
         setTeam(teamRes.data);
-        setContacts(contactsRes.data);
+        setContacts(Array.isArray(contactsRes.data) ? contactsRes.data : []);
+      } catch {
+        if (!cancelled) {
+          setTeam(null);
+          setContacts([]);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     })();
     return () => {
       cancelled = true;
+      window.clearTimeout(forceUnlockTimer);
     };
   }, []);
 
@@ -151,6 +172,12 @@ export default function ChatBox({ me }: { me: Me }) {
     });
   }, [mode, peerId, isConnected, loadDmMessages, me.id, socket]);
 
+  const scrollBottom = () => {
+    requestAnimationFrame(() => {
+      listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
+    });
+  };
+
   const send = async () => {
     const text = draft.trim();
     if (!text || !socket) return;
@@ -202,26 +229,21 @@ export default function ChatBox({ me }: { me: Me }) {
     }
   };
 
-  const peerLabel = useMemo(() => {
-    if (!peerId) return '';
-    return contacts.find((c) => c.id === peerId)?.ea_persona_name ?? contacts.find((c) => c.id === peerId)?.email ?? peerId;
-  }, [contacts, peerId]);
-
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+      <div
+        role="presentation"
+        className="relative z-0 flex min-h-[50vh] cursor-pointer items-center justify-center py-24"
+        onClick={() => {
+          console.log('🛠️ CHAT DEBUG: Clic loader → setLoading(false)');
+          setLoading(false);
+        }}
+        title="Debug: cliquer pour forcer le déblocage du chargement"
+      >
+        <Loader2 className="h-8 w-8 animate-spin text-amber-400" aria-label="Chargement" />
       </div>
     );
   }
-
-  const clearTactical = useCallback((messageId: string) => {
-    setTacticalIncomingIds((prev) => {
-      const next = new Set(prev);
-      next.delete(messageId);
-      return next;
-    });
-  }, []);
 
   const glassShell =
     'relative overflow-hidden rounded-2xl border border-cyan-500/20 bg-[#050910]/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl';
@@ -273,7 +295,6 @@ export default function ChatBox({ me }: { me: Me }) {
                 }`}
               >
                 <ChatContactAvatar contact={c} />
-                <RankBadge level={c.level ?? 1} size="sm" showLabel={false} className="shrink-0" />
                 <span
                   className={`mt-[2px] h-2 w-2 shrink-0 rounded-full ${online ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-slate-600'}`}
                 />
@@ -296,9 +317,9 @@ export default function ChatBox({ me }: { me: Me }) {
             <h2 className="min-w-0 truncate text-sm font-bold text-white">
               {mode === 'team' && team ? `Salon ${team.name}` : mode === 'dm' && peerId ? `MP · ${peerLabel}` : 'Conversation'}
             </h2>
-            {mode === 'team' && typeof me.level === 'number' && (
-              <RankBadge level={me.level} size="sm" showLabel={false} className="shrink-0" />
-            )}
+            {mode === 'team' ? (
+              <RankBadge level={me.level ?? 1} size="sm" showLabel={false} className="shrink-0" />
+            ) : null}
             {mode === 'dm' && peerId ? (
               <RankBadge
                 level={contacts.find((x) => x.id === peerId)?.level ?? 1}
