@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Star, Trophy, LayoutGrid } from 'lucide-react';
-import LeagueTable, { StandingRow } from './LeagueTable';
+import type { StandingRow } from './LeagueTable';
 import type { MatchBrief } from './TournamentBrackets';
 import CupView from './CupView';
+import CompetitionGroups from './CompetitionGroups';
 
 interface Group {
   name: string;
@@ -69,100 +70,16 @@ export default function ChampionsView({ groups, knockoutRounds, myTeamId }: Prop
               <Star className="w-4 h-4 text-amber-300" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Mini-tableaux</h2>
+              <h2 className="text-base font-bold text-white">Groupes</h2>
               <p className="text-xs text-slate-500">
-                {groups.length} groupe{groups.length > 1 ? 's' : ''}
-                {poolsComplete ? ' · Phase de groupes terminée' : ''}
+                Grille 2×2 (tablette) · 4 colonnes (grand écran) · {groups.length} groupe
+                {groups.length > 1 ? 's' : ''}
+                {poolsComplete ? ' · Phase terminée' : ''}
               </p>
             </div>
           </div>
 
-          {groups.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/10 py-12 text-center">
-              <p className="text-sm text-slate-500">Phase de groupes non générée.</p>
-            </div>
-          ) : (
-            <div className="grid gap-5 md:grid-cols-2">
-              {groups.map((group) => (
-                <div key={group.name} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-white tracking-wide">{group.name}</h3>
-                    <span className="text-[10px] text-slate-600 bg-white/[0.04] px-2 py-1 rounded-full">
-                      {group.matches.filter((m) => m.status === 'PLAYED').length}/
-                      {group.matches.length} joués
-                    </span>
-                  </div>
-
-                  <LeagueTable
-                    standings={group.standings}
-                    myTeamId={myTeamId}
-                    title={group.name}
-                    compact
-                  />
-
-                  {group.standings.length > 0 && (
-                    <div className="flex items-center gap-2 text-[10px] text-slate-600 px-1">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500/60" />
-                      <span>
-                        Qualifiés :{' '}
-                        {group.standings.slice(0, 2).map((s) => s.team.name).join(', ')}
-                      </span>
-                    </div>
-                  )}
-
-                  {group.matches.length > 0 && (
-                    <details className="group/details">
-                      <summary className="cursor-pointer text-[11px] font-semibold text-slate-500 hover:text-slate-300 transition-colors px-1 select-none list-none flex items-center gap-1.5">
-                        <svg
-                          className="w-3 h-3 transition-transform group-open/details:rotate-90"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2.5}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                        Matchs du groupe ({group.matches.length})
-                      </summary>
-                      <div className="mt-2 space-y-1.5">
-                        {group.matches.map((match) => {
-                          const isPlayed = match.status === 'PLAYED';
-                          const isMyMatch =
-                            match.homeTeam.id === myTeamId || match.awayTeam.id === myTeamId;
-                          return (
-                            <div
-                              key={match.id}
-                              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs ${
-                                isMyMatch
-                                  ? 'bg-indigo-500/[0.07] border border-indigo-500/15'
-                                  : 'bg-white/[0.02] border border-white/[0.05]'
-                              }`}
-                            >
-                              <span className="flex-1 text-right font-medium text-slate-300 truncate">
-                                {match.homeTeam.name}
-                              </span>
-                              <span
-                                className={`shrink-0 px-2 py-0.5 rounded-md font-black tabular-nums text-center min-w-[50px] ${
-                                  isPlayed
-                                    ? 'bg-white/[0.05] text-white'
-                                    : 'text-slate-600 border border-dashed border-white/10'
-                                }`}
-                              >
-                                {isPlayed ? `${match.home_score} – ${match.away_score}` : 'vs'}
-                              </span>
-                              <span className="flex-1 font-medium text-slate-300 truncate">
-                                {match.awayTeam.name}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </details>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          <CompetitionGroups groups={groups} myTeamId={myTeamId} />
         </section>
       )}
 

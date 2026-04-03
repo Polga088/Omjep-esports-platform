@@ -8,9 +8,11 @@ import {
   ListChecks,
   Trash2,
   X,
+  Pencil,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import { calculateLevel } from '@/lib/leveling';
 import { useAuthStore } from '@/store/useAuthStore';
 
 type Role = 'ADMIN' | 'MODERATOR' | 'MANAGER' | 'PLAYER';
@@ -20,6 +22,8 @@ interface AdminUserRow {
   email: string;
   role: Role;
   ea_persona_name: string | null;
+  xp?: number;
+  level?: number;
   created_at: string;
 }
 
@@ -39,6 +43,16 @@ export default function AdminUsers() {
   const [success, setSuccess] = useState('');
   const [userToDelete, setUserToDelete] = useState<AdminUserRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editTarget, setEditTarget] = useState<AdminUserRow | null>(null);
+  const [editForm, setEditForm] = useState({
+    email: '',
+    ea_persona_name: '',
+    xp: '0',
+    role: 'PLAYER' as Role,
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -82,6 +96,96 @@ export default function AdminUsers() {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [userToDelete]);
+
+  useEffect(() => {
+    if (!editTarget) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setEditTarget(null);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [editTarget]);
+
+  const openEditModal = (u: AdminUserRow) => {
+    setEditTarget(u);
+    setEditForm({
+      email: u.email,
+      ea_persona_name: u.ea_persona_name ?? '',
+      xp: String(u.xp ?? 0),
+      role: u.role,
+      newPassword: '',
+      confirmPassword: '',
+    });
+  };
+
+  const saveEditModal = async () => {
+    if (!editTarget) return;
+    const email = editForm.email.trim();
+    if (!email) {
+      toast.error('L’email est requis.');
+      return;
+    }
+    const xpNum = Number.parseInt(editForm.xp, 10);
+    if (!Number.isFinite(xpNum) || xpNum < 0) {
+      toast.error('Points XP invalides (entier ≥ 0).');
+      return;
+    }
+    if (editTarget.id === me?.id && editForm.role !== 'ADMIN') {
+      toast.error('Vous ne pouvez pas retirer votre propre rôle ADMIN.');
+      return;
+    }
+    const pw = editForm.newPassword.trim();
+    const pw2 = editForm.confirmPassword.trim();
+    if (pw || pw2) {
+      if (pw.length < 8) {
+        toast.error('Le mot de passe doit contenir au moins 8 caractères.');
+        return;
+      }
+      if (pw !== pw2) {
+        toast.error('Les mots de passe ne correspondent pas.');
+        return;
+      }
+    }
+    setSavingEdit(true);
+    try {
+      const payload: Record<string, unknown> = {
+        email,
+        ea_persona_name: editForm.ea_persona_name.trim(),
+        xp: xpNum,
+        role: editForm.role,
+      };
+      if (pw) payload.password = pw;
+      const { data } = await api.patch(`/users/${editTarget.id}`, payload);
+      const updated = (data?.data ?? data) as AdminUserRow & { level?: number };
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === editTarget.id
+            ? {
+                ...u,
+                email: updated.email,
+                ea_persona_name: updated.ea_persona_name ?? null,
+                role: updated.role as Role,
+                xp: updated.xp,
+                level: updated.level,
+              }
+            : u,
+        ),
+      );
+      toast.success('Profil mis à jour.');
+      setEditTarget(null);
+    } catch (e: unknown) {
+      const raw = (e as { response?: { data?: { message?: string | string[] } } })?.response?.data
+        ?.message;
+      const text = Array.isArray(raw) ? raw.join(', ') : raw;
+      toast.error(typeof text === 'string' ? text : 'Mise à jour impossible.');
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  const xpPreview = Number.parseInt(editForm.xp, 10);
+  const previewLevel =
+    Number.isFinite(xpPreview) && xpPreview >= 0 ? calculateLevel(xpPreview) : null;
 
   const confirmDeleteUser = async () => {
     if (!userToDelete) return;
@@ -254,6 +358,153 @@ export default function AdminUsers() {
         </div>
       )}
 
+      {editTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <button
+            type="button"
+            aria-label="Fermer"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => !savingEdit && setEditTarget(null)}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-user-title"
+            className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#0a0d14]/95 backdrop-blur-xl shadow-2xl shadow-black/60 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+          >
+            <div className="px-6 py-4 border-b border-white/5 flex items-start justify-between gap-3">
+              <div>
+                <h2 id="edit-user-title" className="text-lg font-bold text-white">
+                  Édition admin
+                </h2>
+                <p className="text-sm text-slate-500 mt-1">
+                  Corrigez le profil, l’XP (le niveau est recalculé côté serveur) et le rôle.
+                </p>
+                <p
+                  className="text-xs text-slate-600 mt-2 font-mono truncate max-w-[280px] sm:max-w-md"
+                  title={editTarget.email}
+                >
+                  ID : {editTarget.id}
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={savingEdit}
+                onClick={() => setEditTarget(null)}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 shrink-0 disabled:opacity-40"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="px-6 py-4 space-y-4">
+              <label className="block">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  Pseudo EA (Persona)
+                </span>
+                <input
+                  type="text"
+                  value={editForm.ea_persona_name}
+                  onChange={(e) => setEditForm((f) => ({ ...f, ea_persona_name: e.target.value }))}
+                  placeholder="Persona EA"
+                  className="mt-1.5 w-full rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400/30"
+                />
+                <span className="text-[11px] text-slate-600 mt-1 block">
+                  Laisser vide pour retirer le persona.
+                </span>
+              </label>
+              <label className="block">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  Email
+                </span>
+                <input
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                  className="mt-1.5 w-full rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400/30"
+                />
+              </label>
+              <label className="block">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  Points XP
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  step={1}
+                  value={editForm.xp}
+                  onChange={(e) => setEditForm((f) => ({ ...f, xp: e.target.value }))}
+                  className="mt-1.5 w-full rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-sm text-white tabular-nums focus:outline-none focus:border-amber-400/30"
+                />
+                {previewLevel !== null && (
+                  <span className="text-[11px] text-amber-500/90 mt-1.5 block">
+                    Niveau correspondant (formule) : {previewLevel}
+                    {editTarget.level !== undefined && editTarget.xp !== undefined
+                      ? ` — actuellement niveau ${editTarget.level} (${editTarget.xp} XP)`
+                      : ''}
+                  </span>
+                )}
+              </label>
+              <label className="block">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  Rôle
+                </span>
+                <select
+                  value={editForm.role}
+                  onChange={(e) => setEditForm((f) => ({ ...f, role: e.target.value as Role }))}
+                  className="mt-1.5 w-full rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400/30"
+                >
+                  {roleOptionsForRow(editForm.role).map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 space-y-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  Mot de passe (optionnel)
+                </p>
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  value={editForm.newPassword}
+                  onChange={(e) => setEditForm((f) => ({ ...f, newPassword: e.target.value }))}
+                  placeholder="Nouveau mot de passe (min. 8 caractères)"
+                  className="w-full rounded-lg bg-white/[0.04] border border-white/10 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400/30"
+                />
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  value={editForm.confirmPassword}
+                  onChange={(e) => setEditForm((f) => ({ ...f, confirmPassword: e.target.value }))}
+                  placeholder="Confirmer le mot de passe"
+                  className="w-full rounded-lg bg-white/[0.04] border border-white/10 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400/30"
+                />
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-white/5 flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
+              <button
+                type="button"
+                disabled={savingEdit}
+                onClick={() => setEditTarget(null)}
+                className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-300 border border-white/10 hover:bg-white/5 disabled:opacity-50"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                disabled={savingEdit}
+                onClick={() => void saveEditModal()}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-amber-400 to-amber-600 text-[#020617] hover:opacity-95 disabled:opacity-40"
+              >
+                {savingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Pencil className="w-4 h-4" />}
+                Enregistrer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 flex items-center justify-center border border-amber-400/20">
@@ -358,7 +609,7 @@ export default function AdminUsers() {
               <th className="text-left px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Inscription
               </th>
-              <th className="text-right px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 w-[100px]">
+              <th className="text-right px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 w-[128px]">
                 Actions
               </th>
             </tr>
@@ -412,23 +663,39 @@ export default function AdminUsers() {
                       {u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '—'}
                     </td>
                     <td className="px-3 py-3 text-right align-middle">
-                      {isSelf ? (
-                        <span className="text-[10px] text-slate-600">—</span>
-                      ) : (
+                      <div className="inline-flex items-center justify-end gap-1">
                         <button
                           type="button"
-                          title={"Supprimer l'utilisateur"}
-                          disabled={deletingId === u.id}
-                          onClick={() => setUserToDelete(u)}
-                          className="inline-flex items-center justify-center p-2 rounded-lg border border-red-500/20 text-red-400/90 hover:bg-red-500/10 hover:border-red-500/40 disabled:opacity-40 transition-colors"
+                          title="Éditer le profil"
+                          disabled={savingEdit && editTarget?.id === u.id}
+                          onClick={() => openEditModal(u)}
+                          className="inline-flex items-center justify-center p-2 rounded-lg border border-amber-400/25 text-amber-400/90 hover:bg-amber-400/10 hover:border-amber-400/45 disabled:opacity-40 transition-colors"
                         >
-                          {deletingId === u.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="w-4 h-4" />
-                          )}
+                          <Pencil className="w-4 h-4" />
                         </button>
-                      )}
+                        {isSelf ? (
+                          <span
+                            className="inline-flex items-center justify-center p-2 w-9 h-9 text-[10px] text-slate-600"
+                            title="Vous ne pouvez pas supprimer votre propre compte ici"
+                          >
+                            —
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            title={"Supprimer l'utilisateur"}
+                            disabled={deletingId === u.id}
+                            onClick={() => setUserToDelete(u)}
+                            className="inline-flex items-center justify-center p-2 rounded-lg border border-red-500/20 text-red-400/90 hover:bg-red-500/10 hover:border-red-500/40 disabled:opacity-40 transition-colors"
+                          >
+                            {deletingId === u.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );

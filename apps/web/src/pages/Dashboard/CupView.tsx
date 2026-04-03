@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Swords, Trophy, Shield } from 'lucide-react';
-import { MatchCard, type MatchBrief } from './TournamentBrackets';
+import { BracketMatchTerminal, type MatchBrief } from './TournamentBrackets';
 
 interface BracketRound {
   name: string;
@@ -117,25 +117,14 @@ export default function CupView({ rounds, myTeamId }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600">
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-emerald-500/30 border border-emerald-500/40" />
-          Vainqueur
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-indigo-500/30 border border-indigo-500/40" />
-          Mon club
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-white/5 border border-white/10" />
-          À jouer
-        </div>
-      </div>
+      <p className="font-mono text-[10px] uppercase tracking-wider text-slate-600">
+        Bracket · beta — connexions 1px @ 5% · lecture score · logo · club
+      </p>
 
       <div ref={containerRef} className="relative overflow-x-auto pb-6">
         {svgSize.w > 0 && svgSize.h > 0 && (
           <svg
-            className="absolute left-0 top-0 pointer-events-none z-0 text-amber-500/40"
+            className="absolute left-0 top-0 pointer-events-none z-0"
             width={svgSize.w}
             height={svgSize.h}
             aria-hidden
@@ -145,8 +134,8 @@ export default function CupView({ rounds, myTeamId }: Props) {
                 key={key}
                 d={d}
                 fill="none"
-                stroke="currentColor"
-                strokeWidth={1.25}
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth={1}
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -157,21 +146,17 @@ export default function CupView({ rounds, myTeamId }: Props) {
         <div className="relative z-10 flex flex-row gap-6 min-w-max items-stretch">
           {rounds.map((round, colIdx) => (
             <div key={round.name} className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+              <div className="flex items-center gap-2 border-[0.5px] border-white/10 bg-[#08090c] px-2.5 py-2">
                 {round.name === 'Finale' ? (
-                  <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                  <Trophy className="w-3 h-3 text-slate-500" />
                 ) : (
-                  <Shield className="w-3.5 h-3.5 text-slate-500" />
+                  <Shield className="w-3 h-3 text-slate-600" />
                 )}
-                <span
-                  className={`text-xs font-bold uppercase tracking-widest ${
-                    round.name === 'Finale' ? 'text-amber-400' : 'text-slate-400'
-                  }`}
-                >
+                <span className="font-mono text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   {round.name}
                 </span>
-                <span className="ml-1 text-[10px] text-slate-600 bg-white/[0.04] px-1.5 py-0.5 rounded-full">
-                  {round.matches.length} match{round.matches.length > 1 ? 's' : ''}
+                <span className="ml-auto font-mono text-[10px] tabular-nums text-slate-600">
+                  {round.matches.length}
                 </span>
               </div>
 
@@ -189,7 +174,7 @@ export default function CupView({ rounds, myTeamId }: Props) {
                         cardRefs.current[colIdx][mi] = el;
                       }}
                     >
-                      <MatchCard match={match} myTeamId={myTeamId} />
+                      <BracketMatchTerminal match={match} myTeamId={myTeamId} />
                     </div>
                   ))
                 )}

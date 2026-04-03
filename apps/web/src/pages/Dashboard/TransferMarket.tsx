@@ -77,6 +77,7 @@ const statusConfig = {
 
 export default function TransferMarket() {
   const { user, patchUser } = useAuthStore();
+  const [transferMarketOpen, setTransferMarketOpen] = useState(true);
   const [myTeam, setMyTeam] = useState<{ id: string; name: string; budget: number } | null>(null);
   const [offers, setOffers] = useState<TransferOfferRow[]>([]);
   const [playerOffers, setPlayerOffers] = useState<TransferOfferRow[]>([]);
@@ -93,6 +94,14 @@ export default function TransferMarket() {
 
   const fetchData = useCallback(async () => {
     try {
+      const { data: st } = await api.get<{ transferMarketOpen?: boolean }>(
+        '/transfers/market-status',
+      );
+      setTransferMarketOpen(st?.transferMarketOpen !== false);
+    } catch {
+      setTransferMarketOpen(true);
+    }
+    try {
       const teamRes = await api.get<{ id: string; name: string; budget: number }>('/teams/my-team');
       setMyTeam(teamRes.data);
       const [offersRes, asPlayerRes, freeAgentsRes] = await Promise.all([
@@ -108,7 +117,15 @@ export default function TransferMarket() {
       setPlayerOffers(asPlayerRes.data);
       setFreeAgents(freeAgentsRes.data);
     } catch {
-      /* silent */
+      setMyTeam(null);
+      setOffers([]);
+      try {
+        const asPlayerRes = await api.get<TransferOfferRow[]>('/transfers/offers/as-player');
+        setPlayerOffers(asPlayerRes.data);
+      } catch {
+        setPlayerOffers([]);
+      }
+      setFreeAgents([]);
     } finally {
       setLoading(false);
     }
@@ -133,6 +150,8 @@ export default function TransferMarket() {
   const pendingSentCount = sentOffers.filter((o) => o.status === 'PENDING' || o.status === 'COUNTER_OFFER').length;
   const pendingReceivedCount = receivedOffers.filter((o) => o.status === 'PENDING' || o.status === 'COUNTER_OFFER').length;
   const pendingPlayerCount = playerOffers.length;
+
+  const signaturesBlocked = !transferMarketOpen;
 
   const pendingRecapForModal = useMemo((): PendingOfferRecap | null => {
     if (!selectedPlayer) return null;
@@ -227,6 +246,10 @@ export default function TransferMarket() {
   };
 
   const handleOpenOfferModal = (agent: FreeAgent) => {
+    if (signaturesBlocked) {
+      toast.error('Marché des transferts clos.');
+      return;
+    }
     if (!myTeam) {
       toast.error('Vous devez être membre d’un club pour recruter.');
       return;
@@ -254,6 +277,7 @@ export default function TransferMarket() {
     if (!isBuyer || offer.status !== 'COUNTER_OFFER' || offer.negotiation_turn !== 'BUYING_CLUB') {
       return null;
     }
+    const signLocked = signaturesBlocked;
 
     const draft = counterDraft[`b-${offer.id}`] ?? {
       fee: String(offer.transfer_fee),
@@ -270,7 +294,7 @@ export default function TransferMarket() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || signLocked}
             onClick={() => buyerRespond(offer.id, { action: 'ACCEPT_COUNTER' })}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
           >
@@ -322,7 +346,7 @@ export default function TransferMarket() {
           </div>
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || signLocked}
             onClick={() =>
               buyerRespond(offer.id, {
                 action: 'REVISE',
@@ -358,6 +382,16 @@ export default function TransferMarket() {
           Offres, contre-propositions et signature — budget en OMJEP Coins (OC)
         </p>
       </div>
+
+      {signaturesBlocked && (
+        <div
+          className="rounded-lg border border-white/10 bg-[#08090c] px-4 py-3 font-mono text-xs uppercase tracking-wider text-slate-400"
+          role="status"
+        >
+          MARCHÉ CLOS — Les signatures et nouvelles offres sont suspendues pour votre club (compétition
+          concernée).
+        </div>
+      )}
 
       {myTeam && (
         <div className="flex items-center gap-4 px-5 py-4 rounded-xl bg-gradient-to-r from-[#FFD700]/5 to-transparent border border-[#FFD700]/15">
@@ -548,6 +582,7 @@ export default function TransferMarket() {
                     offer={offer}
                     currentUserId={user?.id}
                     busy={respondingId === offer.id}
+                    signaturesDisabled={signaturesBlocked}
                     draft={
                       counterDraft[offer.id] ?? {
                         fee: String(offer.transfer_fee),
@@ -651,7 +686,7 @@ export default function TransferMarket() {
                       </p>
                       <button
                         type="button"
-                        disabled={!myTeam}
+                        disabled={!myTeam || signaturesBlocked}
                         onClick={() => handleOpenOfferModal(agent)}
                         className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 hover:border-emerald-400/60 disabled:opacity-40 disabled:pointer-events-none transition"
                       >
@@ -671,6 +706,7 @@ export default function TransferMarket() {
           onClose={handleCloseOfferModal}
           player={selectedPlayer}
           myTeam={myTeam}
+          transferMarketClosed={signaturesBlocked}
           onSuccess={() => {
             void refreshEconomyFromApi(patchUser, user?.xp);
             void fetchData();

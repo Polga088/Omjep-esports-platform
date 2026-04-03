@@ -41,9 +41,15 @@ export default function HallOfFame() {
   useEffect(() => {
     let cancelled = false;
     api
-      .get<HallOfFameEntry[]>('/competitions/hall-of-fame')
-      .then(({ data }) => {
-        if (!cancelled) setEntries(data ?? []);
+      .get('/competitions/hall-of-fame')
+      .then((res) => {
+        const data = res.data as HallOfFameEntry[] | { data?: HallOfFameEntry[] } | undefined;
+        const winners = Array.isArray(data)
+          ? data
+          : data && typeof data === 'object' && Array.isArray(data.data)
+            ? data.data
+            : [];
+        if (!cancelled) setEntries(winners);
       })
       .catch(() => {
         if (!cancelled) setError('Impossible de charger le palmarès.');

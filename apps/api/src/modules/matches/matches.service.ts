@@ -50,6 +50,45 @@ export class MatchesService {
     private readonly competitionsService: CompetitionsService,
   ) {}
 
+  /**
+   * Matchs à venir (SCHEDULED / LIVE) pour toutes les équipes du joueur, tri chronologique sur `startTime`.
+   * Les matchs sans date planifiée sont en fin de liste.
+   */
+  async findMyUpcomingSchedule(userId: string) {
+    const memberships = await this.prisma.teamMember.findMany({
+      where: { user_id: userId },
+      select: { team_id: true },
+    });
+    const teamIds = [...new Set(memberships.map((m) => m.team_id))];
+    if (teamIds.length === 0) return [];
+
+    const now = new Date();
+    const matches = await this.prisma.match.findMany({
+      where: {
+        OR: [{ home_team_id: { in: teamIds } }, { away_team_id: { in: teamIds } }],
+        status: { in: ['SCHEDULED', 'LIVE'] },
+      },
+      include: MATCH_INCLUDE,
+    });
+
+    const upcoming = matches.filter((m) => !m.startTime || m.startTime >= now);
+    upcoming.sort((a, b) => {
+      const ta = a.startTime?.getTime() ?? Number.MAX_SAFE_INTEGER;
+      const tb = b.startTime?.getTime() ?? Number.MAX_SAFE_INTEGER;
+      if (ta !== tb) return ta - tb;
+      return (a.round ?? '').localeCompare(b.round ?? '', 'fr');
+    });
+
+    const enriched = await this.competitionsService.enrichMatchesWithFormAndRank(upcoming);
+    return enriched.map((m) => ({
+      ...m,
+      viewer_team_id:
+        teamIds.find((t) => t === m.home_team_id) ??
+        teamIds.find((t) => t === m.away_team_id) ??
+        null,
+    }));
+  }
+
   async findMyTeamMatches(userId: string) {
     const membership = await this.prisma.teamMember.findFirst({
       where: { user_id: userId },

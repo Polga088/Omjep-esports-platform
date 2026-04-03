@@ -24,6 +24,7 @@ import {
   TransfersModule,
   UsersModule,
   WalletsModule,
+  TicketsModule,
 } from './modules';
 
 @Module({
@@ -55,6 +56,7 @@ import {
     StatsModule,
     ChatModule,
     WalletsModule,
+    TicketsModule,
   ],
 })
 export class AppModule {}

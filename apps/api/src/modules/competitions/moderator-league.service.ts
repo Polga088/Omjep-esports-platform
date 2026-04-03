@@ -89,6 +89,7 @@ export class ModeratorLeagueService {
         away_team_id: dto.away_team_id,
         round: dto.round ?? null,
         status: 'SCHEDULED',
+        startTime: dto.scheduled_at ? new Date(dto.scheduled_at) : undefined,
       },
       include: MATCH_INCLUDE,
     });

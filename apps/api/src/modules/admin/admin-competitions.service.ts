@@ -3,13 +3,16 @@ import { PrismaService } from '@api/prisma/prisma.service';
 import { CreateCompetitionDto } from './dto/create-competition.dto';
 import { DrawDto } from './dto/draw-competition.dto';
 import { ValidatePotsDto } from './dto/validate-pots.dto';
+import { GenerateLeagueCalendarDto } from './dto/generate-league-calendar.dto';
 import { DrawService } from './draw.service';
+import { assignLeagueKickoffs } from './league-schedule.util';
 
 type MatchRow = {
   competition_id: string;
   home_team_id: string;
   away_team_id: string;
   round: string;
+  startTime?: Date;
 };
 
 @Injectable()
@@ -22,13 +25,41 @@ export class AdminCompetitionsService {
   ) {}
 
   async findAll() {
-    return this.prisma.competition.findMany({
+    const rows = await this.prisma.competition.findMany({
       orderBy: { created_at: 'desc' },
       include: {
         teams: { include: { team: true } },
         _count: { select: { matches: true } },
       },
     });
+    return rows.map((c) => ({
+      ...c,
+      isTransferMarketOpen: c.isTransferMarketOpen === true,
+    }));
+  }
+
+  async updateTransferMarketOpen(id: string, isTransferMarketOpen: boolean) {
+    const existing = await this.prisma.competition.findUnique({ where: { id } });
+    if (!existing) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+    const competition = await this.prisma.competition.update({
+      where: { id },
+      data: { isTransferMarketOpen },
+      include: {
+        teams: { include: { team: true } },
+        _count: { select: { matches: true } },
+      },
+    });
+    return {
+      message: isTransferMarketOpen
+        ? 'Marché des transferts ouvert pour cette compétition.'
+        : 'Marché des transferts fermé pour cette compétition.',
+      competition: {
+        ...competition,
+        isTransferMarketOpen: competition.isTransferMarketOpen === true,
+      },
+    };
   }
 
   /**
@@ -106,13 +137,19 @@ export class AdminCompetitionsService {
     return { message: 'Compétition créée avec succès.', competition };
   }
 
-  async generateCalendar(id: string) {
+  async generateCalendar(id: string, dto: GenerateLeagueCalendarDto = {}) {
     const competition = await this.prisma.competition.findUnique({
       where: { id },
       include: { teams: true },
     });
 
     if (!competition) throw new BadRequestException('Compétition introuvable.');
+
+    if (dto.league_schedule && competition.type !== 'LEAGUE') {
+      throw new BadRequestException(
+        'league_schedule ne s’applique qu’aux compétitions de type LEAGUE (championnat).',
+      );
+    }
 
     const teamIds = competition.teams.map((ct) => ct.team_id);
 
@@ -131,7 +168,27 @@ export class AdminCompetitionsService {
         throw new BadRequestException('Il faut au moins 2 équipes pour un championnat.');
       }
       matches = this.generateRoundRobin(teamIds, id);
-      message = `Championnat généré : ${matches.length} matchs créés (aller simple).`;
+      if (dto.league_schedule) {
+        const ls = dto.league_schedule;
+        const anchor = ls.anchor_date
+          ? new Date(ls.anchor_date)
+          : new Date(competition.start_date);
+        try {
+          matches = assignLeagueKickoffs(matches, {
+            match_weekdays: ls.match_weekdays,
+            matches_per_day: ls.matches_per_day ?? 2,
+            slot_gap_minutes: ls.slot_gap_minutes ?? 120,
+            anchor_date: anchor,
+            first_kickoff_time: ls.first_kickoff_time ?? '20:00',
+          });
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : 'Planification invalide.';
+          throw new BadRequestException(msg);
+        }
+        message = `Championnat généré : ${matches.length} matchs créés avec dates planifiées (aller simple).`;
+      } else {
+        message = `Championnat généré : ${matches.length} matchs créés (aller simple).`;
+      }
     } else if (competition.type === 'CUP') {
       if (teamIds.length < 2) {
         throw new BadRequestException('Il faut au moins 2 équipes pour une coupe.');
@@ -148,7 +205,15 @@ export class AdminCompetitionsService {
       message = `Phase de groupes générée : ${matches.length} matchs créés (${Math.ceil(teamIds.length / 4)} groupe${Math.ceil(teamIds.length / 4) > 1 ? 's' : ''}).`;
     }
 
-    const created = await this.prisma.match.createMany({ data: matches });
+    const created = await this.prisma.match.createMany({
+      data: matches.map((m) => ({
+        competition_id: m.competition_id,
+        home_team_id: m.home_team_id,
+        away_team_id: m.away_team_id,
+        round: m.round,
+        startTime: m.startTime ?? undefined,
+      })),
+    });
 
     await this.prisma.competition.update({
       where: { id },

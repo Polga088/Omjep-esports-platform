@@ -35,6 +35,62 @@ export class TransferOfferService {
     private readonly notifications: NotificationsService,
   ) {}
 
+  /**
+   * Clubs in a competition with `isTransferMarketOpen: false` cannot initiate or finalize
+   * transfers that fall under that competition (buyer in closed comp, or buyer+seller share a closed comp).
+   */
+  private async assertTransferMarketOpen(
+    fromTeamId: string,
+    toTeamId: string | null,
+  ) {
+    const buyerInClosed = await this.prisma.competitionTeam.findMany({
+      where: {
+        team_id: fromTeamId,
+        competition: { isTransferMarketOpen: false },
+      },
+      select: { competition_id: true },
+    });
+    const closedCompIds = buyerInClosed.map((r) => r.competition_id);
+    if (closedCompIds.length === 0) {
+      return;
+    }
+    if (toTeamId == null) {
+      throw new ForbiddenException('Marché des transferts clos');
+    }
+    const sharedClosed = await this.prisma.competitionTeam.findFirst({
+      where: {
+        team_id: toTeamId,
+        competition_id: { in: closedCompIds },
+      },
+    });
+    if (sharedClosed) {
+      throw new ForbiddenException('Marché des transferts clos');
+    }
+  }
+
+  /** Pour l’UI Mercato : l’utilisateur appartient à un club inscrit dans une compétition au marché fermé. */
+  async getTransferMarketStatusForUser(userId: string) {
+    const memberships = await this.prisma.teamMember.findMany({
+      where: { user_id: userId },
+      select: { team_id: true },
+    });
+    if (memberships.length === 0) {
+      return { transferMarketOpen: true as const };
+    }
+    const teamIds = memberships.map((m) => m.team_id);
+    const hit = await this.prisma.competitionTeam.findFirst({
+      where: {
+        team_id: { in: teamIds },
+        competition: { isTransferMarketOpen: false },
+      },
+      include: { competition: { select: { name: true } } },
+    });
+    return {
+      transferMarketOpen: !hit,
+      closedCompetitionName: hit?.competition.name ?? undefined,
+    };
+  }
+
   // ── POST /transfers/offer ──────────────────────────────────
   async createOffer(requestingUserId: string, dto: CreateTransferOfferDto) {
     const membership = await this.prisma.teamMember.findUnique({
@@ -117,6 +173,8 @@ export class TransferOfferService {
         'Une négociation en cours existe déjà pour ce joueur de votre part.',
       );
     }
+
+    await this.assertTransferMarketOpen(dto.from_team_id, toTeamId);
 
     const offer = await this.prisma.transferOffer.create({
       data: {
@@ -202,6 +260,10 @@ export class TransferOfferService {
     }
 
     if (dto.action === 'COUNTER') {
+      await this.assertTransferMarketOpen(
+        offer.from_team_id,
+        offer.to_team_id,
+      );
       const hasChange =
         dto.transfer_fee != null ||
         dto.offered_salary != null ||
@@ -281,6 +343,10 @@ export class TransferOfferService {
     }
 
     if (dto.action === 'REVISE') {
+      await this.assertTransferMarketOpen(
+        offer.from_team_id,
+        offer.to_team_id,
+      );
       const hasChange =
         dto.transfer_fee != null ||
         dto.offered_salary != null ||
@@ -409,6 +475,8 @@ export class TransferOfferService {
     if (offer.status === 'ACCEPTED') {
       throw new BadRequestException('Transfert déjà effectué.');
     }
+
+    await this.assertTransferMarketOpen(offer.from_team_id, offer.to_team_id);
 
     const currentContract = await this.prisma.contract.findFirst({
       where: {

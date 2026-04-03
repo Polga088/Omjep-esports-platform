@@ -57,6 +57,8 @@ interface Props {
   onSuccess?: () => void;
   /** Si défini : pas de nouveau formulaire, affichage du récapitulatif en attente */
   pendingOfferFromMyClub?: PendingOfferRecap | null;
+  /** Marché fermé : pas d’envoi d’offre */
+  transferMarketClosed?: boolean;
 }
 
 export default function TransferOfferModal({
@@ -67,6 +69,7 @@ export default function TransferOfferModal({
   myTeam,
   onSuccess,
   pendingOfferFromMyClub,
+  transferMarketClosed,
 }: Props) {
   const open = Boolean(isOpen ?? openProp);
   const [transferFee, setTransferFee] = useState('');
@@ -203,7 +206,8 @@ export default function TransferOfferModal({
   const feeValid = player.isFreeAgent ? numFee >= 0 : numFee > 0;
   const invalid = !feeValid || numWeekly <= 0 || numClause <= 0 || durationWeeks < 1;
   const durationMonths = weeksToDurationMonths(durationWeeks);
-  const canSubmit = !invalid && !overBudget && !sending;
+  const canSubmit =
+    !invalid && !overBudget && !sending && !transferMarketClosed;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -484,6 +488,12 @@ export default function TransferOfferModal({
             <div className="flex items-start gap-3 rounded-xl border border-red-500/25 bg-red-500/[0.08] px-4 py-3">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
               <p className="text-xs text-red-300/95">{error}</p>
+            </div>
+          )}
+
+          {transferMarketClosed && (
+            <div className="rounded-lg border border-white/10 bg-[#0a0b0e] px-3 py-2 font-mono text-xs text-slate-400">
+              MARCHÉ CLOS — aucune offre ne peut être envoyée pour le moment.
             </div>
           )}
 

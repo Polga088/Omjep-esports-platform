@@ -22,6 +22,12 @@ export class MatchesController {
     return this.matchesService.findMyTeamMatches(req.user.id);
   }
 
+  @Get('my-schedule')
+  @UseGuards(JwtAuthGuard)
+  findMySchedule(@Request() req: { user: { id: string } }) {
+    return this.matchesService.findMyUpcomingSchedule(req.user.id);
+  }
+
   @Post(':id/score-report')
   @UseGuards(JwtAuthGuard)
   submitScoreReport(

@@ -17,6 +17,7 @@ export { StatsModule } from './stats';
 export { StoreModule } from './store';
 export { SubscriptionsModule } from './subscriptions';
 export { SyncModule } from './sync';
+export { TicketsModule } from './tickets';
 export { TeamsModule } from './teams';
 export { TransfersModule } from './transfers';
 export { UsersModule } from './users';

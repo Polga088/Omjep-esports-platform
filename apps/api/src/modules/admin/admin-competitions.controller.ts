@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Delete,
   Param,
   Body,
@@ -15,6 +16,8 @@ import { CreateCompetitionDto } from './dto/create-competition.dto';
 import { DrawDto } from './dto/draw-competition.dto';
 import { ValidatePotsDto } from './dto/validate-pots.dto';
 import { AdminCompetitionsService } from './admin-competitions.service';
+import { UpdateCompetitionTransferMarketDto } from './dto/update-competition-transfer-market.dto';
+import { GenerateLeagueCalendarDto } from './dto/generate-league-calendar.dto';
 
 /**
  * Gestion des compétitions — réservé aux administrateurs.
@@ -49,9 +52,23 @@ export class AdminCompetitionsController {
     return this.adminCompetitionsService.createCompetition(dto);
   }
 
+  @Patch(':id/transfer-market')
+  updateTransferMarket(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateCompetitionTransferMarketDto,
+  ) {
+    return this.adminCompetitionsService.updateTransferMarketOpen(
+      id,
+      dto.isTransferMarketOpen,
+    );
+  }
+
   @Post(':id/generate-calendar')
-  generateCalendar(@Param('id', ParseUUIDPipe) id: string) {
-    return this.adminCompetitionsService.generateCalendar(id);
+  generateCalendar(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto?: GenerateLeagueCalendarDto,
+  ) {
+    return this.adminCompetitionsService.generateCalendar(id, dto ?? {});
   }
 
   /** Vérifie l’intégrité des chapeaux (UCL) avant de lancer le tirage manuel. */

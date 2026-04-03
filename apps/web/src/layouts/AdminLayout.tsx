@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Swords, Shield, Users, ClipboardList,
-  ChevronRight, Menu, X, ArrowLeft, Crown, ShoppingBag, ListOrdered,
+  ChevronRight, Menu, X, ArrowLeft, Crown, ShoppingBag, ListOrdered, Headphones,
 } from 'lucide-react';
 
 const sidebarLinks = [
@@ -13,6 +13,7 @@ const sidebarLinks = [
   { to: '/admin/clubs', label: 'Clubs', icon: Shield },
   { to: '/admin/club-requests', label: 'Demandes clubs', icon: ClipboardList },
   { to: '/admin/store', label: 'Gestion Boutique', icon: ShoppingBag, exact: true },
+  { to: '/admin/support', label: 'Support', icon: Headphones },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -23,6 +24,7 @@ const pageTitles: Record<string, string> = {
   '/admin/clubs': 'Clubs',
   '/admin/club-requests': 'Demandes clubs',
   '/admin/store': 'Gestion Boutique',
+  '/admin/support': 'Support',
 };
 
 export default function AdminLayout() {

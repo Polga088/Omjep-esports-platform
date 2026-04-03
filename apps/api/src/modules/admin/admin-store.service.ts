@@ -39,36 +39,40 @@ export class AdminStoreService {
   async getStats() {
     const now = new Date();
 
-    const activeSubscriptionsCount = await this.prisma.userSubscription.count({
-      where: {
-        status: 'ACTIVE',
-        end_date: { gte: now },
-      },
-    });
+    const activeSubscriptionsCount = await this.prisma.userSubscription
+      .count({
+        where: {
+          status: 'ACTIVE',
+          end_date: { gte: now },
+        },
+      })
+      .catch(() => 0);
 
-    const cosmeticRows = await this.prisma.$queryRaw<[{ total: bigint }]>`
-      SELECT COALESCE(SUM(si.price_jepy), 0)::bigint AS total
-      FROM user_inventory ui
-      INNER JOIN store_items si ON ui.item_id = si.id
-    `;
-    const cosmeticRevenueJepy = Number(cosmeticRows[0]?.total ?? 0);
+    let cosmeticRevenueJepy = 0;
+    try {
+      const cosmeticRows = await this.prisma.$queryRaw<[{ total: bigint }]>`
+        SELECT COALESCE(SUM(si.price_jepy), 0)::bigint AS total
+        FROM user_inventory ui
+        INNER JOIN store_items si ON ui.item_id = si.id
+      `;
+      cosmeticRevenueJepy = Number(cosmeticRows[0]?.total ?? 0);
+    } catch {
+      cosmeticRevenueJepy = 0;
+    }
 
-    const subRows = await this.prisma.$queryRaw<[{ total: bigint }]>`
-      SELECT COALESCE(SUM(sp.price_jepy), 0)::bigint AS total
-      FROM user_subscriptions us
-      INNER JOIN subscription_plans sp ON us.plan_id = sp.id
-    `;
-    const subscriptionRevenueJepy = Number(subRows[0]?.total ?? 0);
+    let subscriptionRevenueJepy = 0;
+    try {
+      const subRows = await this.prisma.$queryRaw<[{ total: bigint }]>`
+        SELECT COALESCE(SUM(sp.price_jepy), 0)::bigint AS total
+        FROM user_subscriptions us
+        INNER JOIN subscription_plans sp ON us.plan_id = sp.id
+      `;
+      subscriptionRevenueJepy = Number(subRows[0]?.total ?? 0);
+    } catch {
+      subscriptionRevenueJepy = 0;
+    }
 
     const theoreticalRevenueJepy = cosmeticRevenueJepy + subscriptionRevenueJepy;
-
-    const topRows = await this.prisma.$queryRaw<[{ item_id: string; c: bigint }]>`
-      SELECT item_id, COUNT(*)::bigint AS c
-      FROM user_inventory
-      GROUP BY item_id
-      ORDER BY c DESC
-      LIMIT 1
-    `;
 
     let topSellingItem: {
       id: string;
@@ -76,18 +80,32 @@ export class AdminStoreService {
       salesCount: number;
     } | null = null;
 
-    if (topRows.length > 0) {
-      const item = await this.prisma.storeItem.findUnique({
-        where: { id: topRows[0].item_id },
-        select: { id: true, name: true },
-      });
-      if (item) {
-        topSellingItem = {
-          id: item.id,
-          name: item.name,
-          salesCount: Number(topRows[0].c),
-        };
+    try {
+      const topRows = await this.prisma.$queryRaw<[{ item_id: string; c: bigint }]>`
+        SELECT item_id, COUNT(*)::bigint AS c
+        FROM user_inventory
+        GROUP BY item_id
+        ORDER BY c DESC
+        LIMIT 1
+      `;
+
+      if (topRows.length > 0) {
+        const item = await this.prisma.storeItem
+          .findUnique({
+            where: { id: topRows[0].item_id },
+            select: { id: true, name: true },
+          })
+          .catch(() => null);
+        if (item) {
+          topSellingItem = {
+            id: item.id,
+            name: item.name,
+            salesCount: Number(topRows[0].c),
+          };
+        }
       }
+    } catch {
+      topSellingItem = null;
     }
 
     return {

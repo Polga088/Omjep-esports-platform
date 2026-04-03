@@ -1,4 +1,5 @@
 import { Trophy, Shield, Swords } from 'lucide-react';
+import PlayerIdentity from '@/components/PlayerIdentity';
 
 export interface MatchBrief {
   id: string;
@@ -30,6 +31,76 @@ function TeamLogo({ team }: { team: { name: string; logo_url: string | null } })
   ) : (
     <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-[10px] font-bold text-amber-400 uppercase shrink-0">
       {team.name.charAt(0)}
+    </div>
+  );
+}
+
+/**
+ * Carte bracket style terminal : score à gauche, logo (PlayerIdentity xs) centré, nom à droite — sans ombres.
+ */
+export function BracketMatchTerminal({
+  match,
+  myTeamId,
+}: {
+  match: MatchBrief;
+  myTeamId?: string | null;
+}) {
+  const isPlayed = match.status === 'PLAYED';
+  const homeWon = isPlayed && (match.home_score ?? 0) > (match.away_score ?? 0);
+  const awayWon = isPlayed && (match.away_score ?? 0) > (match.home_score ?? 0);
+  const isMyHome = match.homeTeam.id === myTeamId;
+  const isMyAway = match.awayTeam.id === myTeamId;
+
+  function line(
+    team: MatchBrief['homeTeam'],
+    score: number | null,
+    won: boolean,
+    isMy: boolean,
+  ) {
+    const label = (team.name || '?').slice(0, 1).toUpperCase();
+    return (
+      <div
+        className={`flex items-center gap-2 px-2 py-1.5 font-mono text-[11px] ${
+          won ? 'text-slate-200' : 'text-slate-500'
+        }`}
+      >
+        <span className="w-6 shrink-0 text-right tabular-nums text-slate-500">
+          {isPlayed && score != null ? score : '—'}
+        </span>
+        <div className="flex w-8 shrink-0 justify-center">
+          <PlayerIdentity
+            size="xs"
+            initial={label}
+            avatarUrl={team.logo_url}
+            rarity="common"
+            imgAlt={team.name}
+            className="shrink-0"
+          />
+        </div>
+        <span
+          className={`min-w-0 flex-1 truncate text-left ${isMy ? 'text-slate-200' : 'text-slate-400'}`}
+        >
+          {team.name}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-w-[200px] overflow-hidden rounded border-[0.5px] border-white/10 bg-[#08090c]">
+      <div className="divide-y divide-white/[0.06]">
+        {line(match.homeTeam, match.home_score, homeWon, isMyHome)}
+        {line(match.awayTeam, match.away_score, awayWon, isMyAway)}
+      </div>
+      {!isPlayed && (
+        <div className="border-t border-white/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-slate-600">
+          {match.status === 'LIVE'
+            ? 'En direct'
+            : match.status === 'DISPUTED'
+              ? 'Litige'
+              : 'À jouer'}
+        </div>
+      )}
     </div>
   );
 }

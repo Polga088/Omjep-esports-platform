@@ -50,6 +50,8 @@ model User {
   messagesSent        Message[] @relation("MessageSender")
   messagesReceived    Message[] @relation("MessageReceiver")
   walletTransactions    Transaction[]
+  supportTickets      Ticket[]
+  ticketReplies       TicketReply[]
 
   @@map("users")
 }
@@ -118,15 +120,17 @@ model PlayerStats {
 }
 
 model Competition {
-  id         String            @id @default(uuid()) @db.Uuid
-  name       String            @unique
-  type       CompetitionType
-  status     CompetitionStatus @default(DRAFT)
-  start_date DateTime
-  end_date   DateTime
-  created_at DateTime          @default(now())
-  teams      CompetitionTeam[]
-  matches    Match[]
+  id                    String            @id @default(uuid()) @db.Uuid
+  name                  String            @unique
+  type                  CompetitionType
+  status                CompetitionStatus @default(DRAFT)
+  start_date            DateTime
+  end_date              DateTime
+  created_at            DateTime          @default(now())
+  /// Si false, les transferts / signatures liés à cette compétition sont bloqués (clubs concernés).
+  isTransferMarketOpen  Boolean           @default(true) @map("is_transfer_market_open")
+  teams                 CompetitionTeam[]
+  matches               Match[]
 
   @@map("competitions")
 }
@@ -542,4 +546,47 @@ enum NewsEventType {
   SEASON_START
   RECORD_BROKEN
   OTHER
+}
+
+enum TicketCategory {
+  BUG
+  LITIGE
+  COMPTE
+}
+
+enum TicketStatus {
+  OPEN
+  CLOSED
+  URGENT
+}
+
+/// Ticket support joueur → équipe admin
+model Ticket {
+  id         String          @id @default(uuid()) @db.Uuid
+  user_id    String          @db.Uuid @map("user_id")
+  category   TicketCategory
+  status     TicketStatus    @default(OPEN)
+  subject    String
+  message    String          @db.Text
+  created_at DateTime        @default(now()) @map("created_at")
+  user       User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  replies    TicketReply[]
+
+  @@index([user_id, created_at])
+  @@index([status, created_at])
+  @@map("support_tickets")
+}
+
+model TicketReply {
+  id         String   @id @default(uuid()) @db.Uuid
+  ticket_id  String   @db.Uuid @map("ticket_id")
+  author_id  String   @db.Uuid @map("author_id")
+  body       String   @db.Text
+  is_staff   Boolean  @default(true) @map("is_staff")
+  created_at DateTime @default(now()) @map("created_at")
+  ticket     Ticket   @relation(fields: [ticket_id], references: [id], onDelete: Cascade)
+  author     User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
+
+  @@index([ticket_id, created_at])
+  @@map("ticket_replies")
 }

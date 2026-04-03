@@ -94,6 +94,8 @@ interface PlayerOfferActionsProps {
   onAcceptOffer: (offerId: string) => void;
   onRejectOffer: (offerId: string) => void;
   onCounterOffer: (offerId: string, body: { transfer_fee?: number; offered_salary?: number; offered_clause?: number }) => void;
+  /** Marché fermé : désactive signature et contre-proposition (refus reste possible). */
+  signaturesDisabled?: boolean;
 }
 
 /**
@@ -108,6 +110,7 @@ export function PlayerOfferActions({
   onAcceptOffer,
   onRejectOffer,
   onCounterOffer,
+  signaturesDisabled,
 }: PlayerOfferActionsProps) {
   const [negotiateOpen, setNegotiateOpen] = useState(false);
 
@@ -148,7 +151,7 @@ export function PlayerOfferActions({
         <div className="flex flex-wrap gap-3">
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || signaturesDisabled}
             onClick={() => onAcceptOffer(offer.id)}
             className="inline-flex flex-1 min-w-[140px] justify-center items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold bg-emerald-600/90 text-white border border-emerald-500/50 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20 disabled:opacity-50"
           >
@@ -157,7 +160,7 @@ export function PlayerOfferActions({
           </button>
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || signaturesDisabled}
             onClick={() => setNegotiateOpen(true)}
             className="inline-flex flex-1 min-w-[140px] justify-center items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-sky-600/90 to-amber-500/85 text-white border border-sky-400/40 hover:brightness-110 disabled:opacity-50"
           >
@@ -248,7 +251,7 @@ export function PlayerOfferActions({
               </button>
               <button
                 type="button"
-                disabled={busy}
+                disabled={busy || signaturesDisabled}
                 onClick={submitCounter}
                 className="flex-1 py-2.5 rounded-xl text-sm font-bold bg-amber-500/25 text-amber-200 border border-amber-500/40 hover:bg-amber-500/35 disabled:opacity-50"
               >

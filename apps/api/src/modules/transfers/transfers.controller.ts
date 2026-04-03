@@ -80,6 +80,13 @@ export class TransfersController {
     return this.transferOfferService.listOffers({ team_id: teamId, status });
   }
 
+  @Get('market-status')
+  transferMarketStatus(@Req() req: { user: { id: string } }) {
+    return this.transferOfferService.getTransferMarketStatusForUser(
+      req.user.id,
+    );
+  }
+
   @Get('offers/as-player')
   listAsPlayer(@Req() req: any) {
     return this.transferOfferService.listOffersAsPlayer(req.user.id);

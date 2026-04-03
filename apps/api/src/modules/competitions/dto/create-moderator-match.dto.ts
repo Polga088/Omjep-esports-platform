@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID, MinLength } from 'class-validator';
+import { IsOptional, IsDateString, IsString, IsUUID, MinLength } from 'class-validator';
 
 export class CreateModeratorMatchDto {
   @IsUUID()
@@ -11,4 +11,9 @@ export class CreateModeratorMatchDto {
   @IsString()
   @MinLength(1)
   round?: string;
+
+  /** Date/heure de coup d’envoi (stockée dans `scheduled_at` / `startTime`). */
+  @IsOptional()
+  @IsDateString()
+  scheduled_at?: string;
 }

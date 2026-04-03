@@ -17,6 +17,7 @@ import MyTeam from '@/pages/Dashboard/MyTeam';
 import Profile from '@/pages/Dashboard/Profile';
 import Ladder from '@/pages/Dashboard/Ladder';
 import Matches from '@/pages/Dashboard/Matches';
+import Schedule from '@/pages/Dashboard/Schedule';
 import CompetitionDetail from '@/pages/Dashboard/CompetitionDetail';
 import Stats from '@/pages/Dashboard/Stats';
 import ProfileDetail from '@/pages/Dashboard/ProfileDetail';
@@ -28,6 +29,7 @@ import Gamification from '@/pages/Dashboard/Gamification';
 import Leaderboard from '@/pages/Dashboard/Leaderboard';
 import Predictions from '@/pages/Predictions/Predictions';
 import ManagerClub from '@/pages/Dashboard/ManagerClub';
+import Support from '@/pages/Dashboard/Support';
 import AdminDashboard from '@/pages/Admin/Dashboard';
 import AdminCompetitions from '@/pages/Admin/Competitions';
 import AdminMatches from '@/pages/Admin/Matches';
@@ -35,6 +37,7 @@ import AdminUsers from '@/pages/Admin/Users';
 import AdminClubs from '@/pages/Admin/Clubs';
 import AdminClubRequests from '@/pages/Admin/ClubRequests';
 import AdminStoreManagement from '@/pages/Admin/StoreManagement';
+import AdminSupportTickets from '@/pages/Admin/SupportTickets';
 import DrawSystem from '@/pages/Admin/DrawSystem';
 import LeagueHome from '@/pages/Admin/league/LeagueHome';
 import LeagueCompetitions from '@/pages/Admin/league/LeagueCompetitions';
@@ -90,6 +93,7 @@ export default function App() {
           <Route path="/dashboard/team" element={<MyTeam />} />
           <Route path="/dashboard/ladder" element={<Ladder />} />
           <Route path="/dashboard/matches" element={<Matches />} />
+          <Route path="/dashboard/schedule" element={<Schedule />} />
           <Route path="/dashboard/competitions/:id" element={<CompetitionDetail />} />
           <Route path="/dashboard/stats/:id" element={<Stats />} />
           <Route path="/dashboard/profile" element={<Profile />} />
@@ -109,6 +113,7 @@ export default function App() {
           <Route path="/dashboard/gamification" element={<Gamification />} />
           <Route path="/dashboard/leaderboard" element={<Leaderboard />} />
           <Route path="/dashboard/predictions" element={<Predictions />} />
+          <Route path="/dashboard/support" element={<Support />} />
           <Route
             path="/dashboard/manager/club"
             element={
@@ -134,6 +139,7 @@ export default function App() {
           <Route path="/admin/clubs" element={<AdminClubs />} />
           <Route path="/admin/club-requests" element={<AdminClubRequests />} />
           <Route path="/admin/store" element={<AdminStoreManagement />} />
+          <Route path="/admin/support" element={<AdminSupportTickets />} />
           <Route path="/admin/competitions/:id/draw" element={<DrawSystem />} />
         </Route>
 

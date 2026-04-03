@@ -51,6 +51,8 @@ export class UsersService {
         preferred_position: true,
         nationality: true,
         created_at: true,
+        xp: true,
+        level: true,
         omjepCoins: true,
         jepyCoins: true,
         stats: true,
@@ -161,9 +163,16 @@ export class UsersService {
       }
     }
 
-    if (dto.ea_persona_name) {
+    const personaNormalized =
+      dto.ea_persona_name !== undefined
+        ? dto.ea_persona_name === ''
+          ? null
+          : dto.ea_persona_name
+        : undefined;
+
+    if (personaNormalized) {
       const existing = await this.prisma.user.findUnique({
-        where: { ea_persona_name: dto.ea_persona_name },
+        where: { ea_persona_name: personaNormalized },
       });
       if (existing && existing.id !== id) {
         throw new ConflictException('Ce ea_persona_name est déjà pris.');
@@ -174,7 +183,9 @@ export class UsersService {
 
     if (dto.email !== undefined) data.email = dto.email;
     if (dto.role !== undefined) data.role = dto.role;
-    if (dto.ea_persona_name !== undefined) data.ea_persona_name = dto.ea_persona_name;
+    if (dto.ea_persona_name !== undefined) {
+      data.ea_persona_name = personaNormalized ?? null;
+    }
     if (dto.gamertag_psn !== undefined) data.gamertag_psn = dto.gamertag_psn;
     if (dto.gamertag_xbox !== undefined) data.gamertag_xbox = dto.gamertag_xbox;
     if (dto.preferred_position !== undefined) {

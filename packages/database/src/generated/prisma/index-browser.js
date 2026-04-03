@@ -189,7 +189,8 @@ exports.Prisma.CompetitionScalarFieldEnum = {
   status: 'status',
   start_date: 'start_date',
   end_date: 'end_date',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  isTransferMarketOpen: 'isTransferMarketOpen'
 };
 
 exports.Prisma.CompetitionTeamScalarFieldEnum = {
@@ -360,6 +361,25 @@ exports.Prisma.NewsEventScalarFieldEnum = {
   title: 'title',
   description: 'description',
   metadata: 'metadata',
+  created_at: 'created_at'
+};
+
+exports.Prisma.TicketScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  category: 'category',
+  status: 'status',
+  subject: 'subject',
+  message: 'message',
+  created_at: 'created_at'
+};
+
+exports.Prisma.TicketReplyScalarFieldEnum = {
+  id: 'id',
+  ticket_id: 'ticket_id',
+  author_id: 'author_id',
+  body: 'body',
+  is_staff: 'is_staff',
   created_at: 'created_at'
 };
 
@@ -535,6 +555,18 @@ exports.NewsEventType = exports.$Enums.NewsEventType = {
   OTHER: 'OTHER'
 };
 
+exports.TicketCategory = exports.$Enums.TicketCategory = {
+  BUG: 'BUG',
+  LITIGE: 'LITIGE',
+  COMPTE: 'COMPTE'
+};
+
+exports.TicketStatus = exports.$Enums.TicketStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  URGENT: 'URGENT'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Club: 'Club',
@@ -557,7 +589,9 @@ exports.Prisma.ModelName = {
   SubscriptionPlan: 'SubscriptionPlan',
   UserSubscription: 'UserSubscription',
   Message: 'Message',
-  NewsEvent: 'NewsEvent'
+  NewsEvent: 'NewsEvent',
+  Ticket: 'Ticket',
+  TicketReply: 'TicketReply'
 };
 
 /**

@@ -26,11 +26,28 @@ interface Competition {
   end_date: string | null;
   status: 'DRAFT' | 'ONGOING' | 'FINISHED';
   created_at: string;
+  /** Absent sur anciennes réponses API = marché ouvert */
+  isTransferMarketOpen?: boolean;
   teams: CompetitionTeam[];
   _count?: { matches: number };
 }
 
 type CompetitionType = 'LEAGUE' | 'CUP' | 'CHAMPIONS';
+
+/** 0 = dimanche … 6 = samedi (aligné API / Date.getDay()). */
+const CALENDAR_WEEKDAYS: { value: number; label: string }[] = [
+  { value: 0, label: 'Dim' },
+  { value: 1, label: 'Lun' },
+  { value: 2, label: 'Mar' },
+  { value: 3, label: 'Mer' },
+  { value: 4, label: 'Jeu' },
+  { value: 5, label: 'Ven' },
+  { value: 6, label: 'Sam' },
+];
+
+function normalizeCompetition(c: Competition): Competition {
+  return { ...c, isTransferMarketOpen: c.isTransferMarketOpen === true };
+}
 
 const STATUS_CONFIG = {
   DRAFT: {
@@ -65,6 +82,9 @@ export default function AdminCompetitions() {
   const [generating, setGenerating] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [patchingMarketId, setPatchingMarketId] = useState<string | null>(null);
+  const [schedEnabled, setSchedEnabled] = useState(true);
+  const [schedWeekdays, setSchedWeekdays] = useState<number[]>([1, 4]);
 
   const [name, setName] = useState('');
   const [type, setType] = useState<CompetitionType>('LEAGUE');
@@ -100,7 +120,9 @@ export default function AdminCompetitions() {
       ]);
       const compsData = compsRes.data.data ?? compsRes.data;
       const teamsData = teamsRes.data.data ?? teamsRes.data;
-      setCompetitions(Array.isArray(compsData) ? compsData : []);
+      setCompetitions(
+        Array.isArray(compsData) ? compsData.map((c: Competition) => normalizeCompetition(c)) : [],
+      );
       setTeams(Array.isArray(teamsData) ? teamsData : []);
     } catch {
       setError('Impossible de charger les données.');
@@ -179,10 +201,56 @@ export default function AdminCompetitions() {
     }
   };
 
-  const handleGenerate = async (competitionId: string) => {
+  const toggleTransferMarket = async (comp: Competition) => {
+    const currentlyOpen = comp.isTransferMarketOpen === true;
+    const nextOpen = !currentlyOpen;
+    setPatchingMarketId(comp.id);
+    setError('');
+    try {
+      await api.patch(`/admin/competitions/${comp.id}/transfer-market`, {
+        isTransferMarketOpen: nextOpen,
+      });
+      setCompetitions((prev) =>
+        prev.map((c) => (c.id === comp.id ? { ...c, isTransferMarketOpen: nextOpen } : c)),
+      );
+      setSuccess(
+        nextOpen
+          ? 'Marché des transferts rouvert pour cette compétition.'
+          : 'Marché des transferts fermé pour cette compétition.',
+      );
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        'Mise à jour impossible.';
+      setError(typeof msg === 'string' ? msg : 'Mise à jour impossible.');
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setPatchingMarketId(null);
+    }
+  };
+
+  const toggleSchedWeekday = (d: number) => {
+    setSchedWeekdays((prev) =>
+      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d].sort((a, b) => a - b),
+    );
+  };
+
+  const handleGenerate = async (competitionId: string, compType: CompetitionType) => {
     setGenerating(competitionId);
     try {
-      const res = await api.post(`/admin/competitions/${competitionId}/generate-calendar`);
+      const body =
+        compType === 'LEAGUE' && schedEnabled && schedWeekdays.length > 0
+          ? {
+              league_schedule: {
+                match_weekdays: schedWeekdays,
+                matches_per_day: 2,
+                slot_gap_minutes: 120,
+                first_kickoff_time: '20:00',
+              },
+            }
+          : {};
+      const res = await api.post(`/admin/competitions/${competitionId}/generate-calendar`, body);
       setSuccess(res.data.message ?? 'Calendrier des matchs généré !');
       await fetchData();
       setTimeout(() => setSuccess(''), 4000);
@@ -247,6 +315,55 @@ export default function AdminCompetitions() {
         <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-[fadeIn_0.3s_ease-out]">
           <AlertCircle className="w-4 h-4 shrink-0" />
           {error}
+        </div>
+      )}
+
+      {competitions.some((c) => c.status === 'DRAFT' && c.type === 'LEAGUE') && (
+        <div className="rounded-xl border border-amber-400/15 bg-amber-950/15 p-4 space-y-3">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400/90">
+            Championnat — planification des matchs
+          </p>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={schedEnabled}
+              onChange={(e) => setSchedEnabled(e.target.checked)}
+              className="mt-1 rounded border-amber-400/40 bg-white/[0.04] text-amber-500"
+            />
+            <span className="text-sm text-slate-300 leading-snug">
+              Répartir les rencontres sur des jours fixes (ex. 2 jours / semaine, 2 matchs / jour, premier
+              coup d&apos;envoi 20:00, écart 2 h entre créneaux).
+            </span>
+          </label>
+          {schedEnabled && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                Jours de match
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {CALENDAR_WEEKDAYS.map(({ value, label }) => {
+                  const on = schedWeekdays.includes(value);
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => toggleSchedWeekday(value)}
+                      className={`rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors ${
+                        on
+                          ? 'border-amber-400/50 bg-amber-400/15 text-amber-200'
+                          : 'border-white/10 bg-white/[0.03] text-slate-500 hover:border-white/20'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+              {schedWeekdays.length === 0 ? (
+                <p className="mt-2 text-xs text-amber-400/80">Sélectionnez au moins un jour.</p>
+              ) : null}
+            </div>
+          )}
         </div>
       )}
 
@@ -330,12 +447,38 @@ export default function AdminCompetitions() {
                     </div>
                   )}
 
+                  <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
+                    <span className="text-[11px] font-medium text-slate-500">État du Marché</span>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={comp.isTransferMarketOpen === true}
+                      aria-label="Marché des transferts ouvert ou fermé"
+                      disabled={patchingMarketId === comp.id}
+                      onClick={() => void toggleTransferMarket(comp)}
+                      className={`relative h-6 w-10 shrink-0 rounded-full border transition-colors duration-200 ${
+                        comp.isTransferMarketOpen === true
+                          ? 'border-white/15 bg-white/[0.08]'
+                          : 'border-white/10 bg-white/[0.03]'
+                      } disabled:opacity-50`}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white/90 shadow-sm transition-transform duration-200 ${
+                          comp.isTransferMarketOpen === true ? 'translate-x-[18px]' : 'translate-x-0'
+                        }`}
+                        aria-hidden
+                      />
+                    </button>
+                  </div>
+
                   <div className="mt-auto pt-3 border-t border-white/[0.04] flex items-center gap-2 flex-wrap">
                     {/* LEAGUE: Generate calendar */}
                     {isDraft && comp.type === 'LEAGUE' && (
                       <button
-                        onClick={() => handleGenerate(comp.id)}
-                        disabled={isGenerating}
+                        onClick={() => void handleGenerate(comp.id, comp.type)}
+                        disabled={
+                          isGenerating || (schedEnabled && schedWeekdays.length === 0)
+                        }
                         className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-[#020617] hover:from-amber-300 hover:to-amber-400 disabled:opacity-50 transition-all duration-300 shadow-md shadow-amber-400/20 hover:shadow-amber-400/40 hover:scale-[1.02] active:scale-[0.97]"
                       >
                         {isGenerating ? (
