@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { ClubRolesGuard } from './guards/club-roles.guard';
 
 @Module({
   imports: [
@@ -15,8 +16,8 @@ import { RolesGuard } from './guards/roles.guard';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard, ClubRolesGuard],
   controllers: [AuthController],
-  exports: [JwtAuthGuard, RolesGuard, JwtModule],
+  exports: [JwtAuthGuard, RolesGuard, ClubRolesGuard, JwtModule],
 })
 export class AuthModule {}

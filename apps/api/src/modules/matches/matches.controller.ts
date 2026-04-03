@@ -8,8 +8,11 @@ import {
   Request,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { ClubRole } from '@omjep/database';
 import { MatchesService } from './matches.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ClubRoles } from '../auth/decorators/club-roles.decorator';
+import { ClubRolesGuard } from '../auth/guards/club-roles.guard';
 import { SubmitScoreReportDto } from './dto/submit-score-report.dto';
 
 @Controller('matches')
@@ -29,7 +32,13 @@ export class MatchesController {
   }
 
   @Post(':id/score-report')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ClubRolesGuard)
+  @ClubRoles(
+    'match_param',
+    ClubRole.FOUNDER,
+    ClubRole.MANAGER,
+    ClubRole.CO_MANAGER,
+  )
   submitScoreReport(
     @Request() req: { user: { id: string } },
     @Param('id', ParseUUIDPipe) id: string,

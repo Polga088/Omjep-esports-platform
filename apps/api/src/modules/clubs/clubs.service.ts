@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@omjep/database';
+import { ClubRole, Prisma } from '@omjep/database';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { RequestClubCreationDto } from './dto/request-club-creation.dto';
 import { AdminValidateClubDto } from './dto/admin-validate-club.dto';
@@ -160,6 +160,114 @@ export class ClubsService {
         'Impossible de créer le club pour le moment.',
       );
     }
+  }
+
+  /** Max 2 co-managers par club (hors manager désigné). */
+  static readonly MAX_CO_MANAGERS = 2;
+
+  /**
+   * Résout le club courant et vérifie que l’acteur est le manager désigné ou le fondateur.
+   */
+  private async getClubIdForCoManagerMutation(actorId: string): Promise<string> {
+    const membership = await this.prisma.teamMember.findFirst({
+      where: { user_id: actorId },
+      include: {
+        team: { select: { id: true, manager_id: true } },
+      },
+    });
+
+    if (!membership) {
+      throw new ForbiddenException("Vous n'appartenez à aucune équipe.");
+    }
+
+    const { team } = membership;
+    const isDesignatedManager = team.manager_id === actorId;
+    const isFounder = membership.club_role === ClubRole.FOUNDER;
+    const isClubManager = membership.club_role === ClubRole.MANAGER;
+
+    if (!isDesignatedManager && !isFounder && !isClubManager) {
+      throw new ForbiddenException(
+        'Seuls le manager désigné, le fondateur ou le manager club peuvent gérer les co-managers.',
+      );
+    }
+
+    return team.id;
+  }
+
+  /**
+   * Passe un joueur en CO_MANAGER. Réservé au manager désigné ou au fondateur.
+   */
+  async promoteCoManager(actorId: string, dto: { target_user_id: string }) {
+    const clubId = await this.getClubIdForCoManagerMutation(actorId);
+
+    const coCount = await this.prisma.teamMember.count({
+      where: { team_id: clubId, club_role: ClubRole.CO_MANAGER },
+    });
+
+    if (coCount >= ClubsService.MAX_CO_MANAGERS) {
+      throw new ConflictException(
+        `Nombre maximum de co-managers atteint (${ClubsService.MAX_CO_MANAGERS}).`,
+      );
+    }
+
+    const membership = await this.prisma.teamMember.findFirst({
+      where: { team_id: clubId, user_id: dto.target_user_id },
+    });
+
+    if (!membership) {
+      throw new NotFoundException("Ce joueur n'est pas membre de votre club.");
+    }
+
+    if (membership.club_role !== ClubRole.PLAYER) {
+      throw new BadRequestException(
+        'Seuls les joueurs (rôle Joueur) peuvent être promus co-manager.',
+      );
+    }
+
+    return this.prisma.teamMember.update({
+      where: {
+        user_id_team_id: {
+          user_id: dto.target_user_id,
+          team_id: clubId,
+        },
+      },
+      data: { club_role: ClubRole.CO_MANAGER },
+      include: {
+        user: { select: { id: true, ea_persona_name: true } },
+      },
+    });
+  }
+
+  /**
+   * Repasse un CO_MANAGER en joueur. Réservé au manager désigné ou au fondateur.
+   */
+  async demoteCoManager(actorId: string, dto: { target_user_id: string }) {
+    const clubId = await this.getClubIdForCoManagerMutation(actorId);
+
+    const membership = await this.prisma.teamMember.findFirst({
+      where: { team_id: clubId, user_id: dto.target_user_id },
+    });
+
+    if (!membership) {
+      throw new NotFoundException("Membre introuvable dans ce club.");
+    }
+
+    if (membership.club_role !== ClubRole.CO_MANAGER) {
+      throw new BadRequestException("Ce membre n'est pas co-manager.");
+    }
+
+    return this.prisma.teamMember.update({
+      where: {
+        user_id_team_id: {
+          user_id: dto.target_user_id,
+          team_id: clubId,
+        },
+      },
+      data: { club_role: ClubRole.PLAYER },
+      include: {
+        user: { select: { id: true, ea_persona_name: true } },
+      },
+    });
   }
 
   /**

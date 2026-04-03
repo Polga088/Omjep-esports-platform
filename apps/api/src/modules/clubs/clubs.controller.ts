@@ -14,6 +14,7 @@ import { ClubsService } from './clubs.service';
 import { RequestClubCreationDto } from './dto/request-club-creation.dto';
 import { AdminValidateClubDto } from './dto/admin-validate-club.dto';
 import { KickMemberDto } from './dto/kick-member.dto';
+import { CoManagerTargetDto } from './dto/co-manager-target.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -48,6 +49,24 @@ export class ClubsController {
     @Body() dto: KickMemberDto,
   ) {
     return this.clubsService.kickMember(req.user.id, dto.target_user_id);
+  }
+
+  @Patch('promote-co-manager')
+  @UseGuards(JwtAuthGuard)
+  promoteCoManager(
+    @Request() req: { user: { id: string } },
+    @Body() dto: CoManagerTargetDto,
+  ) {
+    return this.clubsService.promoteCoManager(req.user.id, dto);
+  }
+
+  @Patch('demote-co-manager')
+  @UseGuards(JwtAuthGuard)
+  demoteCoManager(
+    @Request() req: { user: { id: string } },
+    @Body() dto: CoManagerTargetDto,
+  ) {
+    return this.clubsService.demoteCoManager(req.user.id, dto);
   }
 
   /** POST /clubs/:id/sync-stats — stats ProClubs.io → player_stats + XP prestige club */

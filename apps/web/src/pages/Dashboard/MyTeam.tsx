@@ -168,7 +168,7 @@ const roleConfig: Record<ClubRole, { label: string; badgeClass: string; icon: Re
   },
   CO_MANAGER: {
     label: 'Co-Manager',
-    badgeClass: 'bg-slate-500/10 text-slate-400 border border-slate-500/25',
+    badgeClass: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
     icon: Users,
   },
   PLAYER: {
@@ -338,6 +338,7 @@ export default function MyTeam() {
   const [linkError, setLinkError] = useState('');
   const [kickTarget, setKickTarget] = useState<TeamMember | null>(null);
   const [kickLoading, setKickLoading] = useState(false);
+  const [roleBusyUserId, setRoleBusyUserId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -386,22 +387,33 @@ export default function MyTeam() {
       ? allMembers.reduce((sum, m) => sum + (m.user.stats?.average_rating ?? 0), 0) / allMembers.length
       : 0;
 
-  const isManager = currentMember &&
-    ['FOUNDER', 'MANAGER'].includes(currentMember.club_role);
+  /** Accès onglet / bloc liaison EA (staff club). */
+  const isManager =
+    currentMember &&
+    ['FOUNDER', 'MANAGER', 'CO_MANAGER'].includes(currentMember.club_role);
 
   const isSynced = !!team?.proclubs_url;
 
-  /** Colonne Actions + licenciement : manager officiel, admin, ou fondateur du club. */
+  /** Manager désigné (`manager_id`) — promotion co-manager & licenciement. */
+  const isDesignatedManager = !!user?.id && team?.manager_id === user.id;
+
+  /** Outils de gestion (effectif, finance, actions) : manager désigné, fondateur, co-manager, admin. */
   const canManage =
     user?.role === 'ADMIN' ||
-    (!!user?.id && team?.manager_id === user.id) ||
-    currentMember?.club_role === 'FOUNDER';
+    isDesignatedManager ||
+    currentMember?.club_role === 'FOUNDER' ||
+    currentMember?.club_role === 'CO_MANAGER';
+
+  /** Licenciement : réservé au manager désigné (et admin). */
+  const canKickPlayer = user?.role === 'ADMIN' || isDesignatedManager;
+
+  /** Promotion / destitution co-managers : manager désigné, rôle club Manager, ou fondateur. */
+  const canPromoteCoManagers =
+    isDesignatedManager ||
+    currentMember?.club_role === 'FOUNDER' ||
+    currentMember?.club_role === 'MANAGER';
 
   const rosterCols = canManage ? 6 : 5;
-
-  useEffect(() => {
-    console.log('IDs:', team?.manager_id, user?.id);
-  }, [team?.manager_id, user?.id]);
 
   const reloadTeamAndFinance = async () => {
     const { data } = await api.get<MyTeamData>('/teams/my-team');
@@ -471,6 +483,44 @@ export default function MyTeam() {
       setLinkError(typeof msg === 'string' ? msg : 'Erreur lors de la liaison ou de la synchronisation.');
     } finally {
       setLinkingClub(false);
+    }
+  };
+
+  const handlePromoteCoManager = async (member: TeamMember) => {
+    if (!team) return;
+    const uid = member.user_id;
+    setRoleBusyUserId(uid);
+    try {
+      await api.patch('/clubs/promote-co-manager', { target_user_id: uid });
+      toast.success('Co-manager nommé');
+      await reloadTeamAndFinance();
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+          : null;
+      toast.error(typeof msg === 'string' ? msg : 'Impossible de nommer le co-manager.');
+    } finally {
+      setRoleBusyUserId(null);
+    }
+  };
+
+  const handleDemoteCoManager = async (member: TeamMember) => {
+    if (!team) return;
+    const uid = member.user_id;
+    setRoleBusyUserId(uid);
+    try {
+      await api.patch('/clubs/demote-co-manager', { target_user_id: uid });
+      toast.success('Co-manager destitué');
+      await reloadTeamAndFinance();
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+          : null;
+      toast.error(typeof msg === 'string' ? msg : 'Impossible de destituer.');
+    } finally {
+      setRoleBusyUserId(null);
     }
   };
 
@@ -670,8 +720,14 @@ export default function MyTeam() {
                     const pseudo = rowUser.ea_persona_name ?? `Joueur #${rowUser.id.slice(0, 6)}`;
                     const isLast = rowIndex === allMembers.length - 1;
                     const memberId = member.user_id || rowUser?.id;
+                    const showPromote =
+                      canPromoteCoManagers &&
+                      club_role === 'PLAYER' &&
+                      memberId !== user?.id;
+                    const showDemote =
+                      canPromoteCoManagers && club_role === 'CO_MANAGER';
                     const showKickButton =
-                      canManage && club_role === 'PLAYER' && memberId !== user?.id;
+                      canKickPlayer && club_role === 'PLAYER' && memberId !== user?.id;
 
                     return (
                       <tr
@@ -718,20 +774,44 @@ export default function MyTeam() {
                         </td>
                         {canManage && (
                           <td className="px-4 py-4 text-right">
-                            {showKickButton ? (
-                              <button
-                                type="button"
-                                onClick={() => handleKickClick(member)}
-                                className="ml-auto flex items-center gap-2 rounded border border-red-500/20 bg-red-500/10 px-3 py-1.5 font-mono text-[10px] uppercase text-red-400 transition-all hover:bg-red-500/20"
-                              >
-                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
-                                Licencier (5k OC)
-                              </button>
-                            ) : memberId === user?.id ? (
-                              <span className="font-mono text-[10px] text-slate-700">-- MY SELF --</span>
-                            ) : (
-                              <span className="text-xs text-slate-600">—</span>
-                            )}
+                            <div className="flex flex-col items-end gap-2">
+                              {showPromote && (
+                                <button
+                                  type="button"
+                                  disabled={roleBusyUserId === memberId}
+                                  onClick={() => handlePromoteCoManager(member)}
+                                  className="rounded border border-cyan-400/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-cyan-400 transition hover:bg-cyan-400/10 disabled:opacity-50"
+                                >
+                                  {roleBusyUserId === memberId ? '…' : 'Nommer Adjoint'}
+                                </button>
+                              )}
+                              {showDemote && (
+                                <button
+                                  type="button"
+                                  disabled={roleBusyUserId === memberId}
+                                  onClick={() => handleDemoteCoManager(member)}
+                                  className="rounded border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300 transition hover:bg-amber-500/15 disabled:opacity-50"
+                                >
+                                  {roleBusyUserId === memberId ? '…' : 'Destituer'}
+                                </button>
+                              )}
+                              {showKickButton ? (
+                                <button
+                                  type="button"
+                                  onClick={() => handleKickClick(member)}
+                                  className="ml-auto flex items-center gap-2 rounded border border-red-500/20 bg-red-500/10 px-3 py-1.5 font-mono text-[10px] uppercase text-red-400 transition-all hover:bg-red-500/20"
+                                >
+                                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
+                                  Licencier (5k OC)
+                                </button>
+                              ) : memberId === user?.id ? (
+                                <span className="font-mono text-[10px] text-slate-700">-- MY SELF --</span>
+                              ) : (
+                                !showPromote && !showDemote && (
+                                  <span className="text-xs text-slate-600">—</span>
+                                )
+                              )}
+                            </div>
                           </td>
                         )}
                       </tr>
