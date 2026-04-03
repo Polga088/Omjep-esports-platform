@@ -126,10 +126,11 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   adminUpdate(
+    @Req() req: Request & { user: { id: string; role: string } },
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: AdminUpdateUserDto,
   ) {
-    return this.usersService.adminUpdate(id, dto);
+    return this.usersService.adminUpdate(id, dto, req.user.role);
   }
 
   @Delete(':id')

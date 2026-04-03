@@ -135,8 +135,22 @@ export class UsersService {
     return withWalletDefaults(created);
   }
 
-  async adminUpdate(id: string, dto: AdminUpdateUserDto) {
+  async adminUpdate(id: string, dto: AdminUpdateUserDto, requesterRole: string) {
     await this.findOne(id);
+
+    const isAdmin = requesterRole === 'ADMIN';
+    if (!isAdmin) {
+      if (dto.role !== undefined) {
+        throw new ForbiddenException(
+          'Seuls les administrateurs peuvent modifier le rôle.',
+        );
+      }
+      if (dto.level !== undefined || dto.xp !== undefined) {
+        throw new ForbiddenException(
+          'Seuls les administrateurs peuvent modifier le niveau ou l’XP.',
+        );
+      }
+    }
 
     if (dto.email) {
       const existing = await this.prisma.user.findUnique({

@@ -38,8 +38,13 @@ export default function Register() {
     setIsLoading(true);
     setError(null);
 
+    const payload = {
+      ...form,
+      role: form.role === 'MANAGER' ? ('PLAYER' as const) : form.role,
+    };
+
     try {
-      const { data } = await api.post('/auth/register', form);
+      const { data } = await api.post('/auth/register', payload);
       setSuccess(true);
 
       if (data.access_token) {
@@ -174,24 +179,52 @@ export default function Register() {
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">Rôle</label>
               <div className="grid grid-cols-2 gap-3">
-                {roles.map(({ value, label, description }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setForm((prev) => ({ ...prev, role: value }))}
-                    className={`p-3.5 rounded-xl border text-left transition-all ${
-                      form.role === value
-                        ? 'border-amber-400/40 bg-amber-400/10 text-amber-400'
-                        : 'border-white/10 bg-white/[0.02] text-slate-400 hover:border-white/20 hover:text-white'
-                    }`}
-                  >
-                    <p className="text-sm font-semibold">{label}</p>
-                    <p className={`text-xs mt-0.5 ${form.role === value ? 'text-amber-400/70' : 'text-slate-600'}`}>
-                      {description}
-                    </p>
-                  </button>
-                ))}
+                {roles.map(({ value, label, description }) => {
+                  const isManager = value === 'MANAGER';
+                  const managerTitle =
+                    'Le rôle Manager est attribué uniquement par l’administration après vérification.';
+                  return (
+                    <div
+                      key={value}
+                      className={isManager ? 'rounded-xl' : undefined}
+                      title={isManager ? managerTitle : undefined}
+                    >
+                      <button
+                        type="button"
+                        disabled={isManager}
+                        aria-disabled={isManager}
+                        onClick={() => {
+                          if (isManager) return;
+                          setForm((prev) => ({ ...prev, role: value }));
+                        }}
+                        className={`w-full p-3.5 rounded-xl border text-left transition-all ${
+                          isManager
+                            ? 'pointer-events-none cursor-not-allowed border-white/10 bg-white/[0.02] text-slate-500 opacity-40'
+                            : form.role === value
+                              ? 'border-amber-400/40 bg-amber-400/10 text-amber-400'
+                              : 'border-white/10 bg-white/[0.02] text-slate-400 hover:border-white/20 hover:text-white'
+                        }`}
+                      >
+                        <p className="text-sm font-semibold">{label}</p>
+                        <p
+                          className={`text-xs mt-0.5 ${
+                            isManager
+                              ? 'text-slate-600'
+                              : form.role === value
+                                ? 'text-amber-400/70'
+                                : 'text-slate-600'
+                          }`}
+                        >
+                          {description}
+                        </p>
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
+              <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                Le rôle Manager est attribué uniquement par l’administration après vérification.
+              </p>
             </div>
 
             {/* Submit */}

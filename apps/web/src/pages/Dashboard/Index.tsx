@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { motion, animate, type Variants } from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
 import {
@@ -376,33 +376,6 @@ function NeonFootballIcon({
   );
 }
 
-/** Bordures néon en L (angles seuls) — rupture visuelle type HUD */
-function NeonLFrame({
-  color,
-  children,
-  className = '',
-}: {
-  color: string;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`relative ${className}`}>
-      <div
-        className="pointer-events-none absolute left-0 top-0 z-[5] h-16 w-20 border-l-2 border-t-2"
-        style={{ borderColor: color }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 right-0 z-[5] h-12 w-28 border-b-2 border-r-2"
-        style={{ borderColor: color }}
-        aria-hidden
-      />
-      {children}
-    </div>
-  );
-}
-
 function HudCornerDecor({ labels }: { labels: { tl: string; tr: string; bl: string; br: string } }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[inherit]" aria-hidden>
@@ -756,73 +729,68 @@ export default function DashboardIndex() {
             </div>
           ) : data ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {/* MVP — crystal HUD : L #3B82F6, blur, AMR outline */}
               {data.mvp ? (
-                <NeonLFrame color="#3B82F6" className="lg:col-span-2">
-                  <div className="group relative overflow-hidden rounded-2xl border border-blue-500/15 bg-gradient-to-br from-white/[0.03] to-transparent px-4 py-8 backdrop-blur-[12px] sm:px-8">
-                    <div className="relative z-[3]">
-                      <div className="mb-6 flex items-center gap-2">
-                        <div className="flex items-center gap-2 border border-blue-500/25 bg-transparent px-3 py-1.5 backdrop-blur-sm">
-                          <Crown className="h-4 w-4 text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.55)]" />
-                          <span className="font-scifi text-[11px] font-medium uppercase tracking-[0.2em] text-sky-200/90">
-                            MVP du Mois
+                <div className="relative overflow-hidden rounded-xl border-y border-r border-[0.5px] border-white/10 border-l-2 border-l-blue-500 bg-[#08090c] px-4 py-8 sm:px-8 lg:col-span-2">
+                  <div className="relative z-[1]">
+                    <div className="mb-6 flex items-center gap-2">
+                      <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5">
+                        <Crown className="h-4 w-4 text-blue-400" />
+                        <span className="font-scifi text-[11px] font-medium uppercase tracking-[0.2em] text-slate-300">
+                          MVP du Mois
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-end justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="mb-1 font-scifi text-2xl font-semibold text-white sm:text-3xl">
+                          {data.mvp.displayName ?? 'Anonyme'}
+                        </h3>
+                        <div className="mb-6 flex flex-wrap items-baseline gap-2">
+                          <span className="font-mono text-5xl font-bold tabular-nums text-blue-400 sm:text-6xl">
+                            {Number(data.mvp?.averageRating ?? 0).toFixed(1)}
                           </span>
+                          <span className="font-scifi text-sm font-medium tracking-[0.15em] text-slate-500">
+                            AMR
+                          </span>
+                        </div>
+
+                        <div className="flex gap-6">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded border border-white/10 bg-white/[0.02]">
+                              <Swords className="h-4 w-4 text-slate-500" />
+                            </div>
+                            <div>
+                              <p className="font-mono text-lg font-semibold tabular-nums text-white">
+                                {Number(data.mvp?.goals ?? 0)}
+                              </p>
+                              <p className="font-scifi text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                                Buts
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded border border-white/10 bg-white/[0.02]">
+                              <Star className="h-4 w-4 text-slate-500" />
+                            </div>
+                            <div>
+                              <p className="font-mono text-lg font-semibold tabular-nums text-white">
+                                {Number(data.mvp?.assists ?? 0)}
+                              </p>
+                              <p className="font-scifi text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                                Passes D.
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="flex items-end justify-between gap-4">
-                        <div className="min-w-0 flex-1">
-                          <h3 className="mb-1 font-scifi text-2xl font-semibold text-white transition-colors group-hover:text-sky-100 sm:text-3xl">
-                            {data.mvp.displayName ?? 'Anonyme'}
-                          </h3>
-                          <div className="mb-6 flex flex-wrap items-baseline gap-2">
-                            <span className="font-sans text-5xl font-black tabular-nums text-transparent [-webkit-text-stroke:2px_rgba(96,165,250,0.95)] [text-shadow:0_0_20px_rgba(59,130,246,0.35)] sm:text-6xl [-webkit-text-fill-color:transparent]">
-                              {Number(data.mvp?.averageRating ?? 0).toFixed(1)}
-                            </span>
-                            <span className="font-scifi text-sm font-medium tracking-[0.15em] text-sky-400/75">
-                              AMR
-                            </span>
-                          </div>
-
-                          <div className="flex gap-6">
-                            <div className="flex items-center gap-2">
-                              <div className="flex h-8 w-8 items-center justify-center rounded border border-white/10 bg-transparent">
-                                <Swords className="h-4 w-4 text-slate-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.35)]" />
-                              </div>
-                              <div>
-                                <p className="font-sans text-lg font-black tabular-nums text-white">
-                                  {Number(data.mvp?.goals ?? 0)}
-                                </p>
-                                <p className="font-scifi text-[10px] font-medium uppercase tracking-wider text-slate-500">
-                                  Buts
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="flex h-8 w-8 items-center justify-center rounded border border-white/10 bg-transparent">
-                                <Star className="h-4 w-4 text-slate-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.35)]" />
-                              </div>
-                              <div>
-                                <p className="font-sans text-lg font-black tabular-nums text-white">
-                                  {Number(data.mvp?.assists ?? 0)}
-                                </p>
-                                <p className="font-scifi text-[10px] font-medium uppercase tracking-wider text-slate-500">
-                                  Passes D.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="relative hidden h-28 w-28 shrink-0 sm:flex">
-                          <div className="relative flex h-full w-full items-center justify-center border border-blue-500/40 bg-transparent transition-transform duration-300 group-hover:scale-105">
-                            <Crown className="h-12 w-12 text-blue-400/90 drop-shadow-[0_0_14px_rgba(59,130,246,0.45)]" />
-                          </div>
-                        </div>
+                      <div className="relative hidden h-28 w-28 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] sm:flex">
+                        <Crown className="h-12 w-12 text-blue-400/80" />
                       </div>
                     </div>
                   </div>
-                </NeonLFrame>
+                </div>
               ) : (
                 <div className="lg:col-span-2">
                   <EmptyDataCard
@@ -832,108 +800,38 @@ export default function DashboardIndex() {
                 </div>
               )}
 
-              {/* Top Scorer — L #EAB308, radar, faisceau top light, sans halo massif */}
               {data.topScorer ? (
-                <NeonLFrame color="#EAB308" className="group">
-                  <div className="relative overflow-hidden rounded-2xl border border-amber-500/10 bg-gradient-to-b from-white/[0.02] to-transparent px-4 py-8 text-center backdrop-blur-[12px]">
-                    <div
-                      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 bg-gradient-to-b from-[#EAB308]/25 via-[#EAB308]/06 to-transparent"
-                      aria-hidden
-                    />
-                    <div
-                      className="pointer-events-none absolute left-1/2 top-0 z-0 h-32 w-px -translate-x-1/2 bg-gradient-to-b from-amber-200/90 via-amber-400/20 to-transparent"
-                      aria-hidden
-                    />
+                <div className="relative overflow-hidden rounded-xl border-y border-r border-[0.5px] border-white/10 border-l-2 border-l-amber-400 bg-[#08090c] px-4 py-8 text-center">
+                  <div className="relative z-[1] flex h-full flex-col items-center justify-center">
+                    <div className="mb-6 flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5">
+                      <Flame className="h-4 w-4 text-amber-400" />
+                      <span className="font-scifi text-[11px] font-medium uppercase tracking-[0.2em] text-amber-200/90">
+                        Top Scorer
+                      </span>
+                    </div>
 
-                    <div className="relative z-[2] flex h-full flex-col items-center justify-center">
-                      <div
-                        className="mb-6 flex items-center gap-2 border border-[#EAB308]/30 bg-transparent px-3 py-1.5 backdrop-blur-sm"
-                      >
-                        <Flame className="h-4 w-4 text-[#EAB308]" />
-                        <span className="font-scifi text-[11px] font-medium uppercase tracking-[0.2em] text-[#FDE047]">
-                          Top Scorer
-                        </span>
-                      </div>
+                    <div className="relative mx-auto mb-6 flex h-[108px] w-[108px] items-center justify-center rounded-lg border border-white/10 bg-white/[0.02]">
+                      <NeonFootballIcon className="h-11 w-11 text-amber-400/90" />
+                    </div>
 
-                      <div className="relative mx-auto mb-6 flex h-[108px] w-[108px] items-center justify-center">
-                        <svg
-                          className="absolute inset-0 h-full w-full animate-spin text-[#EAB308]/45"
-                          viewBox="0 0 100 100"
-                          aria-hidden
-                          style={{ animationDuration: '14s' }}
-                        >
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="46"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="0.6"
-                            strokeDasharray="3 9"
-                          />
-                        </svg>
-                        <svg
-                          className="absolute inset-0 h-full w-full animate-spin text-[#EAB308]/45"
-                          viewBox="0 0 100 100"
-                          aria-hidden
-                          style={{ animationDuration: '14s', animationDirection: 'reverse' }}
-                        >
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="0.8"
-                            strokeDasharray="6 14"
-                          />
-                        </svg>
-                        <svg
-                          className="absolute inset-0 h-full w-full animate-spin text-[#EAB308]/45"
-                          viewBox="0 0 100 100"
-                          aria-hidden
-                          style={{ animationDuration: '5s' }}
-                        >
-                          <circle
-                            className="dashboard-trophy-ring"
-                            cx="50"
-                            cy="50"
-                            r="44"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <NeonFootballIcon
-                          className="relative z-[1] h-11 w-11 text-[#EAB308]"
-                          style={{
-                            filter: 'drop-shadow(0 0 6px rgba(234, 179, 8, 0.45))',
-                          }}
-                        />
-                      </div>
+                    <h3 className="mb-2 font-scifi text-xl font-semibold text-white">
+                      {data.topScorer.displayName ?? 'Anonyme'}
+                    </h3>
 
-                      <h3 className="mb-2 font-scifi text-xl font-semibold text-white transition-colors group-hover:text-[#FEF08A]">
-                        {data.topScorer.displayName ?? 'Anonyme'}
-                      </h3>
+                    <div className="mb-4 flex flex-wrap items-end justify-center gap-2">
+                      <span className="font-mono text-7xl font-bold tabular-nums leading-none text-amber-300 sm:text-8xl">
+                        {Number(data.topScorer?.goals ?? 0)}
+                      </span>
+                      <span className="pb-1 text-sm font-medium text-amber-500/80">buts</span>
+                    </div>
 
-                      <div className="mb-4 flex flex-wrap items-end justify-center gap-2">
-                        <span
-                          className="bg-gradient-to-b from-[#FEF9C3] via-[#FDE047] to-[#CA8A04] bg-clip-text font-black tabular-nums leading-none text-transparent [-webkit-text-stroke:1.5px_rgba(234,179,8,0.35)] [text-shadow:0_0_18px_rgba(234,179,8,0.35)] text-7xl sm:text-8xl"
-                        >
-                          {Number(data.topScorer?.goals ?? 0)}
-                        </span>
-                        <span className="pb-1 font-medium text-[#EAB308]/85">buts</span>
-                      </div>
-
-                      <div className="inline-flex items-center gap-1.5 border border-[#EAB308]/35 bg-transparent px-3 py-1 backdrop-blur-sm">
-                        <span className="font-scifi text-[10px] font-medium uppercase tracking-[0.18em] text-[#FDE047]/90">
-                          Golden Boot
-                        </span>
-                      </div>
+                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1">
+                      <span className="font-scifi text-[10px] font-medium uppercase tracking-[0.18em] text-amber-200/80">
+                        Golden Boot
+                      </span>
                     </div>
                   </div>
-                </NeonLFrame>
+                </div>
               ) : (
                 <EmptyDataCard
                   title="Buteur en attente"

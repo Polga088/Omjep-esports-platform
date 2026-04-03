@@ -84,7 +84,7 @@ export declare class UsersService {
         id: string;
         created_at: Date;
     }>;
-    adminUpdate(id: string, dto: AdminUpdateUserDto): Promise<{
+    adminUpdate(id: string, dto: AdminUpdateUserDto, requesterRole: string): Promise<{
         ea_persona_name: string | null;
         preferred_position: import("@omjep/database").$Enums.Position | null;
         nationality: string | null;

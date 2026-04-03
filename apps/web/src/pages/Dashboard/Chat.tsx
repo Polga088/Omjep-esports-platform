@@ -27,8 +27,10 @@ export default function ChatPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="ea-fc-hero-neon font-display text-2xl font-black tracking-tight">Tactical Link</h1>
-          <p className="mt-1 text-xs text-slate-500">Messagerie sécurisée — salon club &amp; MP managers</p>
+          <h1 className="font-mono text-lg font-medium uppercase tracking-wider text-slate-300">
+            Messagerie
+          </h1>
+          <p className="mt-1 font-mono text-[11px] text-slate-600">Salon club · messages privés</p>
         </div>
         <MaintenancePrestige
           title="Session sécurisée"
@@ -41,7 +43,7 @@ export default function ChatPage() {
   if (!me) {
     return (
       <div className="relative z-0 flex min-h-[40vh] items-center justify-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-400" aria-label="Chargement" />
+        <Loader2 className="h-8 w-8 animate-spin text-slate-500" aria-label="Chargement" />
       </div>
     );
   }
@@ -49,8 +51,10 @@ export default function ChatPage() {
   return (
     <div className="relative z-0 space-y-6">
       <div>
-        <h1 className="ea-fc-hero-neon font-display text-2xl font-black tracking-tight">Tactical Link</h1>
-        <p className="mt-1 text-xs text-slate-500">Messagerie sécurisée — salon club &amp; MP managers</p>
+        <h1 className="font-mono text-lg font-medium uppercase tracking-wider text-slate-300">
+          Messagerie
+        </h1>
+        <p className="mt-1 font-mono text-[11px] text-slate-600">Salon club · messages privés</p>
       </div>
       <ChatBox me={me} />
     </div>

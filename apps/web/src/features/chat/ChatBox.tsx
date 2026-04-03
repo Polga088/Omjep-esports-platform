@@ -8,7 +8,6 @@ import { Loader2, MessageCircle, Radio, Send, Users, ChevronUp } from 'lucide-re
 import { useChatSocket } from './useChatSocket';
 import { ChatContactAvatar, type ChatContactRow } from './ChatContactAvatar';
 import RankBadge from '@/components/RankBadge';
-import { ChatTacticalIncomingBody } from './ChatTacticalIncomingBody';
 
 type Me = { id: string; email: string; role?: string; level?: number };
 type Contact = ChatContactRow;
@@ -27,8 +26,6 @@ export default function ChatBox({ me }: { me: Me }) {
   const [sending, setSending] = useState(false);
   const [draft, setDraft] = useState('');
   const [typingPeer, setTypingPeer] = useState(false);
-  /** Messages entrants temps réel : effet decrypt + typewriter */
-  const [tacticalIncomingIds, setTacticalIncomingIds] = useState<Set<string>>(() => new Set());
   const { socket, isConnected } = useChatSocket(me.id);
   const listRef = useRef<HTMLDivElement>(null);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -62,14 +59,6 @@ export default function ChatBox({ me }: { me: Me }) {
     [],
   );
 
-  const clearTactical = useCallback((messageId: string) => {
-    setTacticalIncomingIds((prev) => {
-      const next = new Set(prev);
-      next.delete(messageId);
-      return next;
-    });
-  }, []);
-
   const peerLabel = useMemo(() => {
     if (!peerId) return '';
     return contacts.find((c) => c.id === peerId)?.ea_persona_name ?? contacts.find((c) => c.id === peerId)?.email ?? peerId;
@@ -77,16 +66,8 @@ export default function ChatBox({ me }: { me: Me }) {
 
   useEffect(() => {
     let cancelled = false;
-    console.log('🛠️ CHAT DEBUG: Initialisation lancée...');
-    const forceUnlockTimer = window.setTimeout(() => {
-      if (!cancelled) {
-        console.log('🛠️ CHAT DEBUG: Force unlock 5s (setLoading false)');
-        setLoading(false);
-      }
-    }, 5000);
     (async () => {
       try {
-        console.log('📡 CHAT DEBUG: Appel API /chat/contacts/managers...');
         const [teamRes, contactsRes] = await Promise.all([
           api.get<MyTeamRes>('/teams/my-team').catch(() => ({ data: null as MyTeamRes })),
           api.get<Contact[]>('/chat/contacts/managers').catch(() => ({ data: [] as Contact[] })),
@@ -105,7 +86,6 @@ export default function ChatBox({ me }: { me: Me }) {
     })();
     return () => {
       cancelled = true;
-      window.clearTimeout(forceUnlockTimer);
     };
   }, []);
 
@@ -119,13 +99,6 @@ export default function ChatBox({ me }: { me: Me }) {
         if (prev.some((m) => m.id === msg.id)) return prev;
         return [...prev, msg];
       });
-      if (msg.sender_id !== me.id) {
-        setTacticalIncomingIds((prev) => {
-          const next = new Set(prev);
-          next.add(msg.id);
-          return next;
-        });
-      }
       scrollBottom();
     };
     const onTyping = (t: { userId: string; isTyping: boolean }) => {
@@ -231,35 +204,24 @@ export default function ChatBox({ me }: { me: Me }) {
 
   if (loading) {
     return (
-      <div
-        role="presentation"
-        className="relative z-0 flex min-h-[50vh] cursor-pointer items-center justify-center py-24"
-        onClick={() => {
-          console.log('🛠️ CHAT DEBUG: Clic loader → setLoading(false)');
-          setLoading(false);
-        }}
-        title="Debug: cliquer pour forcer le déblocage du chargement"
-      >
-        <Loader2 className="h-8 w-8 animate-spin text-amber-400" aria-label="Chargement" />
+      <div className="relative z-0 flex min-h-[50vh] items-center justify-center rounded-2xl border border-white/10 bg-[#08090c] py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-slate-500" aria-label="Chargement" />
       </div>
     );
   }
 
-  const glassShell =
-    'relative overflow-hidden rounded-2xl border border-cyan-500/20 bg-[#050910]/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl';
-
   return (
-    <div className="grid min-h-[70vh] gap-6 lg:grid-cols-[300px_1fr]">
-      <aside className={`${glassShell} p-4`}>
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.09] dashboard-hero-tech-grid" aria-hidden />
+    <div className="grid min-h-[70vh] overflow-hidden rounded-2xl border border-white/10 bg-[#08090c] lg:grid-cols-[300px_1fr]">
+      <aside className="relative border-b border-white/10 p-4 lg:border-b-0 lg:border-r lg:border-white/10">
+        <div className="pointer-events-none absolute inset-0 z-0 chat-terminal-grid" aria-hidden />
         <div className="relative z-[1] space-y-4">
-        <div className="flex items-center gap-2 text-cyan-300/90">
-          <Radio className="h-4 w-4" />
-          <span className="text-xs font-bold uppercase tracking-widest">Tactical Link</span>
+        <div className="flex items-center gap-2 font-mono text-slate-500">
+          <Radio className="h-4 w-4 shrink-0" />
+          <span className="text-[11px] font-medium uppercase tracking-wider">Messagerie</span>
         </div>
-        <div className="flex items-center gap-2 text-amber-400/80">
-          <Users className="h-4 w-4" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Contacts</span>
+        <div className="flex items-center gap-2 text-slate-500">
+          <Users className="h-4 w-4 shrink-0" />
+          <span className="text-[10px] font-medium uppercase tracking-wider">Contacts</span>
         </div>
         {team && (
           <button
@@ -268,10 +230,10 @@ export default function ChatBox({ me }: { me: Me }) {
               setMode('team');
               setPeerId(null);
             }}
-            className={`w-full rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
+            className={`w-full rounded-lg border border-white/10 px-3 py-2.5 text-left text-sm transition-colors ${
               mode === 'team'
-                ? 'border-cyan-400/35 bg-cyan-500/10 text-cyan-50'
-                : 'border-white/[0.08] text-slate-400 hover:border-cyan-500/25'
+                ? 'bg-white/[0.05] text-slate-200'
+                : 'bg-transparent text-slate-500 hover:bg-white/[0.03] hover:text-slate-300'
             }`}
           >
             Salon · {team.name}
@@ -288,33 +250,33 @@ export default function ChatBox({ me }: { me: Me }) {
                   setMode('dm');
                   setPeerId(c.id);
                 }}
-                className={`flex w-full items-center gap-2 rounded-xl border px-2 py-2 text-left text-sm transition-colors ${
+                className={`flex w-full items-center gap-2 rounded-lg border border-white/10 px-2 py-2 text-left text-sm transition-colors ${
                   mode === 'dm' && peerId === c.id
-                    ? 'border-cyan-400/35 bg-cyan-500/10 text-cyan-50'
-                    : 'border-white/[0.06] text-slate-400 hover:border-cyan-500/20'
+                    ? 'bg-white/[0.05] text-slate-200'
+                    : 'bg-transparent text-slate-500 hover:bg-white/[0.03] hover:text-slate-300'
                 }`}
               >
-                <ChatContactAvatar contact={c} />
+                <ChatContactAvatar contact={c} terminal />
                 <span
-                  className={`mt-[2px] h-2 w-2 shrink-0 rounded-full ${online ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-slate-600'}`}
+                  className={`mt-[2px] h-2 w-2 shrink-0 rounded-full ${online ? 'bg-slate-400' : 'bg-slate-700'}`}
                 />
                 <span className="min-w-0 flex-1 truncate font-medium">{c.ea_persona_name ?? c.email}</span>
               </button>
             );
           })}
         </div>
-        <p className="text-[10px] leading-relaxed text-slate-600">
-          {CHAT_MESSAGES_PAGE_SIZE} derniers messages par chargement — bouton « Charger plus » pour l’historique.
+        <p className="font-mono text-[10px] leading-relaxed text-slate-600">
+          {CHAT_MESSAGES_PAGE_SIZE} derniers messages / chargement — historique via « Charger plus ».
         </p>
         </div>
       </aside>
 
-      <section className={`${glassShell} flex min-h-[420px] flex-col`}>
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.07] dashboard-hero-tech-grid" aria-hidden />
-        <header className="relative z-[1] flex min-w-0 items-center gap-2 border-b border-cyan-500/15 px-4 py-3">
-          <MessageCircle className="h-5 w-5 shrink-0 text-cyan-400" />
+      <section className="relative flex min-h-[420px] flex-col">
+        <div className="pointer-events-none absolute inset-0 z-0 chat-terminal-grid" aria-hidden />
+        <header className="relative z-[1] flex min-w-0 items-center gap-2 border-b border-white/10 px-4 py-3">
+          <MessageCircle className="h-5 w-5 shrink-0 text-slate-500" />
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <h2 className="min-w-0 truncate text-sm font-bold text-white">
+            <h2 className="min-w-0 truncate font-mono text-sm font-medium text-slate-200">
               {mode === 'team' && team ? `Salon ${team.name}` : mode === 'dm' && peerId ? `MP · ${peerLabel}` : 'Conversation'}
             </h2>
             {mode === 'team' ? (
@@ -330,20 +292,16 @@ export default function ChatBox({ me }: { me: Me }) {
             ) : null}
           </div>
           <span
-            className={`inline-flex shrink-0 items-center gap-1.5 text-[10px] font-semibold ${
-              isConnected ? 'text-emerald-400' : 'text-orange-400'
-            }`}
-            title={isConnected ? 'Socket temps réel actif' : 'Reconnexion au serveur…'}
+            className="inline-flex shrink-0 items-center gap-1.5 font-mono text-[10px] font-medium text-slate-500"
+            title={isConnected ? 'Canal actif' : 'Reconnexion…'}
           >
             <span
-              className={`w-2 h-2 rounded-full shrink-0 ${
-                isConnected
-                  ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.65)]'
-                  : 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.55)] animate-pulse'
+              className={`h-2 w-2 shrink-0 rounded-sm border border-white/20 ${
+                isConnected ? 'bg-slate-500' : 'animate-pulse bg-slate-700'
               }`}
               aria-hidden
             />
-            {isConnected ? 'En ligne' : 'Connexion…'}
+            {isConnected ? 'OK' : '…'}
           </span>
         </header>
 
@@ -357,7 +315,7 @@ export default function ChatBox({ me }: { me: Me }) {
                 type="button"
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-400/80 hover:text-amber-300 disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-slate-500 hover:text-slate-400 disabled:opacity-40"
               >
                 {loadingMore ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ChevronUp className="w-3.5 h-3.5" />}
                 Charger plus
@@ -366,35 +324,23 @@ export default function ChatBox({ me }: { me: Me }) {
           )}
           {messages.map((m) => {
             const mine = m.sender_id === me.id;
-            const tactical = !mine && tacticalIncomingIds.has(m.id);
             return (
               <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[85%] rounded-2xl border px-3 py-2 text-sm ${
-                    mine
-                      ? 'border-amber-500/25 bg-amber-500/15 text-amber-50'
-                      : tactical
-                        ? 'border-cyan-500/30 bg-cyan-950/25 text-slate-100 shadow-[0_0_24px_rgba(34,211,238,0.08)]'
-                        : 'border-white/10 bg-white/[0.05] text-slate-200'
+                  className={`max-w-[85%] rounded-lg border border-white/10 px-3 py-2 text-sm ${
+                    mine ? 'bg-white/[0.06] text-slate-200' : 'bg-[#0a0b0e] text-slate-300'
                   }`}
                 >
                   {!mine && (
-                    <p className="mb-1 text-[10px] font-semibold text-cyan-400/85">
+                    <p className="mb-1 font-mono text-[10px] font-medium uppercase tracking-wide text-slate-500">
                       {m.sender?.ea_persona_name ?? m.sender?.email ?? '…'}
                     </p>
                   )}
-                  {tactical ? (
-                    <ChatTacticalIncomingBody
-                      content={m.content}
-                      onAnimationEnd={() => clearTactical(m.id)}
-                    />
-                  ) : (
-                    <p className="whitespace-pre-wrap break-words">{m.content}</p>
-                  )}
-                  <div className="mt-1 flex items-center justify-end gap-2 text-[9px] text-slate-500">
+                  <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                  <div className="mt-1 flex items-center justify-end gap-2 font-mono text-[9px] text-slate-600">
                     <span>{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     {mine && mode === 'dm' && (
-                      <span className={m.is_read ? 'text-emerald-400/80' : ''}>{m.is_read ? 'Lu' : '…'}</span>
+                      <span>{m.is_read ? 'lu' : '…'}</span>
                     )}
                   </div>
                 </div>
@@ -402,11 +348,11 @@ export default function ChatBox({ me }: { me: Me }) {
             );
           })}
           {typingPeer && (
-            <p className="pl-1 text-[11px] italic text-cyan-500/70">En train d’écrire…</p>
+            <p className="pl-1 font-mono text-[11px] text-slate-600">en cours de saisie…</p>
           )}
         </div>
 
-        <footer className="relative z-[1] flex gap-2 border-t border-cyan-500/15 p-3">
+        <footer className="relative z-[1] flex gap-2 border-t border-white/10 p-3">
           <textarea
             value={draft}
             onChange={(e) => onDraftChange(e.target.value)}
@@ -425,13 +371,13 @@ export default function ChatBox({ me }: { me: Me }) {
             }
             disabled={(mode === 'team' && !team) || (mode === 'dm' && !peerId)}
             rows={2}
-            className="flex-1 resize-none rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/35"
+            className="flex-1 resize-none rounded-lg border border-white/10 bg-[#08090c] px-3 py-2 font-mono text-sm text-slate-300 placeholder:text-slate-600 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/10"
           />
           <button
             type="button"
             onClick={() => void send()}
             disabled={sending || (mode === 'team' && !team) || (mode === 'dm' && !peerId)}
-            className="inline-flex items-center gap-2 self-end rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-[#041016] hover:bg-cyan-400 disabled:opacity-40"
+            className="inline-flex items-center gap-2 self-end rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-slate-300 hover:bg-white/[0.07] disabled:opacity-40"
           >
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </button>

@@ -59,6 +59,21 @@ export default function AdminUsers() {
     void load();
   }, [load]);
 
+  const assignableRoles = useMemo(
+    () => (me?.role === 'ADMIN' ? ROLES : ROLES.filter((r) => r !== 'MANAGER')),
+    [me?.role],
+  );
+
+  const roleOptionsForRow = useCallback(
+    (current: Role) =>
+      assignableRoles.includes(current) ? assignableRoles : [...assignableRoles, current],
+    [assignableRoles],
+  );
+
+  useEffect(() => {
+    setBulkRole((prev) => (assignableRoles.includes(prev) ? prev : 'PLAYER'));
+  }, [assignableRoles]);
+
   useEffect(() => {
     if (!userToDelete) return;
     const onKey = (e: KeyboardEvent) => {
@@ -295,7 +310,7 @@ export default function AdminUsers() {
               onChange={(e) => setBulkRole(e.target.value as Role)}
               className="rounded-xl bg-white/[0.04] border border-amber-400/20 px-3 py-2.5 text-sm text-white"
             >
-              {ROLES.map((r) => (
+              {assignableRoles.map((r) => (
                 <option key={r} value={r}>
                   {r}
                 </option>
@@ -386,7 +401,7 @@ export default function AdminUsers() {
                         className="rounded-lg bg-white/[0.04] border border-white/10 px-2 py-1.5 text-xs text-white disabled:opacity-50"
                         title={isSelf ? 'Modifiez votre rôle via un autre compte admin' : undefined}
                       >
-                        {ROLES.map((r) => (
+                        {roleOptionsForRow(u.role).map((r) => (
                           <option key={r} value={r}>
                             {r}
                           </option>

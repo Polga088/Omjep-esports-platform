@@ -25,7 +25,14 @@ function toRarity(raw: string | null | undefined): PlayerIdentityRarity {
 }
 
 /** Mini PlayerIdentity + RankBadge — tolère `contact` absent au premier rendu */
-export function ChatContactAvatar({ contact }: { contact?: ChatContactRow | null }) {
+export function ChatContactAvatar({
+  contact,
+  terminal,
+}: {
+  contact?: ChatContactRow | null;
+  /** Sans lueurs / halo — liste chat mode terminal */
+  terminal?: boolean;
+}) {
   const level = contact?.level ?? 1;
 
   if (!contact) {
@@ -40,7 +47,7 @@ export function ChatContactAvatar({ contact }: { contact?: ChatContactRow | null
   const rarity = toRarity(contact.avatarRarity ?? undefined);
   const initial = (contact.ea_persona_name || contact.email || '?').slice(0, 1).toUpperCase();
   const frameUrl = contact.activeFrameUrl?.trim() || null;
-  const legendary = rarity === 'legendary';
+  const legendary = rarity === 'legendary' && !terminal;
 
   const label = contact.ea_persona_name || contact.email || 'Contact';
 
