@@ -106,6 +106,7 @@ export class ModeratorLeagueService {
         match_id: match.id,
         competition_id: competitionId,
       },
+      { notificationType: 'MATCH', link: '/dashboard/matches' },
     );
 
     return { message: 'Match créé.', match };
@@ -136,6 +137,16 @@ export class ModeratorLeagueService {
       where: { id: competitionId },
       data: { status: 'ONGOING' },
     });
+
+    const label = competition.name ?? 'Compétition';
+    await this.notifications.notifyUsersInTeams(
+      teamIds,
+      '📅 Calendrier généré',
+      `Le calendrier « ${label} » est disponible (${created.count} matchs).`,
+      'info',
+      { category: 'MATCH', type: 'LEAGUE_CALENDAR_GENERATED', competition_id: competitionId },
+      { notificationType: 'MATCH', link: '/dashboard/matches' },
+    );
 
     return {
       message: `Calendrier généré : ${created.count} matchs créés.`,

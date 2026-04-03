@@ -15,7 +15,7 @@ import Register from '@/pages/Register';
 import DashboardIndex from '@/pages/Dashboard/Index';
 import MyTeam from '@/pages/Dashboard/MyTeam';
 import Profile from '@/pages/Dashboard/Profile';
-import Ladder from '@/pages/Dashboard/Ladder';
+import LadderPage from '@/pages/Dashboard/LadderPage';
 import Matches from '@/pages/Dashboard/Matches';
 import Schedule from '@/pages/Dashboard/Schedule';
 import CompetitionDetail from '@/pages/Dashboard/CompetitionDetail';
@@ -91,7 +91,7 @@ export default function App() {
         >
           <Route path="/dashboard" element={<DashboardIndex />} />
           <Route path="/dashboard/team" element={<MyTeam />} />
-          <Route path="/dashboard/ladder" element={<Ladder />} />
+          <Route path="/dashboard/ladder" element={<LadderPage />} />
           <Route path="/dashboard/matches" element={<Matches />} />
           <Route path="/dashboard/schedule" element={<Schedule />} />
           <Route path="/dashboard/competitions/:id" element={<CompetitionDetail />} />

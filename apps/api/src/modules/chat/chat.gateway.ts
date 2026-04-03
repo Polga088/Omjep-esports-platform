@@ -126,6 +126,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       message: string;
       type: 'success' | 'error' | 'info' | 'warning';
       metadata?: Record<string, unknown> | null;
+      link?: string | null;
+      notificationType?: string;
     },
   ): void {
     this.server.to(`user:${userId}`).emit('app:notification', payload);

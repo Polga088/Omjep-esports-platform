@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Param,
   Body,
@@ -21,6 +22,10 @@ import { RescheduleMatchDto } from './dto/reschedule-match.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { RewardsService } from '../rewards/rewards.service';
 import { PlayerStatsService } from '../player-stats/player-stats.service';
+import { CupBracketService } from './cup-bracket.service';
+import { GenerateBracketDto } from './dto/generate-bracket.dto';
+import { RepairBracketPositionsDto } from './dto/repair-bracket-positions.dto';
+import { PromoteFromGroupsDto } from './dto/promote-from-groups.dto';
 
 interface ScoreEventDto {
   player_id: string;
@@ -57,6 +62,7 @@ export class AdminMatchesController {
     private readonly notificationsService: NotificationsService,
     private readonly rewardsService: RewardsService,
     private readonly playerStatsService: PlayerStatsService,
+    private readonly cupBracketService: CupBracketService,
   ) {}
 
   @Get()
@@ -72,6 +78,58 @@ export class AdminMatchesController {
       orderBy: [{ status: 'asc' }, { round: 'asc' }],
       include: MATCH_INCLUDE,
     });
+  }
+
+  /**
+   * Prévisualise les affiches phase finale (1er vs 2e croisés) après groupes.
+   */
+  @Get('groups-knockout-preview')
+  async groupsKnockoutPreview(@Query('competition_id') competitionId?: string) {
+    const id = competitionId?.trim();
+    if (!id) {
+      throw new BadRequestException('Query competition_id requis.');
+    }
+    return this.cupBracketService.previewPromoteFromGroupsToBracket(id);
+  }
+
+  /**
+   * Crée la phase finale (arbre) à partir des classements de groupes.
+   */
+  @Post('promote-from-groups')
+  async promoteFromGroups(@Body() dto: PromoteFromGroupsDto) {
+    return this.cupBracketService.promoteFromGroupsToBracket(dto.competition_id);
+  }
+
+  /**
+   * Génère tous les matchs vides d’un arbre d’élimination directe (byes si besoin).
+   * Réservé aux coupes en scénario élimination directe (ou sans scénario défini).
+   */
+  @Post('generate-bracket')
+  async generateBracket(@Body() dto: GenerateBracketDto) {
+    const comp = await this.prisma.competition.findUnique({
+      where: { id: dto.competition_id },
+      select: { cup_scenario: true },
+    });
+    if (
+      comp?.cup_scenario &&
+      comp.cup_scenario !== 'SINGLE_ELIMINATION'
+    ) {
+      throw new BadRequestException(
+        'La génération automatique de bracket n’est disponible que pour le scénario « Élimination directe ».',
+      );
+    }
+    return this.cupBracketService.generateSingleEliminationBracket(
+      dto.competition_id,
+      dto.team_ids,
+    );
+  }
+
+  /**
+   * Déduit bracket_round / bracket_index des libellés de tour existants (coupe).
+   */
+  @Post('repair-bracket-positions')
+  async repairBracketPositions(@Body() dto: RepairBracketPositionsDto) {
+    return this.cupBracketService.repairBracketPositions(dto.competition_id);
   }
 
   @Patch(':id/score')
@@ -127,6 +185,8 @@ export class AdminMatchesController {
       this.rewardsService.distributeRewards(id),
       this.playerStatsService.updateFromMatch(id),
     ]);
+
+    await this.cupBracketService.promoteWinnerIfBracket(id);
 
     return { message: 'Résultat enregistré.', match: updated, rewards };
   }
@@ -190,6 +250,8 @@ export class AdminMatchesController {
       include: MATCH_INCLUDE,
     });
 
+    await this.cupBracketService.promoteWinnerIfBracket(id);
+
     return {
       message: winnerChanged
         ? `Score corrigé (${oldHome}–${oldAway} → ${newHome}–${newAway}). Le vainqueur a changé — le classement est mis à jour automatiquement.`
@@ -249,8 +311,14 @@ export class AdminMatchesController {
     const metadata = { match_id: id, type: 'MATCH_DISPUTED', category: 'MATCH' as const };
 
     await Promise.all([
-      this.notificationsService.sendToTeamManagers(match.home_team_id, notifTitle, notifMsg, metadata),
-      this.notificationsService.sendToTeamManagers(match.away_team_id, notifTitle, notifMsg, metadata),
+      this.notificationsService.sendToTeamManagers(match.home_team_id, notifTitle, notifMsg, metadata, 'info', {
+        notificationType: 'MATCH',
+        link: '/dashboard/matches',
+      }),
+      this.notificationsService.sendToTeamManagers(match.away_team_id, notifTitle, notifMsg, metadata, 'info', {
+        notificationType: 'MATCH',
+        link: '/dashboard/matches',
+      }),
     ]);
 
     return { message: `Match placé en litige. Les managers des deux clubs ont été notifiés.`, match: updated };
@@ -317,8 +385,14 @@ export class AdminMatchesController {
     };
 
     await Promise.all([
-      this.notificationsService.sendToTeamManagers(match.home_team_id, notifTitle, notifMsg, metadata),
-      this.notificationsService.sendToTeamManagers(match.away_team_id, notifTitle, notifMsg, metadata),
+      this.notificationsService.sendToTeamManagers(match.home_team_id, notifTitle, notifMsg, metadata, 'info', {
+        notificationType: 'MATCH',
+        link: '/dashboard/matches',
+      }),
+      this.notificationsService.sendToTeamManagers(match.away_team_id, notifTitle, notifMsg, metadata, 'info', {
+        notificationType: 'MATCH',
+        link: '/dashboard/matches',
+      }),
     ]);
 
     return { message: `Match reprogrammé au ${dateStr}. Les managers ont été notifiés.`, match: updated };

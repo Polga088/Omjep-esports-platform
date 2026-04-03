@@ -871,7 +871,7 @@ export default function ProfilePage() {
               Modifier l&apos;identité
             </h2>
             <p className="mt-2 text-sm text-slate-400">
-              Photo de profil (image) et bannière (image ou courte vidéo MP4/WebM). Max. ~5&nbsp;Mo / ~30&nbsp;Mo.
+              Photo de profil (400x400px, max 5 Mo) et bannière (1500x500px ou vidéo MP4/WebM, max 30 Mo).
             </p>
             <div className="mt-6 space-y-5">
               <div className="space-y-2">
@@ -885,6 +885,7 @@ export default function ProfilePage() {
                   className="block w-full text-sm text-slate-400 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-500/15 file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:text-cyan-200"
                   onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
                 />
+                <p className="text-[10px] font-mono text-slate-500">Recommandé : Carré (PNG/JPG)</p>
                 {avatarFile ? (
                   <p className="text-xs text-cyan-400/80">{avatarFile.name}</p>
                 ) : null}
@@ -900,6 +901,7 @@ export default function ProfilePage() {
                   className="block w-full text-sm text-slate-400 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-500/15 file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:text-cyan-200"
                   onChange={(e) => setBannerFile(e.target.files?.[0] ?? null)}
                 />
+                <p className="text-[10px] font-mono text-slate-500">Recommandé : 3:1 (JPG ou MP4)</p>
                 {bannerFile ? (
                   <p className="text-xs text-cyan-400/80">{bannerFile.name}</p>
                 ) : null}

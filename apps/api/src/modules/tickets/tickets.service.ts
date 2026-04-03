@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { TicketStatus } from '@omjep/database';
 import { PrismaService } from '../../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { TicketReplyDto } from './dto/ticket-reply.dto';
 import { AdminPatchTicketDto } from './dto/admin-patch-ticket.dto';
@@ -22,7 +23,10 @@ const ticketDetailInclude = {
 
 @Injectable()
 export class TicketsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   async create(userId: string, dto: CreateTicketDto) {
     if (!userId || typeof userId !== 'string') {
@@ -82,6 +86,18 @@ export class TicketsService {
         is_staff: true,
       },
     });
+
+    if (ticket.user_id !== authorId) {
+      await this.notifications.createNotification(ticket.user_id, {
+        type: 'SUPPORT',
+        title: 'Réponse sur votre ticket',
+        message: `Le support a répondu à « ${ticket.subject} ».`,
+        link: '/dashboard/support',
+        metadata: { ticket_id: ticketId, category: 'SUPPORT' },
+        toastLevel: 'info',
+      });
+    }
+
     return this.findOne(ticketId, authorId, true);
   }
 

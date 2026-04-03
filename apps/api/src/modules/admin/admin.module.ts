@@ -16,6 +16,7 @@ import { WalletsModule } from '../wallets/wallets.module';
 import { AdminWalletsController } from './admin-wallets.controller';
 import { UsersModule } from '../users/users.module';
 import { AdminUsersController } from './admin-users.controller';
+import { CupBracketService } from './cup-bracket.service';
 
 @Module({
   imports: [
@@ -36,6 +37,6 @@ import { AdminUsersController } from './admin-users.controller';
     AdminWalletsController,
     AdminUsersController,
   ],
-  providers: [AdminStoreService, AdminCompetitionsService, DrawService],
+  providers: [AdminStoreService, AdminCompetitionsService, DrawService, CupBracketService],
 })
 export class AdminModule {}

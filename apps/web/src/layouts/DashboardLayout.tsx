@@ -12,7 +12,7 @@ import {
   LifeBuoy,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
-import NotificationBell from '@/components/NotificationBell';
+import NotificationCenter from '@/components/NotificationCenter';
 import LiveTicker from '@/components/LiveTicker';
 import GoldConfetti from '@/components/GoldConfetti';
 import { useTransferNotifications } from '@/hooks/useTransferNotifications';
@@ -369,21 +369,26 @@ export default function DashboardLayout() {
 
           <div className="ml-auto flex items-center gap-2 sm:gap-3 flex-wrap justify-end max-w-[min(100vw-6rem,36rem)]">
             <div
-              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20"
+              className="flex items-center gap-1.5 rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-2 sm:px-2.5 py-1.5 transition-colors hover:border-white/20"
               title="Jepy"
             >
-              <Coins className="w-3.5 h-3.5 text-violet-400 shrink-0" />
-              <span className="hidden sm:inline text-[10px] uppercase tracking-wide text-slate-500">Jepy</span>
-              <span className="text-xs sm:text-sm font-bold text-violet-300 tabular-nums">
+              <Coins className="w-3.5 h-3.5 shrink-0 text-indigo-400" />
+              <span className="hidden text-[10px] font-medium uppercase tracking-wide text-indigo-400 sm:inline">
+                Jepy
+              </span>
+              <span className="font-mono text-xs font-semibold tabular-nums text-indigo-400 sm:text-sm">
                 {formatCurrency(user?.jepyCoins ?? 0, 'Jepy')}
               </span>
             </div>
             <div
-              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20"
+              className="flex items-center gap-1.5 rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-2 sm:px-2.5 py-1.5 transition-colors hover:border-white/20"
               title="OMJEP perso"
             >
-              <span className="text-[10px] uppercase tracking-wide text-slate-500 hidden sm:inline">OC</span>
-              <span className="text-xs sm:text-sm font-bold text-amber-300 tabular-nums">
+              <Coins className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+              <span className="hidden text-[10px] font-medium uppercase tracking-wide text-amber-400 sm:inline">
+                OC
+              </span>
+              <span className="font-mono text-xs font-semibold tabular-nums text-amber-400 sm:text-sm">
                 {formatCurrency(user?.omjepCoins ?? 0, 'OC')}
               </span>
             </div>
@@ -399,7 +404,7 @@ export default function DashboardLayout() {
                 </span>
               </div>
             )}
-            <NotificationBell
+            <NotificationCenter
               appUnreadCount={appUnreadCount}
               inboxNotifications={notifications}
               onRefreshInbox={async () => {

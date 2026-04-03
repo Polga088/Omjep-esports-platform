@@ -1,13 +1,21 @@
+import type { DbNotificationRow } from '@/hooks/useAppNotifications';
+
 /**
- * Cible de navigation depuis les métadonnées d'une notification persistante.
+ * Cible de navigation depuis les métadonnées (notifications historiques sans `link`).
  */
-export function getNotificationHref(metadata: Record<string, unknown> | null | undefined): string {
+export function getNotificationHrefFromMetadata(
+  metadata: Record<string, unknown> | null | undefined,
+): string {
   const m = metadata ?? {};
   const type = typeof m.type === 'string' ? m.type : '';
   const category = m.category;
 
   if (category === 'MATCH' || type.startsWith('MATCH_')) {
     return '/dashboard/matches';
+  }
+
+  if (category === 'SUPPORT') {
+    return '/dashboard/support';
   }
 
   if (type === 'PLAYER_TRANSFERRED') {
@@ -28,4 +36,11 @@ export function getNotificationHref(metadata: Record<string, unknown> | null | u
   }
 
   return '/dashboard';
+}
+
+/** Préfère `link` persisté, sinon inférence depuis les métadonnées. */
+export function getNotificationTarget(n: Pick<DbNotificationRow, 'link' | 'metadata'>): string {
+  const raw = typeof n.link === 'string' ? n.link.trim() : '';
+  if (raw) return raw;
+  return getNotificationHrefFromMetadata(n.metadata);
 }

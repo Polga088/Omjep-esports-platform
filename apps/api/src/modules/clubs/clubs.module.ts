@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ClubsService } from './clubs.service';
-import { ClubsController } from './clubs.controller'; // 1. Importe le contrôleur
+import { ClubsController } from './clubs.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { SyncModule } from '../sync/sync.module';
 
 @Module({
-  controllers: [ClubsController], // 2. Ajoute-le ici
+  imports: [NotificationsModule, SyncModule],
+  controllers: [ClubsController],
   providers: [ClubsService],
   exports: [ClubsService],
 })

@@ -11,12 +11,16 @@ export type AppNotificationPayload = {
   message: string;
   type: 'success' | 'error' | 'info' | 'warning';
   metadata?: Record<string, unknown> | null;
+  link?: string | null;
+  notificationType?: string;
 };
 
 export type DbNotificationRow = {
   id: string;
+  type: string;
   title: string;
   message: string;
+  link: string | null;
   is_read: boolean;
   metadata: Record<string, unknown> | null;
   created_at: string;

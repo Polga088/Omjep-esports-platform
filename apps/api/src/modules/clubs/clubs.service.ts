@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -9,10 +10,19 @@ import { Prisma } from '@omjep/database';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { RequestClubCreationDto } from './dto/request-club-creation.dto';
 import { AdminValidateClubDto } from './dto/admin-validate-club.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { ProClubsService } from '../sync/proclubs.service';
+
+/** Frais de licenciement (budget club, OC). */
+export const KICK_MEMBER_FEE_OC = 5000;
 
 @Injectable()
 export class ClubsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+    private readonly proClubsService: ProClubsService,
+  ) {}
 
   /** Liste des clubs visibles côté admin (tableau principal) — uniquement validés. */
   async findAll() {
@@ -152,6 +162,29 @@ export class ClubsService {
     }
   }
 
+  /**
+   * Synchronise stats EA (ProClubs.io) : `player_stats` + XP prestige club.
+   * Réservé au `manager_id` du club.
+   */
+  async syncClubStats(managerId: string, clubId: string) {
+    const club = await this.prisma.club.findUnique({
+      where: { id: clubId },
+      select: { id: true, manager_id: true },
+    });
+
+    if (!club) {
+      throw new NotFoundException('Club introuvable.');
+    }
+
+    if (club.manager_id !== managerId) {
+      throw new ForbiddenException(
+        'Seul le manager du club peut lancer la synchronisation.',
+      );
+    }
+
+    return this.proClubsService.syncClubStatsForClub(clubId);
+  }
+
   async adminValidateClub(clubId: string, dto: AdminValidateClubDto) {
     try {
       return await this.prisma.club.update({
@@ -162,5 +195,93 @@ export class ClubsService {
       console.error('Erreur Validation Locale:', error);
       return { id: clubId, validation_status: dto.validation_status };
     }
+  }
+
+  /**
+   * Licencie un joueur : −5000 OC budget club, retrait de l’effectif, notification système.
+   * Réservé au `manager_id` du club ; uniquement les membres `PLAYER`.
+   */
+  async kickMember(managerId: string, targetUserId: string) {
+    const club = await this.prisma.club.findFirst({
+      where: { manager_id: managerId },
+      include: {
+        members: { select: { user_id: true, club_role: true } },
+      },
+    });
+
+    if (!club) {
+      throw new ForbiddenException('Seul le manager désigné du club peut licencier un joueur.');
+    }
+
+    if (targetUserId === managerId) {
+      throw new BadRequestException('Vous ne pouvez pas vous licencier vous-même.');
+    }
+
+    const targetMembership = club.members.find((m) => m.user_id === targetUserId);
+    if (!targetMembership) {
+      throw new NotFoundException("Ce joueur n'est pas membre de votre club.");
+    }
+
+    if (targetMembership.club_role !== 'PLAYER') {
+      throw new BadRequestException('Seuls les joueurs (rôle Joueur) peuvent être licenciés via cette action.');
+    }
+
+    const kickedUser = await this.prisma.user.findUnique({
+      where: { id: targetUserId },
+      select: { ea_persona_name: true },
+    });
+
+    await this.prisma.$transaction(async (tx) => {
+      const dec = await tx.club.updateMany({
+        where: { id: club.id, budget: { gte: KICK_MEMBER_FEE_OC } },
+        data: { budget: { decrement: KICK_MEMBER_FEE_OC } },
+      });
+
+      if (dec.count === 0) {
+        throw new BadRequestException(
+          `Budget club insuffisant : ${KICK_MEMBER_FEE_OC.toLocaleString('fr-FR')} OC requis pour licencier.`,
+        );
+      }
+
+      await tx.transaction.create({
+        data: {
+          team_id: club.id,
+          amount: -KICK_MEMBER_FEE_OC,
+          type: 'KICK_FEE',
+          description: `Licenciement — ${kickedUser?.ea_persona_name ?? 'joueur'} (−${KICK_MEMBER_FEE_OC.toLocaleString('fr-FR')} OC)`,
+        },
+      });
+
+      await tx.contract.updateMany({
+        where: {
+          team_id: club.id,
+          user_id: targetUserId,
+          status: 'ACTIVE',
+        },
+        data: { status: 'TERMINATED' },
+      });
+
+      await tx.teamMember.delete({
+        where: {
+          user_id_team_id: { user_id: targetUserId, team_id: club.id },
+        },
+      });
+    });
+
+    await this.notifications.createNotification(targetUserId, {
+      type: 'SYSTEM',
+      title: 'Licenciement',
+      message: `Vous avez été licencié du club ${club.name}. Les frais administratifs ont été réglés par le club.`,
+      link: '/dashboard',
+      metadata: { club_id: club.id, club_name: club.name, type: 'PLAYER_KICKED' },
+      toastLevel: 'warning',
+    });
+
+    return {
+      message: 'Joueur licencié.',
+      fee_oc: KICK_MEMBER_FEE_OC,
+      club_id: club.id,
+      target_user_id: targetUserId,
+    };
   }
 }

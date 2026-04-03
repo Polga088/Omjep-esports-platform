@@ -28,6 +28,8 @@ function formatOc(n: number): string {
   return `${Number.isFinite(n) ? n.toLocaleString('fr-FR') : '0'} OC`;
 }
 
+const TRANSFER_NOTIF_OPTS = { notificationType: 'TRANSFER' as const, link: '/dashboard/transfers' };
+
 @Injectable()
 export class TransferOfferService {
   constructor(
@@ -201,6 +203,8 @@ export class TransferOfferService {
         '📨 Offre de transfert (négociation joueur)',
         `${offer.fromTeam.name} propose ${formatOc(dto.transfer_fee)} d'indemnité pour ${offer.player.ea_persona_name ?? 'un joueur'} (salaire annuel ${formatOc(salaryAnnual)}, clause ${formatOc(clauseVal)}) — le joueur doit répondre.`,
         { offer_id: offer.id, type: 'TRANSFER_OFFER_RECEIVED' },
+        'info',
+        TRANSFER_NOTIF_OPTS,
       );
     }
 
@@ -216,6 +220,7 @@ export class TransferOfferService {
         offer_id: offer.id,
         from_team_name: offer.fromTeam.name,
       },
+      TRANSFER_NOTIF_OPTS,
     );
 
     await this.notifications.sendToTeamManagers(
@@ -224,6 +229,7 @@ export class TransferOfferService {
       `Proposition à ${offer.player.ea_persona_name ?? 'le joueur'} : ${formatOc(dto.transfer_fee)} de frais + ${formatOc(salaryAnnual)}/an de salaire (total engagement année 1 : ${formatOc(totalSigningCost(dto.transfer_fee, salaryAnnual))}) — en attente de réponse.`,
       { type: 'TRANSFER_OFFER_SENT', offer_id: offer.id },
       'info',
+      TRANSFER_NOTIF_OPTS,
     );
 
     return offer;
@@ -295,6 +301,8 @@ export class TransferOfferService {
         '🔄 Contre-proposition du joueur',
         `${updated.player.ea_persona_name ?? 'Le joueur'} propose : indemnité ${formatOc(updated.transfer_fee)}, salaire annuel ${formatOc(updated.offered_salary)}, clause ${formatOc(updated.offered_clause)}.`,
         { offer_id: offerId, type: 'TRANSFER_COUNTER' },
+        'info',
+        TRANSFER_NOTIF_OPTS,
       );
 
       return updated;
@@ -429,6 +437,7 @@ export class TransferOfferService {
         player_name: offer.player.ea_persona_name ?? undefined,
       },
       by === 'player' ? 'error' : 'info',
+      TRANSFER_NOTIF_OPTS,
     );
 
     if (by === 'buyer') {
@@ -442,6 +451,7 @@ export class TransferOfferService {
           offer_id: offer.id,
           from_team_name: offer.fromTeam.name,
         },
+        TRANSFER_NOTIF_OPTS,
       );
     }
 
@@ -696,6 +706,7 @@ export class TransferOfferService {
       `${offer.player.ea_persona_name ?? 'Le joueur'} a signé — bienvenue dans l'effectif. Frais ${formatOc(offer.transfer_fee)} + ${formatOc(offer.offered_salary)} de salaire année 1.`,
       { offer_id: offerId, type: 'TRANSFER_OFFER_ACCEPTED' },
       'success',
+      TRANSFER_NOTIF_OPTS,
     );
 
     await this.notifications.sendNotification(
@@ -704,6 +715,7 @@ export class TransferOfferService {
       `Vous rejoignez ${offer.fromTeam.name}. Indemnité ${formatOc(offer.transfer_fee)}, salaire annuel ${formatOc(offer.offered_salary)}, clause ${formatOc(offer.offered_clause)}.`,
       'success',
       { offer_id: offerId, type: 'PLAYER_TRANSFERRED' },
+      TRANSFER_NOTIF_OPTS,
     );
 
     if (offer.to_team_id != null) {
@@ -715,6 +727,7 @@ export class TransferOfferService {
           : `${offer.player.ea_persona_name ?? 'Votre joueur'} a été vendu à ${offer.fromTeam.name} pour ${offer.transfer_fee.toLocaleString('fr-FR')} OC.`,
         { offer_id: offerId, type: 'PLAYER_SOLD' },
         'success',
+        TRANSFER_NOTIF_OPTS,
       );
     }
 

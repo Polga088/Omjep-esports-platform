@@ -139,7 +139,17 @@ export type TicketReply = $Result.DefaultSelection<Prisma.$TicketReplyPayload>
  * Enums
  */
 export namespace $Enums {
-  export const UserRole: {
+  export const NotificationType: {
+  MATCH: 'MATCH',
+  TRANSFER: 'TRANSFER',
+  SUPPORT: 'SUPPORT',
+  SYSTEM: 'SYSTEM'
+};
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const UserRole: {
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
   PLAYER: 'PLAYER',
@@ -225,6 +235,23 @@ export const CompetitionStatus: {
 export type CompetitionStatus = (typeof CompetitionStatus)[keyof typeof CompetitionStatus]
 
 
+export const CupScenario: {
+  SINGLE_ELIMINATION: 'SINGLE_ELIMINATION',
+  TWO_LEGGED_TIE: 'TWO_LEGGED_TIE',
+  GROUPS_AND_KNOCKOUT: 'GROUPS_AND_KNOCKOUT'
+};
+
+export type CupScenario = (typeof CupScenario)[keyof typeof CupScenario]
+
+
+export const BracketAdvanceSlot: {
+  HOME: 'HOME',
+  AWAY: 'AWAY'
+};
+
+export type BracketAdvanceSlot = (typeof BracketAdvanceSlot)[keyof typeof BracketAdvanceSlot]
+
+
 export const TransferStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -293,7 +320,8 @@ export const TransactionType: {
   TRANSFER: 'TRANSFER',
   WAGE: 'WAGE',
   EXCHANGE: 'EXCHANGE',
-  ADMIN_GRANT: 'ADMIN_GRANT'
+  ADMIN_GRANT: 'ADMIN_GRANT',
+  KICK_FEE: 'KICK_FEE'
 };
 
 export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
@@ -364,6 +392,10 @@ export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
 
 }
 
+export type NotificationType = $Enums.NotificationType
+
+export const NotificationType: typeof $Enums.NotificationType
+
 export type UserRole = $Enums.UserRole
 
 export const UserRole: typeof $Enums.UserRole
@@ -395,6 +427,14 @@ export const CompetitionType: typeof $Enums.CompetitionType
 export type CompetitionStatus = $Enums.CompetitionStatus
 
 export const CompetitionStatus: typeof $Enums.CompetitionStatus
+
+export type CupScenario = $Enums.CupScenario
+
+export const CupScenario: typeof $Enums.CupScenario
+
+export type BracketAdvanceSlot = $Enums.BracketAdvanceSlot
+
+export const BracketAdvanceSlot: typeof $Enums.BracketAdvanceSlot
 
 export type TransferStatus = $Enums.TransferStatus
 
@@ -3648,12 +3688,14 @@ export namespace Prisma {
    */
 
   export type MatchCountOutputType = {
+    fed_by: number
     events: number
     scoreReports: number
     predictions: number
   }
 
   export type MatchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    fed_by?: boolean | MatchCountOutputTypeCountFed_byArgs
     events?: boolean | MatchCountOutputTypeCountEventsArgs
     scoreReports?: boolean | MatchCountOutputTypeCountScoreReportsArgs
     predictions?: boolean | MatchCountOutputTypeCountPredictionsArgs
@@ -3668,6 +3710,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the MatchCountOutputType
      */
     select?: MatchCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MatchCountOutputType without action
+   */
+  export type MatchCountOutputTypeCountFed_byArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchWhereInput
   }
 
   /**
@@ -9543,6 +9592,7 @@ export namespace Prisma {
     end_date: Date | null
     created_at: Date | null
     isTransferMarketOpen: boolean | null
+    cup_scenario: $Enums.CupScenario | null
   }
 
   export type CompetitionMaxAggregateOutputType = {
@@ -9554,6 +9604,7 @@ export namespace Prisma {
     end_date: Date | null
     created_at: Date | null
     isTransferMarketOpen: boolean | null
+    cup_scenario: $Enums.CupScenario | null
   }
 
   export type CompetitionCountAggregateOutputType = {
@@ -9565,6 +9616,7 @@ export namespace Prisma {
     end_date: number
     created_at: number
     isTransferMarketOpen: number
+    cup_scenario: number
     _all: number
   }
 
@@ -9578,6 +9630,7 @@ export namespace Prisma {
     end_date?: true
     created_at?: true
     isTransferMarketOpen?: true
+    cup_scenario?: true
   }
 
   export type CompetitionMaxAggregateInputType = {
@@ -9589,6 +9642,7 @@ export namespace Prisma {
     end_date?: true
     created_at?: true
     isTransferMarketOpen?: true
+    cup_scenario?: true
   }
 
   export type CompetitionCountAggregateInputType = {
@@ -9600,6 +9654,7 @@ export namespace Prisma {
     end_date?: true
     created_at?: true
     isTransferMarketOpen?: true
+    cup_scenario?: true
     _all?: true
   }
 
@@ -9684,6 +9739,7 @@ export namespace Prisma {
     end_date: Date
     created_at: Date
     isTransferMarketOpen: boolean
+    cup_scenario: $Enums.CupScenario | null
     _count: CompetitionCountAggregateOutputType | null
     _min: CompetitionMinAggregateOutputType | null
     _max: CompetitionMaxAggregateOutputType | null
@@ -9712,6 +9768,7 @@ export namespace Prisma {
     end_date?: boolean
     created_at?: boolean
     isTransferMarketOpen?: boolean
+    cup_scenario?: boolean
     teams?: boolean | Competition$teamsArgs<ExtArgs>
     matches?: boolean | Competition$matchesArgs<ExtArgs>
     _count?: boolean | CompetitionCountOutputTypeDefaultArgs<ExtArgs>
@@ -9726,6 +9783,7 @@ export namespace Prisma {
     end_date?: boolean
     created_at?: boolean
     isTransferMarketOpen?: boolean
+    cup_scenario?: boolean
   }, ExtArgs["result"]["competition"]>
 
   export type CompetitionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9737,6 +9795,7 @@ export namespace Prisma {
     end_date?: boolean
     created_at?: boolean
     isTransferMarketOpen?: boolean
+    cup_scenario?: boolean
   }, ExtArgs["result"]["competition"]>
 
   export type CompetitionSelectScalar = {
@@ -9748,9 +9807,10 @@ export namespace Prisma {
     end_date?: boolean
     created_at?: boolean
     isTransferMarketOpen?: boolean
+    cup_scenario?: boolean
   }
 
-  export type CompetitionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "status" | "start_date" | "end_date" | "created_at" | "isTransferMarketOpen", ExtArgs["result"]["competition"]>
+  export type CompetitionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "status" | "start_date" | "end_date" | "created_at" | "isTransferMarketOpen" | "cup_scenario", ExtArgs["result"]["competition"]>
   export type CompetitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teams?: boolean | Competition$teamsArgs<ExtArgs>
     matches?: boolean | Competition$matchesArgs<ExtArgs>
@@ -9777,6 +9837,10 @@ export namespace Prisma {
        * Si false, les transferts / signatures liés à cette compétition sont bloqués (clubs concernés).
        */
       isTransferMarketOpen: boolean
+      /**
+       * Pour les coupes : format de phase finale (bracket auto = élimination directe).
+       */
+      cup_scenario: $Enums.CupScenario | null
     }, ExtArgs["result"]["competition"]>
     composites: {}
   }
@@ -10210,6 +10274,7 @@ export namespace Prisma {
     readonly end_date: FieldRef<"Competition", 'DateTime'>
     readonly created_at: FieldRef<"Competition", 'DateTime'>
     readonly isTransferMarketOpen: FieldRef<"Competition", 'Boolean'>
+    readonly cup_scenario: FieldRef<"Competition", 'CupScenario'>
   }
     
 
@@ -11719,11 +11784,15 @@ export namespace Prisma {
   export type MatchAvgAggregateOutputType = {
     home_score: number | null
     away_score: number | null
+    bracket_round: number | null
+    bracket_index: number | null
   }
 
   export type MatchSumAggregateOutputType = {
     home_score: number | null
     away_score: number | null
+    bracket_round: number | null
+    bracket_index: number | null
   }
 
   export type MatchMinAggregateOutputType = {
@@ -11739,6 +11808,10 @@ export namespace Prisma {
     isVisible: boolean | null
     competition_id: string | null
     round: string | null
+    bracket_round: number | null
+    bracket_index: number | null
+    winner_advances_to_match_id: string | null
+    winner_slot_in_next: $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchMaxAggregateOutputType = {
@@ -11754,6 +11827,10 @@ export namespace Prisma {
     isVisible: boolean | null
     competition_id: string | null
     round: string | null
+    bracket_round: number | null
+    bracket_index: number | null
+    winner_advances_to_match_id: string | null
+    winner_slot_in_next: $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchCountAggregateOutputType = {
@@ -11769,6 +11846,10 @@ export namespace Prisma {
     isVisible: number
     competition_id: number
     round: number
+    bracket_round: number
+    bracket_index: number
+    winner_advances_to_match_id: number
+    winner_slot_in_next: number
     _all: number
   }
 
@@ -11776,11 +11857,15 @@ export namespace Prisma {
   export type MatchAvgAggregateInputType = {
     home_score?: true
     away_score?: true
+    bracket_round?: true
+    bracket_index?: true
   }
 
   export type MatchSumAggregateInputType = {
     home_score?: true
     away_score?: true
+    bracket_round?: true
+    bracket_index?: true
   }
 
   export type MatchMinAggregateInputType = {
@@ -11796,6 +11881,10 @@ export namespace Prisma {
     isVisible?: true
     competition_id?: true
     round?: true
+    bracket_round?: true
+    bracket_index?: true
+    winner_advances_to_match_id?: true
+    winner_slot_in_next?: true
   }
 
   export type MatchMaxAggregateInputType = {
@@ -11811,6 +11900,10 @@ export namespace Prisma {
     isVisible?: true
     competition_id?: true
     round?: true
+    bracket_round?: true
+    bracket_index?: true
+    winner_advances_to_match_id?: true
+    winner_slot_in_next?: true
   }
 
   export type MatchCountAggregateInputType = {
@@ -11826,6 +11919,10 @@ export namespace Prisma {
     isVisible?: true
     competition_id?: true
     round?: true
+    bracket_round?: true
+    bracket_index?: true
+    winner_advances_to_match_id?: true
+    winner_slot_in_next?: true
     _all?: true
   }
 
@@ -11928,6 +12025,10 @@ export namespace Prisma {
     isVisible: boolean
     competition_id: string | null
     round: string | null
+    bracket_round: number | null
+    bracket_index: number | null
+    winner_advances_to_match_id: string | null
+    winner_slot_in_next: $Enums.BracketAdvanceSlot | null
     _count: MatchCountAggregateOutputType | null
     _avg: MatchAvgAggregateOutputType | null
     _sum: MatchSumAggregateOutputType | null
@@ -11962,6 +12063,12 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: boolean
     round?: boolean
+    bracket_round?: boolean
+    bracket_index?: boolean
+    winner_advances_to_match_id?: boolean
+    winner_slot_in_next?: boolean
+    winner_advances_to?: boolean | Match$winner_advances_toArgs<ExtArgs>
+    fed_by?: boolean | Match$fed_byArgs<ExtArgs>
     events?: boolean | Match$eventsArgs<ExtArgs>
     scoreReports?: boolean | Match$scoreReportsArgs<ExtArgs>
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -11984,6 +12091,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: boolean
     round?: boolean
+    bracket_round?: boolean
+    bracket_index?: boolean
+    winner_advances_to_match_id?: boolean
+    winner_slot_in_next?: boolean
+    winner_advances_to?: boolean | Match$winner_advances_toArgs<ExtArgs>
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -12002,6 +12114,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: boolean
     round?: boolean
+    bracket_round?: boolean
+    bracket_index?: boolean
+    winner_advances_to_match_id?: boolean
+    winner_slot_in_next?: boolean
+    winner_advances_to?: boolean | Match$winner_advances_toArgs<ExtArgs>
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -12020,10 +12137,16 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: boolean
     round?: boolean
+    bracket_round?: boolean
+    bracket_index?: boolean
+    winner_advances_to_match_id?: boolean
+    winner_slot_in_next?: boolean
   }
 
-  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at" | "startTime" | "isVisible" | "competition_id" | "round", ExtArgs["result"]["match"]>
+  export type MatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ea_match_id" | "home_team_id" | "away_team_id" | "home_score" | "away_score" | "status" | "played_at" | "startTime" | "isVisible" | "competition_id" | "round" | "bracket_round" | "bracket_index" | "winner_advances_to_match_id" | "winner_slot_in_next", ExtArgs["result"]["match"]>
   export type MatchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    winner_advances_to?: boolean | Match$winner_advances_toArgs<ExtArgs>
+    fed_by?: boolean | Match$fed_byArgs<ExtArgs>
     events?: boolean | Match$eventsArgs<ExtArgs>
     scoreReports?: boolean | Match$scoreReportsArgs<ExtArgs>
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -12033,11 +12156,13 @@ export namespace Prisma {
     _count?: boolean | MatchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MatchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    winner_advances_to?: boolean | Match$winner_advances_toArgs<ExtArgs>
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | ClubDefaultArgs<ExtArgs>
   }
   export type MatchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    winner_advances_to?: boolean | Match$winner_advances_toArgs<ExtArgs>
     awayTeam?: boolean | ClubDefaultArgs<ExtArgs>
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | ClubDefaultArgs<ExtArgs>
@@ -12046,6 +12171,8 @@ export namespace Prisma {
   export type $MatchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Match"
     objects: {
+      winner_advances_to: Prisma.$MatchPayload<ExtArgs> | null
+      fed_by: Prisma.$MatchPayload<ExtArgs>[]
       events: Prisma.$MatchEventPayload<ExtArgs>[]
       scoreReports: Prisma.$MatchScoreReportPayload<ExtArgs>[]
       awayTeam: Prisma.$ClubPayload<ExtArgs>
@@ -12072,6 +12199,16 @@ export namespace Prisma {
       isVisible: boolean
       competition_id: string | null
       round: string | null
+      /**
+       * Position dans l’arbre (coupe) : tour 0 = premier tour, index dans le tour.
+       */
+      bracket_round: number | null
+      bracket_index: number | null
+      /**
+       * Match suivant qui reçoit le vainqueur (élimination directe).
+       */
+      winner_advances_to_match_id: string | null
+      winner_slot_in_next: $Enums.BracketAdvanceSlot | null
     }, ExtArgs["result"]["match"]>
     composites: {}
   }
@@ -12466,6 +12603,8 @@ export namespace Prisma {
    */
   export interface Prisma__MatchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    winner_advances_to<T extends Match$winner_advances_toArgs<ExtArgs> = {}>(args?: Subset<T, Match$winner_advances_toArgs<ExtArgs>>): Prisma__MatchClient<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    fed_by<T extends Match$fed_byArgs<ExtArgs> = {}>(args?: Subset<T, Match$fed_byArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     events<T extends Match$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Match$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     scoreReports<T extends Match$scoreReportsArgs<ExtArgs> = {}>(args?: Subset<T, Match$scoreReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchScoreReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     awayTeam<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -12513,6 +12652,10 @@ export namespace Prisma {
     readonly isVisible: FieldRef<"Match", 'Boolean'>
     readonly competition_id: FieldRef<"Match", 'String'>
     readonly round: FieldRef<"Match", 'String'>
+    readonly bracket_round: FieldRef<"Match", 'Int'>
+    readonly bracket_index: FieldRef<"Match", 'Int'>
+    readonly winner_advances_to_match_id: FieldRef<"Match", 'String'>
+    readonly winner_slot_in_next: FieldRef<"Match", 'BracketAdvanceSlot'>
   }
     
 
@@ -12906,6 +13049,49 @@ export namespace Prisma {
      * Limit how many Matches to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Match.winner_advances_to
+   */
+  export type Match$winner_advances_toArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Match
+     */
+    select?: MatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Match
+     */
+    omit?: MatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchInclude<ExtArgs> | null
+    where?: MatchWhereInput
+  }
+
+  /**
+   * Match.fed_by
+   */
+  export type Match$fed_byArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Match
+     */
+    select?: MatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Match
+     */
+    omit?: MatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchInclude<ExtArgs> | null
+    where?: MatchWhereInput
+    orderBy?: MatchOrderByWithRelationInput | MatchOrderByWithRelationInput[]
+    cursor?: MatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MatchScalarFieldEnum | MatchScalarFieldEnum[]
   }
 
   /**
@@ -21046,8 +21232,10 @@ export namespace Prisma {
   export type NotificationMinAggregateOutputType = {
     id: string | null
     user_id: string | null
+    type: $Enums.NotificationType | null
     title: string | null
     message: string | null
+    link: string | null
     is_read: boolean | null
     created_at: Date | null
   }
@@ -21055,8 +21243,10 @@ export namespace Prisma {
   export type NotificationMaxAggregateOutputType = {
     id: string | null
     user_id: string | null
+    type: $Enums.NotificationType | null
     title: string | null
     message: string | null
+    link: string | null
     is_read: boolean | null
     created_at: Date | null
   }
@@ -21064,8 +21254,10 @@ export namespace Prisma {
   export type NotificationCountAggregateOutputType = {
     id: number
     user_id: number
+    type: number
     title: number
     message: number
+    link: number
     is_read: number
     metadata: number
     created_at: number
@@ -21076,8 +21268,10 @@ export namespace Prisma {
   export type NotificationMinAggregateInputType = {
     id?: true
     user_id?: true
+    type?: true
     title?: true
     message?: true
+    link?: true
     is_read?: true
     created_at?: true
   }
@@ -21085,8 +21279,10 @@ export namespace Prisma {
   export type NotificationMaxAggregateInputType = {
     id?: true
     user_id?: true
+    type?: true
     title?: true
     message?: true
+    link?: true
     is_read?: true
     created_at?: true
   }
@@ -21094,8 +21290,10 @@ export namespace Prisma {
   export type NotificationCountAggregateInputType = {
     id?: true
     user_id?: true
+    type?: true
     title?: true
     message?: true
+    link?: true
     is_read?: true
     metadata?: true
     created_at?: true
@@ -21177,8 +21375,10 @@ export namespace Prisma {
   export type NotificationGroupByOutputType = {
     id: string
     user_id: string
+    type: $Enums.NotificationType
     title: string
     message: string
+    link: string | null
     is_read: boolean
     metadata: JsonValue | null
     created_at: Date
@@ -21204,8 +21404,10 @@ export namespace Prisma {
   export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     user_id?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    link?: boolean
     is_read?: boolean
     metadata?: boolean
     created_at?: boolean
@@ -21215,8 +21417,10 @@ export namespace Prisma {
   export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     user_id?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    link?: boolean
     is_read?: boolean
     metadata?: boolean
     created_at?: boolean
@@ -21226,8 +21430,10 @@ export namespace Prisma {
   export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     user_id?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    link?: boolean
     is_read?: boolean
     metadata?: boolean
     created_at?: boolean
@@ -21237,14 +21443,16 @@ export namespace Prisma {
   export type NotificationSelectScalar = {
     id?: boolean
     user_id?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    link?: boolean
     is_read?: boolean
     metadata?: boolean
     created_at?: boolean
   }
 
-  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "title" | "message" | "is_read" | "metadata" | "created_at", ExtArgs["result"]["notification"]>
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "type" | "title" | "message" | "link" | "is_read" | "metadata" | "created_at", ExtArgs["result"]["notification"]>
   export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -21263,8 +21471,10 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       user_id: string
+      type: $Enums.NotificationType
       title: string
       message: string
+      link: string | null
       is_read: boolean
       metadata: Prisma.JsonValue | null
       created_at: Date
@@ -21694,8 +21904,10 @@ export namespace Prisma {
   interface NotificationFieldRefs {
     readonly id: FieldRef<"Notification", 'String'>
     readonly user_id: FieldRef<"Notification", 'String'>
+    readonly type: FieldRef<"Notification", 'NotificationType'>
     readonly title: FieldRef<"Notification", 'String'>
     readonly message: FieldRef<"Notification", 'String'>
+    readonly link: FieldRef<"Notification", 'String'>
     readonly is_read: FieldRef<"Notification", 'Boolean'>
     readonly metadata: FieldRef<"Notification", 'Json'>
     readonly created_at: FieldRef<"Notification", 'DateTime'>
@@ -32150,7 +32362,8 @@ export namespace Prisma {
     start_date: 'start_date',
     end_date: 'end_date',
     created_at: 'created_at',
-    isTransferMarketOpen: 'isTransferMarketOpen'
+    isTransferMarketOpen: 'isTransferMarketOpen',
+    cup_scenario: 'cup_scenario'
   };
 
   export type CompetitionScalarFieldEnum = (typeof CompetitionScalarFieldEnum)[keyof typeof CompetitionScalarFieldEnum]
@@ -32177,7 +32390,11 @@ export namespace Prisma {
     startTime: 'startTime',
     isVisible: 'isVisible',
     competition_id: 'competition_id',
-    round: 'round'
+    round: 'round',
+    bracket_round: 'bracket_round',
+    bracket_index: 'bracket_index',
+    winner_advances_to_match_id: 'winner_advances_to_match_id',
+    winner_slot_in_next: 'winner_slot_in_next'
   };
 
   export type MatchScalarFieldEnum = (typeof MatchScalarFieldEnum)[keyof typeof MatchScalarFieldEnum]
@@ -32281,8 +32498,10 @@ export namespace Prisma {
   export const NotificationScalarFieldEnum: {
     id: 'id',
     user_id: 'user_id',
+    type: 'type',
     title: 'title',
     message: 'message',
+    link: 'link',
     is_read: 'is_read',
     metadata: 'metadata',
     created_at: 'created_at'
@@ -32632,6 +32851,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'CupScenario'
+   */
+  export type EnumCupScenarioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CupScenario'>
+    
+
+
+  /**
+   * Reference to a field of type 'CupScenario[]'
+   */
+  export type ListEnumCupScenarioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CupScenario[]'>
+    
+
+
+  /**
    * Reference to a field of type 'MatchStatus'
    */
   export type EnumMatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MatchStatus'>
@@ -32642,6 +32875,20 @@ export namespace Prisma {
    * Reference to a field of type 'MatchStatus[]'
    */
   export type ListEnumMatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MatchStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BracketAdvanceSlot'
+   */
+  export type EnumBracketAdvanceSlotFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BracketAdvanceSlot'>
+    
+
+
+  /**
+   * Reference to a field of type 'BracketAdvanceSlot[]'
+   */
+  export type ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BracketAdvanceSlot[]'>
     
 
 
@@ -32740,6 +32987,20 @@ export namespace Prisma {
    * Reference to a field of type 'NegotiationTurn[]'
    */
   export type ListEnumNegotiationTurnFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NegotiationTurn[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationType'
+   */
+  export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationType[]'
+   */
+  export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
     
 
 
@@ -33344,6 +33605,7 @@ export namespace Prisma {
     end_date?: DateTimeFilter<"Competition"> | Date | string
     created_at?: DateTimeFilter<"Competition"> | Date | string
     isTransferMarketOpen?: BoolFilter<"Competition"> | boolean
+    cup_scenario?: EnumCupScenarioNullableFilter<"Competition"> | $Enums.CupScenario | null
     teams?: CompetitionTeamListRelationFilter
     matches?: MatchListRelationFilter
   }
@@ -33357,6 +33619,7 @@ export namespace Prisma {
     end_date?: SortOrder
     created_at?: SortOrder
     isTransferMarketOpen?: SortOrder
+    cup_scenario?: SortOrderInput | SortOrder
     teams?: CompetitionTeamOrderByRelationAggregateInput
     matches?: MatchOrderByRelationAggregateInput
   }
@@ -33373,6 +33636,7 @@ export namespace Prisma {
     end_date?: DateTimeFilter<"Competition"> | Date | string
     created_at?: DateTimeFilter<"Competition"> | Date | string
     isTransferMarketOpen?: BoolFilter<"Competition"> | boolean
+    cup_scenario?: EnumCupScenarioNullableFilter<"Competition"> | $Enums.CupScenario | null
     teams?: CompetitionTeamListRelationFilter
     matches?: MatchListRelationFilter
   }, "id" | "name">
@@ -33386,6 +33650,7 @@ export namespace Prisma {
     end_date?: SortOrder
     created_at?: SortOrder
     isTransferMarketOpen?: SortOrder
+    cup_scenario?: SortOrderInput | SortOrder
     _count?: CompetitionCountOrderByAggregateInput
     _max?: CompetitionMaxOrderByAggregateInput
     _min?: CompetitionMinOrderByAggregateInput
@@ -33403,6 +33668,7 @@ export namespace Prisma {
     end_date?: DateTimeWithAggregatesFilter<"Competition"> | Date | string
     created_at?: DateTimeWithAggregatesFilter<"Competition"> | Date | string
     isTransferMarketOpen?: BoolWithAggregatesFilter<"Competition"> | boolean
+    cup_scenario?: EnumCupScenarioNullableWithAggregatesFilter<"Competition"> | $Enums.CupScenario | null
   }
 
   export type CompetitionTeamWhereInput = {
@@ -33470,6 +33736,12 @@ export namespace Prisma {
     isVisible?: BoolFilter<"Match"> | boolean
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
+    bracket_round?: IntNullableFilter<"Match"> | number | null
+    bracket_index?: IntNullableFilter<"Match"> | number | null
+    winner_advances_to_match_id?: UuidNullableFilter<"Match"> | string | null
+    winner_slot_in_next?: EnumBracketAdvanceSlotNullableFilter<"Match"> | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: XOR<MatchNullableScalarRelationFilter, MatchWhereInput> | null
+    fed_by?: MatchListRelationFilter
     events?: MatchEventListRelationFilter
     scoreReports?: MatchScoreReportListRelationFilter
     awayTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -33491,6 +33763,12 @@ export namespace Prisma {
     isVisible?: SortOrder
     competition_id?: SortOrderInput | SortOrder
     round?: SortOrderInput | SortOrder
+    bracket_round?: SortOrderInput | SortOrder
+    bracket_index?: SortOrderInput | SortOrder
+    winner_advances_to_match_id?: SortOrderInput | SortOrder
+    winner_slot_in_next?: SortOrderInput | SortOrder
+    winner_advances_to?: MatchOrderByWithRelationInput
+    fed_by?: MatchOrderByRelationAggregateInput
     events?: MatchEventOrderByRelationAggregateInput
     scoreReports?: MatchScoreReportOrderByRelationAggregateInput
     awayTeam?: ClubOrderByWithRelationInput
@@ -33515,6 +33793,12 @@ export namespace Prisma {
     isVisible?: BoolFilter<"Match"> | boolean
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
+    bracket_round?: IntNullableFilter<"Match"> | number | null
+    bracket_index?: IntNullableFilter<"Match"> | number | null
+    winner_advances_to_match_id?: UuidNullableFilter<"Match"> | string | null
+    winner_slot_in_next?: EnumBracketAdvanceSlotNullableFilter<"Match"> | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: XOR<MatchNullableScalarRelationFilter, MatchWhereInput> | null
+    fed_by?: MatchListRelationFilter
     events?: MatchEventListRelationFilter
     scoreReports?: MatchScoreReportListRelationFilter
     awayTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -33536,6 +33820,10 @@ export namespace Prisma {
     isVisible?: SortOrder
     competition_id?: SortOrderInput | SortOrder
     round?: SortOrderInput | SortOrder
+    bracket_round?: SortOrderInput | SortOrder
+    bracket_index?: SortOrderInput | SortOrder
+    winner_advances_to_match_id?: SortOrderInput | SortOrder
+    winner_slot_in_next?: SortOrderInput | SortOrder
     _count?: MatchCountOrderByAggregateInput
     _avg?: MatchAvgOrderByAggregateInput
     _max?: MatchMaxOrderByAggregateInput
@@ -33559,6 +33847,10 @@ export namespace Prisma {
     isVisible?: BoolWithAggregatesFilter<"Match"> | boolean
     competition_id?: UuidNullableWithAggregatesFilter<"Match"> | string | null
     round?: StringNullableWithAggregatesFilter<"Match"> | string | null
+    bracket_round?: IntNullableWithAggregatesFilter<"Match"> | number | null
+    bracket_index?: IntNullableWithAggregatesFilter<"Match"> | number | null
+    winner_advances_to_match_id?: UuidNullableWithAggregatesFilter<"Match"> | string | null
+    winner_slot_in_next?: EnumBracketAdvanceSlotNullableWithAggregatesFilter<"Match"> | $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchScoreReportWhereInput = {
@@ -34086,8 +34378,10 @@ export namespace Prisma {
     NOT?: NotificationWhereInput | NotificationWhereInput[]
     id?: UuidFilter<"Notification"> | string
     user_id?: UuidFilter<"Notification"> | string
+    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
     is_read?: BoolFilter<"Notification"> | boolean
     metadata?: JsonNullableFilter<"Notification">
     created_at?: DateTimeFilter<"Notification"> | Date | string
@@ -34097,8 +34391,10 @@ export namespace Prisma {
   export type NotificationOrderByWithRelationInput = {
     id?: SortOrder
     user_id?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    link?: SortOrderInput | SortOrder
     is_read?: SortOrder
     metadata?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -34111,8 +34407,10 @@ export namespace Prisma {
     OR?: NotificationWhereInput[]
     NOT?: NotificationWhereInput | NotificationWhereInput[]
     user_id?: UuidFilter<"Notification"> | string
+    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
     is_read?: BoolFilter<"Notification"> | boolean
     metadata?: JsonNullableFilter<"Notification">
     created_at?: DateTimeFilter<"Notification"> | Date | string
@@ -34122,8 +34420,10 @@ export namespace Prisma {
   export type NotificationOrderByWithAggregationInput = {
     id?: SortOrder
     user_id?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    link?: SortOrderInput | SortOrder
     is_read?: SortOrder
     metadata?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -34138,8 +34438,10 @@ export namespace Prisma {
     NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Notification"> | string
     user_id?: UuidWithAggregatesFilter<"Notification"> | string
+    type?: EnumNotificationTypeWithAggregatesFilter<"Notification"> | $Enums.NotificationType
     title?: StringWithAggregatesFilter<"Notification"> | string
     message?: StringWithAggregatesFilter<"Notification"> | string
+    link?: StringNullableWithAggregatesFilter<"Notification"> | string | null
     is_read?: BoolWithAggregatesFilter<"Notification"> | boolean
     metadata?: JsonNullableWithAggregatesFilter<"Notification">
     created_at?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
@@ -35300,6 +35602,7 @@ export namespace Prisma {
     end_date: Date | string
     created_at?: Date | string
     isTransferMarketOpen?: boolean
+    cup_scenario?: $Enums.CupScenario | null
     teams?: CompetitionTeamCreateNestedManyWithoutCompetitionInput
     matches?: MatchCreateNestedManyWithoutCompetitionInput
   }
@@ -35313,6 +35616,7 @@ export namespace Prisma {
     end_date: Date | string
     created_at?: Date | string
     isTransferMarketOpen?: boolean
+    cup_scenario?: $Enums.CupScenario | null
     teams?: CompetitionTeamUncheckedCreateNestedManyWithoutCompetitionInput
     matches?: MatchUncheckedCreateNestedManyWithoutCompetitionInput
   }
@@ -35326,6 +35630,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
     teams?: CompetitionTeamUpdateManyWithoutCompetitionNestedInput
     matches?: MatchUpdateManyWithoutCompetitionNestedInput
   }
@@ -35339,6 +35644,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
     teams?: CompetitionTeamUncheckedUpdateManyWithoutCompetitionNestedInput
     matches?: MatchUncheckedUpdateManyWithoutCompetitionNestedInput
   }
@@ -35352,6 +35658,7 @@ export namespace Prisma {
     end_date: Date | string
     created_at?: Date | string
     isTransferMarketOpen?: boolean
+    cup_scenario?: $Enums.CupScenario | null
   }
 
   export type CompetitionUpdateManyMutationInput = {
@@ -35363,6 +35670,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
   }
 
   export type CompetitionUncheckedUpdateManyInput = {
@@ -35374,6 +35682,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
   }
 
   export type CompetitionTeamCreateInput = {
@@ -35426,6 +35735,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -35447,6 +35761,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
@@ -35462,6 +35781,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -35483,6 +35807,11 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
@@ -35501,6 +35830,10 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchUpdateManyMutationInput = {
@@ -35513,6 +35846,9 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchUncheckedUpdateManyInput = {
@@ -35528,6 +35864,10 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchScoreReportCreateInput = {
@@ -36032,8 +36372,10 @@ export namespace Prisma {
 
   export type NotificationCreateInput = {
     id?: string
+    type?: $Enums.NotificationType
     title: string
     message: string
+    link?: string | null
     is_read?: boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
@@ -36043,8 +36385,10 @@ export namespace Prisma {
   export type NotificationUncheckedCreateInput = {
     id?: string
     user_id: string
+    type?: $Enums.NotificationType
     title: string
     message: string
+    link?: string | null
     is_read?: boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
@@ -36052,8 +36396,10 @@ export namespace Prisma {
 
   export type NotificationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36063,8 +36409,10 @@ export namespace Prisma {
   export type NotificationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36073,8 +36421,10 @@ export namespace Prisma {
   export type NotificationCreateManyInput = {
     id?: string
     user_id: string
+    type?: $Enums.NotificationType
     title: string
     message: string
+    link?: string | null
     is_read?: boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
@@ -36082,8 +36432,10 @@ export namespace Prisma {
 
   export type NotificationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36092,8 +36444,10 @@ export namespace Prisma {
   export type NotificationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37477,6 +37831,13 @@ export namespace Prisma {
     not?: NestedEnumCompetitionStatusFilter<$PrismaModel> | $Enums.CompetitionStatus
   }
 
+  export type EnumCupScenarioNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CupScenario | EnumCupScenarioFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCupScenarioNullableFilter<$PrismaModel> | $Enums.CupScenario | null
+  }
+
   export type CompetitionCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -37486,6 +37847,7 @@ export namespace Prisma {
     end_date?: SortOrder
     created_at?: SortOrder
     isTransferMarketOpen?: SortOrder
+    cup_scenario?: SortOrder
   }
 
   export type CompetitionMaxOrderByAggregateInput = {
@@ -37497,6 +37859,7 @@ export namespace Prisma {
     end_date?: SortOrder
     created_at?: SortOrder
     isTransferMarketOpen?: SortOrder
+    cup_scenario?: SortOrder
   }
 
   export type CompetitionMinOrderByAggregateInput = {
@@ -37508,6 +37871,7 @@ export namespace Prisma {
     end_date?: SortOrder
     created_at?: SortOrder
     isTransferMarketOpen?: SortOrder
+    cup_scenario?: SortOrder
   }
 
   export type EnumCompetitionTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -37528,6 +37892,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumCompetitionStatusFilter<$PrismaModel>
     _max?: NestedEnumCompetitionStatusFilter<$PrismaModel>
+  }
+
+  export type EnumCupScenarioNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CupScenario | EnumCupScenarioFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCupScenarioNullableWithAggregatesFilter<$PrismaModel> | $Enums.CupScenario | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCupScenarioNullableFilter<$PrismaModel>
+    _max?: NestedEnumCupScenarioNullableFilter<$PrismaModel>
   }
 
   export type CompetitionScalarRelationFilter = {
@@ -37587,6 +37961,18 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type EnumBracketAdvanceSlotNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.BracketAdvanceSlot | EnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel> | $Enums.BracketAdvanceSlot | null
+  }
+
+  export type MatchNullableScalarRelationFilter = {
+    is?: MatchWhereInput | null
+    isNot?: MatchWhereInput | null
+  }
+
   export type CompetitionNullableScalarRelationFilter = {
     is?: CompetitionWhereInput | null
     isNot?: CompetitionWhereInput | null
@@ -37605,11 +37991,17 @@ export namespace Prisma {
     isVisible?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
+    bracket_round?: SortOrder
+    bracket_index?: SortOrder
+    winner_advances_to_match_id?: SortOrder
+    winner_slot_in_next?: SortOrder
   }
 
   export type MatchAvgOrderByAggregateInput = {
     home_score?: SortOrder
     away_score?: SortOrder
+    bracket_round?: SortOrder
+    bracket_index?: SortOrder
   }
 
   export type MatchMaxOrderByAggregateInput = {
@@ -37625,6 +38017,10 @@ export namespace Prisma {
     isVisible?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
+    bracket_round?: SortOrder
+    bracket_index?: SortOrder
+    winner_advances_to_match_id?: SortOrder
+    winner_slot_in_next?: SortOrder
   }
 
   export type MatchMinOrderByAggregateInput = {
@@ -37640,11 +38036,17 @@ export namespace Prisma {
     isVisible?: SortOrder
     competition_id?: SortOrder
     round?: SortOrder
+    bracket_round?: SortOrder
+    bracket_index?: SortOrder
+    winner_advances_to_match_id?: SortOrder
+    winner_slot_in_next?: SortOrder
   }
 
   export type MatchSumOrderByAggregateInput = {
     home_score?: SortOrder
     away_score?: SortOrder
+    bracket_round?: SortOrder
+    bracket_index?: SortOrder
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -37685,6 +38087,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumBracketAdvanceSlotNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BracketAdvanceSlot | EnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBracketAdvanceSlotNullableWithAggregatesFilter<$PrismaModel> | $Enums.BracketAdvanceSlot | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel>
+    _max?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel>
   }
 
   export type MatchScalarRelationFilter = {
@@ -38092,6 +38504,13 @@ export namespace Prisma {
     _min?: NestedEnumNegotiationTurnFilter<$PrismaModel>
     _max?: NestedEnumNegotiationTurnFilter<$PrismaModel>
   }
+
+  export type EnumNotificationTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeFilter<$PrismaModel> | $Enums.NotificationType
+  }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -38119,8 +38538,10 @@ export namespace Prisma {
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    link?: SortOrder
     is_read?: SortOrder
     metadata?: SortOrder
     created_at?: SortOrder
@@ -38129,8 +38550,10 @@ export namespace Prisma {
   export type NotificationMaxOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    link?: SortOrder
     is_read?: SortOrder
     created_at?: SortOrder
   }
@@ -38138,10 +38561,22 @@ export namespace Prisma {
   export type NotificationMinOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    link?: SortOrder
     is_read?: SortOrder
     created_at?: SortOrder
+  }
+
+  export type EnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.NotificationType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
+    _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -40196,6 +40631,10 @@ export namespace Prisma {
     set?: $Enums.CompetitionStatus
   }
 
+  export type NullableEnumCupScenarioFieldUpdateOperationsInput = {
+    set?: $Enums.CupScenario | null
+  }
+
   export type CompetitionTeamUpdateManyWithoutCompetitionNestedInput = {
     create?: XOR<CompetitionTeamCreateWithoutCompetitionInput, CompetitionTeamUncheckedCreateWithoutCompetitionInput> | CompetitionTeamCreateWithoutCompetitionInput[] | CompetitionTeamUncheckedCreateWithoutCompetitionInput[]
     connectOrCreate?: CompetitionTeamCreateOrConnectWithoutCompetitionInput | CompetitionTeamCreateOrConnectWithoutCompetitionInput[]
@@ -40280,6 +40719,19 @@ export namespace Prisma {
     update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutCompetitionsInput, ClubUpdateWithoutCompetitionsInput>, ClubUncheckedUpdateWithoutCompetitionsInput>
   }
 
+  export type MatchCreateNestedOneWithoutFed_byInput = {
+    create?: XOR<MatchCreateWithoutFed_byInput, MatchUncheckedCreateWithoutFed_byInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutFed_byInput
+    connect?: MatchWhereUniqueInput
+  }
+
+  export type MatchCreateNestedManyWithoutWinner_advances_toInput = {
+    create?: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput> | MatchCreateWithoutWinner_advances_toInput[] | MatchUncheckedCreateWithoutWinner_advances_toInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutWinner_advances_toInput | MatchCreateOrConnectWithoutWinner_advances_toInput[]
+    createMany?: MatchCreateManyWinner_advances_toInputEnvelope
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+  }
+
   export type MatchEventCreateNestedManyWithoutMatchInput = {
     create?: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput> | MatchEventCreateWithoutMatchInput[] | MatchEventUncheckedCreateWithoutMatchInput[]
     connectOrCreate?: MatchEventCreateOrConnectWithoutMatchInput | MatchEventCreateOrConnectWithoutMatchInput[]
@@ -40319,6 +40771,13 @@ export namespace Prisma {
     connect?: PredictionWhereUniqueInput | PredictionWhereUniqueInput[]
   }
 
+  export type MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput = {
+    create?: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput> | MatchCreateWithoutWinner_advances_toInput[] | MatchUncheckedCreateWithoutWinner_advances_toInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutWinner_advances_toInput | MatchCreateOrConnectWithoutWinner_advances_toInput[]
+    createMany?: MatchCreateManyWinner_advances_toInputEnvelope
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+  }
+
   export type MatchEventUncheckedCreateNestedManyWithoutMatchInput = {
     create?: XOR<MatchEventCreateWithoutMatchInput, MatchEventUncheckedCreateWithoutMatchInput> | MatchEventCreateWithoutMatchInput[] | MatchEventUncheckedCreateWithoutMatchInput[]
     connectOrCreate?: MatchEventCreateOrConnectWithoutMatchInput | MatchEventCreateOrConnectWithoutMatchInput[]
@@ -40354,6 +40813,34 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput = {
+    set?: $Enums.BracketAdvanceSlot | null
+  }
+
+  export type MatchUpdateOneWithoutFed_byNestedInput = {
+    create?: XOR<MatchCreateWithoutFed_byInput, MatchUncheckedCreateWithoutFed_byInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutFed_byInput
+    upsert?: MatchUpsertWithoutFed_byInput
+    disconnect?: MatchWhereInput | boolean
+    delete?: MatchWhereInput | boolean
+    connect?: MatchWhereUniqueInput
+    update?: XOR<XOR<MatchUpdateToOneWithWhereWithoutFed_byInput, MatchUpdateWithoutFed_byInput>, MatchUncheckedUpdateWithoutFed_byInput>
+  }
+
+  export type MatchUpdateManyWithoutWinner_advances_toNestedInput = {
+    create?: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput> | MatchCreateWithoutWinner_advances_toInput[] | MatchUncheckedCreateWithoutWinner_advances_toInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutWinner_advances_toInput | MatchCreateOrConnectWithoutWinner_advances_toInput[]
+    upsert?: MatchUpsertWithWhereUniqueWithoutWinner_advances_toInput | MatchUpsertWithWhereUniqueWithoutWinner_advances_toInput[]
+    createMany?: MatchCreateManyWinner_advances_toInputEnvelope
+    set?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    disconnect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    delete?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    update?: MatchUpdateWithWhereUniqueWithoutWinner_advances_toInput | MatchUpdateWithWhereUniqueWithoutWinner_advances_toInput[]
+    updateMany?: MatchUpdateManyWithWhereWithoutWinner_advances_toInput | MatchUpdateManyWithWhereWithoutWinner_advances_toInput[]
+    deleteMany?: MatchScalarWhereInput | MatchScalarWhereInput[]
   }
 
   export type MatchEventUpdateManyWithoutMatchNestedInput = {
@@ -40422,6 +40909,20 @@ export namespace Prisma {
     update?: PredictionUpdateWithWhereUniqueWithoutMatchInput | PredictionUpdateWithWhereUniqueWithoutMatchInput[]
     updateMany?: PredictionUpdateManyWithWhereWithoutMatchInput | PredictionUpdateManyWithWhereWithoutMatchInput[]
     deleteMany?: PredictionScalarWhereInput | PredictionScalarWhereInput[]
+  }
+
+  export type MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput = {
+    create?: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput> | MatchCreateWithoutWinner_advances_toInput[] | MatchUncheckedCreateWithoutWinner_advances_toInput[]
+    connectOrCreate?: MatchCreateOrConnectWithoutWinner_advances_toInput | MatchCreateOrConnectWithoutWinner_advances_toInput[]
+    upsert?: MatchUpsertWithWhereUniqueWithoutWinner_advances_toInput | MatchUpsertWithWhereUniqueWithoutWinner_advances_toInput[]
+    createMany?: MatchCreateManyWinner_advances_toInputEnvelope
+    set?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    disconnect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    delete?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    connect?: MatchWhereUniqueInput | MatchWhereUniqueInput[]
+    update?: MatchUpdateWithWhereUniqueWithoutWinner_advances_toInput | MatchUpdateWithWhereUniqueWithoutWinner_advances_toInput[]
+    updateMany?: MatchUpdateManyWithWhereWithoutWinner_advances_toInput | MatchUpdateManyWithWhereWithoutWinner_advances_toInput[]
+    deleteMany?: MatchScalarWhereInput | MatchScalarWhereInput[]
   }
 
   export type MatchEventUncheckedUpdateManyWithoutMatchNestedInput = {
@@ -40758,6 +41259,10 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type EnumNotificationTypeFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationType
   }
 
   export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
@@ -41483,6 +41988,13 @@ export namespace Prisma {
     not?: NestedEnumCompetitionStatusFilter<$PrismaModel> | $Enums.CompetitionStatus
   }
 
+  export type NestedEnumCupScenarioNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CupScenario | EnumCupScenarioFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCupScenarioNullableFilter<$PrismaModel> | $Enums.CupScenario | null
+  }
+
   export type NestedEnumCompetitionTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.CompetitionType | EnumCompetitionTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CompetitionType[] | ListEnumCompetitionTypeFieldRefInput<$PrismaModel>
@@ -41503,6 +42015,16 @@ export namespace Prisma {
     _max?: NestedEnumCompetitionStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumCupScenarioNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CupScenario | EnumCupScenarioFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CupScenario[] | ListEnumCupScenarioFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCupScenarioNullableWithAggregatesFilter<$PrismaModel> | $Enums.CupScenario | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCupScenarioNullableFilter<$PrismaModel>
+    _max?: NestedEnumCupScenarioNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumMatchStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.MatchStatus | EnumMatchStatusFieldRefInput<$PrismaModel>
     in?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
@@ -41519,6 +42041,13 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.BracketAdvanceSlot | EnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel> | $Enums.BracketAdvanceSlot | null
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -41570,6 +42099,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBracketAdvanceSlotNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BracketAdvanceSlot | EnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BracketAdvanceSlot[] | ListEnumBracketAdvanceSlotFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBracketAdvanceSlotNullableWithAggregatesFilter<$PrismaModel> | $Enums.BracketAdvanceSlot | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel>
+    _max?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumEventTypeFilter<$PrismaModel = never> = {
@@ -41689,6 +42228,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNegotiationTurnFilter<$PrismaModel>
     _max?: NestedEnumNegotiationTurnFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNotificationTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeFilter<$PrismaModel> | $Enums.NotificationType
+  }
+
+  export type NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.NotificationType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
+    _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -42029,8 +42585,10 @@ export namespace Prisma {
 
   export type NotificationCreateWithoutUserInput = {
     id?: string
+    type?: $Enums.NotificationType
     title: string
     message: string
+    link?: string | null
     is_read?: boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
@@ -42038,8 +42596,10 @@ export namespace Prisma {
 
   export type NotificationUncheckedCreateWithoutUserInput = {
     id?: string
+    type?: $Enums.NotificationType
     title: string
     message: string
+    link?: string | null
     is_read?: boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
@@ -42646,8 +43206,10 @@ export namespace Prisma {
     NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
     id?: UuidFilter<"Notification"> | string
     user_id?: UuidFilter<"Notification"> | string
+    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
     is_read?: BoolFilter<"Notification"> | boolean
     metadata?: JsonNullableFilter<"Notification">
     created_at?: DateTimeFilter<"Notification"> | Date | string
@@ -43202,6 +43764,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
@@ -43221,6 +43788,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
@@ -43246,6 +43818,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -43265,6 +43842,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
@@ -43698,6 +44280,10 @@ export namespace Prisma {
     isVisible?: BoolFilter<"Match"> | boolean
     competition_id?: UuidNullableFilter<"Match"> | string | null
     round?: StringNullableFilter<"Match"> | string | null
+    bracket_round?: IntNullableFilter<"Match"> | number | null
+    bracket_index?: IntNullableFilter<"Match"> | number | null
+    winner_advances_to_match_id?: UuidNullableFilter<"Match"> | string | null
+    winner_slot_in_next?: EnumBracketAdvanceSlotNullableFilter<"Match"> | $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchUpsertWithWhereUniqueWithoutHomeTeamInput = {
@@ -44449,6 +45035,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -44468,6 +45059,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
@@ -44524,6 +45120,7 @@ export namespace Prisma {
     end_date: Date | string
     created_at?: Date | string
     isTransferMarketOpen?: boolean
+    cup_scenario?: $Enums.CupScenario | null
     matches?: MatchCreateNestedManyWithoutCompetitionInput
   }
 
@@ -44536,6 +45133,7 @@ export namespace Prisma {
     end_date: Date | string
     created_at?: Date | string
     isTransferMarketOpen?: boolean
+    cup_scenario?: $Enums.CupScenario | null
     matches?: MatchUncheckedCreateNestedManyWithoutCompetitionInput
   }
 
@@ -44633,6 +45231,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
     matches?: MatchUpdateManyWithoutCompetitionNestedInput
   }
 
@@ -44645,6 +45244,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
     matches?: MatchUncheckedUpdateManyWithoutCompetitionNestedInput
   }
 
@@ -44721,6 +45321,109 @@ export namespace Prisma {
     receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type MatchCreateWithoutFed_byInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
+    awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
+    homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
+    predictions?: PredictionCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchUncheckedCreateWithoutFed_byInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    competition_id?: string | null
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchCreateOrConnectWithoutFed_byInput = {
+    where: MatchWhereUniqueInput
+    create: XOR<MatchCreateWithoutFed_byInput, MatchUncheckedCreateWithoutFed_byInput>
+  }
+
+  export type MatchCreateWithoutWinner_advances_toInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
+    awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
+    homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
+    predictions?: PredictionCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchUncheckedCreateWithoutWinner_advances_toInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    competition_id?: string | null
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchCreateOrConnectWithoutWinner_advances_toInput = {
+    where: MatchWhereUniqueInput
+    create: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput>
+  }
+
+  export type MatchCreateManyWinner_advances_toInputEnvelope = {
+    data: MatchCreateManyWinner_advances_toInput | MatchCreateManyWinner_advances_toInput[]
+    skipDuplicates?: boolean
   }
 
   export type MatchEventCreateWithoutMatchInput = {
@@ -44857,6 +45560,7 @@ export namespace Prisma {
     end_date: Date | string
     created_at?: Date | string
     isTransferMarketOpen?: boolean
+    cup_scenario?: $Enums.CupScenario | null
     teams?: CompetitionTeamCreateNestedManyWithoutCompetitionInput
   }
 
@@ -44869,6 +45573,7 @@ export namespace Prisma {
     end_date: Date | string
     created_at?: Date | string
     isTransferMarketOpen?: boolean
+    cup_scenario?: $Enums.CupScenario | null
     teams?: CompetitionTeamUncheckedCreateNestedManyWithoutCompetitionInput
   }
 
@@ -44974,6 +45679,77 @@ export namespace Prisma {
   export type PredictionCreateManyMatchInputEnvelope = {
     data: PredictionCreateManyMatchInput | PredictionCreateManyMatchInput[]
     skipDuplicates?: boolean
+  }
+
+  export type MatchUpsertWithoutFed_byInput = {
+    update: XOR<MatchUpdateWithoutFed_byInput, MatchUncheckedUpdateWithoutFed_byInput>
+    create: XOR<MatchCreateWithoutFed_byInput, MatchUncheckedCreateWithoutFed_byInput>
+    where?: MatchWhereInput
+  }
+
+  export type MatchUpdateToOneWithWhereWithoutFed_byInput = {
+    where?: MatchWhereInput
+    data: XOR<MatchUpdateWithoutFed_byInput, MatchUncheckedUpdateWithoutFed_byInput>
+  }
+
+  export type MatchUpdateWithoutFed_byInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
+    awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
+    homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
+    predictions?: PredictionUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchUncheckedUpdateWithoutFed_byInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchUpsertWithWhereUniqueWithoutWinner_advances_toInput = {
+    where: MatchWhereUniqueInput
+    update: XOR<MatchUpdateWithoutWinner_advances_toInput, MatchUncheckedUpdateWithoutWinner_advances_toInput>
+    create: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput>
+  }
+
+  export type MatchUpdateWithWhereUniqueWithoutWinner_advances_toInput = {
+    where: MatchWhereUniqueInput
+    data: XOR<MatchUpdateWithoutWinner_advances_toInput, MatchUncheckedUpdateWithoutWinner_advances_toInput>
+  }
+
+  export type MatchUpdateManyWithWhereWithoutWinner_advances_toInput = {
+    where: MatchScalarWhereInput
+    data: XOR<MatchUpdateManyMutationInput, MatchUncheckedUpdateManyWithoutWinner_advances_toInput>
   }
 
   export type MatchEventUpsertWithWhereUniqueWithoutMatchInput = {
@@ -45103,6 +45879,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
     teams?: CompetitionTeamUpdateManyWithoutCompetitionNestedInput
   }
 
@@ -45115,6 +45892,7 @@ export namespace Prisma {
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isTransferMarketOpen?: BoolFieldUpdateOperationsInput | boolean
+    cup_scenario?: NullableEnumCupScenarioFieldUpdateOperationsInput | $Enums.CupScenario | null
     teams?: CompetitionTeamUncheckedUpdateManyWithoutCompetitionNestedInput
   }
 
@@ -45219,6 +45997,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
@@ -45239,6 +46022,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
   }
@@ -45427,6 +46215,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
@@ -45447,6 +46240,11 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
   }
@@ -45631,6 +46429,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
@@ -45651,6 +46454,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
   }
@@ -45839,6 +46647,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
@@ -45859,6 +46672,11 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
   }
@@ -48851,6 +49669,11 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
@@ -48871,6 +49694,11 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
   }
@@ -48996,6 +49824,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -49016,6 +49849,11 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
   }
@@ -50324,8 +51162,10 @@ export namespace Prisma {
 
   export type NotificationCreateManyUserInput = {
     id?: string
+    type?: $Enums.NotificationType
     title: string
     message: string
+    link?: string | null
     is_read?: boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
@@ -50584,8 +51424,10 @@ export namespace Prisma {
 
   export type NotificationUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50593,8 +51435,10 @@ export namespace Prisma {
 
   export type NotificationUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50602,8 +51446,10 @@ export namespace Prisma {
 
   export type NotificationUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51042,6 +51888,10 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchCreateManyHomeTeamInput = {
@@ -51056,6 +51906,10 @@ export namespace Prisma {
     isVisible?: boolean
     competition_id?: string | null
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
   }
 
   export type TeamMemberCreateManyTeamInput = {
@@ -51287,6 +52141,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
@@ -51306,6 +52165,11 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
@@ -51323,6 +52187,10 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchUpdateWithoutHomeTeamInput = {
@@ -51335,6 +52203,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -51354,6 +52227,11 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
@@ -51371,6 +52249,10 @@ export namespace Prisma {
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     competition_id?: NullableStringFieldUpdateOperationsInput | string | null
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
   }
 
   export type TeamMemberUpdateWithoutTeamInput = {
@@ -51567,6 +52449,10 @@ export namespace Prisma {
     startTime?: Date | string | null
     isVisible?: boolean
     round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
   }
 
   export type CompetitionTeamUpdateWithoutCompetitionInput = {
@@ -51594,6 +52480,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
@@ -51613,6 +52504,11 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
@@ -51630,6 +52526,28 @@ export namespace Prisma {
     startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVisible?: BoolFieldUpdateOperationsInput | boolean
     round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+  }
+
+  export type MatchCreateManyWinner_advances_toInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    competition_id?: string | null
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchEventCreateManyMatchInput = {
@@ -51658,6 +52576,68 @@ export namespace Prisma {
     betAmount: number
     status?: $Enums.PredictionStatus
     created_at?: Date | string
+  }
+
+  export type MatchUpdateWithoutWinner_advances_toInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
+    awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
+    homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
+    predictions?: PredictionUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchUncheckedUpdateWithoutWinner_advances_toInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchUncheckedUpdateManyWithoutWinner_advances_toInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
   }
 
   export type MatchEventUpdateWithoutMatchInput = {

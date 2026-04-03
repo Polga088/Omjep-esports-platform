@@ -1,11 +1,74 @@
 import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Swords, Loader2, X, CheckCircle2, AlertCircle,
   Filter, ChevronDown, Trophy, Clock, Award, Plus, Trash2, Goal, Globe, Pencil,
-  ShieldAlert, CalendarClock,
+  ShieldAlert, CalendarClock, LayoutList, Network, Wrench,
 } from 'lucide-react';
 import api from '@/lib/api';
 import SyncPreviewModal from '@/components/SyncPreviewModal';
+import TournamentBrackets, { type MatchBrief } from '@/pages/Dashboard/TournamentBrackets';
+
+const BRACKET_PLACEHOLDER_NAME = 'OMJEP_BRACKET_TBD';
+
+function isCupType(t: string | null | undefined): boolean {
+  return String(t ?? '')
+    .trim()
+    .toUpperCase() === 'CUP';
+}
+
+function isChampionsType(t: string | null | undefined): boolean {
+  return String(t ?? '')
+    .trim()
+    .toUpperCase() === 'CHAMPIONS';
+}
+
+function labelTeamName(name: string) {
+  return name === BRACKET_PLACEHOLDER_NAME ? 'À déterminer' : name;
+}
+
+function toMatchBrief(m: Match): MatchBrief {
+  return {
+    id: m.id,
+    round: m.round,
+    status: m.status,
+    home_score: m.home_score,
+    away_score: m.away_score,
+    homeTeam: {
+      id: m.homeTeam.id,
+      name: labelTeamName(m.homeTeam.name),
+      logo_url: m.homeTeam.logo_url ?? null,
+    },
+    awayTeam: {
+      id: m.awayTeam.id,
+      name: labelTeamName(m.awayTeam.name),
+      logo_url: m.awayTeam.logo_url ?? null,
+    },
+  };
+}
+
+function buildBracketRounds(matches: Match[]): { name: string; matches: MatchBrief[] }[] {
+  const cupBracket = matches.filter(
+    (m) =>
+      m.bracket_round != null &&
+      (m.competition?.type === 'CUP' || m.competition?.type === 'CHAMPIONS'),
+  );
+  if (cupBracket.length === 0) return [];
+
+  const byRound = new Map<number, Match[]>();
+  for (const m of cupBracket) {
+    const r = m.bracket_round ?? 0;
+    if (!byRound.has(r)) byRound.set(r, []);
+    byRound.get(r)!.push(m);
+  }
+
+  const roundNums = [...byRound.keys()].sort((a, b) => a - b);
+  return roundNums.map((rNum) => {
+    const list = byRound.get(rNum)!.slice().sort((a, b) => (a.bracket_index ?? 0) - (b.bracket_index ?? 0));
+    const name = list[0]?.round?.trim() || `Tour ${rNum + 1}`;
+    return { name, matches: list.map(toMatchBrief) };
+  });
+}
 
 interface Team {
   id: string;
@@ -16,7 +79,7 @@ interface Team {
 interface Competition {
   id: string;
   name: string;
-  type: string;
+  type: string; // LEAGUE | CUP | CHAMPIONS
 }
 
 interface MatchEvent {
@@ -28,6 +91,9 @@ interface MatchEvent {
 interface Match {
   id: string;
   round: string | null;
+  competition_id?: string | null;
+  bracket_round?: number | null;
+  bracket_index?: number | null;
   home_score: number | null;
   away_score: number | null;
   status: 'SCHEDULED' | 'LIVE' | 'PLAYED' | 'FINISHED' | 'CANCELLED' | 'DISPUTED';
@@ -103,6 +169,7 @@ export default function AdminMatches() {
   const [filterCompetition, setFilterCompetition] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'SCHEDULED' | 'PLAYED'>('SCHEDULED');
+  const [viewMode, setViewMode] = useState<'list' | 'bracket'>('list');
 
   const [scoreModal, setScoreModal] = useState<Match | null>(null);
   const [homeScore, setHomeScore] = useState('');
@@ -130,13 +197,81 @@ export default function AdminMatches() {
   const [rescheduleModal, setRescheduleModal] = useState<Match | null>(null);
   const [scheduledAt, setScheduledAt] = useState('');
   const [rescheduling, setRescheduling] = useState(false);
+  const [repairingBracket, setRepairingBracket] = useState(false);
 
+  const [searchParams] = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+  const skipFilterReloadRef = useRef(true);
+
+  const loadMatchesForFilter = async (competitionId: string) => {
+    const fid = competitionId.trim();
+    const url = fid
+      ? `/admin/matches?competition_id=${encodeURIComponent(fid)}`
+      : '/admin/matches';
+    const matchesRes = await api.get(url);
+    const matchesData = matchesRes.data.data ?? matchesRes.data;
+    setMatches(Array.isArray(matchesData) ? matchesData : []);
+  };
 
   useEffect(() => {
-    fetchData();
+    const c = searchParams.get('competition')?.trim();
+    const view = searchParams.get('view');
+    if (c) setFilterCompetition(c);
+    if (view === 'bracket') setViewMode('bracket');
+  }, [searchParams]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const [matchesRes, compsRes] = await Promise.all([
+          api.get('/admin/matches'),
+          api.get('/admin/competitions'),
+        ]);
+        const matchesData = matchesRes.data.data ?? matchesRes.data;
+        const compsData = compsRes.data.data ?? compsRes.data;
+        if (!cancelled) {
+          setMatches(Array.isArray(matchesData) ? matchesData : []);
+          const compsList = Array.isArray(compsData) ? compsData : [];
+          setCompetitions(
+            compsList.map((c: { id: string; name: string; type: string }) => ({
+              id: String(c.id).trim(),
+              name: c.name,
+              type: String(c.type ?? '').toUpperCase(),
+            })),
+          );
+        }
+      } catch {
+        if (!cancelled) setError('Impossible de charger les matchs.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  useEffect(() => {
+    if (skipFilterReloadRef.current) {
+      skipFilterReloadRef.current = false;
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        await loadMatchesForFilter(filterCompetition);
+      } catch {
+        if (!cancelled) setError('Impossible de charger les matchs.');
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [filterCompetition]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -151,30 +286,84 @@ export default function AdminMatches() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [matchesRes, compsRes] = await Promise.all([
-        api.get('/admin/matches'),
-        api.get('/admin/competitions'),
-      ]);
-      const matchesData = matchesRes.data.data ?? matchesRes.data;
+      const compsRes = await api.get('/admin/competitions');
       const compsData = compsRes.data.data ?? compsRes.data;
-      setMatches(Array.isArray(matchesData) ? matchesData : []);
-
       const compsList = Array.isArray(compsData) ? compsData : [];
       setCompetitions(
-        compsList.map((c: any) => ({ id: c.id, name: c.name, type: c.type })),
+        compsList.map((c: { id: string; name: string; type: string }) => ({
+          id: String(c.id).trim(),
+          name: c.name,
+          type: String(c.type ?? '').toUpperCase(),
+        })),
       );
+      await loadMatchesForFilter(filterCompetition);
     } catch {
-      setError('Impossible de charger les matchs.');
+      setError('Impossible de charger les données.');
     } finally {
       setLoading(false);
     }
   };
 
+  const filterId = filterCompetition.trim();
+  const matchCompetitionId = (m: Match) =>
+    String(m.competition?.id ?? m.competition_id ?? '').trim();
+
   const filtered = matches.filter((m) => {
-    if (filterCompetition && m.competition?.id !== filterCompetition) return false;
+    if (filterId && matchCompetitionId(m) !== filterId) return false;
     if (activeTab === 'SCHEDULED') return m.status === 'SCHEDULED' || m.status === 'LIVE';
     return m.status !== 'SCHEDULED' && m.status !== 'LIVE';
   });
+
+  /** Matchs de la compétition sélectionnée uniquement (arbre bracket). */
+  const matchesForBracket = filterId
+    ? matches.filter((m) => matchCompetitionId(m) === filterId)
+    : [];
+
+  const metaForFilter = filterId ? competitions.find((c) => c.id === filterId) : undefined;
+  const cupFromList = metaForFilter ? isCupType(metaForFilter.type) : false;
+  const cupFromMatches = matchesForBracket.some((m) => isCupType(m.competition?.type));
+  const championsFromList = metaForFilter ? isChampionsType(metaForFilter.type) : false;
+  const championsFromMatches = matchesForBracket.some((m) =>
+    isChampionsType(m.competition?.type),
+  );
+  const showBracketView = Boolean(
+    filterId &&
+      (cupFromList || cupFromMatches || championsFromList || championsFromMatches),
+  );
+
+  const bracketRounds = buildBracketRounds(matchesForBracket);
+  const hasMatchesWithoutBracketLayout =
+    showBracketView &&
+    matchesForBracket.length > 0 &&
+    matchesForBracket.some((m) => m.bracket_round == null || m.bracket_index == null);
+
+  const handleRepairBracketPositions = async () => {
+    if (!filterId || !showBracketView) return;
+    setRepairingBracket(true);
+    setError('');
+    try {
+      const res = await api.post('/admin/matches/repair-bracket-positions', {
+        competition_id: filterId,
+      });
+      setSuccess(res.data.message ?? 'Positions mises à jour.');
+      await loadMatchesForFilter(filterCompetition);
+      setTimeout(() => setSuccess(''), 5000);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        'Erreur lors de la réparation des positions.';
+      setError(typeof msg === 'string' ? msg : 'Erreur lors de la réparation.');
+    } finally {
+      setRepairingBracket(false);
+    }
+  };
+
+  const handleBracketMatchClick = (brief: MatchBrief) => {
+    const full = matches.find((x) => x.id === brief.id);
+    if (!full) return;
+    if (full.status === 'SCHEDULED' || full.status === 'LIVE') void openScoreModal(full);
+    else if (full.status === 'PLAYED') openCorrectModal(full);
+  };
 
   const openScoreModal = async (match: Match) => {
     setScoreModal(match);
@@ -348,8 +537,8 @@ export default function AdminMatches() {
     setTimeout(() => setSuccess(''), 4000);
   };
 
-  const selectedCompName = filterCompetition
-    ? competitions.find((c) => c.id === filterCompetition)?.name ?? 'Compétition'
+  const selectedCompName = filterId
+    ? competitions.find((c) => c.id === filterId)?.name ?? 'Compétition'
     : 'Toutes les compétitions';
 
   const scheduledCount = matches.filter((m) => m.status === 'SCHEDULED' || m.status === 'LIVE').length;
@@ -395,7 +584,7 @@ export default function AdminMatches() {
               <button
                 onClick={() => { setFilterCompetition(''); setFilterOpen(false); }}
                 className={`w-full text-left px-4 py-3 text-sm transition-colors ${
-                  !filterCompetition ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
+                  !filterId ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
                 }`}
               >
                 Toutes les compétitions
@@ -403,9 +592,9 @@ export default function AdminMatches() {
               {competitions.map((comp) => (
                 <button
                   key={comp.id}
-                  onClick={() => { setFilterCompetition(comp.id); setFilterOpen(false); }}
+                  onClick={() => { setFilterCompetition(String(comp.id).trim()); setFilterOpen(false); }}
                   className={`w-full text-left px-4 py-3 text-sm border-t border-white/[0.03] transition-colors ${
-                    filterCompetition === comp.id ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
+                    filterId === String(comp.id).trim() ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
                   }`}
                 >
                   <span className="truncate block">{comp.name}</span>
@@ -430,7 +619,48 @@ export default function AdminMatches() {
         </div>
       )}
 
-      {/* Tabs */}
+      {/* Vue liste / bracket */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-amber-400/10 w-fit">
+          <button
+            type="button"
+            onClick={() => setViewMode('list')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              viewMode === 'list'
+                ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20 shadow-sm'
+                : 'text-slate-500 hover:text-slate-300 border border-transparent'
+            }`}
+          >
+            <LayoutList className="w-3.5 h-3.5" />
+            Liste
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('bracket')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              viewMode === 'bracket'
+                ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20 shadow-sm'
+                : 'text-slate-500 hover:text-slate-300 border border-transparent'
+            }`}
+          >
+            <Network className="w-3.5 h-3.5" />
+            Bracket
+          </button>
+        </div>
+        {viewMode === 'bracket' && !filterId && (
+          <p className="text-xs text-slate-500">
+            Sélectionnez une compétition dans le filtre ci-dessus pour afficher l’arbre (idéalement une <span className="text-amber-400/80">coupe</span>).
+          </p>
+        )}
+        {viewMode === 'bracket' && filterId && !showBracketView && (
+          <p className="text-xs text-amber-400/85">
+            Cette compétition n’est pas une coupe — l’arbre à élimination directe ne s’affiche pas.
+          </p>
+        )}
+      </div>
+
+      {/* Tabs (liste uniquement) */}
+      {viewMode === 'list' && (
       <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-amber-400/10 w-fit">
         <button
           onClick={() => setActiveTab('SCHEDULED')}
@@ -465,9 +695,49 @@ export default function AdminMatches() {
           </span>
         </button>
       </div>
+      )}
+
+      {/* Bracket — matchs filtrés par la compétition sélectionnée (API + état local) */}
+      {viewMode === 'bracket' && showBracketView && (
+        <div className="rounded-2xl border border-amber-400/10 bg-white/[0.02] p-4 sm:p-6">
+          {matchesForBracket.length === 0 ? (
+            <div className="text-center py-12 text-slate-500 text-sm">
+              Aucun match pour cette compétition. Vérifiez le filtre ou créez des matchs.
+            </div>
+          ) : (
+            <>
+              {(bracketRounds.length === 0 || hasMatchesWithoutBracketLayout) && (
+                <div className="mb-6 flex flex-col items-center gap-4 rounded-xl border border-dashed border-amber-400/20 bg-amber-400/[0.03] px-4 py-8">
+                  <p className="text-center text-sm text-slate-400 max-w-md">
+                    {bracketRounds.length === 0
+                      ? 'Les matchs existent mais ne sont pas encore placés dans l’arbre (bracket_round / bracket_index manquants). Vous pouvez les déduire des libellés de tour.'
+                      : 'Certains matchs n’ont pas encore de position bracket — complétez pour un arbre cohérent.'}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={repairingBracket}
+                    onClick={() => void handleRepairBracketPositions()}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 transition-all shadow-md shadow-emerald-500/20"
+                  >
+                    {repairingBracket ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Wrench className="w-4 h-4" />
+                    )}
+                    Générer les positions de l’arbre
+                  </button>
+                </div>
+              )}
+              {bracketRounds.length > 0 && (
+                <TournamentBrackets rounds={bracketRounds} onMatchClick={handleBracketMatchClick} />
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* Match list */}
-      {filtered.length === 0 ? (
+      {viewMode === 'list' && filtered.length === 0 ? (
         <div className="text-center py-20 border border-dashed border-amber-400/10 rounded-2xl bg-gradient-to-b from-white/[0.01] to-transparent">
           <div className="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center mx-auto mb-4">
             <Swords className="w-8 h-8 text-slate-700" />
@@ -476,7 +746,7 @@ export default function AdminMatches() {
             {activeTab === 'SCHEDULED' ? 'Aucun match programmé.' : 'Aucun résultat disponible.'}
           </p>
         </div>
-      ) : (
+      ) : viewMode === 'list' ? (
         <div className="space-y-3">
           {filtered.map((match) => {
             const statusCfg = STATUS_CONFIG[match.status] ?? STATUS_CONFIG.SCHEDULED;
@@ -633,7 +903,7 @@ export default function AdminMatches() {
             );
           })}
         </div>
-      )}
+      ) : null}
 
       {/* Score Modal */}
       {scoreModal && (

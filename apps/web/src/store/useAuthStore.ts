@@ -44,7 +44,7 @@ type UpdateProfileResponse = ProfileCosmeticsPatch & {
   nationality?: string | null;
 };
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   token: string | null;
   login: (user: User, token: string) => void;

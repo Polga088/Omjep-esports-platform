@@ -6,6 +6,7 @@ import { ValidatePotsDto } from './dto/validate-pots.dto';
 import { GenerateLeagueCalendarDto } from './dto/generate-league-calendar.dto';
 import { DrawService } from './draw.service';
 import { assignLeagueKickoffs } from './league-schedule.util';
+import { NotificationsService } from '../notifications/notifications.service';
 
 type MatchRow = {
   competition_id: string;
@@ -22,6 +23,7 @@ export class AdminCompetitionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly drawService: DrawService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async findAll() {
@@ -127,6 +129,8 @@ export class AdminCompetitionsService {
         type: dto.type,
         start_date: startDate,
         end_date: endDate,
+        cup_scenario:
+          dto.type === 'CUP' ? dto.cup_scenario ?? 'SINGLE_ELIMINATION' : undefined,
         teams: dto.team_ids
           ? { create: dto.team_ids.map((team_id) => ({ team_id })) }
           : undefined,
@@ -219,6 +223,16 @@ export class AdminCompetitionsService {
       where: { id },
       data: { status: 'ONGOING' },
     });
+
+    const label = competition.name ?? 'Compétition';
+    await this.notifications.notifyUsersInTeams(
+      teamIds,
+      '📅 Matchs créés',
+      `De nouveaux matchs sont disponibles pour « ${label} » (${created.count} rencontres).`,
+      'info',
+      { category: 'MATCH', type: 'ADMIN_CALENDAR_OR_DRAW', competition_id: id },
+      { notificationType: 'MATCH', link: '/dashboard/matches' },
+    );
 
     return { message, matchCount: created.count };
   }
@@ -322,6 +336,16 @@ export class AdminCompetitionsService {
       where: { id },
       data: { status: 'ONGOING' },
     });
+
+    const label = competition.name ?? 'Compétition';
+    await this.notifications.notifyUsersInTeams(
+      teamIds,
+      '🎲 Tirage effectué',
+      `Le tirage « ${label} » est connu : ${created.count} matchs créés.`,
+      'info',
+      { category: 'MATCH', type: 'ADMIN_DRAW_CREATED', competition_id: id },
+      { notificationType: 'MATCH', link: '/dashboard/matches' },
+    );
 
     return {
       message: `Tirage effectué — ${created.count} matchs créés.`,

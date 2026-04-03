@@ -26,4 +26,9 @@ export class CreateCompetitionDto {
   @IsArray()
   @IsUUID('4', { each: true })
   team_ids?: string[];
+
+  /** Coupe uniquement : format de phase finale. */
+  @IsOptional()
+  @IsEnum(['SINGLE_ELIMINATION', 'TWO_LEGGED_TIE', 'GROUPS_AND_KNOCKOUT'])
+  cup_scenario?: 'SINGLE_ELIMINATION' | 'TWO_LEGGED_TIE' | 'GROUPS_AND_KNOCKOUT';
 }

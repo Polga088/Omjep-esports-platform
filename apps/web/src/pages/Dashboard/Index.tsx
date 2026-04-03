@@ -539,17 +539,17 @@ export default function DashboardIndex() {
 
           <div className="absolute right-3 top-3 z-10 flex flex-wrap items-center justify-end gap-2 sm:right-5 sm:top-4">
             {user?.omjepCoins !== undefined && (
-              <div className="flex items-center gap-1.5 rounded-lg border border-amber-400/30 bg-black/35 px-2.5 py-1.5 backdrop-blur-md">
+              <div className="flex items-center gap-1.5 rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-2.5 py-1.5 transition-colors hover:border-white/20">
                 <Coins className="h-3.5 w-3.5 text-amber-400" />
-                <span className="text-xs font-black tabular-nums text-amber-300 sm:text-sm">
+                <span className="font-mono text-xs font-semibold tabular-nums text-amber-400 sm:text-sm">
                   {formatCurrency(user.omjepCoins, 'OC')}
                 </span>
               </div>
             )}
             {user?.jepyCoins !== undefined && user.jepyCoins > 0 && (
-              <div className="flex items-center gap-1.5 rounded-lg border border-purple-400/30 bg-black/35 px-2.5 py-1.5 backdrop-blur-md">
-                <Zap className="h-3.5 w-3.5 text-purple-400" />
-                <span className="text-xs font-black tabular-nums text-purple-200 sm:text-sm">
+              <div className="flex items-center gap-1.5 rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-2.5 py-1.5 transition-colors hover:border-white/20">
+                <Zap className="h-3.5 w-3.5 text-indigo-400" />
+                <span className="font-mono text-xs font-semibold tabular-nums text-indigo-400 sm:text-sm">
                   {formatCurrency(user.jepyCoins, 'Jepy')}
                 </span>
               </div>
@@ -558,15 +558,15 @@ export default function DashboardIndex() {
 
           <Link
             to="/dashboard/store?tab=cosmetics"
-            className="absolute bottom-4 right-4 z-30 inline-flex items-center gap-2 rounded-xl border border-cyan-400/50 bg-black/50 px-3 py-2.5 text-[11px] font-bold uppercase leading-tight tracking-wide text-cyan-100 shadow-[0_10px_40px_rgba(0,0,0,0.55),0_0_28px_rgba(34,211,238,0.22)] backdrop-blur-md transition hover:border-cyan-300/75 hover:bg-black/60 hover:shadow-[0_0_36px_rgba(34,211,238,0.32)] sm:bottom-5 sm:right-5 sm:px-4 sm:text-xs"
+            className="absolute bottom-4 right-4 z-30 inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/45 px-2.5 py-2 text-xs font-semibold uppercase leading-tight tracking-wide text-cyan-100/90 backdrop-blur-md transition hover:border-white/20 hover:bg-black/55 sm:bottom-5 sm:right-5 sm:px-3"
           >
-            <Paintbrush className="h-4 w-4 shrink-0 text-cyan-300" aria-hidden />
+            <Paintbrush className="h-3.5 w-3.5 shrink-0 text-cyan-300/90" aria-hidden />
             Personnaliser mon profil
           </Link>
           </section>
 
           <motion.div
-            className="relative z-[50] -mt-[9.35rem] flex justify-center px-4 pb-1 sm:-mt-[9.85rem] sm:justify-start sm:pl-8 md:pl-12"
+            className="relative z-[50] -mt-[9.35rem] flex flex-col-reverse items-center gap-5 px-4 pb-1 sm:-mt-[9.85rem] sm:flex-row sm:items-start sm:justify-start sm:gap-8 sm:pl-8 md:gap-10 md:pl-12"
             initial={{ opacity: 0, y: 44, scale: 0.88 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 24, mass: 0.85 }}
@@ -579,9 +579,9 @@ export default function DashboardIndex() {
               }}
               aria-hidden
             />
-            <div className="relative z-[51] -translate-y-3 sm:-translate-y-4 md:-translate-y-[1.35rem]">
+            <div className="relative z-[51] -translate-y-3 shrink-0 sm:-translate-y-4 md:-translate-y-[1.35rem]">
               <div className="drop-shadow-[0_28px_64px_rgba(0,0,0,0.78),0_0_42px_rgba(34,211,238,0.55),0_0_72px_rgba(6,182,212,0.35),0_0_120px_rgba(34,211,238,0.12)]">
-                <div className="aspect-square w-[280px] max-w-[min(280px,88vw)] shrink-0 isolate overflow-hidden rounded-full [clip-path:inset(0_round_50%)]">
+                <div className="aspect-square w-[280px] max-w-[min(280px,88vw)] isolate overflow-hidden rounded-full [clip-path:inset(0_round_50%)]">
                   <PlayerIdentity
                     initial={(user?.ea_persona_name ?? 'J').charAt(0).toUpperCase()}
                     avatarUrl={user?.avatarUrl?.trim() ? user.avatarUrl : yamalPhotoUrl}
@@ -599,28 +599,21 @@ export default function DashboardIndex() {
                 </div>
               </div>
             </div>
-          </motion.div>
-
-          {/* Au-dessus de l’avatar (z-[50]) : pseudo + RankBadge ne doivent pas être recouverts */}
-          <div className="pointer-events-none absolute left-3 top-3 z-[80] sm:left-5 sm:top-4">
-            <div className="max-w-[min(22rem,85vw)] rounded-lg border border-white/[0.12] bg-black/65 px-3 py-2 shadow-[0_10px_40px_rgba(0,0,0,0.65),0_0_1px_rgba(255,255,255,0.08)] backdrop-blur-md">
-              <p className="font-scifi text-[10px] font-medium uppercase tracking-[0.2em] text-slate-300">
-                {greeting()},
+            {/* Salutation + pseudo : même ligne que l’avatar, bords supérieurs alignés (sm:items-start) */}
+            <div className="relative z-[52] flex w-full max-w-[min(22rem,85vw)] flex-col items-center text-center sm:min-w-0 sm:max-w-none sm:flex-1 sm:items-start sm:pt-0 sm:text-left">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-slate-500">
+                {greeting().toUpperCase()},
               </p>
-              <div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-2">
-                <p className="min-w-0 truncate font-display text-lg font-semibold leading-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.95),0_0_20px_rgba(34,211,238,0.35)] sm:text-xl">
+              <div className="mt-1 flex min-w-0 flex-wrap items-center justify-center gap-2 sm:justify-start">
+                <p className="min-w-0 truncate text-2xl font-bold leading-tight text-white">
                   {user?.ea_persona_name ?? 'Joueur'}
                 </p>
                 {user?.level !== undefined && (
-                  <RankBadge
-                    level={user.level}
-                    size="sm"
-                    className="shrink-0 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]"
-                  />
+                  <RankBadge level={user.level} size="sm" className="shrink-0" />
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         <div className="space-y-8 px-3 pb-4 pt-3 sm:px-5 sm:pt-5">

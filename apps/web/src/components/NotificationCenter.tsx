@@ -3,7 +3,7 @@ import { Bell, Check, X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
-import { getNotificationHref } from '@/lib/notificationNavigation';
+import { getNotificationTarget } from '@/lib/notificationNavigation';
 import type { DbNotificationRow } from '@/hooks/useAppNotifications';
 
 interface InvitationTeam {
@@ -33,23 +33,38 @@ function formatNotifDate(iso: string): string {
   }
 }
 
-interface NotificationBellProps {
+function typeLabel(t: string): string {
+  switch (t) {
+    case 'MATCH':
+      return 'MATCH';
+    case 'TRANSFER':
+      return 'TRANSFER';
+    case 'SUPPORT':
+      return 'SUPPORT';
+    case 'SYSTEM':
+      return 'SYSTEM';
+    default:
+      return t || '—';
+  }
+}
+
+interface NotificationCenterProps {
   appUnreadCount?: number;
   inboxNotifications?: DbNotificationRow[];
-  /** Après lecture / refresh liste + compteur */
   onRefreshInbox?: () => void | Promise<void>;
 }
 
-export default function NotificationBell({
+export default function NotificationCenter({
   appUnreadCount = 0,
   inboxNotifications = [],
   onRefreshInbox,
-}: NotificationBellProps) {
+}: NotificationCenterProps) {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [open, setOpen] = useState(false);
   const [respondingId, setRespondingId] = useState<string | null>(null);
   const [prevCount, setPrevCount] = useState(0);
   const [markingReadId, setMarkingReadId] = useState<string | null>(null);
+  const [markingAll, setMarkingAll] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
@@ -64,7 +79,7 @@ export default function NotificationBell({
         return data;
       });
     } catch {
-      // silently ignore — user may not have pending invitations
+      // silently ignore
     }
   }, []);
 
@@ -128,7 +143,7 @@ export default function NotificationBell({
   };
 
   const handleNotificationClick = async (n: DbNotificationRow) => {
-    const href = getNotificationHref(n.metadata);
+    const href = getNotificationTarget(n);
     setMarkingReadId(n.id);
     try {
       if (!n.is_read) {
@@ -144,27 +159,45 @@ export default function NotificationBell({
     }
   };
 
+  const handleMarkAllRead = async () => {
+    if (appUnreadCount <= 0) return;
+    setMarkingAll(true);
+    try {
+      await api.patch('/notifications/read-all');
+      await onRefreshInbox?.();
+      toast.success('Toutes les notifications sont marquées comme lues.');
+    } catch {
+      toast.error('Impossible de tout marquer comme lu.');
+    } finally {
+      setMarkingAll(false);
+    }
+  };
+
   const inviteCount = invitations.length;
   const inboxCount = inboxNotifications.length;
-  const totalBadge = inviteCount + appUnreadCount;
-  const hasNew = totalBadge > 0;
   const isEmpty = inviteCount === 0 && inboxCount === 0;
 
   return (
     <div className="relative">
       <button
         ref={buttonRef}
+        type="button"
         onClick={() => setOpen((v) => !v)}
-        className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+        className="relative rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
         aria-label="Notifications"
       >
-        <Bell className="w-5 h-5" />
-        {hasNew && (
-          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center">
-            <span className="absolute inline-flex h-4 w-4 rounded-full bg-red-500 opacity-75 animate-ping" />
-            <span className="relative inline-flex min-w-[1rem] h-4 px-0.5 justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-              {totalBadge > 9 ? '9+' : totalBadge}
+        <Bell className="h-5 w-5" />
+        {appUnreadCount > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex items-center justify-center">
+            <span className="absolute inline-flex h-4 w-4 animate-ping rounded-full bg-red-500 opacity-75" />
+            <span className="relative inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-0.5 text-[10px] font-bold text-white">
+              {appUnreadCount > 9 ? '9+' : appUnreadCount}
             </span>
+          </span>
+        )}
+        {appUnreadCount === 0 && inviteCount > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-amber-500 px-0.5 text-[10px] font-bold text-black">
+            {inviteCount > 9 ? '9+' : inviteCount}
           </span>
         )}
       </button>
@@ -172,31 +205,45 @@ export default function NotificationBell({
       {open && (
         <div
           ref={popoverRef}
-          className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-2xl border border-white/10 bg-[#0D1221] shadow-2xl shadow-black/40 z-50 overflow-hidden flex flex-col max-h-[min(28rem,85vh)]"
+          className="absolute right-0 top-full z-50 mt-2 flex max-h-[min(28rem,85vh)] w-80 flex-col overflow-hidden rounded-xl border-[0.5px] border-white/10 bg-[#08090c] shadow-2xl shadow-black/50 sm:w-96"
         >
-          <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between shrink-0">
-            <h3 className="text-sm font-semibold text-white">Notifications</h3>
-            {(inviteCount > 0 || appUnreadCount > 0) && (
-              <span className="text-xs text-slate-500 bg-white/5 px-2 py-0.5 rounded-full">
-                {inviteCount > 0 && `${inviteCount} invitation${inviteCount > 1 ? 's' : ''}`}
-                {inviteCount > 0 && appUnreadCount > 0 && ' · '}
-                {appUnreadCount > 0 && `${appUnreadCount} non lue${appUnreadCount > 1 ? 's' : ''}`}
-              </span>
-            )}
+          <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-3 py-2.5">
+            <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+              omjep-notify ~
+            </h3>
+            <div className="flex items-center gap-2">
+              {appUnreadCount > 0 && (
+                <button
+                  type="button"
+                  disabled={markingAll}
+                  onClick={() => void handleMarkAllRead()}
+                  className="rounded border border-white/10 px-2 py-1 font-mono text-[10px] text-slate-500 transition hover:border-white/20 hover:text-slate-300 disabled:opacity-50"
+                >
+                  {markingAll ? '…' : 'Tout lu'}
+                </button>
+              )}
+              {(inviteCount > 0 || appUnreadCount > 0) && (
+                <span className="font-mono text-[10px] text-slate-600">
+                  {inviteCount > 0 && `${inviteCount} inv.`}
+                  {inviteCount > 0 && appUnreadCount > 0 && ' · '}
+                  {appUnreadCount > 0 && `${appUnreadCount} non lu${appUnreadCount > 1 ? 's' : ''}`}
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="overflow-y-auto flex-1 min-h-0">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             {isEmpty ? (
-              <div className="py-10 text-center px-4">
-                <Bell className="w-8 h-8 text-slate-700 mx-auto mb-2" />
-                <p className="text-sm text-slate-600">Aucune notification pour le moment.</p>
+              <div className="px-4 py-10 text-center">
+                <Bell className="mx-auto mb-2 h-8 w-8 text-slate-700" />
+                <p className="font-mono text-[10px] text-slate-600">Aucune entrée.</p>
               </div>
             ) : (
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-white/[0.06]">
                 {inviteCount > 0 && (
-                  <div className="px-3 py-2">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-amber-500/90 px-1 mb-2">
-                      Invitations club
+                  <div className="px-2 py-2">
+                    <p className="mb-2 px-1 font-mono text-[9px] font-semibold uppercase tracking-widest text-amber-500/90">
+                      invitations
                     </p>
                     <ul className="space-y-1">
                       {invitations.map((inv) => {
@@ -204,42 +251,42 @@ export default function NotificationBell({
                         return (
                           <li
                             key={inv.id}
-                            className="rounded-xl px-3 py-2.5 bg-white/[0.03] border border-white/5"
+                            className="rounded-lg border border-white/[0.06] bg-black/20 px-2.5 py-2"
                           >
-                            <div className="flex items-start gap-3">
+                            <div className="flex items-start gap-2">
                               {inv.team.logo_url ? (
                                 <img
                                   src={inv.team.logo_url}
                                   alt={inv.team.name}
-                                  className="w-10 h-10 rounded-xl object-cover border border-white/10 shrink-0"
+                                  className="h-9 w-9 shrink-0 rounded-lg border border-white/10 object-cover"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-gradient-to-br from-amber-400/20 to-amber-600/10 text-xs font-bold uppercase text-amber-400">
                                   {inv.team.name.charAt(0)}
                                 </div>
                               )}
-                              <div className="flex-1 min-w-0">
+                              <div className="min-w-0 flex-1">
                                 <p className="text-sm text-white">
                                   <span className="font-semibold text-amber-400">{inv.team.name}</span>{' '}
-                                  vous invite à rejoindre !
+                                  vous invite.
                                 </p>
-                                <p className="text-xs text-slate-500 mt-0.5">
+                                <p className="mt-0.5 text-xs text-slate-500">
                                   Par {inv.inviter.ea_persona_name ?? inv.inviter.email}
                                 </p>
-                                <p className="text-[10px] text-slate-600 mt-1">
+                                <p className="mt-1 font-mono text-[10px] text-slate-600">
                                   {formatNotifDate(inv.created_at)}
                                 </p>
-                                <div className="flex items-center gap-2 mt-2">
+                                <div className="mt-2 flex gap-2">
                                   <button
                                     type="button"
                                     onClick={() => handleRespond(inv.id, 'ACCEPTED')}
                                     disabled={isResponding}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 active:scale-95 transition-all disabled:opacity-50"
+                                    className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-400 transition hover:bg-emerald-500/20 disabled:opacity-50"
                                   >
                                     {isResponding ? (
-                                      <Loader2 className="w-3 h-3 animate-spin" />
+                                      <Loader2 className="h-3 w-3 animate-spin" />
                                     ) : (
-                                      <Check className="w-3 h-3" />
+                                      <Check className="h-3 w-3" />
                                     )}
                                     Accepter
                                   </button>
@@ -247,9 +294,9 @@ export default function NotificationBell({
                                     type="button"
                                     onClick={() => handleRespond(inv.id, 'REJECTED')}
                                     disabled={isResponding}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 text-slate-400 border border-white/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 active:scale-95 transition-all disabled:opacity-50"
+                                    className="inline-flex items-center gap-1 rounded border border-white/10 px-2 py-1 text-xs text-slate-400 transition hover:border-red-500/30 hover:text-red-400 disabled:opacity-50"
                                   >
-                                    <X className="w-3 h-3" />
+                                    <X className="h-3 w-3" />
                                     Refuser
                                   </button>
                                 </div>
@@ -263,9 +310,9 @@ export default function NotificationBell({
                 )}
 
                 {inboxCount > 0 && (
-                  <div className="px-3 py-2 pb-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-1 mb-2">
-                      Centre de messages
+                  <div className="px-2 py-2 pb-3">
+                    <p className="mb-2 px-1 font-mono text-[9px] font-semibold uppercase tracking-widest text-slate-500">
+                      inbox
                     </p>
                     <ul className="space-y-1">
                       {inboxNotifications.map((n) => {
@@ -276,23 +323,26 @@ export default function NotificationBell({
                               type="button"
                               disabled={busy}
                               onClick={() => void handleNotificationClick(n)}
-                              className={`w-full text-left rounded-xl px-3 py-2.5 border transition-colors ${
+                              className={`w-full rounded-lg border px-2.5 py-2 text-left transition-colors ${
                                 n.is_read
                                   ? 'border-transparent bg-transparent hover:bg-white/[0.04]'
-                                  : 'border-sky-500/25 bg-sky-500/[0.06] hover:bg-sky-500/10'
+                                  : 'border-cyan-500/20 bg-cyan-500/[0.05] hover:bg-cyan-500/10'
                               } disabled:opacity-60`}
                             >
                               <div className="flex items-start justify-between gap-2">
-                                <p className="text-sm font-semibold text-white leading-snug">{n.title}</p>
+                                <span className="font-mono text-[10px] uppercase tracking-wide text-slate-500">
+                                  {typeLabel(n.type)}
+                                </span>
                                 {!n.is_read && (
-                                  <span className="shrink-0 h-2 w-2 rounded-full bg-sky-400 mt-1.5" aria-hidden />
+                                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-red-500" aria-hidden />
                                 )}
                               </div>
-                              <p className="text-xs text-slate-400 mt-1 line-clamp-3">{n.message}</p>
-                              <p className="text-[10px] text-slate-600 mt-1.5">{formatNotifDate(n.created_at)}</p>
-                              {busy && (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-500 mt-2" />
-                              )}
+                              <p className="mt-0.5 text-sm font-medium leading-snug text-white">{n.title}</p>
+                              <p className="mt-1 line-clamp-3 text-xs text-slate-400">{n.message}</p>
+                              <p className="mt-1.5 font-mono text-[10px] text-slate-600">
+                                {formatNotifDate(n.created_at)}
+                              </p>
+                              {busy && <Loader2 className="mt-2 h-3.5 w-3.5 animate-spin text-slate-500" />}
                             </button>
                           </li>
                         );

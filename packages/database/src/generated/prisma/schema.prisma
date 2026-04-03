@@ -38,7 +38,7 @@ model User {
   sentInvitations     Invitation[]       @relation("InvitationInviter")
   matchEvents         MatchEvent[]
   matchScoreReports   MatchScoreReport[]
-  notifications       Notification[]
+  notifications       Notification[]     @relation("UserNotifications")
   stats               PlayerStats?
   teamMemberships     TeamMember[]
   managedClubs        Club[]             @relation("ClubManager")
@@ -129,6 +129,8 @@ model Competition {
   created_at           DateTime          @default(now())
   /// Si false, les transferts / signatures liés à cette compétition sont bloqués (clubs concernés).
   isTransferMarketOpen Boolean           @default(true) @map("is_transfer_market_open")
+  /// Pour les coupes : format de phase finale (bracket auto = élimination directe).
+  cup_scenario         CupScenario?      @map("cup_scenario")
   teams                CompetitionTeam[]
   matches              Match[]
 
@@ -147,27 +149,36 @@ model CompetitionTeam {
 }
 
 model Match {
-  id             String             @id @default(uuid()) @db.Uuid
-  ea_match_id    String?            @unique
-  home_team_id   String             @db.Uuid
-  away_team_id   String             @db.Uuid
-  home_score     Int?
-  away_score     Int?
-  status         MatchStatus        @default(SCHEDULED)
-  played_at      DateTime?
+  id                          String              @id @default(uuid()) @db.Uuid
+  ea_match_id                 String?             @unique
+  home_team_id                String              @db.Uuid
+  away_team_id                String              @db.Uuid
+  home_score                  Int?
+  away_score                  Int?
+  status                      MatchStatus         @default(SCHEDULED)
+  played_at                   DateTime?
   /// Heure de coup d’envoi (colonne DB `scheduled_at`). Tri pronostics.
-  startTime      DateTime?          @map("scheduled_at")
+  startTime                   DateTime?           @map("scheduled_at")
   /// Masque les matchs « fantômes » / brouillons côté pronostics (liste publique).
-  isVisible      Boolean            @default(true)
-  competition_id String?            @db.Uuid
-  round          String?
-  events         MatchEvent[]
-  scoreReports   MatchScoreReport[]
-  awayTeam       Club               @relation("AwayTeam", fields: [away_team_id], references: [id])
-  competition    Competition?       @relation(fields: [competition_id], references: [id], onDelete: Cascade)
-  homeTeam       Club               @relation("HomeTeam", fields: [home_team_id], references: [id])
-  predictions    Prediction[]
+  isVisible                   Boolean             @default(true)
+  competition_id              String?             @db.Uuid
+  round                       String?
+  /// Position dans l’arbre (coupe) : tour 0 = premier tour, index dans le tour.
+  bracket_round               Int?                @map("bracket_round")
+  bracket_index               Int?                @map("bracket_index")
+  /// Match suivant qui reçoit le vainqueur (élimination directe).
+  winner_advances_to_match_id String?             @map("winner_advances_to_match_id") @db.Uuid
+  winner_slot_in_next         BracketAdvanceSlot? @map("winner_slot_in_next")
+  winner_advances_to          Match?              @relation("BracketFeed", fields: [winner_advances_to_match_id], references: [id], onDelete: SetNull)
+  fed_by                      Match[]             @relation("BracketFeed")
+  events                      MatchEvent[]
+  scoreReports                MatchScoreReport[]
+  awayTeam                    Club                @relation("AwayTeam", fields: [away_team_id], references: [id])
+  competition                 Competition?        @relation(fields: [competition_id], references: [id], onDelete: Cascade)
+  homeTeam                    Club                @relation("HomeTeam", fields: [home_team_id], references: [id])
+  predictions                 Prediction[]
 
+  @@index([competition_id, bracket_round, bracket_index])
   @@map("matches")
 }
 
@@ -286,16 +297,27 @@ model TransferOffer {
 }
 
 model Notification {
-  id         String   @id @default(uuid()) @db.Uuid
-  user_id    String   @db.Uuid
+  id         String           @id @default(uuid()) @db.Uuid
+  user_id    String           @db.Uuid
+  type       NotificationType @default(SYSTEM)
   title      String
   message    String
-  is_read    Boolean  @default(false)
+  link       String?
+  is_read    Boolean          @default(false)
   metadata   Json?
-  created_at DateTime @default(now())
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  created_at DateTime         @default(now())
+  user       User             @relation("UserNotifications", fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id, created_at])
+  @@index([user_id, is_read])
   @@map("notifications")
+}
+
+enum NotificationType {
+  MATCH
+  TRANSFER
+  SUPPORT
+  SYSTEM
 }
 
 model StoreItem {
@@ -404,6 +426,19 @@ enum CompetitionStatus {
   FINISHED
 }
 
+/// Scénario de coupe (type CUP) — la génération auto de bracket supporte l’élimination directe.
+enum CupScenario {
+  SINGLE_ELIMINATION
+  TWO_LEGGED_TIE
+  GROUPS_AND_KNOCKOUT
+}
+
+/// Slot dans lequel le vainqueur est injecté pour le match suivant (arbre).
+enum BracketAdvanceSlot {
+  HOME
+  AWAY
+}
+
 enum TransferStatus {
   PENDING
   ACCEPTED
@@ -454,6 +489,8 @@ enum TransactionType {
   EXCHANGE
   /// Crédit manuel par un administrateur (OMJEP ou Jepy).
   ADMIN_GRANT
+  /// Amende / frais de licenciement d’un joueur (débit budget club).
+  KICK_FEE
 }
 
 enum StoreItemCategory {

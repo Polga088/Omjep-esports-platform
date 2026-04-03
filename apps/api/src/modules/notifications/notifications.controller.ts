@@ -26,13 +26,13 @@ export class NotificationsController {
     return { count };
   }
 
-  @Patch(':id/read')
-  markAsRead(@Param('id', ParseUUIDPipe) id: string, @Req() req: any) {
-    return this.notificationsService.markAsRead(id, req.user.id);
-  }
-
   @Patch('read-all')
   markAllAsRead(@Req() req: any) {
     return this.notificationsService.markAllAsRead(req.user.id);
+  }
+
+  @Patch(':id/read')
+  markAsRead(@Param('id', ParseUUIDPipe) id: string, @Req() req: any) {
+    return this.notificationsService.markAsRead(id, req.user.id);
   }
 }

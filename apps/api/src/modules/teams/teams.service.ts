@@ -31,6 +31,9 @@ export type LadderEntry = {
   averageRating: number;
   totalGoals: number;
   totalAssists: number;
+  /** XP prestige club (colonne `xp` côté Prisma) — critère de tri principal. */
+  xp_prestige: number;
+  prestige_level: number;
 };
 
 const TEAM_WITH_ROSTER = {
@@ -227,8 +230,8 @@ export class TeamsService {
   }
 
   /**
-   * Classement général (Ladder) : toutes les équipes triées par note moyenne
-   * décroissante, avec buts et passes cumulés du roster.
+   * Classement général (Ladder) : tri principal par XP prestige (`xp` club),
+   * puis note moyenne, puis buts du roster.
    */
   async getLadder(): Promise<LadderEntry[]> {
     const teams = await this.prisma.club.findMany({
@@ -269,10 +272,13 @@ export class TeamsService {
         averageRating: Math.round(averageRating * 100) / 100,
         totalGoals,
         totalAssists,
+        xp_prestige: team.xp ?? 0,
+        prestige_level: team.prestige_level ?? 1,
       };
     });
 
     entries.sort((a, b) => {
+      if (b.xp_prestige !== a.xp_prestige) return b.xp_prestige - a.xp_prestige;
       if (b.averageRating !== a.averageRating) return b.averageRating - a.averageRating;
       if (b.totalGoals !== a.totalGoals) return b.totalGoals - a.totalGoals;
       return a.teamName.localeCompare(b.teamName);

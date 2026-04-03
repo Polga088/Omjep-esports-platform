@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Trophy, Plus, Calendar, Loader2, X, Trash2,
-  CheckCircle2, AlertCircle, Search, Shuffle, Shield, Sparkles,
+  CheckCircle2, AlertCircle, Search, Shuffle, Shield, Sparkles, Network, GitBranch,
 } from 'lucide-react';
 import api from '@/lib/api';
 import { COMPETITION_TYPE_CONFIG, getCompTypeConfig } from '@/lib/competition-icons';
@@ -28,6 +28,7 @@ interface Competition {
   created_at: string;
   /** Absent sur anciennes réponses API = marché ouvert */
   isTransferMarketOpen?: boolean;
+  cup_scenario?: 'SINGLE_ELIMINATION' | 'TWO_LEGGED_TIE' | 'GROUPS_AND_KNOCKOUT' | null;
   teams: CompetitionTeam[];
   _count?: { matches: number };
 }
@@ -80,6 +81,17 @@ export default function AdminCompetitions() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [generating, setGenerating] = useState<string | null>(null);
+  const [generatingBracketId, setGeneratingBracketId] = useState<string | null>(null);
+  const [knockoutModal, setKnockoutModal] = useState<Competition | null>(null);
+  const [knockoutPreview, setKnockoutPreview] = useState<{
+    canPromote: boolean;
+    reason?: string;
+    firstRoundName?: string;
+    pairings: { label: string; home: { id: string; name: string }; away: { id: string; name: string } }[];
+    groupsSummary?: { letter: string; first: string; second: string }[];
+  } | null>(null);
+  const [knockoutLoading, setKnockoutLoading] = useState(false);
+  const [knockoutPromoting, setKnockoutPromoting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [patchingMarketId, setPatchingMarketId] = useState<string | null>(null);
@@ -92,6 +104,9 @@ export default function AdminCompetitions() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [cupScenario, setCupScenario] = useState<
+    'SINGLE_ELIMINATION' | 'TWO_LEGGED_TIE' | 'GROUPS_AND_KNOCKOUT'
+  >('SINGLE_ELIMINATION');
   const [teamSearch, setTeamSearch] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -137,6 +152,7 @@ export default function AdminCompetitions() {
     setStartDate('');
     setEndDate('');
     setSelectedTeams([]);
+    setCupScenario('SINGLE_ELIMINATION');
     setTeamSearch('');
     setError('');
   };
@@ -168,6 +184,7 @@ export default function AdminCompetitions() {
         start_date: startDate,
         end_date: endDate,
         team_ids: selectedTeams,
+        ...(type === 'CUP' ? { cup_scenario: cupScenario } : {}),
       });
       setSuccess('Compétition créée avec succès !');
       setShowForm(false);
@@ -234,6 +251,89 @@ export default function AdminCompetitions() {
     setSchedWeekdays((prev) =>
       prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d].sort((a, b) => a - b),
     );
+  };
+
+  const openKnockoutModal = async (comp: Competition) => {
+    setKnockoutModal(comp);
+    setKnockoutPreview(null);
+    setKnockoutLoading(true);
+    setError('');
+    try {
+      const res = await api.get('/admin/matches/groups-knockout-preview', {
+        params: { competition_id: comp.id },
+      });
+      const data = res.data.data ?? res.data;
+      setKnockoutPreview(data);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        'Impossible de charger la prévisualisation.';
+      setKnockoutPreview({
+        canPromote: false,
+        pairings: [],
+        reason: typeof msg === 'string' ? msg : 'Erreur.',
+      });
+    } finally {
+      setKnockoutLoading(false);
+    }
+  };
+
+  const confirmKnockoutPhase = async () => {
+    if (!knockoutModal) return;
+    const compId = knockoutModal.id;
+    setKnockoutPromoting(true);
+    setError('');
+    try {
+      const res = await api.post('/admin/matches/promote-from-groups', {
+        competition_id: compId,
+      });
+      setSuccess(res.data.message ?? 'Phase finale générée.');
+      setKnockoutModal(null);
+      setKnockoutPreview(null);
+      await fetchData();
+      navigate(`/admin/matches?competition=${encodeURIComponent(compId)}&view=bracket`);
+      setTimeout(() => setSuccess(''), 6000);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        'Erreur lors de la génération de la phase finale.';
+      setError(typeof msg === 'string' ? msg : 'Erreur lors de la génération.');
+      setTimeout(() => setError(''), 8000);
+    } finally {
+      setKnockoutPromoting(false);
+    }
+  };
+
+  const handleGenerateBracket = async (comp: Competition) => {
+    if (comp.teams.length < 2) {
+      setError('Au moins 2 équipes inscrites sont nécessaires pour générer un bracket.');
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
+    if (comp.cup_scenario && comp.cup_scenario !== 'SINGLE_ELIMINATION') {
+      setError('La génération automatique d’arbre n’est disponible que pour le scénario « Élimination directe ».');
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
+    setGeneratingBracketId(comp.id);
+    setError('');
+    try {
+      const res = await api.post('/admin/matches/generate-bracket', {
+        competition_id: comp.id,
+        team_ids: comp.teams.map((ct) => ct.team_id),
+      });
+      setSuccess(res.data.message ?? 'Arbre généré.');
+      await fetchData();
+      setTimeout(() => setSuccess(''), 5000);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        'Erreur lors de la génération du bracket.';
+      setError(typeof msg === 'string' ? msg : 'Erreur lors de la génération du bracket.');
+      setTimeout(() => setError(''), 6000);
+    } finally {
+      setGeneratingBracketId(null);
+    }
   };
 
   const handleGenerate = async (competitionId: string, compType: CompetitionType) => {
@@ -501,6 +601,39 @@ export default function AdminCompetitions() {
                       </button>
                     )}
 
+                    {isDraft &&
+                      comp.type === 'CUP' &&
+                      (comp._count?.matches ?? 0) === 0 &&
+                      comp.teams.length >= 2 &&
+                      (!comp.cup_scenario || comp.cup_scenario === 'SINGLE_ELIMINATION') && (
+                        <button
+                          type="button"
+                          onClick={() => void handleGenerateBracket(comp)}
+                          disabled={generatingBracketId === comp.id}
+                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 transition-all duration-300 shadow-md shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.97]"
+                        >
+                          {generatingBracketId === comp.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Network className="w-3.5 h-3.5" />
+                          )}
+                          Générer l&apos;arbre KO
+                        </button>
+                      )}
+
+                    {comp.status === 'ONGOING' &&
+                      (comp.type === 'CHAMPIONS' ||
+                        (comp.type === 'CUP' && comp.cup_scenario === 'GROUPS_AND_KNOCKOUT')) && (
+                        <button
+                          type="button"
+                          onClick={() => void openKnockoutModal(comp)}
+                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-orange-600 text-white hover:from-rose-400 hover:to-orange-500 transition-all duration-300 shadow-md shadow-rose-500/20 hover:shadow-rose-500/40 hover:scale-[1.02] active:scale-[0.97]"
+                        >
+                          <GitBranch className="w-3.5 h-3.5" />
+                          Générer la Phase Finale
+                        </button>
+                      )}
+
                     {/* Delete */}
                     <button
                       onClick={() => handleDelete(comp.id)}
@@ -611,6 +744,43 @@ export default function AdminCompetitions() {
                     Groupes de 4 → élimination directe · Minimum 8 équipes (multiple de 4)
                   </p>
                 )}
+                {type === 'CUP' && (
+                  <div className="mt-3 space-y-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                      Scénario de coupe
+                    </p>
+                    <div className="grid gap-2">
+                      {(
+                        [
+                          ['SINGLE_ELIMINATION', 'Élimination directe', 'Arbre à élimination simple (byes automatiques si besoin).'],
+                          ['TWO_LEGGED_TIE', 'Aller-retour', 'Deux matchs par confrontation (calendrier manuel ou à venir).'],
+                          ['GROUPS_AND_KNOCKOUT', 'Groupes + élimination', 'Phase de poules puis phase finale.'],
+                        ] as const
+                      ).map(([value, title, desc]) => (
+                        <label
+                          key={value}
+                          className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-2.5 transition-colors ${
+                            cupScenario === value
+                              ? 'border-amber-400/35 bg-amber-400/[0.06]'
+                              : 'border-white/[0.06] bg-white/[0.02] hover:border-white/10'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="cupScenario"
+                            checked={cupScenario === value}
+                            onChange={() => setCupScenario(value)}
+                            className="mt-1 border-amber-400/40 bg-white/[0.04] text-amber-500"
+                          />
+                          <span>
+                            <span className="block text-xs font-semibold text-slate-200">{title}</span>
+                            <span className="block text-[10px] text-slate-500 mt-0.5 leading-snug">{desc}</span>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Dates */}
@@ -719,6 +889,110 @@ export default function AdminCompetitions() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal phase finale (groupes → KO) ── */}
+      {knockoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => {
+              if (!knockoutPromoting) {
+                setKnockoutModal(null);
+                setKnockoutPreview(null);
+              }
+            }}
+          />
+          <div className="relative w-full max-w-lg bg-[#0a0f1e] border border-rose-400/20 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-rose-400/10 bg-gradient-to-r from-rose-400/[0.05] to-transparent shrink-0">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2 pr-4">
+                <GitBranch className="w-5 h-5 text-rose-400 shrink-0" />
+                <span className="truncate">Phase finale — {knockoutModal.name}</span>
+              </h2>
+              <button
+                type="button"
+                disabled={knockoutPromoting}
+                onClick={() => {
+                  setKnockoutModal(null);
+                  setKnockoutPreview(null);
+                }}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto space-y-4 flex-1 min-h-0">
+              {knockoutLoading ? (
+                <div className="flex justify-center py-16">
+                  <Loader2 className="w-8 h-8 animate-spin text-rose-400" />
+                </div>
+              ) : knockoutPreview ? (
+                <>
+                  {knockoutPreview.firstRoundName && (
+                    <p className="text-xs text-slate-500">
+                      Premier tour d&apos;élimination :{' '}
+                      <span className="text-rose-400/90 font-semibold">{knockoutPreview.firstRoundName}</span>
+                    </p>
+                  )}
+                  {!knockoutPreview.canPromote && knockoutPreview.reason && (
+                    <div className="rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-2 text-sm text-amber-200/90">
+                      {knockoutPreview.reason}
+                    </div>
+                  )}
+                  {knockoutPreview.groupsSummary && knockoutPreview.groupsSummary.length > 0 && (
+                    <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 text-[11px] text-slate-500 space-y-1">
+                      <p className="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Qualifiés par groupe</p>
+                      {knockoutPreview.groupsSummary.map((g) => (
+                        <div key={g.letter}>
+                          Grp. {g.letter} : 1er {g.first} · 2e {g.second}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {knockoutPreview.pairings.length > 0 && (
+                    <ul className="space-y-2">
+                      {knockoutPreview.pairings.map((p, i) => (
+                        <li
+                          key={`${p.label}-${i}`}
+                          className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-sm"
+                        >
+                          <div className="text-slate-200">
+                            <span className="font-semibold text-white">{p.home.name}</span>
+                            <span className="text-slate-500 mx-2">vs</span>
+                            <span className="font-semibold text-white">{p.away.name}</span>
+                          </div>
+                          <span className="block text-[10px] text-slate-500 mt-1 font-mono">{p.label}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              ) : null}
+            </div>
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-white/[0.06] shrink-0">
+              <button
+                type="button"
+                disabled={knockoutPromoting}
+                onClick={() => {
+                  setKnockoutModal(null);
+                  setKnockoutPreview(null);
+                }}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-all"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                disabled={!knockoutPreview?.canPromote || knockoutPromoting}
+                onClick={() => void confirmKnockoutPhase()}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-rose-500 to-orange-600 text-white hover:from-rose-400 hover:to-orange-500 disabled:opacity-40 disabled:pointer-events-none"
+              >
+                {knockoutPromoting && <Loader2 className="w-4 h-4 animate-spin" />}
+                Confirmer et créer les matchs
+              </button>
+            </div>
           </div>
         </div>
       )}

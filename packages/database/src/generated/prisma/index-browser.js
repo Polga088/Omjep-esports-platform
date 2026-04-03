@@ -190,7 +190,8 @@ exports.Prisma.CompetitionScalarFieldEnum = {
   start_date: 'start_date',
   end_date: 'end_date',
   created_at: 'created_at',
-  isTransferMarketOpen: 'isTransferMarketOpen'
+  isTransferMarketOpen: 'isTransferMarketOpen',
+  cup_scenario: 'cup_scenario'
 };
 
 exports.Prisma.CompetitionTeamScalarFieldEnum = {
@@ -211,7 +212,11 @@ exports.Prisma.MatchScalarFieldEnum = {
   startTime: 'startTime',
   isVisible: 'isVisible',
   competition_id: 'competition_id',
-  round: 'round'
+  round: 'round',
+  bracket_round: 'bracket_round',
+  bracket_index: 'bracket_index',
+  winner_advances_to_match_id: 'winner_advances_to_match_id',
+  winner_slot_in_next: 'winner_slot_in_next'
 };
 
 exports.Prisma.MatchScoreReportScalarFieldEnum = {
@@ -291,8 +296,10 @@ exports.Prisma.TransferOfferScalarFieldEnum = {
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
+  type: 'type',
   title: 'title',
   message: 'message',
+  link: 'link',
   is_read: 'is_read',
   metadata: 'metadata',
   created_at: 'created_at'
@@ -470,6 +477,12 @@ exports.CompetitionStatus = exports.$Enums.CompetitionStatus = {
   FINISHED: 'FINISHED'
 };
 
+exports.CupScenario = exports.$Enums.CupScenario = {
+  SINGLE_ELIMINATION: 'SINGLE_ELIMINATION',
+  TWO_LEGGED_TIE: 'TWO_LEGGED_TIE',
+  GROUPS_AND_KNOCKOUT: 'GROUPS_AND_KNOCKOUT'
+};
+
 exports.MatchStatus = exports.$Enums.MatchStatus = {
   SCHEDULED: 'SCHEDULED',
   LIVE: 'LIVE',
@@ -478,6 +491,11 @@ exports.MatchStatus = exports.$Enums.MatchStatus = {
   PLAYED: 'PLAYED',
   CANCELLED: 'CANCELLED',
   DELETED: 'DELETED'
+};
+
+exports.BracketAdvanceSlot = exports.$Enums.BracketAdvanceSlot = {
+  HOME: 'HOME',
+  AWAY: 'AWAY'
 };
 
 exports.EventType = exports.$Enums.EventType = {
@@ -508,7 +526,8 @@ exports.TransactionType = exports.$Enums.TransactionType = {
   TRANSFER: 'TRANSFER',
   WAGE: 'WAGE',
   EXCHANGE: 'EXCHANGE',
-  ADMIN_GRANT: 'ADMIN_GRANT'
+  ADMIN_GRANT: 'ADMIN_GRANT',
+  KICK_FEE: 'KICK_FEE'
 };
 
 exports.TransferOfferStatus = exports.$Enums.TransferOfferStatus = {
@@ -522,6 +541,13 @@ exports.TransferOfferStatus = exports.$Enums.TransferOfferStatus = {
 exports.NegotiationTurn = exports.$Enums.NegotiationTurn = {
   PLAYER: 'PLAYER',
   BUYING_CLUB: 'BUYING_CLUB'
+};
+
+exports.NotificationType = exports.$Enums.NotificationType = {
+  MATCH: 'MATCH',
+  TRANSFER: 'TRANSFER',
+  SUPPORT: 'SUPPORT',
+  SYSTEM: 'SYSTEM'
 };
 
 exports.StoreItemCategory = exports.$Enums.StoreItemCategory = {

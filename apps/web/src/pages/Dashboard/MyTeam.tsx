@@ -2,14 +2,15 @@ import { useState, useEffect, Component } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  UserPlus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2,
+  UserPlus, UserMinus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2,
   CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
   FileText, TrendingUp, Banknote, Trophy, Repeat, Gem, Info,
   AlertTriangle,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import api from '../../lib/api';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuth } from '@/hooks/useAuth';
 import InvitePlayerModal from '@/components/InvitePlayerModal';
 import { xpProgress } from '@/lib/leveling';
 import { formatCurrency } from '@/utils/formatCurrency';
@@ -92,6 +93,7 @@ interface MyTeamData {
   name: string;
   logo_url: string | null;
   proclubs_url: string | null;
+  manager_id?: string | null;
   budget?: number;
   xp?: number;
   prestige_level?: number;
@@ -100,7 +102,7 @@ interface MyTeamData {
 
 // ─── Types Finance ────────────────────────────────────────────────────────────
 
-type TransactionType = 'MATCH_REWARD' | 'TRANSFER' | 'WAGE';
+type TransactionType = 'MATCH_REWARD' | 'TRANSFER' | 'WAGE' | 'KICK_FEE';
 
 interface Transaction {
   id: string;
@@ -200,10 +202,10 @@ function RatingBar({ value }: { value: number }) {
   );
 }
 
-function SkeletonRow() {
+function SkeletonRow({ cols = 5 }: { cols?: number }) {
   return (
     <tr className="border-b border-gray-800/30 last:border-b-0">
-      {[...Array(5)].map((_, i) => (
+      {[...Array(cols)].map((_, i) => (
         <td key={i} className="px-5 py-4">
           <div className="h-4 rounded-md bg-white/5 animate-pulse" style={{ width: i === 0 ? '60%' : '40%' }} />
         </td>
@@ -222,7 +224,7 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
     <div className="overflow-hidden rounded-3xl border border-gray-800 bg-[#0B0D13]/50 backdrop-blur-md">
       <div className="flex items-center justify-between border-b border-gray-800/80 px-5 py-4">
         <div className="flex items-center gap-2.5">
-          <Gem className="h-5 w-5 shrink-0 text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.45)]" />
+          <Gem className="h-5 w-5 shrink-0 text-cyan-200 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)] [filter:drop-shadow(0_0_8px_rgba(34,211,238,0.5))]" />
           <h3 className="text-sm font-bold tracking-wide text-white">Prestige du Club</h3>
         </div>
         <div className="relative">
@@ -259,10 +261,10 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
             className="shrink-0"
           >
             <div
-              className="relative flex h-[4.5rem] w-[4.5rem] flex-col items-center justify-center border border-cyan-400/50 bg-cyan-900/40 shadow-[0_0_15px_rgba(34,211,238,0.3)] backdrop-blur-xl [clip-path:polygon(50%_0%,100%_25%,100%_75%,50%_100%,0%_75%,0%_25%)]"
+              className="relative flex h-[4.5rem] w-[4.5rem] flex-col items-center justify-center border border-cyan-400/45 bg-cyan-900/40 ring-1 ring-indigo-400/35 backdrop-blur-xl [clip-path:polygon(50%_0%,100%_25%,100%_75%,50%_100%,0%_75%,0%_25%)]"
               style={{
                 boxShadow:
-                  '0 0 15px rgba(34,211,238,0.3), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -8px 20px rgba(6,182,212,0.15)',
+                  '0 0 22px rgba(99,102,241,0.35), 0 0 14px rgba(34,211,238,0.35), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -8px 20px rgba(6,182,212,0.15)',
               }}
             >
               <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-cyan-200/80">Prstg</span>
@@ -308,10 +310,13 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
 
 // ─── Finance config & helpers ─────────────────────────────────────────────────
 
+const KICK_FEE_OC = 5000;
+
 const txTypeConfig: Record<TransactionType, { label: string; icon: React.ElementType; color: string }> = {
   MATCH_REWARD: { label: 'Récompense', icon: Trophy, color: 'text-emerald-400' },
   TRANSFER:     { label: 'Transfert',  icon: Repeat, color: 'text-blue-400' },
   WAGE:         { label: 'Salaire',    icon: Banknote, color: 'text-amber-400' },
+  KICK_FEE:     { label: 'Licenciement', icon: UserMinus, color: 'text-rose-400' },
 };
 
 // ─── Page principale ─────────────────────────────────────────────────────────
@@ -321,7 +326,7 @@ export default function MyTeam() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
-  const { user } = useAuthStore();
+  const { user } = useAuth();
 
   const [activeTab, setActiveTab] = useState<FinanceTab>('roster');
   const [finance, setFinance] = useState<FinanceData | null>(null);
@@ -331,6 +336,8 @@ export default function MyTeam() {
   const [linkingClub, setLinkingClub] = useState(false);
   const [linkSuccess, setLinkSuccess] = useState('');
   const [linkError, setLinkError] = useState('');
+  const [kickTarget, setKickTarget] = useState<TeamMember | null>(null);
+  const [kickLoading, setKickLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -384,6 +391,61 @@ export default function MyTeam() {
 
   const isSynced = !!team?.proclubs_url;
 
+  /** Colonne Actions + licenciement : manager officiel, admin, ou fondateur du club. */
+  const canManage =
+    user?.role === 'ADMIN' ||
+    (!!user?.id && team?.manager_id === user.id) ||
+    currentMember?.club_role === 'FOUNDER';
+
+  const rosterCols = canManage ? 6 : 5;
+
+  useEffect(() => {
+    console.log('IDs:', team?.manager_id, user?.id);
+  }, [team?.manager_id, user?.id]);
+
+  const reloadTeamAndFinance = async () => {
+    const { data } = await api.get<MyTeamData>('/teams/my-team');
+    setTeam(data);
+    try {
+      const fin = await api.get<FinanceData>(`/finance/${data.id}`);
+      setFinance(fin.data);
+    } catch {
+      /* accès finance refusé ou erreur réseau */
+    }
+  };
+
+  const handleKickClick = (member: TeamMember) => {
+    setKickTarget(member);
+  };
+
+  const confirmKickMember = async () => {
+    if (!kickTarget) return;
+    setKickLoading(true);
+    try {
+      const targetId = kickTarget.user_id || kickTarget.user?.id;
+      if (!targetId) {
+        toast.error('Identifiant joueur introuvable.');
+        setKickLoading(false);
+        return;
+      }
+      await api.post('/clubs/kick-member', { target_user_id: targetId });
+      toast.success('Joueur licencié', {
+        description: `${KICK_FEE_OC.toLocaleString('fr-FR')} OC ont été débités du budget club.`,
+      });
+      setKickTarget(null);
+      await reloadTeamAndFinance();
+      window.dispatchEvent(new CustomEvent('omjep:transfers-refresh'));
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+          : 'Licenciement impossible.';
+      toast.error(typeof msg === 'string' ? msg : 'Licenciement impossible.');
+    } finally {
+      setKickLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (team?.proclubs_url) setExternalIdInput(team.proclubs_url);
   }, [team?.proclubs_url]);
@@ -393,13 +455,20 @@ export default function MyTeam() {
     setLinkingClub(true);
     setLinkError('');
     setLinkSuccess('');
+    const trimmed = externalIdInput.trim();
     try {
-      await api.patch(`/teams/${team.id}`, { proclubs_url: externalIdInput.trim() });
-      setTeam((prev) => prev ? { ...prev, proclubs_url: externalIdInput.trim() } : prev);
-      setLinkSuccess('Club ProClubs lié avec succès !');
-      setTimeout(() => setLinkSuccess(''), 4000);
-    } catch (err: any) {
-      setLinkError(err.response?.data?.message ?? 'Erreur lors de la liaison.');
+      await api.patch(`/teams/${team.id}`, { proclubs_url: trimmed });
+      setTeam((prev) => (prev ? { ...prev, proclubs_url: trimmed } : prev));
+      await api.post(`/clubs/${team.id}/sync-stats`);
+      setLinkSuccess('Club lié et statistiques EA synchronisées.');
+      await reloadTeamAndFinance();
+      setTimeout(() => setLinkSuccess(''), 5000);
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+          : null;
+      setLinkError(typeof msg === 'string' ? msg : 'Erreur lors de la liaison ou de la synchronisation.');
     } finally {
       setLinkingClub(false);
     }
@@ -561,7 +630,14 @@ export default function MyTeam() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-800/50">
-                  {['Joueur (Pseudo EA)', 'Poste', 'Rôle', 'Matchs joués', 'Note Moy. (AMR)'].map((col) => (
+                  {[
+                    'Joueur (Pseudo EA)',
+                    'Poste',
+                    'Rôle',
+                    'Matchs joués',
+                    'Note Moy. (AMR)',
+                    ...(canManage ? ['Actions'] : []),
+                  ].map((col) => (
                     <th
                       key={col}
                       className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
@@ -573,29 +649,33 @@ export default function MyTeam() {
               </thead>
               <tbody>
                 {isLoading ? (
-                  [...Array(3)].map((_, i) => <SkeletonRow key={i} />)
+                  [...Array(3)].map((_, i) => <SkeletonRow key={i} cols={rosterCols} />)
                 ) : allMembers.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center text-sm text-gray-500">
+                    <td colSpan={rosterCols} className="px-5 py-12 text-center text-sm text-gray-500">
                       Aucun membre dans cette équipe.
                     </td>
                   </tr>
                 ) : (
                   allMembers.map((member, rowIndex) => {
-                    const { user, club_role } = member;
+                    const rowUser = member.user;
+                    const { club_role } = member;
                     const role = roleConfig[club_role];
                     const RoleIcon = role.icon;
-                    const position = user.preferred_position;
+                    const position = rowUser.preferred_position;
                     const posColor = position ? positionColors[position] : 'bg-slate-500/15 text-slate-400 border-slate-500/30';
                     const posLabel = position ? positionLabel[position] : '—';
-                    const matchesPlayed = user.stats?.matches_played ?? 0;
-                    const avgRatingPlayer = user.stats?.average_rating ?? 0;
-                    const pseudo = user.ea_persona_name ?? `Joueur #${user.id.slice(0, 6)}`;
+                    const matchesPlayed = rowUser.stats?.matches_played ?? 0;
+                    const avgRatingPlayer = rowUser.stats?.average_rating ?? 0;
+                    const pseudo = rowUser.ea_persona_name ?? `Joueur #${rowUser.id.slice(0, 6)}`;
                     const isLast = rowIndex === allMembers.length - 1;
+                    const memberId = member.user_id || rowUser?.id;
+                    const showKickButton =
+                      canManage && club_role === 'PLAYER' && memberId !== user?.id;
 
                     return (
                       <tr
-                        key={user.id}
+                        key={rowUser.id}
                         className={`group transition-colors duration-200 hover:bg-white/[0.02] ${
                           isLast ? '' : 'border-b border-gray-800/30'
                         }`}
@@ -607,12 +687,12 @@ export default function MyTeam() {
                             </div>
                             <div className="min-w-0">
                               <Link
-                                to={`/dashboard/profile/${user.id}`}
+                                to={`/dashboard/profile/${rowUser.id}`}
                                 className="text-sm font-semibold text-white transition-colors hover:text-amber-400/90 hover:underline decoration-amber-400/30 underline-offset-2"
                               >
                                 {pseudo}
                               </Link>
-                              <p className="text-xs text-gray-600">{user.nationality ?? '—'}</p>
+                              <p className="text-xs text-gray-600">{rowUser.nationality ?? '—'}</p>
                             </div>
                           </div>
                         </td>
@@ -636,6 +716,24 @@ export default function MyTeam() {
                         <td className="min-w-[160px] px-5 py-4">
                           <RatingBar value={avgRatingPlayer} />
                         </td>
+                        {canManage && (
+                          <td className="px-4 py-4 text-right">
+                            {showKickButton ? (
+                              <button
+                                type="button"
+                                onClick={() => handleKickClick(member)}
+                                className="ml-auto flex items-center gap-2 rounded border border-red-500/20 bg-red-500/10 px-3 py-1.5 font-mono text-[10px] uppercase text-red-400 transition-all hover:bg-red-500/20"
+                              >
+                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
+                                Licencier (5k OC)
+                              </button>
+                            ) : memberId === user?.id ? (
+                              <span className="font-mono text-[10px] text-slate-700">-- MY SELF --</span>
+                            ) : (
+                              <span className="text-xs text-slate-600">—</span>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     );
                   })
@@ -713,7 +811,12 @@ export default function MyTeam() {
                     </div>
                   ) : (
                     (finance?.transactions ?? []).map((tx) => {
-                      const cfg = txTypeConfig[tx.type];
+                      const cfg =
+                        txTypeConfig[tx.type as TransactionType] ?? {
+                          label: String(tx.type),
+                          icon: FileText,
+                          color: 'text-slate-400',
+                        };
                       const TxIcon = cfg.icon;
                       const isPositive = tx.amount >= 0;
                       return (
@@ -862,16 +965,24 @@ export default function MyTeam() {
               </div>
               <div className="flex items-end">
                 <button
+                  type="button"
                   onClick={handleLinkClub}
                   disabled={linkingClub || !externalIdInput.trim()}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-400 to-amber-600 text-[#0A0E1A] shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:brightness-110 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="inline-flex min-h-[3rem] max-w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 px-5 py-3 text-sm font-semibold text-[#0A0E1A] shadow-lg shadow-amber-400/20 transition-all hover:brightness-110 hover:shadow-amber-400/40 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:min-w-[12rem]"
                 >
                   {linkingClub ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="flex flex-col items-center gap-1.5 px-1 sm:flex-row sm:gap-2">
+                      <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+                      <span className="max-w-[min(100%,16rem)] text-center text-[11px] leading-snug sm:max-w-[20rem] sm:text-xs">
+                        Synchronisation des données EA Sports en cours...
+                      </span>
+                    </span>
                   ) : (
-                    <Link2 className="w-4 h-4" />
+                    <>
+                      <Link2 className="h-4 w-4 shrink-0" />
+                      {isSynced ? 'Mettre à jour' : 'Lier le club'}
+                    </>
                   )}
-                  {isSynced ? 'Mettre à jour' : 'Lier le club'}
                 </button>
               </div>
             </div>
@@ -911,6 +1022,61 @@ export default function MyTeam() {
               <UserPlus className="w-4 h-4" />
               Inviter un Joueur
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation licenciement */}
+      {kickTarget && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="kick-modal-title"
+        >
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0c1018] p-6 shadow-2xl">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/10">
+                <UserMinus className="h-5 w-5 text-rose-400" aria-hidden />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 id="kick-modal-title" className="text-lg font-bold text-white">
+                  Licencier ce joueur ?
+                </h2>
+                <p className="mt-2 text-sm text-slate-400">
+                  <span className="font-semibold text-white">
+                    {kickTarget.user.ea_persona_name ?? `Joueur #${kickTarget.user_id.slice(0, 6)}`}
+                  </span>{' '}
+                  sera retiré de l&apos;effectif. Le budget du club sera débité de{' '}
+                  <span className="font-mono font-semibold tabular-nums text-amber-400">
+                    {KICK_FEE_OC.toLocaleString('fr-FR')} OC
+                  </span>{' '}
+                  (frais administratifs).
+                </p>
+                <p className="mt-3 text-xs text-slate-500">
+                  Cette action est immédiate. Le joueur recevra une notification.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex flex-wrap justify-end gap-3">
+              <button
+                type="button"
+                disabled={kickLoading}
+                onClick={() => setKickTarget(null)}
+                className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 disabled:opacity-50"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                disabled={kickLoading}
+                onClick={() => void confirmKickMember()}
+                className="inline-flex items-center gap-2 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-2.5 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/25 disabled:opacity-50"
+              >
+                {kickLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserMinus className="h-4 w-4" />}
+                Confirmer ({KICK_FEE_OC.toLocaleString('fr-FR')} OC)
+              </button>
+            </div>
           </div>
         </div>
       )}

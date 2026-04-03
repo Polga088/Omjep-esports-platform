@@ -3,13 +3,17 @@ import { Trophy, Search, Users, ShieldAlert } from 'lucide-react';
 import api from '@/lib/api';
 import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
 
+/** Réponse GET /teams/ladder (critère principal : xp_prestige). */
 interface LadderTeam {
-  id: string;
-  name?: string | null;
-  logo_url: string | null;
+  rank: number;
+  teamId: string;
+  teamName: string;
+  logoUrl: string | null;
   memberCount: number;
   averageRating: number;
   totalGoals: number;
+  xp_prestige: number;
+  prestige_level: number;
 }
 
 function SkeletonRow() {
@@ -50,7 +54,7 @@ function RatingPill({ value }: { value: number }) {
   );
 }
 
-export default function Ladder() {
+export default function LadderPage() {
   const [teams, setTeams] = useState<LadderTeam[]>([]);
   const [myTeamId, setMyTeamId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,7 +78,10 @@ export default function Ladder() {
           setTeams(
             raw.map((t) => ({
               ...t,
-              name: typeof t?.name === 'string' && t.name.length > 0 ? t.name : 'Sans nom',
+              teamName:
+                typeof t?.teamName === 'string' && t.teamName.length > 0
+                  ? t.teamName
+                  : 'Sans nom',
             })),
           );
         } else {
@@ -96,7 +103,7 @@ export default function Ladder() {
   const filtered = useMemo(() => {
     if (!search.trim()) return teams;
     const q = search.toLowerCase();
-    return teams.filter((t) => (t.name ?? '').toLowerCase().includes(q));
+    return teams.filter((t) => (t.teamName ?? '').toLowerCase().includes(q));
   }, [teams, search]);
 
   return (
@@ -148,7 +155,7 @@ export default function Ladder() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/5">
-                {['#', 'Club', 'Joueurs', 'Note Moy.', 'Buts'].map((col) => (
+                {['#', 'Club', 'Joueurs', 'Note Moy.', 'Prestige'].map((col) => (
                   <th
                     key={col}
                     className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-600"
@@ -182,12 +189,12 @@ export default function Ladder() {
                 </tr>
               ) : (
                 filtered.map((team) => {
-                  const globalRank = teams.indexOf(team) + 1;
-                  const isMyTeam = team.id === myTeamId;
+                  const globalRank = team.rank || teams.indexOf(team) + 1;
+                  const isMyTeam = team.teamId === myTeamId;
 
                   return (
                     <tr
-                      key={team.id}
+                      key={team.teamId}
                       className={`group transition-colors duration-150 ${
                         isMyTeam
                           ? 'bg-indigo-500/5 border-l-4 border-l-indigo-500'
@@ -202,15 +209,15 @@ export default function Ladder() {
                       {/* Club */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          {team.logo_url ? (
+                          {team.logoUrl ? (
                             <img
-                              src={team.logo_url}
-                              alt={team.name ?? 'Club'}
+                              src={team.logoUrl}
+                              alt={team.teamName ?? 'Club'}
                               className="w-9 h-9 rounded-xl object-cover border border-white/10 shrink-0"
                             />
                           ) : (
                             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-white/10 flex items-center justify-center text-sm font-bold text-amber-400 uppercase shrink-0">
-                              {(team.name ?? '?').charAt(0) || '?'}
+                              {(team.teamName ?? '?').charAt(0) || '?'}
                             </div>
                           )}
                           <div>
@@ -219,7 +226,10 @@ export default function Ladder() {
                                 ? 'text-indigo-300'
                                 : 'text-white group-hover:text-amber-400'
                             }`}>
-                              {team.name ?? '—'}
+                              <span className="mr-2 font-mono text-[11px] font-bold text-indigo-400/90 tabular-nums">
+                                [Lvl {team.prestige_level ?? 1}]
+                              </span>
+                              {team.teamName ?? '—'}
                             </p>
                             {isMyTeam && (
                               <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
@@ -245,10 +255,10 @@ export default function Ladder() {
                         <RatingPill value={team.averageRating ?? 0} />
                       </td>
 
-                      {/* Goals */}
+                      {/* Prestige XP */}
                       <td className="px-6 py-4">
-                        <span className="text-sm font-bold text-white tabular-nums">
-                          {team.totalGoals ?? 0}
+                        <span className="inline-flex items-center rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-1 text-sm font-bold tabular-nums text-indigo-200 shadow-[0_0_16px_-4px_rgba(99,102,241,0.45)]">
+                          {(team.xp_prestige ?? 0).toLocaleString('fr-FR')}
                         </span>
                       </td>
                     </tr>

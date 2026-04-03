@@ -19,6 +19,8 @@ interface BracketRound {
 interface Props {
   rounds: BracketRound[];
   myTeamId?: string | null;
+  /** Admin : clic sur une carte pour ouvrir la saisie / correction de score. */
+  onMatchClick?: (match: MatchBrief) => void;
 }
 
 function TeamLogo({ team }: { team: { name: string; logo_url: string | null } }) {
@@ -105,17 +107,23 @@ export function BracketMatchTerminal({
   );
 }
 
-export function MatchCard({ match, myTeamId }: { match: MatchBrief; myTeamId?: string | null }) {
+export function MatchCard({
+  match,
+  myTeamId,
+  onMatchClick,
+}: {
+  match: MatchBrief;
+  myTeamId?: string | null;
+  onMatchClick?: (match: MatchBrief) => void;
+}) {
   const isPlayed = match.status === 'PLAYED';
   const homeWon = isPlayed && (match.home_score ?? 0) > (match.away_score ?? 0);
   const awayWon = isPlayed && (match.away_score ?? 0) > (match.home_score ?? 0);
   const isMyHome = match.homeTeam.id === myTeamId;
   const isMyAway = match.awayTeam.id === myTeamId;
 
-  return (
-    <div className={`rounded-xl border overflow-hidden min-w-[190px] ${
-      isPlayed ? 'border-white/[0.08] bg-[#0d1221]' : 'border-white/[0.06] bg-white/[0.02]'
-    }`}>
+  const inner = (
+    <>
       {/* Home */}
       <div className={`flex items-center gap-2 px-3 py-2 border-b border-white/[0.05] ${
         homeWon ? 'bg-emerald-500/[0.06]' : ''
@@ -167,11 +175,25 @@ export function MatchCard({ match, myTeamId }: { match: MatchBrief; myTeamId?: s
           </span>
         </div>
       )}
-    </div>
+    </>
   );
+
+  const shellClass = `rounded-xl border overflow-hidden min-w-[190px] text-left w-full ${
+    isPlayed ? 'border-white/[0.08] bg-[#0d1221]' : 'border-white/[0.06] bg-white/[0.02]'
+  } ${onMatchClick ? 'cursor-pointer hover:border-amber-400/25 hover:bg-white/[0.04] transition-colors' : ''}`;
+
+  if (onMatchClick) {
+    return (
+      <button type="button" className={shellClass} onClick={() => onMatchClick(match)}>
+        {inner}
+      </button>
+    );
+  }
+
+  return <div className={shellClass}>{inner}</div>;
 }
 
-export default function TournamentBrackets({ rounds, myTeamId }: Props) {
+export default function TournamentBrackets({ rounds, myTeamId, onMatchClick }: Props) {
   if (rounds.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-white/10 py-16 text-center">
@@ -232,7 +254,12 @@ export default function TournamentBrackets({ rounds, myTeamId }: Props) {
                   </div>
                 ) : (
                   round.matches.map((match) => (
-                    <MatchCard key={match.id} match={match} myTeamId={myTeamId} />
+                    <MatchCard
+                      key={match.id}
+                      match={match}
+                      myTeamId={myTeamId}
+                      onMatchClick={onMatchClick}
+                    />
                   ))
                 )}
               </div>
