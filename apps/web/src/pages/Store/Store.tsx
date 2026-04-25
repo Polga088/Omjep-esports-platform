@@ -25,10 +25,12 @@ import {
 import { formatCurrency } from '@/utils/formatCurrency';
 import ExchangeModal from './ExchangeModal';
 import IdentityPreview, { inferStoreItemRarity, type StoreItemRow } from './IdentityPreview';
+import CardStyleStore from '@/features/store/components/CardStyleStore';
+import { mapCardRarityToIdentityRarity } from '@/features/profile/mocks/premiumProfile.mock';
 
 type StoreCategory = 'BANNER' | 'AVATAR_FRAME' | 'BADGE';
 
-type StoreTab = 'cosmetics' | 'vip' | 'rewards';
+type StoreTab = 'cosmetics' | 'card-styles' | 'vip' | 'rewards';
 
 interface SubscriptionPlanRow {
   id: string;
@@ -92,7 +94,7 @@ export default function Store() {
 
   useEffect(() => {
     const t = searchParams.get('tab');
-    if (t === 'cosmetics' || t === 'vip' || t === 'rewards') {
+    if (t === 'cosmetics' || t === 'card-styles' || t === 'vip' || t === 'rewards') {
       setTab(t);
     }
   }, [searchParams]);
@@ -305,6 +307,16 @@ export default function Store() {
     }
   };
 
+  const handleCardStyleWalletChange = (nextCoins: number) => {
+    patchUser({ omjepCoins: nextCoins });
+  };
+
+  const handleCardStyleEquippedChange = (
+    rarity: 'BRONZE' | 'SILVER' | 'GOLD',
+  ) => {
+    patchUser({ avatarRarity: mapCardRarityToIdentityRarity(rarity) });
+  };
+
   const sortedItems = useMemo(
     () =>
       [...items].sort((a, b) =>
@@ -434,7 +446,7 @@ export default function Store() {
             </p>
 
             <div className="relative flex w-full max-w-lg rounded-xl border border-white/[0.08] bg-black/25 p-1 sm:w-auto">
-              {(['cosmetics', 'vip', 'rewards'] as const).map((key) => (
+              {(['cosmetics', 'card-styles', 'vip', 'rewards'] as const).map((key) => (
                 <button
                   key={key}
                   type="button"
@@ -453,6 +465,8 @@ export default function Store() {
                   <span className="relative z-10 inline-flex items-center justify-center gap-2">
                     {key === 'cosmetics' ? (
                       <><Gem className="h-4 w-4 opacity-80" />Cosmétiques</>
+                    ) : key === 'card-styles' ? (
+                      <><Gem className="h-4 w-4 text-cyan-300" />Styles de Cartes 🦅</>
                     ) : key === 'vip' ? (
                       <><Crown className="h-4 w-4 text-amber-300/90" />Abonnements VIP</>
                     ) : (
@@ -582,6 +596,21 @@ export default function Store() {
                 <p className="text-sm text-slate-500">Aucun article pour le moment.</p>
               </div>
             )}
+          </motion.div>
+        )}
+        {tab === 'card-styles' && (
+          <motion.div
+            key="card-styles"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22 }}
+          >
+            <CardStyleStore
+              userCoins={omjep}
+              onWalletChange={handleCardStyleWalletChange}
+              onEquippedStyleChange={handleCardStyleEquippedChange}
+            />
           </motion.div>
         )}
         {tab === 'vip' && (

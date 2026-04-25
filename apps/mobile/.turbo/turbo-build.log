@@ -1,0 +1,16 @@
+
+
+> @omjep/mobile@0.0.1 build /Users/soufiane/Desktop/CMS/Omjep App/eagles-esports-platform/apps/mobile
+> expo export --platform all
+
+[31mCommandError: It looks like you're trying to use web support but don't have the required dependencies[39m
+[31minstalled.[39m
+[31m[39m
+[31mPlease install [1mreact-native-web@~0.19.13[22m by running:[39m
+[31m[39m
+[31m[0m[1mnpx expo install react-native-web[22m[0m[39m
+[31m[39m
+[31mIf you're not using web, please ensure you remove the [1m"web"[22m string from the platforms array in[39m
+[31mthe project Expo config.[39m
+[31m[39m
+[41m[30m ELIFECYCLE [39m[49m [31mCommand failed with exit code 1.[39m

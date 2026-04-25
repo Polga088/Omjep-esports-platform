@@ -12,6 +12,7 @@ import {
   LifeBuoy,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
+import PlayerIdentity from '@/components/PlayerIdentity';
 import NotificationCenter from '@/components/NotificationCenter';
 import LiveTicker from '@/components/LiveTicker';
 import GoldConfetti from '@/components/GoldConfetti';
@@ -20,6 +21,11 @@ import { useAppNotifications } from '@/hooks/useAppNotifications';
 import { useAppNotificationStore } from '@/store/useAppNotificationStore';
 import api from '@/lib/api';
 import { formatCurrency } from '@/utils/formatCurrency';
+import {
+  fetchMyPremiumProfile,
+  getEquippedCardStyle,
+  mapCardRarityToIdentityRarity,
+} from '@/features/profile/mocks/premiumProfile.mock';
 
 type SidebarLink = {
   to: string;
@@ -169,6 +175,21 @@ export default function DashboardLayout() {
     return () => { cancelled = true; };
   }, [patchUser]);
 
+  useEffect(() => {
+    let cancelled = false;
+    void fetchMyPremiumProfile().then((profile) => {
+      if (cancelled) return;
+      const equippedStyle = getEquippedCardStyle(profile);
+      if (!equippedStyle) return;
+      patchUser({
+        avatarRarity: mapCardRarityToIdentityRarity(equippedStyle.rarity),
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [patchUser]);
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -203,9 +224,17 @@ export default function DashboardLayout() {
       {/* User info */}
       <div className="px-4 py-4 border-b border-amber-400/10">
         <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-white/5">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-600/30 flex items-center justify-center text-sm font-bold text-amber-400 uppercase border border-amber-400/20 shrink-0">
-            {user?.ea_persona_name?.charAt(0) ?? 'U'}
-          </div>
+          <PlayerIdentity
+            size="xs"
+            initial={user?.ea_persona_name?.charAt(0) ?? 'U'}
+            avatarUrl={user?.avatarUrl}
+            rarity={user?.avatarRarity ?? 'common'}
+            activeFrameUrl={user?.activeFrameUrl}
+            activeJerseyId={user?.activeJerseyId}
+            teamPrimaryColor={user?.teamPrimaryColor}
+            teamSecondaryColor={user?.teamSecondaryColor}
+            className="shrink-0"
+          />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 min-w-0">
               <p className="text-sm font-semibold text-white truncate">{user?.ea_persona_name ?? 'Joueur'}</p>

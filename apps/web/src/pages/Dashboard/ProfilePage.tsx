@@ -8,9 +8,20 @@ import {
   type MouseEvent,
   type ReactNode,
 } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Link, useSearchParams } from 'react-router-dom';
-import { User, MapPin, Save, CheckCircle, Shield, Gamepad2, Sparkles, Camera, X } from 'lucide-react';
+import {
+  User,
+  MapPin,
+  Save,
+  CheckCircle,
+  Shield,
+  Gamepad2,
+  Sparkles,
+  Camera,
+  X,
+  Share2,
+} from 'lucide-react';
 import confetti from 'canvas-confetti';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -20,6 +31,13 @@ import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrest
 import { ProfileHeroMedia } from '@/components/ProfileHeroMedia';
 import { useShowcaseVortexHue } from '@/components/ProfileShowcaseHeroMedia';
 import { uploadAvatar, uploadBanner } from '@/lib/profileUploads';
+import PremiumPlayerProfile from '@/features/profile/components/PremiumPlayerProfile';
+import {
+  fetchMyPremiumProfile,
+  getEquippedCardStyle,
+  mapCardRarityToIdentityRarity,
+  type UserPremiumProfile,
+} from '@/features/profile/mocks/premiumProfile.mock';
 /** Portrait Lamine Yamal — CC BY 4.0, Wikimedia Commons (`yamal-photo.jpg`). */
 import yamalPhotoUrl from '@/assets/profile/yamal-photo.jpg?url';
 /** Asset transparent — remplaçable par `golden-boot.webp` ou `.png` (même dossier, même import `?url`). */
@@ -361,7 +379,7 @@ function BentoGoldenBootCard({
 
 export default function ProfilePage() {
   const { user, patchUser } = useAuthStore();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [form, setForm] = useState<ProfileForm>({
     ea_persona_name: '',
     preferred_position: '',
@@ -382,6 +400,10 @@ export default function ProfilePage() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [mediaUploading, setMediaUploading] = useState(false);
+  const [isPremiumView, setIsPremiumView] = useState(false);
+  const [isLoadingPremiumProfile, setIsLoadingPremiumProfile] = useState(false);
+  const [premiumProfile, setPremiumProfile] = useState<UserPremiumProfile | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
 
   const avatarInputId = useId();
   const bannerInputId = useId();
@@ -400,6 +422,36 @@ export default function ProfilePage() {
     if (bh) p.set('bannerHue', bh);
     return `/dashboard/store?${p.toString()}`;
   }, [searchParams]);
+
+  useEffect(() => {
+    const profileView = searchParams.get('view');
+    setIsPremiumView(profileView === 'premium');
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isPremiumView) return;
+    let isCancelled = false;
+
+    setIsLoadingPremiumProfile(true);
+    void fetchMyPremiumProfile()
+      .then((data) => {
+        if (isCancelled) return;
+        setPremiumProfile(data);
+        const equippedStyle = getEquippedCardStyle(data);
+        if (equippedStyle) {
+          patchUser({ avatarRarity: mapCardRarityToIdentityRarity(equippedStyle.rarity) });
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoadingPremiumProfile(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isPremiumView, patchUser]);
 
   useEffect(() => {
     let cancelled = false;
@@ -545,6 +597,39 @@ export default function ProfilePage() {
   const update = (field: keyof ProfileForm, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
+  const handleProfileViewChange = (view: 'classic' | 'premium') => {
+    setIsPremiumView(view === 'premium');
+    setSearchParams(
+      (previousParams) => {
+        const nextParams = new URLSearchParams(previousParams);
+        if (view === 'premium') {
+          nextParams.set('view', 'premium');
+        } else {
+          nextParams.delete('view');
+        }
+        return nextParams;
+      },
+      { replace: true },
+    );
+  };
+
+  const handleShareProfile = async () => {
+    const shareUrl = new URL(window.location.href);
+    if (isPremiumView) {
+      shareUrl.searchParams.set('view', 'premium');
+    } else {
+      shareUrl.searchParams.delete('view');
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl.toString());
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1800);
+    } catch {
+      setShareCopied(false);
+    }
+  };
+
   const level = me?.level ?? 1;
   const xp = me?.xp ?? 0;
   const levelGaugePct = Math.min(100, Math.max(0, ((level % 10) / 10) * 100 || 35));
@@ -575,9 +660,76 @@ export default function ProfilePage() {
   }
 
   return (
-    <div
-      className={`ea-fc-tactical-profile relative w-full max-w-4xl bg-[#070b12] pb-16 ${vortexHud ? 'showcase-hud-vortex' : ''}`}
-    >
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0a0d16] p-3">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/90">
+            Affichage Profil
+          </p>
+          <p className="text-sm text-slate-300">Basculer entre le rendu classique et premium</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void handleShareProfile()}
+            className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold uppercase tracking-wide transition ${
+              shareCopied
+                ? 'border-emerald-400/45 bg-emerald-500/15 text-emerald-200'
+                : 'border-cyan-400/35 bg-cyan-500/10 text-cyan-100 hover:border-cyan-300/60 hover:bg-cyan-500/15'
+            }`}
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            {shareCopied ? 'Lien copié' : 'Partager mon profil'}
+          </button>
+          <div className="inline-flex rounded-xl border border-white/10 bg-black/30 p-1">
+            <button
+              type="button"
+              onClick={() => handleProfileViewChange('classic')}
+              className={`rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                !isPremiumView
+                  ? 'bg-cyan-500/25 text-white'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Vue Classique
+            </button>
+            <button
+              type="button"
+              onClick={() => handleProfileViewChange('premium')}
+              className={`rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                isPremiumView
+                  ? 'bg-amber-500/25 text-amber-100'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Vue Premium
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {isPremiumView ? (
+          <motion.div
+            key="premium-profile"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22 }}
+          >
+            <PremiumPlayerProfile profile={premiumProfile} isLoading={isLoadingPremiumProfile} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="classic-profile"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22 }}
+          >
+            <div
+              className={`ea-fc-tactical-profile relative w-full max-w-4xl bg-[#070b12] pb-16 ${vortexHud ? 'showcase-hud-vortex' : ''}`}
+            >
       {/* Hero — média sync URL (bannerPreview) + crossfade */}
       <section className="relative z-[1] -mx-4 mb-0 h-96 w-[calc(100%+2rem)] overflow-hidden rounded-b-[2rem] border-b border-cyan-500/20 shadow-[0_24px_100px_rgba(0,0,0,0.72)] lg:-mx-8 lg:w-[calc(100%+4rem)]">
         <ProfileHeroMedia savedBannerUrl={user?.activeBannerUrl ?? me?.activeBannerUrl ?? null} />
@@ -931,6 +1083,10 @@ export default function ProfilePage() {
           </div>
         </div>
       ) : null}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
