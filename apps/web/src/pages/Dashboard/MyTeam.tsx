@@ -526,24 +526,21 @@ export default function MyTeam() {
 
   return (
     <TeamErrorBoundary>
-    <div className="space-y-8">
+    <div className="cockpit-page space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400/20 to-amber-400/5 border border-amber-400/20 flex items-center justify-center">
-              <Gamepad2 className="w-4 h-4 text-amber-400" />
-            </div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-amber-400/70">Gestion du Club</span>
+          <div className="mb-1 flex items-center gap-3">
+            <span className="text-[12px] font-semibold uppercase tracking-widest opacity-50">Gestion du Club</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">
+          <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">
             {isLoading ? (
-              <span className="inline-block w-48 h-8 rounded-lg bg-white/5 animate-pulse" />
+              <span className="inline-block h-8 w-48 animate-pulse border-[0.5px] border-black/5 dark:border-white/10" />
             ) : (
-              team?.name ?? 'Effectif du Club'
+              'MON ÉQUIPE'
             )}
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-[12px] uppercase tracking-widest opacity-50">
             {isLoading ? '\u00a0' : `${allMembers.length} membres enregistrés dans le système`}
           </p>
         </div>
@@ -551,10 +548,9 @@ export default function MyTeam() {
         {canRecruit && (
           <button
             onClick={() => setInviteModalOpen(true)}
-            className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-400 to-amber-600 text-[#0A0E1A] shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:brightness-110 active:scale-95 transition-all duration-200 whitespace-nowrap"
+            className="group inline-flex items-center gap-2.5 rounded-none border border-black/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-black transition-all duration-200 whitespace-nowrap dark:border-white/20 dark:text-white"
           >
-            <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Recruter un joueur
+            [ ACTION ]
           </button>
         )}
       </div>
@@ -633,13 +629,9 @@ export default function MyTeam() {
 
       {/* Équipe non trouvée */}
       {!isLoading && !team && !error && (
-        <div className="rounded-2xl border border-white/5 bg-[#0D1221] p-12 text-center space-y-3">
-          <Gamepad2 className="w-10 h-10 text-slate-600 mx-auto" />
-          <h2 className="text-lg font-bold text-white">Équipe non trouvée</h2>
-          <p className="text-sm text-slate-500">
-            Vous n'êtes actuellement membre d'aucune équipe, ou les données n'ont pas pu être chargées.
-          </p>
-        </div>
+        <p className="py-16 text-center text-sm font-thin text-black/50 dark:text-white/40">
+          Vous n'êtes actuellement membre d'aucune équipe.
+        </p>
       )}
 
       {/* Tabs */}

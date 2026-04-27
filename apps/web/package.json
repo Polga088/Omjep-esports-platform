@@ -16,6 +16,7 @@
   "dependencies": {
     "@omjep/shared": "workspace:*",
     "@omjep/ui": "workspace:*",
+    "@tanstack/react-query": "^5.100.5",
     "@tanstack/react-table": "^8.21.0",
     "axios": "^1.14.0",
     "canvas-confetti": "^1.9.4",

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import api from '@/lib/api';
 import SyncPreviewModal from '@/components/SyncPreviewModal';
+import TacticalEmptyState from '@/components/TacticalEmptyState';
 import TournamentBrackets, { type MatchBrief } from '@/pages/Dashboard/TournamentBrackets';
 
 const BRACKET_PLACEHOLDER_NAME = 'OMJEP_BRACKET_TBD';
@@ -701,9 +702,12 @@ export default function AdminMatches() {
       {viewMode === 'bracket' && showBracketView && (
         <div className="rounded-2xl border border-amber-400/10 bg-white/[0.02] p-4 sm:p-6">
           {matchesForBracket.length === 0 ? (
-            <div className="text-center py-12 text-slate-500 text-sm">
-              Aucun match pour cette compétition. Vérifiez le filtre ou créez des matchs.
-            </div>
+            <TacticalEmptyState
+              className="border-0 bg-transparent shadow-none"
+              icon={Swords}
+              title="Aucun match détecté"
+              description="Aucun match pour cette compétition. Vérifiez le filtre ou créez des matchs."
+            />
           ) : (
             <>
               {(bracketRounds.length === 0 || hasMatchesWithoutBracketLayout) && (
@@ -738,14 +742,15 @@ export default function AdminMatches() {
 
       {/* Match list */}
       {viewMode === 'list' && filtered.length === 0 ? (
-        <div className="text-center py-20 border border-dashed border-amber-400/10 rounded-2xl bg-gradient-to-b from-white/[0.01] to-transparent">
-          <div className="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center mx-auto mb-4">
-            <Swords className="w-8 h-8 text-slate-700" />
-          </div>
-          <p className="text-slate-500 text-sm font-medium">
-            {activeTab === 'SCHEDULED' ? 'Aucun match programmé.' : 'Aucun résultat disponible.'}
-          </p>
-        </div>
+        <TacticalEmptyState
+          icon={Swords}
+          title="Aucun match détecté"
+          description={
+            activeTab === 'SCHEDULED'
+              ? 'Aucun match programmé pour ce filtre.'
+              : 'Aucun résultat disponible pour ce filtre.'
+          }
+        />
       ) : viewMode === 'list' ? (
         <div className="space-y-3">
           {filtered.map((match) => {

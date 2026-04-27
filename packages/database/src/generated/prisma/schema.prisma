@@ -40,6 +40,7 @@ model User {
   matchScoreReports   MatchScoreReport[]
   notifications       Notification[]     @relation("UserNotifications")
   stats               PlayerStats?
+  eaExternalStats     EaExternalStats?
   teamMemberships     TeamMember[]
   managedClubs        Club[]             @relation("ClubManager")
   transferOffers      TransferOffer[]    @relation("TransferOfferPlayer")
@@ -58,37 +59,39 @@ model User {
 
 /// Club Pro Clubs (table SQL `teams`).
 model Club {
-  id                String             @id @default(uuid()) @db.Uuid
-  name              String             @unique
-  logo_url          String?
-  created_at        DateTime           @default(now())
-  ea_club_id        String?            @unique
-  platform          Platform           @default(CROSSPLAY)
-  proclubs_url      String?            @unique
-  budget            Float              @default(10000000)
-  prestige_level    Int                @default(1)
-  xp                Int                @default(0)
-  description       String?
-  manager_id        String?            @db.Uuid
-  validation_status ValidationStatus   @default(PENDING)
-  presidentPremium  Boolean            @default(false) @map("president_premium")
-  primaryColor      String?            @map("primary_color")
-  secondaryColor    String?            @map("secondary_color")
-  storeItems        StoreItem[]
-  competitions      CompetitionTeam[]
-  contracts         Contract[]
-  invitations       Invitation[]
-  matchEvents       MatchEvent[]
-  matchScoreReports MatchScoreReport[]
-  awayMatches       Match[]            @relation("AwayTeam")
-  homeMatches       Match[]            @relation("HomeTeam")
-  members           TeamMember[]
-  manager           User?              @relation("ClubManager", fields: [manager_id], references: [id])
-  transactions      Transaction[]
-  sentOffers        TransferOffer[]    @relation("OfferFromTeam")
-  receivedOffers    TransferOffer[]    @relation("OfferToTeam")
-  transferRequests  TransferRequest[]
-  messages          Message[]
+  id                 String             @id @default(uuid()) @db.Uuid
+  name               String             @unique
+  logo_url           String?
+  created_at         DateTime           @default(now())
+  ea_club_id         String?            @unique
+  platform           Platform           @default(CROSSPLAY)
+  proclubs_url       String?            @unique
+  budget             Float              @default(10000000)
+  prestige_level     Int                @default(1)
+  xp                 Int                @default(0)
+  description        String?
+  manager_id         String?            @db.Uuid
+  validation_status  ValidationStatus   @default(PENDING)
+  presidentPremium   Boolean            @default(false) @map("president_premium")
+  primaryColor       String?            @map("primary_color")
+  secondaryColor     String?            @map("secondary_color")
+  storeItems         StoreItem[]
+  competitions       CompetitionTeam[]
+  contracts          Contract[]
+  invitations        Invitation[]
+  matchEvents        MatchEvent[]
+  matchScoreReports  MatchScoreReport[]
+  awayMatches        Match[]            @relation("AwayTeam")
+  homeMatches        Match[]            @relation("HomeTeam")
+  members            TeamMember[]
+  manager            User?              @relation("ClubManager", fields: [manager_id], references: [id])
+  transactions       Transaction[]
+  sentOffers         TransferOffer[]    @relation("OfferFromTeam")
+  receivedOffers     TransferOffer[]    @relation("OfferToTeam")
+  transferRequests   TransferRequest[]
+  messages           Message[]
+  eaClubStats        EaClubStats?
+  leagueTableEntries LeagueTable[]
 
   @@map("teams")
 }
@@ -119,6 +122,36 @@ model PlayerStats {
   @@map("player_stats")
 }
 
+model EaExternalStats {
+  id             String   @id @default(uuid()) @db.Uuid
+  user_id        String   @unique @db.Uuid
+  games          Int      @default(0)
+  goals          Int      @default(0)
+  assists        Int      @default(0)
+  avg_rating     Float    @default(0.0)
+  division       String?
+  overall_rating Int?
+  proclubs_url   String?
+  last_synced_at DateTime @default(now())
+  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("ea_external_stats")
+}
+
+model EaClubStats {
+  id             String   @id @default(uuid()) @db.Uuid
+  club_id        String   @unique @db.Uuid
+  division       String?
+  points         Int      @default(0)
+  record         String?
+  proclubs_url   String?
+  last_synced_at DateTime @default(now())
+  club           Club     @relation(fields: [club_id], references: [id], onDelete: Cascade)
+
+  @@index([division, points])
+  @@map("ea_club_stats")
+}
+
 model Competition {
   id                   String            @id @default(uuid()) @db.Uuid
   name                 String            @unique
@@ -133,6 +166,7 @@ model Competition {
   cup_scenario         CupScenario?      @map("cup_scenario")
   teams                CompetitionTeam[]
   matches              Match[]
+  leagueTableEntries   LeagueTable[]
 
   @@map("competitions")
 }
@@ -155,6 +189,7 @@ model Match {
   away_team_id                String              @db.Uuid
   home_score                  Int?
   away_score                  Int?
+  proof_url                   String?
   status                      MatchStatus         @default(SCHEDULED)
   played_at                   DateTime?
   /// Heure de coup d’envoi (colonne DB `scheduled_at`). Tri pronostics.
@@ -180,6 +215,27 @@ model Match {
 
   @@index([competition_id, bracket_round, bracket_index])
   @@map("matches")
+}
+
+model LeagueTable {
+  id              String      @id @default(uuid()) @db.Uuid
+  competition_id  String      @db.Uuid
+  team_id         String      @db.Uuid
+  played          Int         @default(0)
+  won             Int         @default(0)
+  drawn           Int         @default(0)
+  lost            Int         @default(0)
+  goals_for       Int         @default(0)
+  goals_against   Int         @default(0)
+  goal_difference Int         @default(0)
+  points          Int         @default(0)
+  updated_at      DateTime    @updatedAt
+  competition     Competition @relation(fields: [competition_id], references: [id], onDelete: Cascade)
+  team            Club        @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@unique([competition_id, team_id])
+  @@index([competition_id, points, goal_difference])
+  @@map("league_table")
 }
 
 model MatchScoreReport {
@@ -406,6 +462,9 @@ enum ClubRole {
 
 enum MatchStatus {
   SCHEDULED
+  PENDING
+  VALIDATED
+  DISPUTE
   LIVE
   FINISHED
   DISPUTED

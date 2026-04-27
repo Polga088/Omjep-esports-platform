@@ -1,137 +1,91 @@
-import { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useReducedMotion } from 'framer-motion'
 import {
-  Crown, Trophy, Users, ChevronRight, Star, Shield, Swords,
-  TrendingUp, Newspaper, Medal, ArrowRight, Flame, Coins,
-} from 'lucide-react';
-import api from '@/lib/api';
-import LandingHero from '@/components/landing/LandingHero';
-import { useAuth } from '@/hooks/useAuth';
+  ChevronRight,
+  Crown,
+  Flame,
+  Medal,
+  Newspaper,
+  Shield,
+  Swords,
+  Star,
+  TrendingUp,
+  Users,
+} from 'lucide-react'
+import api from '@/lib/api'
+import { useAuth } from '@/hooks/useAuth'
+import HeroArena from '@/components/cinematic/HeroArena'
+import ScrollRevealSection from '@/components/cinematic/ScrollRevealSection'
+import { AnimatedCounter } from '@/components/cinematic/AnimatedCounter'
+import PlayerLeaderboard from '@/components/cinematic/PlayerLeaderboard'
+import ProfileSection from '@/components/cinematic/ProfileSection'
+import MVPSpotlight from '@/components/cinematic/MVPSpotlight'
 
-// ─── Types ──────────────────────────────────────────────────────────────────
 interface PlatformStats {
-  totalPlayers: number;
-  totalClubs: number;
-  transferVolume: number;
-  totalMatches: number;
+  totalPlayers: number
+  totalClubs: number
+  transferVolume: number
+  totalMatches: number
 }
 
 interface HallOfFameEntry {
-  competition: { id: string; name: string; type: string };
-  seasonLabel: string;
-  champion: { id: string; name: string; logo_url: string | null } | null;
-  goldenBoot: { ea_persona_name: string; goals: number } | null;
+  competition: { id: string; name: string; type: string }
+  seasonLabel: string
+  champion: { id: string; name: string; logo_url: string | null } | null
+  goldenBoot: { ea_persona_name: string; goals: number } | null
 }
 
 interface NewsEvent {
-  id: string;
-  title: string;
-  description: string;
-  created_at: string;
+  id: string
+  title: string
+  description: string
+  created_at: string
   metadata: {
-    playerName?: string;
-    toTeamName?: string;
-    transferFee?: number;
-    releaseClauseMet?: boolean;
-  } | null;
+    playerName?: string
+    toTeamName?: string
+    transferFee?: number
+    releaseClauseMet?: boolean
+  } | null
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function formatNumber(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
-  return n.toString();
+const formatNumber = (n: number) => {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`
+  return n.toString()
 }
 
-function useCountUp(target: number, duration = 1800) {
-  const [count, setCount] = useState(0);
-  const raf = useRef<number>(0);
-
-  useEffect(() => {
-    if (target === 0) return;
-    const start = performance.now();
-    const step = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(ease * target));
-      if (progress < 1) raf.current = requestAnimationFrame(step);
-    };
-    raf.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf.current);
-  }, [target, duration]);
-
-  return count;
-}
-
-// ─── Animated Stat ─────────────────────────────────────────────────────────
-function AnimatedStat({
-  label,
-  value,
-  icon: Icon,
-  suffix = '',
-  color = 'indigo',
-}: {
-  label: string;
-  value: number;
-  icon: React.ElementType;
-  suffix?: string;
-  color?: string;
-}) {
-  const animated = useCountUp(value);
-  const colorClasses: Record<string, string> = {
-    indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400',
-    amber: 'bg-amber-400/10 border-amber-400/20 text-amber-400',
-    emerald: 'bg-emerald-400/10 border-emerald-400/20 text-emerald-400',
-    sky: 'bg-sky-400/10 border-sky-400/20 text-sky-400',
-    violet: 'bg-violet-400/10 border-violet-400/20 text-violet-400',
-  };
-  const cls = colorClasses[color] ?? colorClasses.indigo;
-
-  return (
-    <div className="flex items-center gap-4 justify-center sm:justify-start">
-      <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center flex-shrink-0 ${cls}`}>
-        <Icon className="w-6 h-6" />
-      </div>
-      <div>
-        <p className="font-display font-black text-3xl text-white tracking-tight">
-          {formatNumber(animated)}{suffix}
-        </p>
-        <p className="text-slate-500 text-sm">{label}</p>
-      </div>
-    </div>
-  );
-}
-
-// ─── Transfer Highlight Card ─────────────────────────────────────────────────
 function TransferCard({ item, index }: { item: NewsEvent; index: number }) {
-  const isClause = item.metadata?.releaseClauseMet;
+  const isClause = item.metadata?.releaseClauseMet
   return (
     <div
-      className={`relative flex-shrink-0 w-72 rounded-2xl border p-5 transition-all hover:-translate-y-1 hover:shadow-xl ${
+      className={`relative w-72 max-w-full flex-shrink-0 rounded-2xl border p-5 transition-all hover:-translate-y-1 hover:shadow-xl ${
         isClause
           ? 'border-violet-500/30 bg-gradient-to-br from-violet-500/10 to-[#0a0a0c] hover:shadow-violet-900/20'
-          : 'border-indigo-500/15 bg-gradient-to-br from-indigo-500/8 to-[#0a0a0c] hover:shadow-indigo-950/30'
+          : 'border-emerald-500/20 bg-gradient-to-br from-emerald-500/8 to-[#0a0a0c] hover:shadow-emerald-950/30'
       }`}
       style={{ animationDelay: `${index * 80}ms` }}
     >
       {isClause && (
-        <span className="absolute -top-2 left-4 px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-500/20 border border-violet-500/30 text-violet-300 uppercase tracking-wider">
+        <span className="absolute -top-2 left-4 rounded-full border border-violet-500/30 bg-violet-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-300">
           Clause libératoire
         </span>
       )}
       <div className="flex items-start gap-3">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-          isClause ? 'bg-violet-500/15' : 'bg-indigo-500/12'
-        }`}>
-          <Newspaper className={`w-5 h-5 ${isClause ? 'text-violet-400' : 'text-indigo-400'}`} />
+        <div
+          className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${
+            isClause ? 'bg-violet-500/15' : 'bg-emerald-500/12'
+          }`}
+        >
+          <Newspaper className={`h-5 w-5 ${isClause ? 'text-violet-400' : 'text-emerald-400'}`} />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-bold text-white leading-snug line-clamp-2">{item.title}</p>
+          <p className="line-clamp-2 text-xs font-bold leading-snug text-white">{item.title}</p>
           {item.metadata?.playerName && (
-            <p className="text-xs text-slate-400 mt-1 truncate">
+            <p className="mt-1 truncate text-xs text-slate-400">
               {item.metadata.playerName}
               {item.metadata.toTeamName && (
-                <span className="text-indigo-400"> → {item.metadata.toTeamName}</span>
+                <span className="text-emerald-400"> → {item.metadata.toTeamName}</span>
               )}
             </p>
           )}
@@ -143,16 +97,16 @@ function TransferCard({ item, index }: { item: NewsEvent; index: number }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function Home() {
-  const { isAuthenticated } = useAuth();
-  const authed = isAuthenticated();
-  const [stats, setStats] = useState<PlatformStats | null>(null);
-  const [hof, setHof] = useState<HallOfFameEntry[]>([]);
-  const [news, setNews] = useState<NewsEvent[]>([]);
+  const { isAuthenticated } = useAuth()
+  const authed = isAuthenticated()
+  const reducedMotion = useReducedMotion()
+  const [stats, setStats] = useState<PlatformStats | null>(null)
+  const [hof, setHof] = useState<HallOfFameEntry[]>([])
+  const [news, setNews] = useState<NewsEvent[]>([])
 
   useEffect(() => {
     const load = async () => {
@@ -160,163 +114,213 @@ export default function Home() {
         api.get<PlatformStats>('/stats/public'),
         api.get<HallOfFameEntry[]>('/competitions/hall-of-fame'),
         api.get<NewsEvent[]>('/news/transfers?limit=8'),
-      ]);
-      if (statsRes.status === 'fulfilled') setStats(statsRes.value.data);
-      if (hofRes.status === 'fulfilled') setHof(hofRes.value.data.slice(0, 3));
-      if (newsRes.status === 'fulfilled') setNews(newsRes.value.data);
-    };
-    load();
-  }, []);
+      ])
+      if (statsRes.status === 'fulfilled') setStats(statsRes.value.data)
+      if (hofRes.status === 'fulfilled') setHof(hofRes.value.data.slice(0, 3))
+      if (newsRes.status === 'fulfilled') setNews(newsRes.value.data)
+    }
+    load()
+  }, [])
 
   const statsLine =
-    stats ? (
+    stats != null ? (
       <>
         Déjà{' '}
-        <span className="font-bold text-white">{stats.totalPlayers.toLocaleString('fr-FR')}</span> joueurs dans{' '}
-        <span className="font-bold text-white">{stats.totalClubs}</span> clubs actifs
+        <span className="font-semibold text-slate-200">
+          {stats.totalPlayers.toLocaleString('fr-FR')}
+        </span>{' '}
+        joueurs dans{' '}
+        <span className="font-semibold text-slate-200">{stats.totalClubs}</span> clubs actifs
       </>
-    ) : null;
+    ) : null
 
   return (
     <div className="flex flex-col">
-      <LandingHero statsLine={statsLine} />
+      <HeroArena statsLine={statsLine} reducedMotion={reducedMotion ?? false} />
 
-      {/* ── LIVE STATS ─────────────────────────────────────────── */}
-      <section className="border-y border-indigo-500/10 bg-indigo-500/[0.03] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <AnimatedStat
-              label="Joueurs inscrits"
-              value={stats?.totalPlayers ?? 0}
-              icon={Users}
-              color="indigo"
-            />
-            <AnimatedStat
-              label="Clubs actifs"
-              value={stats?.totalClubs ?? 0}
-              icon={Shield}
-              color="sky"
-            />
-            <AnimatedStat
-              label="Matchs joués"
-              value={stats?.totalMatches ?? 0}
-              icon={Swords}
-              color="emerald"
-            />
-            <AnimatedStat
-              label="Volume des transferts"
-              value={stats?.transferVolume ?? 0}
-              icon={Coins}
-              suffix=" OC"
-              color="violet"
-            />
+      <ScrollRevealSection className="border-y border-emerald-500/10 bg-emerald-500/[0.04] py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+            <div className="flex items-center justify-center sm:justify-start">
+              <div className="flex w-full max-w-xs items-center gap-4">
+                <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+                  <Users className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="font-heading text-3xl font-black tracking-tight text-white">
+                    <AnimatedCounter value={stats?.totalPlayers ?? 0} />
+                  </p>
+                  <p className="text-sm text-slate-500">Joueurs inscrits</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center sm:justify-start">
+              <div className="flex w-full max-w-xs items-center gap-4">
+                <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+                  <Shield className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="font-heading text-3xl font-black tracking-tight text-white">
+                    <AnimatedCounter value={stats?.totalClubs ?? 0} />
+                  </p>
+                  <p className="text-sm text-slate-500">Clubs actifs</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center sm:justify-start">
+              <div className="flex w-full max-w-xs items-center gap-4">
+                <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+                  <Swords className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="font-heading text-3xl font-black tracking-tight text-white">
+                    <AnimatedCounter value={stats?.totalMatches ?? 0} />
+                  </p>
+                  <p className="text-sm text-slate-500">Matchs joués</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center sm:justify-start">
+              <div className="flex w-full max-w-xs items-center gap-4">
+                <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+                  <TrendingUp className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="font-heading text-2xl font-black tracking-tight text-white sm:text-3xl">
+                    <AnimatedCounter value={stats?.transferVolume ?? 0} format={(n) => `${formatNumber(n)}`} />
+                    <span className="text-lg text-emerald-400/90"> OC</span>
+                  </p>
+                  <p className="text-sm text-slate-500">Volume transferts</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </ScrollRevealSection>
 
-      {/* ── MARKET HIGHLIGHTS ──────────────────────────────────── */}
+      <ScrollRevealSection id="leaderboard" className="py-16 sm:py-20" aria-label="Classement joueurs">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 text-center sm:text-left">
+            <h2 className="font-heading text-2xl font-bold text-white sm:text-3xl">Classement live</h2>
+            <p className="mt-1 font-sans text-sm text-slate-500">Top scène — filtre en direct (démo data)</p>
+          </div>
+          <PlayerLeaderboard competitionId={hof[0]?.competition.id} />
+        </div>
+      </ScrollRevealSection>
+
+      <ScrollRevealSection className="py-12 sm:py-16" aria-label="Fiche profil type FIFA">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <ProfileSection />
+        </div>
+      </ScrollRevealSection>
+
+      <ScrollRevealSection className="py-8 sm:py-12" aria-label="MVP de la semaine">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <MVPSpotlight />
+        </div>
+      </ScrollRevealSection>
+
       {news.length > 0 && (
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-8">
+        <ScrollRevealSection className="py-16" aria-label="Derniers transferts">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <div className="mb-2 flex items-center gap-2">
-                  <Flame className="h-4 w-4 text-indigo-400" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">Live</span>
+                  <Flame className="h-4 w-4 text-emerald-400" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-emerald-400/90">Live</span>
                 </div>
-                <h2 className="font-display font-bold text-2xl sm:text-3xl text-white">
-                  Derniers Transferts
-                </h2>
-                <p className="text-slate-500 text-sm mt-1">Les moves officiels en temps réel</p>
+                <h2 className="font-heading text-2xl font-bold text-white sm:text-3xl">Derniers transferts</h2>
+                <p className="mt-1 font-sans text-sm text-slate-500">Mouvements officiels en temps réel</p>
               </div>
               <Link
                 to="/register"
-                className="hidden items-center gap-2 text-sm font-semibold text-indigo-400 transition-colors hover:text-indigo-300 sm:flex"
+                className="hidden text-sm font-semibold text-emerald-400 transition hover:text-emerald-300 sm:inline-flex"
               >
-                Rejoindre pour voir tout
-                <ArrowRight className="w-4 h-4" />
+                Rejoindre
+                <ChevronRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
-
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4">
+            <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-4 scrollbar-hide">
               {news.map((item, i) => (
                 <TransferCard key={item.id} item={item} index={i} />
               ))}
             </div>
           </div>
-        </section>
+        </ScrollRevealSection>
       )}
 
-      {/* ── HALL OF FAME PREVIEW ────────────────────────────────── */}
       {hof.length > 0 && (
-        <section className="border-t border-indigo-500/10 py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-4 py-2">
-                <Trophy className="h-4 w-4 text-indigo-400" />
-                <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">Palmarès Historique</span>
+        <ScrollRevealSection className="border-t border-white/[0.06] py-20" aria-label="Aperçu palmarès">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-12 text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-2">
+                <Crown className="h-4 w-4 text-amber-400" />
+                <span className="text-xs font-bold uppercase tracking-widest text-emerald-400/90">Palmarès</span>
               </div>
-              <h2 className="font-display font-bold text-3xl sm:text-4xl text-white mb-3">
-                Les Champions de l'Histoire
-              </h2>
-              <p className="text-slate-400 max-w-xl mx-auto">
-                Rejoignez la plateforme et gravez votre nom dans le Palmarès OMJEP.
+              <h2 className="font-heading text-3xl font-bold text-white sm:text-4xl">Les champions de l’histoire</h2>
+              <p className="mx-auto mt-2 max-w-xl text-slate-400">
+                Rejoignez la plateforme et gravez votre nom dans l’histoire OMJEP.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {hof.map((entry, i) => (
                 <div
                   key={entry.competition.id}
-                  className={`relative rounded-2xl border overflow-hidden transition-all hover:-translate-y-1 hover:shadow-2xl ${
+                  className={`relative overflow-hidden rounded-2xl border transition-all hover:-translate-y-1 hover:shadow-2xl ${
                     i === 0
-                      ? 'border-indigo-500/30 bg-gradient-to-br from-indigo-500/12 to-[#0a0a0c] hover:shadow-indigo-950/40'
+                      ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-500/12 to-[#0a0a0c] hover:shadow-emerald-950/40'
                       : 'border-white/8 bg-gradient-to-br from-white/[0.03] to-[#0a0a0c] hover:shadow-slate-900/30'
                   }`}
                 >
                   {i === 0 && (
-                    <div className="absolute top-3 right-3">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full border border-indigo-400/30 bg-indigo-400/15">
-                        <Crown className="h-3.5 w-3.5 text-indigo-300" fill="currentColor" />
+                    <div className="absolute right-3 top-3">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full border border-amber-400/30 bg-amber-400/15">
+                        <Crown className="h-3.5 w-3.5 text-amber-300" fill="currentColor" />
                       </div>
                     </div>
                   )}
                   <div className="p-6">
-                    <p className="text-xs text-slate-500 uppercase tracking-widest mb-1">{entry.seasonLabel}</p>
-                    <h3 className="font-display font-bold text-lg text-white mb-4 pr-8">
+                    <p className="mb-1 text-xs uppercase tracking-widest text-slate-500">{entry.seasonLabel}</p>
+                    <h3 className="mb-4 pr-8 font-heading text-lg font-bold text-white">
                       {entry.competition.name}
                     </h3>
 
                     {entry.champion ? (
-                      <div className="flex items-center gap-3 mb-4">
+                      <div className="mb-4 flex items-center gap-3">
                         {entry.champion.logo_url ? (
                           <img
                             src={entry.champion.logo_url}
                             alt={entry.champion.name}
-                            className="w-12 h-12 rounded-xl object-cover border border-white/10"
+                            className="h-12 w-12 rounded-xl border border-white/10 object-cover"
                           />
                         ) : (
-                          <div className={`flex h-12 w-12 items-center justify-center rounded-xl text-base font-bold ${
-                            i === 0 ? 'bg-indigo-400/20 text-indigo-300' : 'bg-white/5 text-slate-400'
-                          }`}>
+                          <div
+                            className={`flex h-12 w-12 items-center justify-center rounded-xl text-base font-bold ${
+                              i === 0 ? 'bg-emerald-400/20 text-emerald-300' : 'bg-white/5 text-slate-400'
+                            }`}
+                          >
                             {entry.champion.name.charAt(0)}
                           </div>
                         )}
                         <div>
-                          <p className="text-[10px] text-slate-500 uppercase tracking-wider">Champion</p>
+                          <p className="text-[10px] uppercase tracking-wider text-slate-500">Champion</p>
                           <p className="font-bold text-white">{entry.champion.name}</p>
                         </div>
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-600 mb-4">Champion non déterminé</p>
+                      <p className="mb-4 text-sm text-slate-600">Champion non déterminé</p>
                     )}
 
                     {entry.goldenBoot && (
-                      <div className="flex items-center gap-2 text-xs text-slate-400 border-t border-white/5 pt-3">
-                        <Star className="h-3 w-3 flex-shrink-0 text-indigo-400" />
+                      <div className="flex items-center gap-2 border-t border-white/5 pt-3 text-xs text-slate-400">
+                        <Star className="h-3 w-3 flex-shrink-0 text-emerald-400" />
                         <span>
-                          <span className="font-semibold text-indigo-300">{entry.goldenBoot.ea_persona_name}</span>
-                          {' — '}{entry.goldenBoot.goals} buts
+                          <span className="font-semibold text-emerald-300">
+                            {entry.goldenBoot.ea_persona_name}
+                          </span>
+                          {' — '}
+                          {entry.goldenBoot.goals} buts
                         </span>
                       </div>
                     )}
@@ -325,122 +329,115 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="text-center mt-10">
+            <div className="mt-10 text-center">
               <Link
                 to="/hall-of-fame"
-                className="inline-flex items-center gap-2 rounded-xl border border-indigo-500/25 px-6 py-3 text-sm font-semibold text-indigo-300 transition-all hover:bg-indigo-500/10"
+                className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 px-6 py-3 text-sm font-semibold text-emerald-300 transition-all hover:bg-emerald-500/10"
               >
-                <Medal className="w-4 h-4" />
-                Voir le Palmarès complet
-                <ChevronRight className="w-4 h-4" />
+                <Medal className="h-4 w-4" />
+                Palmarès complet
+                <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
-        </section>
+        </ScrollRevealSection>
       )}
 
-      {/* ── FEATURES ──────────────────────────────────────────── */}
-      <section className="border-t border-indigo-500/10 py-24">
+      <ScrollRevealSection className="border-t border-white/[0.06] py-20" aria-label="Fonctionnalités">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 font-display text-3xl font-bold tracking-tighter text-white sm:text-4xl">
-              Une plateforme complète
-            </h2>
-            <p className="text-slate-400 max-w-xl mx-auto">
-              Tout ce dont vous avez besoin pour vivre la compétition EA FC au niveau supérieur.
+          <div className="mb-14 text-center">
+            <h2 className="mb-3 font-heading text-3xl font-bold text-white sm:text-4xl">Une plateforme complète</h2>
+            <p className="mx-auto max-w-xl text-slate-400">
+              Compétition, mercato, progression — tout le cycle EA FC, dans un hub unique.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {[
               {
                 icon: Swords,
                 title: 'Compétitions officielles',
-                description: 'Ligues, coupes et Champions League — participez aux tournois OMJEP et écrivez l\'histoire.',
-                color: 'indigo',
+                desc: 'Ligues, coupes et grands formats — rythme OMJEP.',
+                cls: 'border-emerald-500/15 bg-emerald-500/10 text-emerald-400',
               },
               {
                 icon: Users,
-                title: 'Mercato & Transferts',
-                description: 'Signez des agents libres, négociez des contrats et activez des clauses libératoires.',
-                color: 'emerald',
+                title: 'Mercato & transferts',
+                desc: 'Agents libres, négociations, clauses, tout est tracé.',
+                cls: 'border-emerald-500/20 bg-emerald-500/8 text-emerald-300',
               },
               {
                 icon: TrendingUp,
-                title: 'Stats & Gamification',
-                description: 'Suivez vos stats, montez en niveau, débloquez des badges et comparez-vous aux meilleurs.',
-                color: 'sky',
+                title: 'Stats & gamification',
+                desc: 'Progression, badges, comparaisons — le jeu continue hors terrain.',
+                cls: 'border-white/10 bg-white/[0.04] text-emerald-400',
               },
-            ].map(({ icon: Icon, title, description, color }) => {
-              const cls: Record<string, string> = {
-                indigo: 'border-indigo-500/15 bg-indigo-500/10 text-indigo-400 group-hover:border-indigo-500/30 group-hover:bg-indigo-500/20',
-                amber: 'bg-amber-400/10 border-amber-400/15 text-amber-400 group-hover:bg-amber-400/20 group-hover:border-amber-400/30',
-                emerald: 'bg-emerald-400/10 border-emerald-400/15 text-emerald-400 group-hover:bg-emerald-400/20 group-hover:border-emerald-400/30',
-                sky: 'bg-sky-400/10 border-sky-400/15 text-sky-400 group-hover:bg-sky-400/20 group-hover:border-sky-400/30',
-              };
+            ].map((f) => {
+              const Icon = f.icon
               return (
                 <div
-                  key={title}
-                  className="group p-7 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10 transition-all"
+                  key={f.title}
+                  className="group rounded-2xl border border-white/5 bg-white/[0.02] p-7 transition-all hover:border-emerald-500/20 hover:bg-white/[0.04]"
                 >
-                  <div className={`w-13 h-13 w-12 h-12 rounded-xl border flex items-center justify-center mb-5 transition-all ${cls[color]}`}>
-                    <Icon className="w-5 h-5" />
+                  <div
+                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl border transition-all ${f.cls}`}
+                  >
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="font-display font-bold text-xl text-white mb-3">{title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">{description}</p>
+                  <h3 className="mb-2 font-heading text-xl font-bold text-white">{f.title}</h3>
+                  <p className="font-sans text-sm leading-relaxed text-slate-400">{f.desc}</p>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
-      </section>
+      </ScrollRevealSection>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="py-24">
+      <ScrollRevealSection className="py-20" aria-label="Call to action">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-indigo-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-indigo-600/5 to-transparent" />
-            <div className="pointer-events-none absolute left-1/2 top-0 h-[350px] w-[700px] -translate-x-1/2 rounded-full bg-indigo-500/8 blur-[100px]" />
+          <div className="relative overflow-hidden rounded-3xl border border-emerald-500/25">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-emerald-600/5 to-transparent" />
+            <div className="pointer-events-none absolute left-1/2 top-0 h-[350px] w-[700px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[100px]" />
 
             <div className="relative p-12 text-center sm:p-16">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-indigo-400/25 bg-gradient-to-br from-indigo-500/40 to-indigo-700/30 shadow-[0_0_40px_-8px_rgba(99,102,241,0.5)]">
+              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/40 to-emerald-800/30 shadow-[0_0_40px_-8px_rgba(34,197,94,0.45)]">
                 <Crown className="h-8 w-8 text-white" fill="currentColor" />
               </div>
-              <h2 className="mb-4 font-display text-4xl font-black tracking-tighter text-white sm:text-5xl">
+              <h2 className="mb-3 font-heading text-4xl font-black tracking-tight text-white sm:text-5xl">
                 Prêt à dominer ?
               </h2>
               <p className="mx-auto mb-3 max-w-lg text-lg text-slate-400">
                 {authed ? (
-                  <>Retrouvez vos ligues, votre mercato et vos stats dans le dashboard.</>
+                  <>Ligues, mercato, stats : tout est sur ton dashboard.</>
                 ) : (
                   <>
-                    Créez votre compte gratuitement et recevez{' '}
-                    <span className="font-bold text-indigo-300">500 OMJEP Coins</span> de bienvenue.
+                    Inscription gratuite +{' '}
+                    <span className="font-bold text-emerald-300">500 OMJEP Coins</span> de bienvenue.
                   </>
                 )}
               </p>
-              <p className="mb-10 text-sm text-slate-600">Rejoignez la communauté OMJEP · Fédération E-sport Maroc</p>
+              <p className="mb-10 text-sm text-slate-600">OMJEP — Fédération E-sport Maroc</p>
               {authed ? (
                 <Link
                   to="/dashboard"
-                  className="inline-flex items-center gap-3 rounded-lg border-[0.5px] border-indigo-400/35 bg-[#08090c] px-10 py-4 text-lg font-bold text-white shadow-[0_0_32px_-8px_rgba(99,102,241,0.45)] transition-all hover:border-indigo-400/50 hover:shadow-[0_0_40px_-4px_rgba(99,102,241,0.55)]"
+                  className="inline-flex min-h-[48px] items-center gap-3 rounded-xl border border-emerald-400/40 bg-[#020202] px-10 py-4 text-lg font-bold text-white shadow-[0_0_32px_-8px_rgba(34,197,94,0.45)] transition-all hover:border-emerald-400/55"
                 >
-                  <Crown className="h-5 w-5 text-indigo-300" fill="currentColor" />
-                  Accéder au Dashboard
+                  <Crown className="h-5 w-5 text-emerald-300" fill="currentColor" />
+                  Dashboard
                 </Link>
               ) : (
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-3 rounded-lg border-[0.5px] border-indigo-400/30 bg-[#08090c] px-10 py-4 text-lg font-bold text-white shadow-[0_0_28px_-8px_rgba(99,102,241,0.4)] transition-all hover:border-indigo-400/45 hover:shadow-[0_0_36px_-4px_rgba(99,102,241,0.5)]"
+                  className="inline-flex min-h-[48px] items-center gap-3 rounded-xl border border-emerald-400/35 bg-[#020202] px-10 py-4 text-lg font-bold text-white shadow-[0_0_28px_-8px_rgba(34,197,94,0.4)] transition-all hover:border-emerald-400/50"
                 >
-                  <Crown className="h-5 w-5 text-indigo-300" fill="currentColor" />
-                  Créer mon compte — Gratuit
+                  <Crown className="h-5 w-5 text-emerald-300" fill="currentColor" />
+                  Créer un compte
                 </Link>
               )}
             </div>
           </div>
         </div>
-      </section>
+      </ScrollRevealSection>
     </div>
-  );
+  )
 }

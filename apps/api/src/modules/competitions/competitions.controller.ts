@@ -4,6 +4,7 @@ import {
   TopPlayerRow,
   TopStatsResponse,
   HallOfFameEntry,
+  CompetitionLeaderboardRow,
 } from './types/competition-stats.types';
 
 @Controller('competitions')
@@ -33,5 +34,12 @@ export class CompetitionsController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<TopPlayerRow[]> {
     return this.competitionsService.getTopPlayers(id);
+  }
+
+  @Get(':id/leaderboard')
+  getLeaderboard(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<CompetitionLeaderboardRow[]> {
+    return this.competitionsService.getLeaderboard(id);
   }
 }

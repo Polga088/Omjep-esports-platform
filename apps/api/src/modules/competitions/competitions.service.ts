@@ -7,6 +7,7 @@ import {
   TopStatsResponse,
   HallOfFameEntry,
   HallOfFameTeam,
+  CompetitionLeaderboardRow,
 } from './types/competition-stats.types';
 
 // ─── Shared types ────────────────────────────────────────────────────────────
@@ -72,6 +73,12 @@ const CUP_ROUND_ORDER = [
   'Demi-Finales',
   'Finale',
 ];
+
+const COUNTED_MATCH_STATUSES = ['PLAYED', 'VALIDATED'] as const;
+
+function isCountedMatchStatus(status: string): boolean {
+  return COUNTED_MATCH_STATUSES.includes(status as (typeof COUNTED_MATCH_STATUSES)[number]);
+}
 
 // ─── Helper: compute standings from a set of PLAYED matches ──────────────────
 
@@ -237,7 +244,7 @@ function resolveTeamRankFromLoaded(
 ): number | null {
   if (competition.type === 'LEAGUE') {
     const teams = competition.teams.map((ct) => ct.team);
-    const playedMatches = competition.matches.filter((m) => m.status === 'PLAYED');
+    const playedMatches = competition.matches.filter((m) => isCountedMatchStatus(m.status));
     const standings = computeStandings(teams, playedMatches);
     return standings.find((s) => s.team.id === teamId)?.rank ?? null;
   }
@@ -263,7 +270,7 @@ function resolveTeamRankFromLoaded(
         teamMap.set(m.awayTeam.id, m.awayTeam);
       }
       const groupTeams = Array.from(teamMap.values());
-      const playedGMatches = gMatches.filter((m) => m.status === 'PLAYED');
+      const playedGMatches = gMatches.filter((m) => isCountedMatchStatus(m.status));
       const standings = computeStandings(groupTeams, playedGMatches);
       const row = standings.find((s) => s.team.id === teamId);
       if (row) return row.rank;
@@ -343,7 +350,7 @@ export class CompetitionsService {
           awayTeamRank: null,
         };
       }
-      const played = comp.matches.filter((x) => x.status === 'PLAYED');
+      const played = comp.matches.filter((x) => isCountedMatchStatus(x.status));
       return {
         ...m,
         homeTeamForm: teamLast5Form(m.home_team_id, played),
@@ -356,6 +363,147 @@ export class CompetitionsService {
 
   // ── Top stats (unchanged) ─────────────────────────────────────────────────
 
+  async getLeaderboard(competitionId: string): Promise<CompetitionLeaderboardRow[]> {
+    const competition = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      select: {
+        id: true,
+        teams: { select: { team_id: true } },
+        matches: {
+          where: { status: { in: [...COUNTED_MATCH_STATUSES] } },
+          select: {
+            id: true,
+            home_team_id: true,
+            away_team_id: true,
+            home_score: true,
+            away_score: true,
+            played_at: true,
+            startTime: true,
+          },
+        },
+      },
+    });
+
+    if (!competition) {
+      throw new NotFoundException('Compétition introuvable.');
+    }
+
+    const teamIds = competition.teams.map((t) => t.team_id);
+    if (teamIds.length === 0) return [];
+
+    const [memberships, events] = await Promise.all([
+      this.prisma.teamMember.findMany({
+        where: { team_id: { in: teamIds } },
+        include: {
+          user: { select: { id: true, ea_persona_name: true } },
+          team: { select: { id: true, name: true } },
+        },
+        orderBy: { joined_at: 'asc' },
+      }),
+      this.prisma.matchEvent.findMany({
+        where: {
+          match: {
+            competition_id: competitionId,
+            status: { in: [...COUNTED_MATCH_STATUSES] },
+          },
+        },
+        select: {
+          player_id: true,
+          type: true,
+        },
+      }),
+    ]);
+
+    type PlayerAgg = {
+      userId: string;
+      name: string;
+      club: string;
+      teamId: string;
+      played: number;
+      won: number;
+      drawn: number;
+      goals: number;
+      assists: number;
+      form: TeamFormLetter[];
+    };
+
+    const groupedMemberships = new Map<string, (typeof memberships)[number][]>();
+    for (const m of memberships) {
+      if (!groupedMemberships.has(m.user_id)) groupedMemberships.set(m.user_id, []);
+      groupedMemberships.get(m.user_id)!.push(m);
+    }
+
+    const playerAggMap = new Map<string, PlayerAgg>();
+    const chronologicalMatches = sortMatchesChronological(competition.matches);
+    const teamFormMap = new Map<string, TeamFormLetter[]>();
+
+    for (const teamId of teamIds) {
+      teamFormMap.set(teamId, teamLast5Form(teamId, chronologicalMatches));
+    }
+
+    for (const [userId, list] of groupedMemberships.entries()) {
+      const primaryMembership = list[0];
+      const teamId = primaryMembership.team_id;
+      const involvedMatches = chronologicalMatches.filter(
+        (m) => m.home_team_id === teamId || m.away_team_id === teamId,
+      );
+
+      let won = 0;
+      let drawn = 0;
+      for (const m of involvedMatches) {
+        const outcome = outcomeForTeam(m, teamId);
+        if (outcome === 'W') won += 1;
+        if (outcome === 'D') drawn += 1;
+      }
+
+      playerAggMap.set(userId, {
+        userId,
+        name: primaryMembership.user.ea_persona_name ?? '—',
+        club: primaryMembership.team.name,
+        teamId,
+        played: involvedMatches.length,
+        won,
+        drawn,
+        goals: 0,
+        assists: 0,
+        form: teamFormMap.get(teamId) ?? [],
+      });
+    }
+
+    for (const e of events) {
+      const agg = playerAggMap.get(e.player_id);
+      if (!agg) continue;
+      if (e.type === EventType.GOAL) agg.goals += 1;
+      if (e.type === EventType.ASSIST) agg.assists += 1;
+    }
+
+    const rows = Array.from(playerAggMap.values()).map((p) => {
+      const played = Math.max(p.played, 1);
+      const winrate = Math.round((p.won / played) * 1000) / 10;
+      const ratio = Math.round(((p.goals + p.assists) / played) * 100) / 100;
+      const pts = p.won * 3 + p.drawn + p.goals * 2 + p.assists;
+      return {
+        id: p.userId,
+        rank: 0,
+        name: p.name,
+        club: p.club,
+        pts,
+        winrate,
+        ratio,
+        form: p.form,
+      };
+    });
+
+    rows.sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.winrate !== a.winrate) return b.winrate - a.winrate;
+      if (b.ratio !== a.ratio) return b.ratio - a.ratio;
+      return a.name.localeCompare(b.name);
+    });
+
+    return rows.map((r, i) => ({ ...r, rank: i + 1 }));
+  }
+
   async getTopStats(competitionId: string): Promise<TopStatsResponse> {
     const competition = await this.prisma.competition.findUnique({
       where: { id: competitionId },
@@ -367,7 +515,7 @@ export class CompetitionsService {
     }
 
     const events = await this.prisma.matchEvent.findMany({
-      where: { match: { competition_id: competitionId, status: 'PLAYED' } },
+      where: { match: { competition_id: competitionId, status: { in: [...COUNTED_MATCH_STATUSES] } } },
       include: {
         player: { select: { id: true, ea_persona_name: true } },
         team: { select: { id: true, name: true, logo_url: true } },
@@ -407,7 +555,7 @@ export class CompetitionsService {
     }
 
     const playedMatches = await this.prisma.match.findMany({
-      where: { competition_id: competitionId, status: 'PLAYED' },
+      where: { competition_id: competitionId, status: { in: [...COUNTED_MATCH_STATUSES] } },
       select: { id: true, home_team_id: true, away_team_id: true },
     });
 
@@ -441,7 +589,7 @@ export class CompetitionsService {
 
     const events = await this.prisma.matchEvent.findMany({
       where: {
-        match: { competition_id: competitionId, status: 'PLAYED' },
+        match: { competition_id: competitionId, status: { in: [...COUNTED_MATCH_STATUSES] } },
       },
       select: {
         player_id: true,
@@ -561,12 +709,12 @@ export class CompetitionsService {
 
     // ── LEAGUE ──────────────────────────────────────────────────────────────
     if (competition.type === 'LEAGUE') {
-      const playedMatches = competition.matches.filter((m) => m.status === 'PLAYED');
+      const playedMatches = competition.matches.filter((m) => isCountedMatchStatus(m.status));
       const teams = competition.teams.map((ct) => ct.team);
       const standings = computeStandings(teams, playedMatches);
 
       const playedSorted = sortMatchesChronological(
-        competition.matches.filter((m) => m.status === 'PLAYED'),
+        competition.matches.filter((m) => isCountedMatchStatus(m.status)),
       );
       const recentMatches = playedSorted
         .slice(-15)
@@ -618,7 +766,7 @@ export class CompetitionsService {
     const groupNames = [...new Set(groupMatches.map((m) => m.round!))].sort();
     const groups = groupNames.map((groupName) => {
       const gMatches = groupMatches.filter((m) => m.round === groupName);
-      const playedGMatches = gMatches.filter((m) => m.status === 'PLAYED');
+      const playedGMatches = gMatches.filter((m) => isCountedMatchStatus(m.status));
 
       const teamMap = new Map<string, { id: string; name: string; logo_url: string | null }>();
       for (const m of gMatches) {
@@ -750,7 +898,7 @@ export class CompetitionsService {
       }>;
     },
   ): HallOfFameTeam | null {
-    const played = competition.matches.filter((m) => m.status === 'PLAYED');
+    const played = competition.matches.filter((m) => isCountedMatchStatus(m.status));
     if (played.length === 0) {
       return null;
     }

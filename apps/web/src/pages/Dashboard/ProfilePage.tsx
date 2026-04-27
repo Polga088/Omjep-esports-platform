@@ -30,7 +30,8 @@ import PlayerIdentity, { type PlayerIdentityRarity } from '@/components/PlayerId
 import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
 import { ProfileHeroMedia } from '@/components/ProfileHeroMedia';
 import { useShowcaseVortexHue } from '@/components/ProfileShowcaseHeroMedia';
-import { uploadAvatar, uploadBanner } from '@/lib/profileUploads';
+import { uploadAvatar, uploadBanner } from '@/lib/profileUploads'
+import { useModalOpenSound } from '@/hooks/useModalOpenSound'
 import PremiumPlayerProfile from '@/features/profile/components/PremiumPlayerProfile';
 import {
   fetchMyPremiumProfile,
@@ -405,6 +406,8 @@ export default function ProfilePage() {
   const [premiumProfile, setPremiumProfile] = useState<UserPremiumProfile | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
 
+  useModalOpenSound(identityModalOpen);
+
   const avatarInputId = useId();
   const bannerInputId = useId();
 
@@ -728,21 +731,21 @@ export default function ProfilePage() {
             transition={{ duration: 0.22 }}
           >
             <div
-              className={`ea-fc-tactical-profile relative w-full max-w-4xl bg-[#070b12] pb-16 ${vortexHud ? 'showcase-hud-vortex' : ''}`}
+              className={`ea-fc-tactical-profile relative w-full max-w-4xl bg-transparent pb-16 ${vortexHud ? 'showcase-hud-vortex' : ''}`}
             >
       {/* Hero — média sync URL (bannerPreview) + crossfade */}
-      <section className="relative z-[1] -mx-4 mb-0 h-96 w-[calc(100%+2rem)] overflow-hidden rounded-b-[2rem] border-b border-cyan-500/20 shadow-[0_24px_100px_rgba(0,0,0,0.72)] lg:-mx-8 lg:w-[calc(100%+4rem)]">
+      <section className="relative z-[1] -mx-4 mb-0 h-96 w-[calc(100%+2rem)] overflow-hidden border-b-[0.5px] border-black/5 lg:-mx-8 lg:w-[calc(100%+4rem)] dark:border-white/10">
         <ProfileHeroMedia savedBannerUrl={user?.activeBannerUrl ?? me?.activeBannerUrl ?? null} />
         <div className="absolute inset-0 bg-gradient-to-t from-[#070b12] via-[#070b12]/78 to-[#070b12]/28" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/45" />
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-[2] h-32 bg-gradient-to-t from-[#070b12] to-transparent" />
 
         <div className="relative z-[3] flex h-full flex-col justify-end px-6 pb-10 md:px-10">
-          <p className="font-display text-[10px] font-black uppercase tracking-[0.55em] text-cyan-300/90 drop-shadow-[0_0_22px_rgba(34,211,238,0.55)]">
-            Gamer Showcase HUD
+          <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-black/55 dark:text-white/55">
+            Identity Card
           </p>
-          <h1 className="mt-1 font-display text-2xl font-black uppercase tracking-tight text-white md:text-3xl [text-shadow:0_0_48px_rgba(234,179,8,0.28)]">
-            Carte joueur
+          <h1 className="mt-1 font-sans text-4xl font-bold uppercase tracking-tight text-black dark:text-white">
+            PROFIL
           </h1>
         </div>
       </section>
@@ -792,13 +795,13 @@ export default function ProfilePage() {
 
         <div className="relative z-[16] flex flex-col gap-6 pt-[160px] md:flex-row md:items-end md:gap-8 md:pl-[300px] md:pt-12 md:pb-1">
           <div className="min-w-0 flex-1 text-center md:text-left">
-            <p className="font-display text-xs font-bold uppercase tracking-[0.28em] text-amber-400/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.85),0_0_12px_rgba(251,191,36,0.3)]">
-              Profil
+            <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-black/55 dark:text-white/55">
+              Identité
             </p>
-            <p className="mt-1 truncate font-display text-xl font-black text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.9),0_0_24px_rgba(34,211,238,0.35)] md:text-2xl">
+            <p className="mt-1 truncate font-mono text-4xl font-semibold text-black dark:text-white">
               {form.ea_persona_name?.trim() || 'Votre pseudo EA'}
             </p>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-3 text-[10px] font-mono uppercase tracking-[0.3em] text-black/45 dark:text-white/45">
               {form.preferred_position
                 ? POSITIONS.find((p) => p.value === form.preferred_position)?.label ?? form.preferred_position
                 : 'Position à définir'}
@@ -806,11 +809,30 @@ export default function ProfilePage() {
             </p>
             <Link
               to={storeCosmeticsHref}
-              className="showcase-neon-link mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-cyan-400/55 bg-cyan-500/10 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-cyan-200 shadow-[0_0_28px_rgba(34,211,238,0.35),inset_0_1px_0_rgba(255,255,255,0.08)] transition-all hover:border-cyan-300/80 hover:bg-cyan-500/15 hover:shadow-[0_0_40px_rgba(34,211,238,0.5)] md:inline-flex"
+              className="mt-5 inline-flex items-center justify-center gap-2 border-[0.5px] border-black/20 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.3em] text-black dark:border-white/20 dark:text-white md:inline-flex"
             >
-              <Sparkles className="h-4 w-4 text-cyan-300" />
-              Personnaliser mon Profil
+              <Sparkles className="h-4 w-4" />
+              [ PERSONNALISER ]
             </Link>
+          </div>
+        </div>
+
+        <div className="mt-10 space-y-5 border-t-[0.5px] border-black/5 pt-8 dark:border-white/10">
+          <div className="border-b-[0.5px] border-black/5 pb-4 dark:border-white/10">
+            <p className="text-[9px] font-mono uppercase tracking-[0.35em] text-black/50 dark:text-white/50">PSEUDO EA</p>
+            <p className="mt-1 font-mono text-4xl text-black dark:text-white">{form.ea_persona_name?.trim() || '—'}</p>
+          </div>
+          <div className="border-b-[0.5px] border-black/5 pb-4 dark:border-white/10">
+            <p className="text-[9px] font-mono uppercase tracking-[0.35em] text-black/50 dark:text-white/50">POSITION</p>
+            <p className="mt-1 font-mono text-4xl text-black dark:text-white">
+              {form.preferred_position
+                ? POSITIONS.find((p) => p.value === form.preferred_position)?.label ?? form.preferred_position
+                : '—'}
+            </p>
+          </div>
+          <div className="border-b-[0.5px] border-black/5 pb-4 dark:border-white/10">
+            <p className="text-[9px] font-mono uppercase tracking-[0.35em] text-black/50 dark:text-white/50">NATIONALITÉ</p>
+            <p className="mt-1 font-mono text-4xl text-black dark:text-white">{form.nationality || '—'}</p>
           </div>
         </div>
 
@@ -1001,12 +1023,25 @@ export default function ProfilePage() {
 
       {identityModalOpen ? (
         <div
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+          className="tactical-modal-backdrop z-[200]"
           role="dialog"
           aria-modal="true"
           aria-labelledby="identity-modal-title"
         >
-          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-cyan-500/20 bg-[#0c1018] p-6 shadow-[0_0_48px_rgba(34,211,238,0.12)]">
+          <div
+            className="tactical-modal-dim"
+            onClick={() => {
+              setIdentityModalOpen(false);
+              setAvatarFile(null);
+              setBannerFile(null);
+            }}
+            role="presentation"
+            aria-hidden
+          />
+          <div
+            className="tactical-modal-panel max-w-md border border-cyan-500/20 p-6 shadow-[0_0_48px_rgba(34,211,238,0.12)]"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
               onClick={() => {

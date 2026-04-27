@@ -18,3 +18,12 @@ export function formatCurrency(amount: number, type: CurrencyBrand): string {
   const suffix = type === 'OC' ? 'OC' : 'Jepy';
   return `${num} ${suffix}`;
 }
+
+/** Chiffres seuls (même logique que formatCurrency, sans suffixe) — affichage HUD `> [ … ] <` */
+export function formatAmountDigits(amount: number): string {
+  const n = Number.isFinite(amount) ? amount : 0;
+  const abs = Math.abs(n);
+  if (abs >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
+  if (abs >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
+  return n.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
+}

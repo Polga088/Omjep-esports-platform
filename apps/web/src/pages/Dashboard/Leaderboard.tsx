@@ -68,9 +68,9 @@ export function LeaderboardRow({
   return (
     <Link
       to={`/dashboard/profile/${entry.id}`}
-      className={`leaderboard-row group block transition-colors duration-150 hover:bg-white/[0.02] ${
+      className={`leaderboard-row group block transition-colors duration-150 hover:bg-white/[0.05] ${
         isMe ? 'border-l-2 border-cyan-400 bg-white/[0.04]' : 'border-l-2 border-transparent'
-      } ${!isLast ? 'border-b-[0.5px] border-white/[0.05]' : ''}`}
+      } ${!isLast ? 'border-b border-black/10 dark:border-white/20' : ''}`}
     >
       <div className={LEADERBOARD_ROW_GRID_CLASS}>
         <div className="text-center font-mono text-xs font-semibold tabular-nums text-white/80">
@@ -163,20 +163,17 @@ export default function Leaderboard() {
         </Link>
       </div>
 
-      <div className="rounded-[12px] border-[0.5px] border-white/10 bg-[#08090c] p-6">
+      <div className="rounded-none border border-black/10 bg-transparent p-12 dark:border-white/20">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg border-[0.5px] border-white/10 bg-white/[0.03]">
-            <Trophy className="h-5 w-5 text-amber-400/90" />
-          </div>
           <div>
-            <h1 className="font-display text-2xl font-black tracking-tight text-white">Classement global</h1>
-            <p className="mt-0.5 text-xs text-white/35">XP — Top joueurs de la plateforme</p>
+            <h1 className="font-display text-4xl font-bold tracking-tight text-black dark:text-white">CLASSEMENT</h1>
+            <p className="mt-0.5 text-[12px] uppercase tracking-widest opacity-50">XP — Top joueurs</p>
           </div>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 rounded-[12px] border-[0.5px] border-white/10 bg-[#08090c] py-16">
+        <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 rounded-[12px] border border-black/10 bg-[#08090c] py-16 dark:border-white/20">
           <Loader2 className="h-8 w-8 animate-spin text-white/30" />
           <p className="text-sm text-white/35">Chargement du classement…</p>
         </div>
@@ -190,8 +187,8 @@ export default function Leaderboard() {
       ) : null}
 
       {!loading && !error ? (
-        <div className="overflow-hidden rounded-[12px] border-[0.5px] border-white/10 bg-[#08090c]">
-          <div className="flex items-center gap-2 border-b-[0.5px] border-white/[0.05] px-3 py-3 sm:px-4">
+        <div className="overflow-hidden rounded-[12px] border border-black/10 bg-[#08090c] dark:border-white/20">
+          <div className="flex items-center gap-2 border-b border-black/10 px-3 py-3 sm:px-4 dark:border-white/20">
             <Users className="h-3.5 w-3.5 text-white/30" />
             <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Classement XP</h2>
             <span className="ml-auto font-mono text-[10px] tabular-nums text-white/30">
@@ -200,7 +197,7 @@ export default function Leaderboard() {
           </div>
 
           <div
-            className={`hidden sm:grid ${LEADERBOARD_ROW_GRID_CLASS} border-b-[0.5px] border-white/[0.05] py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white/30`}
+            className={`hidden sm:grid ${LEADERBOARD_ROW_GRID_CLASS} border-b border-black/10 py-2.5 text-[12px] font-semibold uppercase tracking-widest text-white/30 dark:border-white/20`}
           >
             <span className="text-center">#</span>
             <span className="text-center" aria-hidden>

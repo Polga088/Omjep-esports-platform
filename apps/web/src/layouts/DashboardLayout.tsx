@@ -1,62 +1,71 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, type MouseEvent as ReactMouseEvent } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Crown, LayoutDashboard, Users, Trophy, ShoppingBag,
-  LogOut, ChevronRight, Menu, X, UserCog, Swords, Settings, Wallet, Repeat, Scale, Gamepad2, Calendar,
+  LayoutDashboard,
+  Users,
+  ShoppingBag,
+  UserCog,
+  Swords,
+  Settings,
+  Repeat,
+  Gamepad2,
+  Calendar,
   Building2,
   Dices,
   Medal,
   MessageCircle,
   Coins,
   Archive,
-  LifeBuoy,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import PlayerIdentity from '@/components/PlayerIdentity';
 import NotificationCenter from '@/components/NotificationCenter';
 import LiveTicker from '@/components/LiveTicker';
 import GoldConfetti from '@/components/GoldConfetti';
+import SystemStatusIndicator from '@/components/SystemStatusIndicator';
+import BottomDock, { type DockItem } from '@/components/cockpit/BottomDock';
+import CinematicRouteStage from '@/components/cockpit/CinematicRouteStage';
+import ContactZone from '@/components/cockpit/ContactZone';
 import { useTransferNotifications } from '@/hooks/useTransferNotifications';
 import { useAppNotifications } from '@/hooks/useAppNotifications';
 import { useAppNotificationStore } from '@/store/useAppNotificationStore';
 import api from '@/lib/api';
-import { formatCurrency } from '@/utils/formatCurrency';
+import { formatAmountDigits } from '@/utils/formatCurrency';
 import {
   fetchMyPremiumProfile,
   getEquippedCardStyle,
   mapCardRarityToIdentityRarity,
 } from '@/features/profile/mocks/premiumProfile.mock';
+import { useTheme } from '@/context/ThemeContext';
 
-type SidebarLink = {
-  to: string;
-  label: string;
-  icon: typeof LayoutDashboard;
-  exact?: boolean;
-  managerOnly?: boolean;
+const dockPrimary: DockItem[] = [
+  { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
+  { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
+  { to: '/dashboard/transfers', label: 'Mercato', icon: Repeat },
+  { to: '/dashboard/leaderboard', label: 'Classement', icon: Medal },
+  { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
+  { to: '/dashboard/predictions', label: 'Predict', icon: Dices },
+];
+
+const dockCenter: DockItem = {
+  to: '/dashboard',
+  label: 'Cockpit',
+  icon: LayoutDashboard,
+  exact: true,
 };
 
-const sidebarLinks: SidebarLink[] = [
-  { to: '/dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard, exact: true },
-  { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
-  { to: '/dashboard/ladder', label: 'Classement clubs', icon: Trophy },
-  { to: '/dashboard/leaderboard', label: 'Classement global', icon: Medal },
-  { to: '/hall-of-fame', label: 'Palmarès', icon: Medal },
-  { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
+const dockSecondary: DockItem[] = [
   { to: '/dashboard/schedule', label: 'Calendrier', icon: Calendar },
-  { to: '/dashboard/gamification', label: 'Mon Parcours', icon: Gamepad2 },
-  { to: '/dashboard/predictions', label: 'Predict & Win', icon: Dices },
-  { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
+  { to: '/dashboard/gamification', label: 'Parcours', icon: Gamepad2 },
   { to: '/dashboard/vault', label: 'The Vault', icon: Archive },
-  { to: '/dashboard/transfers', label: 'Mercato Live', icon: Repeat },
   { to: '/dashboard/chat', label: 'Tactical Link', icon: MessageCircle },
-  { to: '/dashboard/support', label: 'Support', icon: LifeBuoy },
-  { to: '/dashboard/profile', label: 'Mon Profil', icon: UserCog },
+  { to: '/dashboard/profile', label: 'Profil', icon: UserCog },
   { to: '/dashboard/settings', label: 'Paramètres', icon: Settings },
-  { to: '/dashboard/manager/club', label: 'Créer mon club', icon: Building2, managerOnly: true },
 ];
 
 const pageTitles: Record<string, string> = {
-  '/dashboard': 'Vue d\'ensemble',
+  '/dashboard': 'Cockpit',
   '/dashboard/team': 'Mon Équipe',
   '/dashboard/ladder': 'Classement clubs',
   '/dashboard/leaderboard': 'Classement global',
@@ -75,12 +84,14 @@ const pageTitles: Record<string, string> = {
 };
 
 export default function DashboardLayout() {
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === 'dark';
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, patchUser } = useAuthStore();
   const isManagerRole = user?.role === 'MANAGER';
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [budget, setBudget] = useState<number | null>(null);
+  const [extraOpen, setExtraOpen] = useState(false);
   const { showConfetti, mercatoLiveBadge } = useTransferNotifications();
   const { notifications, refreshNotifications, syncUnread } = useAppNotifications();
   const appUnreadCount = useAppNotificationStore((s) => s.unreadCount);
@@ -95,6 +106,20 @@ export default function DashboardLayout() {
   useEffect(() => {
     refreshTeamBudget();
   }, [refreshTeamBudget]);
+
+  /** Plein écran cockpit : bloque le scroll body. */
+  useEffect(() => {
+    const prevHtml = document.documentElement.style.overflow;
+    const prevBody = document.body.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.documentElement.classList.add('cockpit-fullscreen');
+    return () => {
+      document.documentElement.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
+      document.documentElement.classList.remove('cockpit-fullscreen');
+    };
+  }, []);
 
   /** Mercato / transferts : budget club + portefeuille à jour */
   useEffect(() => {
@@ -190,42 +215,73 @@ export default function DashboardLayout() {
     };
   }, [patchUser]);
 
+  /** Auto-close du panneau extras quand la route change */
+  useEffect(() => {
+    setExtraOpen(false);
+  }, [location.pathname]);
+
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
-  const isActive = (to: string, exact?: boolean) => {
-    if (exact) return location.pathname === to;
-    return location.pathname.startsWith(to);
+  const currentPageTitle =
+    pageTitles[location.pathname] ?? location.pathname.split('/').pop() ?? '';
+  const rawOc = user?.omjepCoins ?? 100000;
+  const rawJepy = user?.jepyCoins ?? 0;
+  const walletText = `${rawOc.toLocaleString('de-DE')} OC`;
+  const jepyText = `${rawJepy.toLocaleString('de-DE')} JPY`;
+  const budgetText = budget !== null ? `${formatAmountDigits(budget)} OC` : null;
+
+  const handleDashboardMouseMove = (event: ReactMouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left - rect.width / 2;
+    const y = event.clientY - rect.top - rect.height / 2;
+    event.currentTarget.style.setProperty('--omjep-mx', `${x}px`);
+    event.currentTarget.style.setProperty('--omjep-my', `${y}px`);
   };
 
-  const currentPageTitle = pageTitles[location.pathname] ?? location.pathname.split('/').pop();
+  const handleDashboardMouseLeave = (event: ReactMouseEvent<HTMLDivElement>) => {
+    event.currentTarget.style.setProperty('--omjep-mx', '0px');
+    event.currentTarget.style.setProperty('--omjep-my', '0px');
+  };
 
-  const SidebarContent = () => (
-    <>
-      {/* Logo */}
-      <div className="p-6 border-b border-amber-400/10">
-        <Link to="/" className="flex items-center gap-3 group" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-400/20">
-            <Crown className="w-5 h-5 text-[#0A0E1A]" fill="currentColor" />
-          </div>
-          <div>
-            <span className="font-bold text-sm tracking-widest text-amber-400 uppercase block leading-tight">
-              OMJEP
-            </span>
-            <span className="text-[10px] text-slate-500 tracking-wider uppercase leading-tight block">
-              Org. Marocaine des Jeux Électroniques Pro
-            </span>
-          </div>
+  const dockItems = useMemo(() => {
+    const list = [...dockPrimary];
+    if (isManagerRole) list.push({ to: '/dashboard/manager/club', label: 'Club Manager', icon: Building2 });
+    return list;
+  }, [isManagerRole]);
+
+  return (
+    <div
+      className={`dashboard-layout-shell dashboard-cockpit-shell fixed inset-0 z-0 flex h-[100dvh] w-[100vw] flex-col overflow-hidden ${isDark ? 'bg-[#000000] text-slate-100' : 'bg-[#FFFFFF] text-slate-900'}`}
+      onMouseMove={handleDashboardMouseMove}
+      onMouseLeave={handleDashboardMouseLeave}
+    >
+      <GoldConfetti active={showConfetti} />
+
+      {/* Top HUD compact (toujours visible) */}
+      <header className={`dashboard-cockpit-topbar relative z-30 flex h-14 shrink-0 items-center gap-3 border-b px-3 backdrop-blur-2xl sm:px-5 ${isDark ? 'border-white/10 bg-black' : 'border-black/10 bg-white'}`}>
+        <Link
+          to="/dashboard"
+          className="flex shrink-0 items-center gap-2"
+          aria-label="Cockpit OMJEP"
+        >
+          <span className={`font-heading text-[11px] font-semibold uppercase tracking-[0.28em] ${isDark ? 'text-white/80' : 'text-black/80'}`}>
+            OMJEP
+          </span>
         </Link>
-      </div>
 
-      {/* User info */}
-      <div className="px-4 py-4 border-b border-amber-400/10">
-        <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-white/5">
+        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
+
+        <div className={`font-mono min-w-0 flex-1 truncate text-[11px] uppercase tracking-[0.24em] ${isDark ? 'text-white/50' : 'text-black/50'}`}>
+          {currentPageTitle}
+        </div>
+
+        {/* Identité minimale */}
+        <div className="hidden items-center gap-2 lg:flex">
           <PlayerIdentity
-            size="xs"
+            size="sm"
             initial={user?.ea_persona_name?.charAt(0) ?? 'U'}
             avatarUrl={user?.avatarUrl}
             rarity={user?.avatarRarity ?? 'common'}
@@ -233,225 +289,176 @@ export default function DashboardLayout() {
             activeJerseyId={user?.activeJerseyId}
             teamPrimaryColor={user?.teamPrimaryColor}
             teamSecondaryColor={user?.teamSecondaryColor}
-            className="shrink-0"
           />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">{user?.ea_persona_name ?? 'Joueur'}</p>
-              {user?.isPremium === true && (
-                <span
-                  className="inline-flex shrink-0 items-center justify-center rounded-md border border-amber-400/35 bg-gradient-to-br from-amber-400/20 to-amber-600/10 p-1 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.25)]"
-                  title="VIP"
-                  aria-label="Compte VIP"
-                >
-                  <Crown className="h-3.5 w-3.5" fill="currentColor" />
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-slate-500">
-              {user?.role === 'MODERATOR'
-                ? 'Commissaire'
-                : user?.role === 'ADMIN'
-                  ? 'Admin'
-                  : user?.role === 'MANAGER'
-                    ? 'Manager'
-                    : 'Joueur'}
+          <div className="min-w-0 leading-none">
+            <p className={`truncate font-display text-xs font-bold ${isDark ? 'text-white' : 'text-black'}`}>
+              {user?.ea_persona_name ?? 'Joueur'}
+            </p>
+            <p className={`text-[9px] font-bold uppercase tracking-[0.22em] ${isDark ? 'text-white/45' : 'text-black/45'}`}>
+              {user?.role === 'MANAGER' ? 'Manager' : user?.role === 'ADMIN' ? 'Admin' : 'Joueur'}
             </p>
           </div>
         </div>
-      </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-4 py-4 space-y-1">
-        {sidebarLinks
-          .filter((link) => !link.managerOnly || user?.role === 'MANAGER')
-          .map(({ to, label, icon: Icon, exact }) => {
-          const active = isActive(to, exact);
-          const mercatoPulse = to === '/dashboard/transfers' && mercatoLiveBadge;
-          return (
-            <Link
-              key={to}
-              to={to}
-              onClick={() => setSidebarOpen(false)}
-              className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
-                active
-                  ? 'text-amber-400 bg-amber-400/10 border border-amber-400/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
-              }`}
-            >
-              <span className="relative shrink-0">
-                <Icon
-                  className={`w-4 h-4 transition-colors duration-200 ${
-                    active ? 'text-amber-400' : 'text-slate-500 group-hover:text-slate-300'
-                  }`}
-                  style={
-                    active
-                      ? {
-                          filter:
-                            'drop-shadow(0 0 3px rgba(34, 211, 238, 0.35)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.1))',
-                        }
-                      : undefined
-                  }
-                />
-                {mercatoPulse && (
-                  <span
-                    className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#020617]"
-                    aria-hidden
-                  />
-                )}
-              </span>
-              <span className="flex-1">{label}</span>
-              {active && <ChevronRight className="w-3.5 h-3.5 text-amber-400/60" />}
-            </Link>
-          );
-        })}
+        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
 
-        {user?.role === 'MODERATOR' && (
-          <Link
-            to="/moderator"
-            onClick={() => setSidebarOpen(false)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group mt-2 border ${
-              location.pathname.startsWith('/moderator')
-                ? 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20'
-                : 'text-slate-400 hover:text-cyan-300 hover:bg-cyan-400/5 border-transparent'
-            }`}
-          >
-            <Scale
-              className="w-4 h-4 shrink-0"
-              style={
-                location.pathname.startsWith('/moderator')
-                  ? {
-                      filter:
-                        'drop-shadow(0 0 3px rgba(34, 211, 238, 0.4)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.12))',
-                    }
-                  : undefined
-              }
-            />
-            <span className="flex-1">Commissaire de ligue</span>
-            {location.pathname.startsWith('/moderator') && (
-              <ChevronRight className="w-3.5 h-3.5 text-cyan-400/60" />
-            )}
-          </Link>
-        )}
-      </nav>
-
-      {/* Logout */}
-      <div className="p-4 border-t border-amber-400/10">
         <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:text-red-400 hover:bg-red-500/5 border border-transparent hover:border-red-500/10 transition-all group"
+          type="button"
+          className={`font-mono text-[11px] tracking-[0.14em] rounded-none border px-3 py-1.5 ${isDark ? 'border-white/20 bg-black/60 text-white' : 'border-black/10 bg-black/[0.03] text-black'}`}
         >
-          <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-          Déconnexion
+          {walletText}
         </button>
-      </div>
-    </>
-  );
+        <button
+          type="button"
+          className={`font-mono text-[11px] tracking-[0.14em] rounded-none border px-3 py-1.5 ${isDark ? 'border-white/20 bg-black/60 text-white' : 'border-black/10 bg-black/[0.03] text-black'}`}
+        >
+          {jepyText}
+        </button>
+        {isManagerRole && budgetText ? (
+          <>
+            <span className={`hidden h-5 w-px md:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
+            <div className={`hidden rounded-none border px-3 py-1.5 font-mono text-[11px] tracking-[0.14em] md:block ${isDark ? 'border-white/20 bg-black/60 text-white/85' : 'border-black/10 bg-black/[0.03] text-black/85'}`}>
+              {budgetText}
+            </div>
+          </>
+        ) : null}
 
-  return (
-    <div className="min-h-screen bg-[#070b12] text-slate-100 flex">
-      <GoldConfetti active={showConfetti} />
+        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
+        <button
+          type="button"
+          onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+          className={`font-mono text-[11px] uppercase tracking-[0.2em] transition-none ${isDark ? 'text-white hover:text-white' : 'text-black hover:text-black'}`}
+        >
+          [ {isDark ? 'DARK' : 'LIGHT'} ]
+        </button>
+        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
+        <div className={`${isDark ? 'text-white/70' : 'text-black/70'}`}>
+          <SystemStatusIndicator />
+        </div>
 
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-black/60 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+        <NotificationCenter
+          appUnreadCount={appUnreadCount}
+          inboxNotifications={notifications}
+          onRefreshInbox={async () => {
+            await refreshNotifications();
+            await syncUnread();
+          }}
         />
-      )}
 
-      {/* Sidebar — desktop always visible, mobile drawer */}
-      <aside
-        className={`
-          fixed lg:static inset-y-0 left-0 z-30
-          w-64 min-h-screen flex flex-col
-          border-r border-amber-400/10 bg-[#020617]
-          transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}
+        <button
+          type="button"
+          onClick={handleLogout}
+          aria-label="Déconnexion"
+          className={`hidden rounded-none border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] transition-none md:inline-flex ${isDark ? 'border-white/20 bg-black/60 text-white hover:text-white' : 'border-black/10 bg-black/[0.03] text-black hover:text-black'}`}
+        >
+          &gt; [ LOGOUT ] &lt;
+        </button>
+      </header>
+
+      {/* Live ticker tout en haut du flux principal */}
+      <div className={`shrink-0 ${isDark ? 'bg-black' : 'bg-white'}`}>
+        <LiveTicker />
+      </div>
+
+      {/* Stage cinématique — 100% width, scroll interne par widget */}
+      <main
+        id="cockpit-stage"
+        className="dashboard-cockpit-stage relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-hidden"
       >
-        <SidebarContent />
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
-        <header className="dashboard-top-glass sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-white/[0.07] bg-[#070b12]/45 px-4 shadow-[0_10px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl backdrop-saturate-150 lg:px-8">
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
-            aria-label="Ouvrir le menu"
-          >
-            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-
-          <div className="flex items-center gap-2 text-sm text-slate-500">
-            <span>Dashboard</span>
-            {location.pathname !== '/dashboard' && (
-              <>
-                <ChevronRight className="w-3.5 h-3.5" />
-                <span className="text-slate-300 capitalize">{currentPageTitle}</span>
-              </>
-            )}
-          </div>
-
-          <div className="ml-auto flex items-center gap-2 sm:gap-3 flex-wrap justify-end max-w-[min(100vw-6rem,36rem)]">
-            <div
-              className="flex items-center gap-1.5 rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-2 sm:px-2.5 py-1.5 transition-colors hover:border-white/20"
-              title="Jepy"
-            >
-              <Coins className="w-3.5 h-3.5 shrink-0 text-indigo-400" />
-              <span className="hidden text-[10px] font-medium uppercase tracking-wide text-indigo-400 sm:inline">
-                Jepy
-              </span>
-              <span className="font-mono text-xs font-semibold tabular-nums text-indigo-400 sm:text-sm">
-                {formatCurrency(user?.jepyCoins ?? 0, 'Jepy')}
-              </span>
-            </div>
-            <div
-              className="flex items-center gap-1.5 rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-2 sm:px-2.5 py-1.5 transition-colors hover:border-white/20"
-              title="OMJEP perso"
-            >
-              <Coins className="w-3.5 h-3.5 shrink-0 text-amber-400" />
-              <span className="hidden text-[10px] font-medium uppercase tracking-wide text-amber-400 sm:inline">
-                OC
-              </span>
-              <span className="font-mono text-xs font-semibold tabular-nums text-amber-400 sm:text-sm">
-                {formatCurrency(user?.omjepCoins ?? 0, 'OC')}
-              </span>
-            </div>
-            {isManagerRole && budget !== null && (
-              <div
-                className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20"
-                title="Budget club"
-              >
-                <Wallet className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span className="text-[10px] uppercase tracking-wide text-slate-500 hidden sm:inline">Club</span>
-                <span className="text-xs sm:text-sm font-bold text-emerald-400 tabular-nums">
-                  {formatCurrency(budget, 'OC')}
-                </span>
+        <div className="relative flex h-full w-full flex-1 flex-col overflow-hidden p-4 sm:p-6 lg:p-7">
+          <CinematicRouteStage>
+            <div className="dashboard-cockpit-canvas relative h-full w-full overflow-hidden">
+              <div className="absolute inset-0 overflow-y-auto pb-28 pr-1.5">
+                <Outlet />
               </div>
-            )}
-            <NotificationCenter
-              appUnreadCount={appUnreadCount}
-              inboxNotifications={notifications}
-              onRefreshInbox={async () => {
-                await refreshNotifications();
-                await syncUnread();
-              }}
-            />
-          </div>
-        </header>
-
-        <div className="shrink-0">
-          <LiveTicker />
+            </div>
+          </CinematicRouteStage>
         </div>
-
-        <div className="dashboard-layout-scroll flex-1 overflow-auto p-4 lg:p-8">
-          <Outlet />
-        </div>
+        {mercatoLiveBadge && (
+          <span
+            className="pointer-events-none fixed right-4 top-16 z-40 rounded-full border border-emerald-400/55 bg-[#020202]/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-200 shadow-[0_0_24px_-4px_rgba(34,197,94,0.55)]"
+            aria-live="polite"
+          >
+            Mercato live
+          </span>
+        )}
       </main>
+
+      {/* Satellite hub : flou gaussien progressif sur le cockpit */}
+      <AnimatePresence>
+        {extraOpen ? (
+          <>
+            <motion.button
+              key="cockpit-satellite-scrim"
+              type="button"
+              aria-label="Fermer le menu étendu"
+              onClick={() => setExtraOpen(false)}
+              className="cockpit-satellite-scrim fixed inset-0 z-[38] cursor-default border-0 p-0"
+              initial={{ opacity: 0, ['--satellite-blur' as string]: 'blur(0px)' }}
+              animate={{ opacity: 1, ['--satellite-blur' as string]: 'blur(24px)' }}
+              exit={{ opacity: 0, ['--satellite-blur' as string]: 'blur(0px)' }}
+              transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <motion.aside
+              key="cockpit-satellite-panel"
+              role="dialog"
+              aria-label="Modules secondaires"
+              aria-modal="true"
+              className={`cockpit-satellite-panel fixed bottom-24 left-1/2 z-[45] w-[min(92vw,520px)] -translate-x-1/2 rounded-3xl border-none p-8 shadow-2xl backdrop-blur-2xl ${isDark ? 'bg-white/[0.05]' : 'bg-black/[0.05]'}`}
+              initial={{ opacity: 0, y: 32, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.94 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 34, mass: 0.85 }}
+            >
+              <div className="mb-6 flex items-center justify-between">
+              <p className={`font-heading text-[11px] font-semibold uppercase tracking-[0.24em] ${isDark ? 'text-white/70' : 'text-black/70'}`}>
+                Modules satellites
+              </p>
+                <button
+                  type="button"
+                  onClick={() => setExtraOpen(false)}
+                  className={`text-[10px] uppercase tracking-[0.2em] transition ${isDark ? 'text-white/55 hover:text-white' : 'text-black/55 hover:text-black'}`}
+                >
+                  Close
+                </button>
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-3">
+                {dockSecondary.map((it) => {
+                  const Icon = it.icon;
+                  return (
+                    <Link
+                      key={it.to}
+                      to={it.to}
+                      onClick={() => setExtraOpen(false)}
+                      className={`group flex flex-col items-center justify-center gap-1.5 rounded-2xl border-none p-4 shadow-2xl backdrop-blur-xl transition-colors ${isDark ? 'bg-white/[0.04] text-white/85 hover:text-white' : 'bg-black/[0.04] text-black/85 hover:text-black'}`}
+                    >
+                      <Icon className="h-5 w-5" aria-hidden />
+                      <span className={`text-[10px] font-semibold uppercase tracking-wider ${isDark ? 'text-white/70' : 'text-black/70'}`}>
+                        {it.label}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </motion.aside>
+          </>
+        ) : null}
+      </AnimatePresence>
+
+      {/* Dock flottant */}
+      <BottomDock items={dockItems} centerItem={dockCenter} />
+
+      {/* Bouton "+" extras */}
+      <button
+        type="button"
+        onClick={() => setExtraOpen((v) => !v)}
+        aria-label="Ouvrir les modules secondaires"
+        aria-expanded={extraOpen}
+        className="contact-zone fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-emerald-500/35 bg-[#020202]/90 text-emerald-300 backdrop-blur-2xl transition-[border-color,box-shadow,color] hover:border-emerald-300/85 hover:text-white hover:shadow-[0_0_28px_-4px_rgba(34,197,94,0.6)]"
+      >
+        <span className={`text-xl font-light leading-none transition-transform ${extraOpen ? 'rotate-45' : ''}`}>+</span>
+      </button>
     </div>
   );
 }

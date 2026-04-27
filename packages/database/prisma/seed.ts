@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 const SALT_ROUNDS = 10;
 const DEFAULT_PASSWORD = 'Test1234!';
+const ADMIN_EMAIL = (process.env.OMJEP_ADMIN_EMAIL ?? 'admin@omjep.test').trim().toLowerCase();
+const ADMIN_PASSWORD = process.env.OMJEP_ADMIN_PASSWORD ?? DEFAULT_PASSWORD;
 
 const clubs = [
   {
@@ -194,16 +196,25 @@ const managers = [
 async function main() {
   console.log('🌱 Début du seeding...\n');
 
-  const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, SALT_ROUNDS);
+  const managerPasswordHash = await bcrypt.hash(DEFAULT_PASSWORD, SALT_ROUNDS);
+  const adminPasswordHash = await bcrypt.hash(ADMIN_PASSWORD, SALT_ROUNDS);
 
   // ─── 1. Admin account ──────────────────────────────────────────────
   console.log('👤 Création du compte admin...');
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@omjep.test' },
-    update: {},
+    where: { email: ADMIN_EMAIL },
+    update: {
+      password_hash: adminPasswordHash,
+      role: UserRole.ADMIN,
+      ea_persona_name: 'OmjepAdmin',
+      nationality: 'DZ',
+      level: 99,
+      xp: 999999,
+      omjepCoins: 100000,
+    },
     create: {
-      email: 'admin@omjep.test',
-      password_hash: passwordHash,
+      email: ADMIN_EMAIL,
+      password_hash: adminPasswordHash,
       role: UserRole.ADMIN,
       ea_persona_name: 'OmjepAdmin',
       nationality: 'DZ',
@@ -225,10 +236,9 @@ async function main() {
     // Create manager user
     const manager = await prisma.user.upsert({
       where: { email: managerData.email },
-      update: {},
       create: {
         email: managerData.email,
-        password_hash: passwordHash,
+        password_hash: managerPasswordHash,
         role: UserRole.MANAGER,
         ea_persona_name: managerData.ea_persona_name,
         gamertag_psn: managerData.gamertag_psn ?? null,
@@ -239,6 +249,18 @@ async function main() {
         xp: managerData.xp,
         omjepCoins: managerData.omjepCoins,
         stats: { create: {} },
+      },
+      update: {
+        password_hash: managerPasswordHash,
+        role: UserRole.MANAGER,
+        ea_persona_name: managerData.ea_persona_name,
+        gamertag_psn: managerData.gamertag_psn ?? null,
+        gamertag_xbox: managerData.gamertag_xbox ?? null,
+        nationality: managerData.nationality,
+        preferred_position: managerData.preferred_position,
+        level: managerData.level,
+        xp: managerData.xp,
+        omjepCoins: managerData.omjepCoins,
       },
     });
 
@@ -284,10 +306,12 @@ async function main() {
   console.log('─'.repeat(55));
   console.log('✅ Seeding terminé avec succès !');
   console.log('─'.repeat(55));
-  console.log('\n📋 Comptes de test (mot de passe : Test1234!) :\n');
+  console.log('\n📋 Comptes de test :\n');
   console.log('  ADMIN :');
-  console.log('    admin@omjep.test');
+  console.log(`    ${ADMIN_EMAIL}`);
+  console.log(`    mot de passe: ${ADMIN_PASSWORD}`);
   console.log('\n  MANAGERS (10 comptes) :');
+  console.log(`    mot de passe: ${DEFAULT_PASSWORD}`);
   managers.forEach((m) => console.log(`    ${m.email}`));
   console.log('');
 }

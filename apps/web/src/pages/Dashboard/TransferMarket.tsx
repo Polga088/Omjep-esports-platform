@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo, type ComponentProps } from '
 import { Link } from 'react-router-dom';
 import {
   Repeat, Send, Inbox, Loader2, Check, X, Clock,
-  ShieldCheck, MessageCircle, User, Gavel, Users,
+  MessageCircle, User, Gavel, Users,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
@@ -50,27 +50,27 @@ function timeAgo(dateStr: string): string {
 const statusConfig = {
   PENDING: {
     label: 'En attente',
-    className: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
     icon: Clock,
   },
   ACCEPTED: {
     label: 'Signé',
-    className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
     icon: Check,
   },
   REJECTED: {
     label: 'Refusé',
-    className: 'bg-red-500/15 text-red-400 border-red-500/30',
+    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
     icon: X,
   },
   COUNTER_OFFER: {
     label: 'Contre-proposition',
-    className: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
     icon: MessageCircle,
   },
   CANCELLED: {
     label: 'Annulée',
-    className: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
+    className: 'bg-transparent text-black/70 dark:text-white/70 border-neutral-200 dark:border-neutral-800',
     icon: X,
   },
 } as const;
@@ -296,25 +296,25 @@ export default function TransferMarket() {
             type="button"
             disabled={busy || signLocked}
             onClick={() => buyerRespond(offer.id, { action: 'ACCEPT_COUNTER' })}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+            className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-bold text-black dark:border-neutral-800 dark:text-white"
           >
             {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-            Accepter les termes du joueur
+            &gt; [ ACCEPTER ] &lt;
           </button>
           <button
             type="button"
             disabled={busy}
             onClick={() => buyerRespond(offer.id, { action: 'REJECT' })}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-white/5 text-slate-400 border border-white/10"
+            className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-bold text-black/70 dark:border-neutral-800 dark:text-white/70"
           >
-            Abandonner
+            &gt; [ ABANDONNER ] &lt;
           </button>
         </div>
-        <div className="rounded-xl border border-[#FFD700]/15 p-3 space-y-2">
-          <p className="text-[10px] uppercase text-slate-500 font-bold">Nouvelle proposition</p>
+        <div className="rounded-none border border-neutral-200 p-3 space-y-2 dark:border-neutral-800">
+          <p className="text-[10px] font-bold uppercase text-black/60 dark:text-white/60">Nouvelle proposition</p>
           <div className="grid grid-cols-3 gap-2">
             <input
-              className="w-full px-2 py-1.5 rounded-lg bg-[#0D1221] border border-white/10 text-xs text-white"
+              className="w-full rounded-none border border-neutral-200 bg-transparent px-2 py-1.5 font-mono text-xs text-black dark:border-neutral-800 dark:text-white"
               value={draft.fee}
               onChange={(e) =>
                 setCounterDraft((d) => ({
@@ -324,7 +324,7 @@ export default function TransferMarket() {
               }
             />
             <input
-              className="w-full px-2 py-1.5 rounded-lg bg-[#0D1221] border border-white/10 text-xs text-white"
+              className="w-full rounded-none border border-neutral-200 bg-transparent px-2 py-1.5 font-mono text-xs text-black dark:border-neutral-800 dark:text-white"
               value={draft.sal}
               onChange={(e) =>
                 setCounterDraft((d) => ({
@@ -334,7 +334,7 @@ export default function TransferMarket() {
               }
             />
             <input
-              className="w-full px-2 py-1.5 rounded-lg bg-[#0D1221] border border-white/10 text-xs text-white"
+              className="w-full rounded-none border border-neutral-200 bg-transparent px-2 py-1.5 font-mono text-xs text-black dark:border-neutral-800 dark:text-white"
               value={draft.clause}
               onChange={(e) =>
                 setCounterDraft((d) => ({
@@ -355,9 +355,9 @@ export default function TransferMarket() {
                 offered_clause: Number(draft.clause) || undefined,
               })
             }
-            className="w-full py-2 rounded-lg text-xs font-bold bg-[#FFD700]/15 text-[#FFD700] border border-[#FFD700]/25"
+            className="w-full rounded-none border border-neutral-200 bg-transparent py-2 text-xs font-bold text-black dark:border-neutral-800 dark:text-white"
           >
-            Renvoyer une offre au joueur
+            &gt; [ RÉVISER ] &lt;
           </button>
         </div>
       </div>
@@ -365,27 +365,27 @@ export default function TransferMarket() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="kimi-luxury-transfers-page space-y-8">
       <GoldConfetti active={showConfetti} />
 
-      <div>
+      <div className="omjep-premium-panel rounded-none border border-black/10 bg-transparent px-12 py-12 dark:border-white/20">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FFD700]/20 to-[#FFA500]/10 border border-[#FFD700]/20 flex items-center justify-center">
-            <Repeat className="w-4 h-4 text-[#FFD700]" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-none border border-neutral-200 bg-transparent dark:border-neutral-800">
+            <Repeat className="w-4 h-4 text-black dark:text-white" />
           </div>
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#FFD700]/70">
+          <span className="omjep-kicker">
             Mercato Live
           </span>
         </div>
-        <h1 className="text-3xl font-black text-white tracking-tight">Négociations</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="omjep-title-condensed text-4xl font-bold tracking-tight text-black dark:text-white">MERCATO</h1>
+        <p className="mt-1 text-sm omjep-muted-label">
           Offres, contre-propositions et signature — budget en OMJEP Coins (OC)
         </p>
       </div>
 
       {signaturesBlocked && (
         <div
-          className="rounded-lg border border-white/10 bg-[#08090c] px-4 py-3 font-mono text-xs uppercase tracking-wider text-slate-400"
+          className="omjep-premium-panel rounded-none border-neutral-200 px-4 py-3 font-mono text-xs uppercase tracking-wider text-black dark:border-neutral-800 dark:text-white"
           role="status"
         >
           MARCHÉ CLOS — Les signatures et nouvelles offres sont suspendues pour votre club (compétition
@@ -394,27 +394,25 @@ export default function TransferMarket() {
       )}
 
       {myTeam && (
-        <div className="flex items-center gap-4 px-5 py-4 rounded-xl bg-gradient-to-r from-[#FFD700]/5 to-transparent border border-[#FFD700]/15">
-          <div className="w-10 h-10 rounded-xl bg-[#FFD700]/10 border border-[#FFD700]/20 flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5 text-[#FFD700]" />
-          </div>
+        <div className="omjep-premium-panel omjep-gold-accent flex items-center gap-4 rounded-none border-neutral-200 px-5 py-4 dark:border-neutral-800">
+          <div className="hidden" />
           <div className="flex-1">
-            <p className="text-xs text-slate-500">Budget club — {myTeam.name ?? '—'}</p>
-            <p className="text-lg font-black text-emerald-400 tabular-nums">
+            <p className="text-[12px] uppercase tracking-widest opacity-50">Budget club — {myTeam.name ?? '—'}</p>
+            <p className="font-mono text-lg font-black text-black tabular-nums dark:text-white">
               {formatCurrency(myTeam.budget ?? 0, 'OC')}
             </p>
           </div>
           <button
             type="button"
             onClick={() => fetchData()}
-            className="text-xs text-[#FFD700] hover:underline"
+            className="text-xs text-black hover:underline dark:text-white"
           >
-            Actualiser
+            &gt; [ ACTUALISER ] &lt;
           </button>
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/5 w-fit">
+      <div className="omjep-premium-panel flex w-fit flex-wrap items-center gap-1 rounded-none border-neutral-200 p-1 dark:border-neutral-800">
         {([
           { key: 'club' as const, label: 'Mon club', icon: Inbox, count: pendingSentCount + pendingReceivedCount },
           { key: 'player' as const, label: 'Mes offres (joueur)', icon: User, count: pendingPlayerCount },
@@ -423,16 +421,16 @@ export default function TransferMarket() {
           <button
             key={key}
             onClick={() => setMainTab(key)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-none px-4 py-2.5 text-sm font-semibold transition-all ${
               mainTab === key
-                ? 'bg-[#FFD700]/15 text-[#FFD700] border border-[#FFD700]/25'
-                : 'text-slate-500 hover:text-slate-300 border border-transparent'
+                ? 'border border-neutral-200 bg-white/[0.02] text-black dark:border-neutral-800 dark:text-white'
+                : 'border border-transparent text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'
             }`}
           >
             <Icon className="w-4 h-4" />
             {label}
             {count > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/15 text-orange-400">
+              <span className="ml-1 rounded-none border border-neutral-200 px-1.5 py-0.5 text-[10px] font-bold text-black dark:border-neutral-800 dark:text-white">
                 {count}
               </span>
             )}
@@ -442,13 +440,13 @@ export default function TransferMarket() {
 
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 text-[#FFD700] animate-spin" />
+          <Loader2 className="w-8 h-8 animate-spin text-black dark:text-white" />
         </div>
       )}
 
       {!loading && mainTab === 'club' && (
         <>
-          <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/5 w-fit">
+          <div className="omjep-premium-panel flex w-fit items-center gap-1 rounded-none border-neutral-200 p-1 dark:border-neutral-800">
             {([
               { key: 'received' as const, label: 'Côté club vendeur', icon: Inbox, count: pendingReceivedCount },
               { key: 'sent' as const, label: 'Offres envoyées', icon: Send, count: pendingSentCount },
@@ -456,16 +454,16 @@ export default function TransferMarket() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-2 rounded-none px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                   activeTab === key
-                    ? 'bg-[#FFD700]/15 text-[#FFD700] border border-[#FFD700]/25 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-300 border border-transparent'
+                    ? 'border border-neutral-200 bg-white/[0.02] text-black dark:border-neutral-800 dark:text-white'
+                    : 'border border-transparent text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 {label}
                 {count > 0 && (
-                  <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/15 text-orange-400">
+                  <span className="ml-1 rounded-none border border-neutral-200 px-1.5 py-0.5 text-[10px] font-bold text-black dark:border-neutral-800 dark:text-white">
                     {count}
                   </span>
                 )}
@@ -475,7 +473,7 @@ export default function TransferMarket() {
 
           <div className="space-y-3">
             {currentClubList.length === 0 ? (
-              <div className="rounded-2xl border border-white/5 bg-[#0D1221] p-12 text-center">
+              <div className="omjep-premium-panel rounded-none border-neutral-200 p-12 text-center dark:border-neutral-800">
                 <p className="text-sm text-slate-500">Aucune offre dans cette catégorie.</p>
               </div>
             ) : (
@@ -489,12 +487,12 @@ export default function TransferMarket() {
                 return (
                   <div
                     key={offer.id}
-                    className={`rounded-xl border bg-[#0D1221] p-5 ${
+                    className={`omjep-premium-panel rounded-none bg-black/[0.02] p-5 dark:bg-white/[0.05] ${
                       offer.status === 'ACCEPTED'
-                        ? 'border-emerald-500/20'
+                        ? 'border-neutral-200 dark:border-neutral-800'
                         : offer.status === 'PENDING' || offer.status === 'COUNTER_OFFER'
-                          ? 'border-[#FFD700]/15'
-                          : 'border-white/5'
+                          ? 'border-neutral-200 dark:border-neutral-800'
+                          : 'border-neutral-200 dark:border-neutral-800'
                     }`}
                   >
                     <div className="flex items-start gap-4">
@@ -503,17 +501,17 @@ export default function TransferMarket() {
                           <img
                             src={otherTeam.logo_url}
                             alt=""
-                            className="w-12 h-12 rounded-xl object-cover border border-white/10"
+                            className="h-12 w-12 rounded-none border border-neutral-200 object-cover dark:border-neutral-800"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-[#FFA500]/10 border border-[#FFD700]/15 flex items-center justify-center text-lg font-bold text-[#FFD700]">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-none border border-neutral-200 bg-transparent text-lg font-bold text-black dark:border-neutral-800 dark:text-white">
                             {otherLabel.charAt(0) || '?'}
                           </div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${cfg.className}`}>
+                          <span className={`inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${cfg.className}`}>
                             <StatusIcon className="w-2.5 h-2.5" />
                             {cfg.label}
                           </span>
@@ -522,11 +520,11 @@ export default function TransferMarket() {
                             <span className="text-[10px] text-sky-400">Tour : joueur</span>
                           )}
                           {offer.negotiation_turn === 'BUYING_CLUB' && (
-                            <span className="text-[10px] text-amber-400">Tour : club acheteur</span>
+                          <span className="text-[10px] text-black/70 dark:text-white/70">Tour : club acheteur</span>
                           )}
                         </div>
                         <p className="mt-2 text-sm text-white">
-                          <span className="font-semibold text-[#FFD700]">{offer.fromTeam.name ?? '—'}</span>
+                          <span className="font-semibold text-black dark:text-white">{offer.fromTeam.name ?? '—'}</span>
                           {' → '}
                           <span className="text-slate-400">
                             {offer.toTeam?.name ?? (offer.to_team_id == null ? 'Agent libre' : '—')}
@@ -534,7 +532,7 @@ export default function TransferMarket() {
                           {' · '}
                           <Link
                             to={`/dashboard/profile/${offer.player_id}`}
-                            className="font-semibold hover:text-[#FFD700]"
+                            className="font-semibold hover:text-black dark:hover:text-white"
                           >
                             {offer.player.ea_persona_name ?? 'Joueur'}
                           </Link>
@@ -554,7 +552,7 @@ export default function TransferMarket() {
       {!loading && mainTab === 'player' && (
         <div className="space-y-3">
           {playerOffers.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-[#0D1221] p-12 text-center">
+            <div className="omjep-premium-panel rounded-none border-neutral-200 p-12 text-center dark:border-neutral-800">
               <MessageCircle className="w-10 h-10 text-slate-600 mx-auto mb-3" />
               <p className="text-sm text-slate-500">Aucune négociation en cours pour vous.</p>
             </div>
@@ -565,17 +563,17 @@ export default function TransferMarket() {
               return (
                 <div
                   key={offer.id}
-                  className="rounded-xl border border-[#FFD700]/15 bg-[#0D1221] p-5"
+                    className="omjep-premium-panel rounded-none border-neutral-200 bg-black/[0.02] p-5 dark:border-neutral-800 dark:bg-white/[0.05]"
                 >
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase border ${cfg.className}`}>
+                    <span className={`inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-[10px] font-bold uppercase border ${cfg.className}`}>
                       <StatusIcon className="w-2.5 h-2.5" />
                       {cfg.label}
                     </span>
                     <span className="text-[10px] text-slate-600">{timeAgo(offer.created_at)}</span>
                   </div>
                   <p className="mt-2 text-sm text-white">
-                    Proposition de <span className="font-bold text-[#FFD700]">{offer.fromTeam.name ?? '—'}</span>
+                    Proposition de <span className="font-bold text-black dark:text-white">{offer.fromTeam.name ?? '—'}</span>
                   </p>
                   <OfferTermsGrid offer={offer} />
                   <PlayerOfferActions
@@ -606,12 +604,12 @@ export default function TransferMarket() {
 
       {!loading && mainTab === 'freeAgents' && (
         <div className="space-y-4">
-          <div className="flex items-center gap-4 flex-wrap">
-            <label className="text-sm text-slate-400">Filtrer par position :</label>
+          <div className="flex items-center gap-4 flex-wrap border-b border-black/10 pb-4 dark:border-white/20">
+            <label className="text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">Filtrer par position</label>
             <select
               value={freeAgentPosition}
               onChange={(e) => setFreeAgentPosition(e.target.value)}
-              className="bg-[#0D1221] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-[#FFD700]/50 focus:border-transparent"
+              className="rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-sm text-black focus:ring-0 dark:border-neutral-800 dark:text-white"
             >
               <option value="">Toutes les positions</option>
               <option value="GK">Gardien (GK)</option>
@@ -628,7 +626,7 @@ export default function TransferMarket() {
           </div>
 
           {freeAgents.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-[#0D1221] p-12 text-center">
+            <div className="omjep-premium-panel rounded-none border-neutral-200 p-12 text-center dark:border-neutral-800">
               <Users className="w-10 h-10 text-slate-600 mx-auto mb-3" />
               <p className="text-sm text-slate-500">Aucun agent libre disponible pour le moment.</p>
             </div>
@@ -639,34 +637,34 @@ export default function TransferMarket() {
                 .map((agent) => (
                   <div
                     key={agent.id}
-                    className="rounded-xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-[#0D1221] p-5 hover:border-emerald-500/40 transition-all"
+                    className="omjep-premium-panel omjep-premium-hover rounded-none border-neutral-200 bg-white/[0.02] p-5 transition-all hover:border-neutral-200 dark:border-neutral-800 dark:hover:border-neutral-800"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-lg font-bold text-emerald-400">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-none border border-neutral-200 bg-transparent text-lg font-bold text-black dark:border-neutral-800 dark:text-white">
                         {(agent.name ?? '?').charAt(0).toUpperCase() || '?'}
                       </div>
                       <div className="flex-1 min-w-0">
                         <Link
                           to={`/dashboard/profile/${agent.id}`}
-                          className="font-semibold text-white hover:text-[#FFD700] truncate block"
+                          className="block truncate font-semibold text-black hover:text-black dark:text-white dark:hover:text-white"
                         >
                           {agent.name ?? '—'}
                         </Link>
-                        <span className="text-xs text-emerald-400">Agent libre · 0 OC</span>
+                        <span className="font-mono text-xs text-black dark:text-white">Agent libre · 0 OC</span>
                       </div>
-                      <span className="px-2 py-1 rounded-md text-[10px] font-bold bg-white/5 text-slate-400 border border-white/5">
+                      <span className="rounded-none border border-neutral-200 bg-transparent px-2 py-1 text-[10px] font-bold text-black/70 dark:border-neutral-800 dark:text-white/70">
                         {agent.position}
                       </span>
                     </div>
 
-                    <div className="mt-4 grid grid-cols-4 gap-2 text-[11px]">
+                    <div className="mt-4 grid grid-cols-4 gap-2 font-mono text-[11px]">
                       <div className="text-center">
                         <span className="text-slate-500 block">Matchs</span>
                         <span className="font-semibold text-white">{agent.stats?.matches_played ?? 0}</span>
                       </div>
                       <div className="text-center">
                         <span className="text-slate-500 block">Buts</span>
-                        <span className="font-semibold text-emerald-400">{agent.stats?.goals ?? 0}</span>
+                        <span className="font-mono font-semibold text-black dark:text-white">{agent.stats?.goals ?? 0}</span>
                       </div>
                       <div className="text-center">
                         <span className="text-slate-500 block">Passes</span>
@@ -674,7 +672,7 @@ export default function TransferMarket() {
                       </div>
                       <div className="text-center">
                         <span className="text-slate-500 block">Note</span>
-                        <span className="font-semibold text-[#FFD700]">
+                        <span className="font-mono font-semibold text-black dark:text-white">
                           {(agent.stats?.average_rating ?? 0).toFixed(1)}
                         </span>
                       </div>
@@ -688,9 +686,9 @@ export default function TransferMarket() {
                         type="button"
                         disabled={!myTeam || signaturesBlocked}
                         onClick={() => handleOpenOfferModal(agent)}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 hover:border-emerald-400/60 disabled:opacity-40 disabled:pointer-events-none transition"
+                        className="inline-flex items-center justify-center gap-2 rounded-none border border-neutral-200 bg-transparent px-4 py-2.5 text-xs font-bold text-black transition disabled:pointer-events-none disabled:opacity-40 dark:border-neutral-800 dark:text-white"
                       >
-                        Recruter
+                        &gt; [ ENCHÉRIR ] &lt;
                       </button>
                     </div>
                   </div>

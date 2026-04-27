@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
-import { formatCurrency } from '@/utils/formatCurrency';
+import { formatCurrency } from '@/utils/formatCurrency'
+import { useModalOpenSound } from '@/hooks/useModalOpenSound'
 
 /** Semaines → mois (aligné 52 sem. = 12 mois), borné 1–60 pour l’API. */
 function weeksToDurationMonths(weeks: number): number {
@@ -99,9 +100,11 @@ export default function TransferOfferModal({
     }
     if (open) document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [open, onClose]);
+  }, [open, onClose])
 
-  if (!open) return null;
+  useModalOpenSound(open)
+
+  if (!open) return null
 
   if (pendingOfferFromMyClub) {
     const p = pendingOfferFromMyClub;
@@ -111,11 +114,11 @@ export default function TransferOfferModal({
         : 'Offre envoyée. En attente de la réponse du joueur…';
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-[#030712]/85 backdrop-blur-md" onClick={onClose} aria-hidden />
+      <div className="tactical-modal-backdrop z-50">
+        <div className="tactical-modal-dim" onClick={onClose} aria-hidden />
 
         <div
-          className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl border border-[#c9a227]/25 shadow-[0_0_0_1px_rgba(201,162,39,0.08),0_25px_80px_-12px_rgba(0,0,0,0.85)] animate-in fade-in zoom-in-95 duration-200"
+          className="tactical-modal-panel relative max-h-[92vh] w-full max-w-xl overflow-y-auto border border-[#c9a227]/25 shadow-[0_0_0_1px_rgba(201,162,39,0.08),0_25px_80px_-12px_rgba(0,0,0,0.85)] animate-in fade-in zoom-in-95 duration-200"
           style={{
             background:
               'linear-gradient(165deg, rgba(15,23,42,0.98) 0%, rgba(8,12,24,0.99) 45%, rgba(6,8,18,1) 100%)',
@@ -252,11 +255,11 @@ export default function TransferOfferModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[#030712]/85 backdrop-blur-md" onClick={onClose} aria-hidden />
+    <div className="tactical-modal-backdrop z-50">
+      <div className="tactical-modal-dim" onClick={onClose} aria-hidden />
 
       <div
-        className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl border border-[#c9a227]/25 shadow-[0_0_0_1px_rgba(201,162,39,0.08),0_25px_80px_-12px_rgba(0,0,0,0.85)] animate-in fade-in zoom-in-95 duration-200"
+        className="tactical-modal-panel relative max-h-[92vh] w-full max-w-xl overflow-y-auto border border-[#c9a227]/25 shadow-[0_0_0_1px_rgba(201,162,39,0.08),0_25px_80px_-12px_rgba(0,0,0,0.85)] animate-in fade-in zoom-in-95 duration-200"
         style={{
           background:
             'linear-gradient(165deg, rgba(15,23,42,0.98) 0%, rgba(8,12,24,0.99) 45%, rgba(6,8,18,1) 100%)',

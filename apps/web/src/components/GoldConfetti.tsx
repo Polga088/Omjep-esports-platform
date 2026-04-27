@@ -15,7 +15,7 @@ interface Particle {
 
 const GOLD_COLORS = [
   '#FFD700', '#FFA500', '#FFBF00', '#DAA520',
-  '#F5C71A', '#E8B923', '#D4AF37', '#C5A028',
+  '#4ade80', '#22c55e', '#22c55e', '#16a34a',
 ];
 
 export default function GoldConfetti({ active }: { active: boolean }) {

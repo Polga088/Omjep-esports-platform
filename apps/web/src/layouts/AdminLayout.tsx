@@ -41,7 +41,7 @@ export default function AdminLayout() {
   const SidebarContent = () => (
     <>
       {/* Admin branding */}
-      <div className="p-6 border-b border-amber-400/10">
+      <div className="p-6 border-b border-amber-400/15">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-400/20">
             <Crown className="w-5 h-5 text-[#020617]" fill="currentColor" />
@@ -50,7 +50,7 @@ export default function AdminLayout() {
             <span className="font-bold text-sm tracking-widest text-amber-400 uppercase block leading-tight">
               OMJEP
             </span>
-            <span className="text-[10px] text-slate-500 tracking-wider uppercase leading-tight block">
+            <span className="text-[10px] text-omjep-neutral tracking-wider uppercase leading-tight block">
               Org. Marocaine des Jeux Électroniques Pro
             </span>
           </div>
@@ -58,7 +58,7 @@ export default function AdminLayout() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-5 space-y-1">
+      <nav className="flex-1 px-3 py-5 space-y-1.5">
         {sidebarLinks.map(({ to, label, icon: Icon, exact }) => {
           const active = isActive(to, exact);
           return (
@@ -66,13 +66,13 @@ export default function AdminLayout() {
               key={to}
               to={to}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group ${
+              className={`group flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all ${
                 active
-                  ? 'text-amber-400 bg-amber-400/10 border border-amber-400/20'
-                  : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.03] border border-transparent'
+                  ? 'omjep-premium-panel border-amber-400/35 text-amber-300'
+                  : 'border-transparent text-omjep-neutral hover:border-amber-400/20 hover:bg-white/[0.02] hover:text-slate-100'
               }`}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-amber-400' : 'text-slate-600 group-hover:text-slate-400'}`} />
+              <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-amber-400' : 'text-slate-600 group-hover:text-amber-300'}`} />
               <span className="flex-1">{label}</span>
               {active && <ChevronRight className="w-3.5 h-3.5 text-amber-400/50" />}
             </Link>
@@ -81,10 +81,10 @@ export default function AdminLayout() {
       </nav>
 
       {/* Exit admin */}
-      <div className="p-4 border-t border-amber-400/10">
+      <div className="border-t border-amber-400/15 p-4">
         <Link
           to="/dashboard"
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-300 hover:bg-white/[0.03] transition-all group"
+          className="group flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 transition-all hover:border-amber-400/20 hover:bg-amber-400/5 hover:text-amber-200"
         >
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
           Quitter l'Admin
@@ -94,7 +94,9 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-100 flex">
+    <div className="omjep-dashboard-theme tactical-brushed-bg kimi-admin-page min-h-screen bg-[#020202] text-slate-100 flex">
+      <div className="omjep-bg-hex" aria-hidden />
+      <div className="omjep-bg-glow" aria-hidden />
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -108,7 +110,7 @@ export default function AdminLayout() {
         className={`
           fixed lg:static inset-y-0 left-0 z-30
           w-60 min-h-screen flex flex-col
-          border-r border-amber-400/10 bg-[#020617]
+          tactical-floating-panel border-r border-white/5 bg-[#080808]/85 backdrop-blur-xl
           transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
@@ -119,28 +121,30 @@ export default function AdminLayout() {
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="h-14 border-b border-amber-400/10 bg-[#020617]/90 backdrop-blur-md flex items-center px-4 lg:px-8 gap-4 sticky top-0 z-10">
+        <header className="tactical-floating-panel h-14 border-b border-white/5 bg-[#080808]/80 backdrop-blur-xl flex items-center px-4 lg:px-8 gap-4 sticky top-0 z-10">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-slate-500 hover:text-amber-400 hover:bg-amber-400/5 transition-colors"
+            className="lg:hidden rounded-lg border border-transparent p-2 text-slate-500 transition-colors hover:border-amber-400/20 hover:text-amber-300 hover:bg-amber-400/5"
             aria-label="Ouvrir le menu"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <div className="flex items-center gap-2 text-xs text-slate-600">
-            <span className="text-amber-400/60">Admin</span>
+          <div className="font-tech flex items-center gap-2 text-xs uppercase tracking-[0.12em] text-slate-600">
+            <span className="text-amber-400/70">Admin</span>
             {location.pathname !== '/admin' && (
               <>
                 <ChevronRight className="w-3 h-3" />
-                <span className="text-slate-400">{currentPageTitle}</span>
+                <span className="text-slate-300">{currentPageTitle}</span>
               </>
             )}
           </div>
         </header>
 
-        <div className="flex-1 p-4 lg:p-8 overflow-auto">
-          <Outlet />
+        <div className="dashboard-layout-scroll m-4 flex-1 overflow-auto p-4 lg:m-6 lg:p-8">
+          <div className="mx-auto w-full max-w-7xl">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>

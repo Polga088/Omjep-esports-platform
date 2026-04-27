@@ -1,12 +1,60 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Michroma&family=Orbitron:wght@700;800;900&family=Rajdhani:wght@500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Rajdhani:ital,wght@0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter, Rajdhani, system-ui, sans-serif;
   color-scheme: dark;
+
+  /* ─── OMJEP Theme Tokens — Dark (default) ─────────────────────────────── */
+  --omjep-bg: #000000;
+  --omjep-surface: rgba(8, 8, 8, 0.72);
+  --omjep-gold: #d4af37;
+  /* Pixar-Sport Cinematic — accent global émeraude */
+  --omjep-accent: #22c55e;
+  --omjep-neutral: #94a3b8;
+  --omjep-danger: #ff2d55;
+  --omjep-bg-elevated: #0a0a0a;
+  --omjep-bg-panel: #111111;
+  --omjep-bg-panel-soft: #1a1a1a;
+  --omjep-text-primary: #f1f5f9;
+  --omjep-text-secondary: #94a3b8;
+  --omjep-text-muted: #64748b;
+  --omjep-accent-gold: #22c55e;
+  --omjep-accent-gold-light: #E8C547;
+  --omjep-accent-cobalt: #22c55e;
+  --omjep-border: rgba(255, 255, 255, 0.08);
+  --omjep-border-gold: rgba(212, 175, 55, 0.35);
+  --omjep-border-cold: rgba(255, 255, 255, 0.06);
+  --omjep-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --omjep-shadow-lg: 0 20px 80px rgba(0, 0, 0, 0.45);
+  /* Biseaux tactiques — réduits sur mobile pour préserver les marges */
+  --tactical-bento-bevel: 22px;
+  --tactical-modal-bevel: 20px;
+  --tactical-tooltip-bevel: 12px;
+  --tactical-floating-bevel: 14px;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --omjep-bg: #ffffff;
+  --omjep-surface: rgba(255, 255, 255, 0.78);
+  --omjep-accent: #166534;
+  --omjep-text-primary: #0f172a;
+  --omjep-text-secondary: #334155;
+  --omjep-text-muted: #475569;
+  --omjep-border: rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --tactical-bento-bevel: 10px;
+    --tactical-modal-bevel: 10px;
+    --tactical-tooltip-bevel: 6px;
+    --tactical-floating-bevel: 8px;
+  }
 }
 
 * {
@@ -15,9 +63,41 @@
   padding: 0;
 }
 
+html,
+body,
+#root {
+  background-color: var(--omjep-bg);
+  color: var(--omjep-text-primary);
+  transition: none;
+  border: none;
+  outline: none;
+}
+
+main {
+  border: none;
+  outline: none;
+}
+
+/* Dashboard / landing main scroll — pas de cadre clair sur le panneau flottant */
+.dashboard-main-scroll.tactical-floating-panel {
+  border: none;
+  outline: none;
+}
+
+.dashboard-sidebar .lucide,
+.dashboard-top-glass .lucide {
+  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.4));
+}
+
 body {
-  background-color: #0a0e1a;
-  color: #f1f5f9;
+  font-family: Inter, Rajdhani, system-ui, sans-serif;
+}
+
+/* Thème dynamique — transition 0.5s sur tous les éléments thématiques */
+*,
+*::before,
+*::after {
+  transition: none;
 }
 
 /* Pronostics — bordure « snake » (trait lumineux qui tourne) autour du bloc scores */
@@ -100,52 +180,235 @@ body {
   animation: trophy-ring-dash 1.85s linear infinite;
 }
 
-/* Dashboard — fond uni (pas de grille) */
-.dashboard-tactical-hud {
-  background-color: #070b12;
+/* Métriques — lueur CRT cyan fine (chiffres) */
+.omjep-metric-crt {
+  text-shadow:
+    0 0 1px rgba(0, 242, 255, 0.55),
+    0 0 8px rgba(0, 242, 255, 0.18),
+    0 0 14px rgba(0, 242, 255, 0.08);
 }
 
-/* DashboardLayout — zone scroll principale : piste noire, curseur cyan néon */
+.omjep-metric-crt-cyan {
+  text-shadow:
+    0 0 1px rgba(0, 242, 255, 0.65),
+    0 0 10px rgba(0, 242, 255, 0.28),
+    0 0 20px rgba(0, 242, 255, 0.12);
+}
+
+/* Bouton fantôme tactique — bordure segmentée, pas de fond plein */
+.tactical-ghost-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  background: transparent;
+  color: rgba(0, 242, 255, 0.92);
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% 100%,
+    8px 100%,
+    0 calc(100% - 8px)
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 242, 255, 0.12),
+    0 0 12px rgba(0, 242, 255, 0.06);
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tactical-ghost-button:hover {
+  border-color: rgba(0, 242, 255, 0.45);
+  color: #00f2ff;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 242, 255, 0.2),
+    0 0 18px rgba(0, 242, 255, 0.12);
+}
+
+.tactical-ghost-button:focus-visible {
+  outline: 1px solid rgba(0, 242, 255, 0.55);
+  outline-offset: 2px;
+}
+
+/* Topbar dashboard — glass sombre + laser bas */
+.dashboard-top-glass {
+  background: rgba(0, 0, 0, 0.6) !important;
+  border-bottom: 1px dashed rgba(212, 175, 55, 0.28) !important;
+  box-shadow: 0 0 50px -14px rgba(212, 175, 55, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Labels techniques ultra-compacts (stats) */
+.kimi-kpi-label {
+  font-family: Rajdhani, system-ui, sans-serif;
+  font-size: 10px;
+  line-height: 1.1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Avatar hex — projection holographique (screen + aberration chromatique légère) */
+.omjep-hologram-avatar-stack {
+  position: relative;
+  isolation: isolate;
+  background: radial-gradient(ellipse 85% 70% at 50% 28%, rgba(0, 242, 255, 0.12), transparent 62%);
+}
+
+.omjep-hologram-avatar-main {
+  position: relative;
+  z-index: 1;
+  mix-blend-mode: screen;
+  filter: brightness(1.14) contrast(1.08) drop-shadow(1.25px 0 0 rgba(255, 55, 110, 0.2))
+    drop-shadow(-1.25px 0 0 rgba(0, 242, 255, 0.28));
+}
+
+/* ─── Scrollbars globales — ultra-fines, accent OMJEP sur noir (#22c55e) ─── */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #d4af37 #000000;
+}
+
+html::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 9999px;
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.35);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #e8c547;
+}
+
+html::-webkit-scrollbar-corner {
+  background: #000000;
+}
+
+.tactical-scroll,
 .dashboard-layout-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #06b6d4 #000000;
+  scrollbar-color: #d4af37 #000000;
 }
 
+.tactical-scroll::-webkit-scrollbar,
 .dashboard-layout-scroll::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
 }
 
+.tactical-scroll::-webkit-scrollbar-track,
 .dashboard-layout-scroll::-webkit-scrollbar-track {
   background: #000000;
 }
 
+.tactical-scroll::-webkit-scrollbar-thumb,
 .dashboard-layout-scroll::-webkit-scrollbar-thumb {
-  background: #06b6d4;
+  background: #d4af37;
   border-radius: 9999px;
-  box-shadow: 0 0 6px rgba(6, 182, 212, 0.55);
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.35);
 }
 
+.tactical-scroll::-webkit-scrollbar-thumb:hover,
 .dashboard-layout-scroll::-webkit-scrollbar-thumb:hover {
-  background: #22d3ee;
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.45);
+  background: #e8c547;
 }
 
+.tactical-scroll::-webkit-scrollbar-corner,
 .dashboard-layout-scroll::-webkit-scrollbar-corner {
   background: #000000;
 }
 
-/* Dashboard hero (h-96) — grille tech + balayage scanline */
+/* Modales & surfaces volantes — flou + biseau tactique */
+.tactical-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.tactical-modal-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.tactical-modal-panel {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 8, 12, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--tactical-modal-bevel)) 0,
+    100% var(--tactical-modal-bevel),
+    100% 100%,
+    var(--tactical-modal-bevel) 100%,
+    0 calc(100% - var(--tactical-modal-bevel))
+  );
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
+}
+
+.tactical-tooltip-surface {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 8, 12, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--tactical-tooltip-bevel)) 0,
+    100% var(--tactical-tooltip-bevel),
+    100% 100%,
+    var(--tactical-tooltip-bevel) 100%,
+    0 calc(100% - var(--tactical-tooltip-bevel))
+  );
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  max-width: min(100vw - 1.5rem, 24rem);
+}
+
+/* Tooltips Recharts — ne pas dépasser l’écran sur mobile */
+@media (max-width: 767px) {
+  .recharts-tooltip-wrapper {
+    max-width: calc(100vw - 1.5rem) !important;
+  }
+
+  .recharts-default-tooltip {
+    max-width: calc(100vw - 2rem) !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Dashboard hero — fond radial sombre high-end (Hub Athlète) */
+.hub-athlete-bg {
+  background: radial-gradient(circle at center, #121212 0%, #050505 100%);
+}
+
+/* Dashboard hero (h-96) — grille tech supprimée, remplacée par surface propre */
 .dashboard-hero-tech-grid {
-  opacity: 0.1;
-  background-image:
-    linear-gradient(rgba(103, 232, 249, 1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(103, 232, 249, 1) 1px, transparent 1px),
-    linear-gradient(-18deg, transparent 48%, rgba(56, 189, 248, 0.35) 49%, transparent 52%);
-  background-size:
-    26px 26px,
-    26px 26px,
-    100% 100%;
+  opacity: 0;
+  background: none;
 }
 
 /* Chat — grille 20px neutre, sans lueur (mode terminal) */
@@ -729,4 +992,1082 @@ span.mercato-live-badge-ea-pulse {
 .showcase-hud-vortex .showcase-neon-link,
 .showcase-hud-vortex .showcase-neon-submit {
   filter: hue-rotate(48deg) saturate(1.12);
+}
+
+/* ─── OMJEP Premium Dashboard Theme ───────────────────────────────────────── */
+@keyframes omjep-gold-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.18),
+      0 0 18px rgba(212, 175, 55, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.3),
+      0 0 24px rgba(30, 58, 138, 0.14),
+      0 0 40px rgba(212, 175, 55, 0.1);
+  }
+}
+
+.omjep-dashboard-theme {
+  --omjep-gold: #d4af37;
+  --omjep-royal: #1e3a8a;
+  --omjep-bg: #0a0a0a;
+  --omjep-panel: #111111;
+  --omjep-panel-soft: #1a1a1a;
+  --omjep-mx: 0px;
+  --omjep-my: 0px;
+  position: relative;
+  background-color: #050505;
+  background-image:
+    radial-gradient(ellipse 100% 80% at 0% 0%, rgba(30, 58, 138, 0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 80% at 100% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 55%),
+    linear-gradient(180deg, #0a0a0a 0%, #040404 100%);
+}
+
+/* Kimi / neo-gaming — particules 1px (fond) */
+@keyframes kimi-dust-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.1;
+  }
+  33% {
+    transform: translate3d(2.2vw, -1.4vh, 0);
+    opacity: 0.28;
+  }
+  66% {
+    transform: translate3d(-1.1vw, 1.7vh, 0);
+    opacity: 0.16;
+  }
+  100% {
+    transform: translate3d(0.4vw, -0.4vh, 0);
+    opacity: 0.1;
+  }
+}
+
+.kimi-dust-mote {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  background: rgba(212, 175, 55, 0.38);
+  box-shadow: 0 0 1px rgba(0, 242, 255, 0.24);
+  animation: kimi-dust-drift 32s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kimi-dust-mote {
+    animation: none;
+    opacity: 0.18;
+  }
+}
+
+.omjep-bg-hex {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image:
+    linear-gradient(30deg, rgba(255, 255, 255, 0.03) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.03) 87.5%, rgba(255, 255, 255, 0.03)),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.03) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.03) 87.5%, rgba(255, 255, 255, 0.03)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size:
+    48px 84px,
+    48px 84px,
+    24px 24px,
+    24px 24px;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0;
+  transform: translate3d(calc(var(--omjep-mx) * 0.015), calc(var(--omjep-my) * 0.015), 0);
+  transition: transform 120ms linear;
+}
+
+.omjep-bg-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 30% at 5% 8%, rgba(30, 58, 138, 0.32) 0%, transparent 70%),
+    radial-gradient(38% 26% at 95% 10%, rgba(212, 175, 55, 0.18) 0%, transparent 72%),
+    radial-gradient(35% 22% at 50% 95%, rgba(30, 58, 138, 0.2) 0%, transparent 75%);
+  filter: blur(14px);
+  transform: translate3d(calc(var(--omjep-mx) * 0.01), calc(var(--omjep-my) * 0.01), 0);
+  transition: transform 120ms linear;
+}
+
+.omjep-premium-panel {
+  position: relative;
+  border: 1px dashed rgba(184, 152, 44, 0.38);
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.045) 0%, transparent 24%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    linear-gradient(180deg, rgba(8, 8, 8, 0.92), rgba(17, 17, 17, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+    0 10px 28px rgba(0, 0, 0, 0.4);
+}
+
+.omjep-premium-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.omjep-premium-hover {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.omjep-premium-hover:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(212, 175, 55, 0.16),
+    0 12px 30px rgba(0, 0, 0, 0.45),
+    0 0 32px rgba(30, 58, 138, 0.18);
+}
+
+.omjep-title-condensed {
+  font-family: Rajdhani, Inter, system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.omjep-kicker {
+  color: rgba(212, 175, 55, 0.92);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.omjep-muted-label {
+  color: rgba(226, 232, 240, 0.56);
+}
+
+.omjep-gold-badge {
+  border: 1px solid rgba(212, 175, 55, 0.44);
+  background:
+    linear-gradient(160deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.08) 42%, rgba(9, 9, 9, 0.75) 100%);
+  color: #f6df84;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 16px rgba(212, 175, 55, 0.18);
+}
+
+.omjep-blue-accent {
+  box-shadow:
+    0 0 0 1px rgba(30, 58, 138, 0.3),
+    0 0 18px rgba(30, 58, 138, 0.2);
+}
+
+.omjep-gold-accent {
+  animation: omjep-gold-glow 3.4s ease-in-out infinite;
+}
+
+/* Arena — aurore animée (couche supérieure) */
+.omjep-arena-aurora {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+  background:
+    radial-gradient(ellipse 60% 50% at 5% 8%, rgba(30, 58, 138, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 95% 92%, rgba(212, 175, 55, 0.1) 0%, transparent 58%);
+  mix-blend-mode: screen;
+  animation: omjep-aurora-drift 18s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .omjep-arena-aurora {
+    animation: none;
+  }
+}
+
+@keyframes omjep-aurora-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate3d(calc(var(--omjep-mx) * 0.04), calc(var(--omjep-my) * 0.03), 0) scale(1.04);
+    opacity: 0.95;
+  }
+}
+
+/* Bento tactique — clip-path angles 45° + flou 20px + bordure émeraude */
+.tactical-bento {
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--tactical-bento-bevel)) 0,
+    100% var(--tactical-bento-bevel),
+    100% 100%,
+    var(--tactical-bento-bevel) 100%,
+    0 calc(100% - var(--tactical-bento-bevel))
+  );
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px dashed rgba(34, 197, 94, 0.32);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 50px -12px rgba(34, 197, 94, 0.28),
+    inset 0 1px 0 rgba(34, 197, 94, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes omjep-energy-flow {
+  0% {
+    background-position: 0 0, 0 0, 0 0, 0 0;
+  }
+  50% {
+    background-position: 140px 80px, 30px 20px, -28px -20px, 46% 54%;
+  }
+  100% {
+    background-position: 280px 160px, 60px 40px, -56px -40px, 50% 50%;
+  }
+}
+
+.tactical-brushed-bg {
+  position: relative;
+  isolation: isolate;
+  background-color: #020202;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(34, 197, 94, 0.08) 1px, transparent 0),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.04) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 18% 28%, rgba(34, 197, 94, 0.1), transparent 48%),
+    radial-gradient(circle at 82% 72%, rgba(34, 197, 94, 0.07), transparent 46%);
+  background-size: 18px 18px, 56px 56px, 56px 56px, 130% 130%, 130% 130%;
+  animation: omjep-energy-flow 110s linear infinite;
+}
+
+/* Châssis industriel — cadre OS tactique (dashboard) */
+.omjep-os-chassis {
+  background: #020202;
+  clip-path: polygon(
+    0 22px,
+    22px 0,
+    calc(100% - 22px) 0,
+    100% 22px,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+  box-shadow:
+    0 0 50px -12px rgba(34, 197, 94, 0.24),
+    0 0 0 1px rgba(34, 197, 94, 0.24),
+    0 0 0 2px rgba(2, 2, 2, 1),
+    0 0 0 3px rgba(34, 197, 94, 0.1),
+    inset 0 0 55px rgba(0, 0, 0, 0.65);
+}
+
+.tactical-os-label {
+  font-family: Rajdhani, system-ui, sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+/* Scan line dorée — avatar hex dashboard (UserProBanner) */
+@keyframes omjep-hex-scan-sweep {
+  0%,
+  100% {
+    top: 8%;
+    opacity: 0.88;
+  }
+  50% {
+    top: calc(92% - 2px);
+    opacity: 1;
+  }
+}
+
+.omjep-hex-scan-track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.omjep-hex-scan-line {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 10%;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.25) 18%,
+    rgba(255, 230, 160, 0.98) 50%,
+    rgba(212, 175, 55, 0.25) 82%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 6px rgba(255, 224, 130, 0.95),
+    0 0 14px rgba(212, 175, 55, 0.75),
+    0 0 28px rgba(212, 175, 55, 0.28);
+  animation: omjep-hex-scan-sweep 2.8s ease-in-out infinite;
+}
+
+.tactical-floating-panel {
+  position: relative;
+  border: 1px dashed rgba(34, 197, 94, 0.28);
+  background: var(--omjep-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 50px -12px rgba(34, 197, 94, 0.24),
+    0 12px 40px rgba(0, 0, 0, 0.45);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--tactical-floating-bevel)) 0,
+    100% var(--tactical-floating-bevel),
+    100% 100%,
+    var(--tactical-floating-bevel) 100%,
+    0 calc(100% - var(--tactical-floating-bevel))
+  );
+}
+
+/* ─── Bento Elite — projection (glass sombre + laser dashed + ombre de champ) ─── */
+.tactical-bento-elite {
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--tactical-bento-bevel)) 0,
+    100% var(--tactical-bento-bevel),
+    100% 100%,
+    var(--tactical-bento-bevel) 100%,
+    0 calc(100% - var(--tactical-bento-bevel))
+  );
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px dashed rgba(34, 197, 94, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 50px -12px rgba(34, 197, 94, 0.3),
+    inset 0 1px 0 rgba(34, 197, 94, 0.14),
+    inset 0 -28px 56px rgba(0, 0, 0, 0.55),
+    0 18px 44px rgba(0, 0, 0, 0.52);
+}
+
+.tactical-bento-elite::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.32;
+  background:
+    linear-gradient(135deg, rgba(34, 197, 94, 0.55) 0 1px, transparent 1px) 0 0 / 20px 20px no-repeat,
+    linear-gradient(-135deg, rgba(34, 197, 94, 0.5) 0 1px, transparent 1px) 100% 0 / 20px 20px no-repeat,
+    linear-gradient(45deg, rgba(34, 197, 94, 0.35) 0 1px, transparent 1px) 0 100% / 20px 20px no-repeat,
+    linear-gradient(-45deg, rgba(34, 197, 94, 0.35) 0 1px, transparent 1px) 100% 100% / 20px 20px no-repeat;
+}
+
+.tactical-bento-elite::after {
+  content: '';
+  position: absolute;
+  inset: 10px 12px auto 12px;
+  height: 1px;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.24), transparent);
+  opacity: 0.55;
+}
+
+.tactical-bento-elite__head {
+  position: relative;
+  z-index: 4;
+}
+
+.tactical-bento-elite__body {
+  position: relative;
+  z-index: 4;
+}
+
+.tactical-bento-elite__rim {
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  pointer-events: none;
+  border: 1px dashed rgba(34, 197, 94, 0.24);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--tactical-bento-bevel)) 0,
+    100% var(--tactical-bento-bevel),
+    100% 100%,
+    var(--tactical-bento-bevel) 100%,
+    0 calc(100% - var(--tactical-bento-bevel))
+  );
+  opacity: 0.5;
+}
+
+.tactical-bento-elite__scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.03;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(34, 197, 94, 1) 0px,
+    rgba(34, 197, 94, 1) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  mix-blend-mode: screen;
+}
+
+.dashboard-bento-focus-grid .tactical-bento-elite {
+  transition: opacity 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
+  /* transform géré par le micro-glitch au survol — pas de transition ici */
+}
+
+.dashboard-bento-focus-grid:hover .tactical-bento-elite {
+  opacity: 0.82;
+  filter: saturate(0.92);
+}
+
+/* Micro-glitch 0,1s au survol — projection instable (élite) */
+@keyframes omjep-tactical-elite-hover-glitch {
+  0% {
+    transform: translate3d(0, -1px, 0) skewX(0deg);
+    filter: saturate(1.06);
+  }
+  35% {
+    transform: translate3d(0.5px, -0.2px, 0) skewX(0.45deg);
+    filter: saturate(1.1) drop-shadow(1px 0 0 rgba(0, 255, 255, 0.2)) drop-shadow(-1.2px 0 0 rgba(255, 0, 170, 0.14));
+  }
+  70% {
+    transform: translate3d(-0.4px, -0.1px, 0) skewX(-0.4deg);
+    filter: saturate(1.1) drop-shadow(-1px 0 0 rgba(0, 255, 255, 0.16)) drop-shadow(0.6px 0 0 rgba(255, 0, 128, 0.12));
+  }
+  100% {
+    transform: translate3d(0, -1px, 0) skewX(0deg);
+    filter: saturate(1.06);
+  }
+}
+
+.dashboard-bento-focus-grid .tactical-bento-elite:hover {
+  opacity: 1 !important;
+  filter: saturate(1.06);
+  transform: translate3d(0, -1px, 0);
+  box-shadow:
+    0 0 50px -10px rgba(34, 197, 94, 0.38),
+    inset 0 1px 0 rgba(34, 197, 94, 0.16),
+    inset 0 -26px 52px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(34, 197, 94, 0.45),
+    0 0 28px rgba(34, 197, 94, 0.22),
+    0 0 20px rgba(34, 197, 94, 0.16);
+  animation: omjep-tactical-elite-hover-glitch 0.1s ease-out 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-bento-focus-grid .tactical-bento-elite:hover {
+    animation: none;
+  }
+}
+
+.omjep-metric-metallic {
+  font-family: Rajdhani, ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  background: linear-gradient(180deg, #f4e8b8 0%, #d4af37 42%, #9a7b1e 68%, #4a3a0f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(212, 175, 55, 0.35)) drop-shadow(0 10px 22px rgba(212, 175, 55, 0.2));
+}
+
+.tech-divider-short {
+  width: 52px;
+  height: 0.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 242, 255, 0.65) 50%, transparent 100%);
+  opacity: 0.62;
+}
+
+.tactical-btn {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.16) 0%, rgba(212, 175, 55, 0.02) 45%, rgba(0, 0, 0, 0.45) 100%);
+  color: #f8e6a9;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+.tactical-btn:hover {
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.16),
+    0 0 26px rgba(30, 58, 138, 0.24);
+}
+
+.tactical-btn:active {
+  transform: translateY(1px);
+}
+
+.app-loader-overlay {
+  background:
+    radial-gradient(ellipse 45% 30% at 20% 0%, rgba(30, 58, 138, 0.28) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 30% at 85% 100%, rgba(212, 175, 55, 0.18) 0%, transparent 70%),
+    #050505;
+}
+
+.tactical-bento::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image:
+    linear-gradient(115deg, transparent 45%, rgba(30, 58, 138, 0.35) 50%, transparent 55%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+@keyframes tactical-skeleton-laser {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(180%) skewX(-18deg);
+  }
+}
+
+.tactical-skeleton-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: -22%;
+  pointer-events: none;
+  background: linear-gradient(
+    95deg,
+    rgba(212, 175, 55, 0) 20%,
+    rgba(212, 175, 55, 0.08) 40%,
+    rgba(234, 179, 8, 0.32) 50%,
+    rgba(212, 175, 55, 0.08) 60%,
+    rgba(212, 175, 55, 0) 80%
+  );
+  animation: tactical-skeleton-laser 1.6s linear infinite;
+}
+
+/* Petits blocs (HUD) sans clip — même verre + bordure or */
+.hud-surface {
+  border: 1px dashed rgba(212, 175, 55, 0.28);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 50px -14px rgba(212, 175, 55, 0.2),
+    inset 0 1px 0 rgba(0, 242, 255, 0.04);
+}
+
+/* Variante "hub-surface" pour widgets glassmorphism premium */
+.hub-surface {
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 30%, rgba(0, 0, 0, 0.45) 100%),
+    rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Titres dashboard AAA — vitesse (Rajdhani bold italic) */
+.omjep-title-aaa {
+  font-family: Rajdhani, system-ui, sans-serif;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.92);
+  text-shadow:
+    0 0 24px rgba(30, 58, 138, 0.35),
+    0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Scan laser — recherche Persona (EA FC) */
+@keyframes persona-laser-sweep {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0.2;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(420%);
+    opacity: 0.15;
+  }
+}
+
+.persona-laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28%;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(34, 211, 238, 0) 20%,
+    rgba(30, 58, 138, 0.35) 45%,
+    rgba(56, 189, 248, 0.5) 50%,
+    rgba(30, 58, 138, 0.35) 55%,
+    transparent 100%
+  );
+  filter: blur(0.5px);
+  mix-blend-mode: screen;
+  animation: persona-laser-sweep 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .persona-laser {
+    animation: none;
+    top: 40%;
+    transform: none;
+    opacity: 0.4;
+  }
+}
+
+/* Carte FC — conteneur 3D (inclinaison légère) */
+.eafc-card-3d {
+  transform: perspective(1200px) rotateX(5deg) rotateY(-4deg) translateZ(0);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ─── Hub Athlète — Glassmorphism + Bordure dorée gradient ───────────────── */
+.hub-athlete-panel {
+  position: relative;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.hub-athlete-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.55) 50%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.hub-athlete-panel-dark {
+  position: relative;
+  border-radius: 12px;
+  background: rgba(5, 5, 5, 0.65);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.hub-athlete-panel-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.55) 50%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ─── Cockpit Full-Screen App ─────────────────────────────────────────────
+   Plein écran cockpit : pas de scroll body, scroll interne aux widgets. */
+html.cockpit-fullscreen,
+html.cockpit-fullscreen body {
+  overscroll-behavior: none;
+}
+
+.dashboard-cockpit-shell {
+  contain: layout paint;
+}
+
+.dashboard-cockpit-shell .dashboard-cockpit-stage {
+  isolation: isolate;
+}
+
+.dashboard-cockpit-canvas {
+  contain: layout paint;
+}
+
+.dashboard-cockpit-canvas > div {
+  scrollbar-gutter: stable both-edges;
+  scrollbar-color: rgba(34, 197, 94, 0.4) transparent;
+}
+
+.dashboard-cockpit-canvas > div::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dashboard-cockpit-canvas > div::-webkit-scrollbar-thumb {
+  background: rgba(34, 197, 94, 0.32);
+  border-radius: 8px;
+}
+
+.dashboard-cockpit-canvas > div::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 197, 94, 0.55);
+}
+
+.cinematic-stage {
+  perspective: 1200px;
+}
+
+/* ─── Widget magnétique ──────────────────────────────────────────────────── */
+.widget-tile {
+  transform-style: preserve-3d;
+}
+
+.widget-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: none;
+}
+
+.widget-tile__bar {
+  background: transparent;
+}
+
+.widget-tile__body {
+  scrollbar-color: rgba(34, 197, 94, 0.4) transparent;
+}
+
+/* ─── Zone de Contact (remplace les boutons standards) ─────────────────── */
+.contact-zone {
+  position: relative;
+  letter-spacing: 0.1em;
+}
+
+.contact-zone::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid transparent;
+  transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.contact-zone:hover::before {
+  border-color: rgba(34, 197, 94, 0.45);
+  box-shadow: 0 0 28px -4px rgba(34, 197, 94, 0.45);
+}
+
+/* Override discret : tous les <button> nus dans le cockpit prennent un look "zone de contact"
+   sauf s'ils déclarent déjà la classe .contact-zone ou sont des contrôles internes connus */
+.dashboard-cockpit-shell button:where(:not(.contact-zone):not(.tactical-ghost-button):not([data-cockpit-skin='off'])) {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(2, 2, 2, 0.7);
+  border-radius: 8px;
+  transition: border-color 220ms ease, box-shadow 220ms ease, color 220ms ease, background-color 220ms ease;
+}
+
+.dashboard-cockpit-shell
+  button:where(:not(.contact-zone):not(.tactical-ghost-button):not([data-cockpit-skin='off'])):hover {
+  border-color: rgba(34, 197, 94, 0.65);
+  box-shadow: 0 0 22px -6px rgba(34, 197, 94, 0.55);
+}
+
+.dashboard-cockpit-shell
+  button:where(:not(.contact-zone):not(.tactical-ghost-button):not([data-cockpit-skin='off'])):focus-visible {
+  outline: none;
+  border-color: rgba(34, 197, 94, 0.85);
+  box-shadow: 0 0 28px -2px rgba(34, 197, 94, 0.65);
+}
+
+/* Dock minimal */
+.dock-item:hover,
+.dock-center:hover {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-item,
+  .dock-center,
+  .widget-tile {
+    transition: none !important;
+  }
+
+  .widget-tile::after {
+    opacity: 0;
+  }
+}
+
+/* Icônes drawer satellite — néon émeraude intense */
+.cockpit-neon-icon {
+  color: rgb(52 211 153);
+  filter: drop-shadow(0 0 1px rgb(16 185 129))
+    drop-shadow(0 0 6px rgba(34, 197, 94, 0.95)) drop-shadow(0 0 14px rgba(52, 211, 153, 0.55));
+}
+
+/* Scrim drawer satellite : flou piloté par Framer (--satellite-blur) */
+.cockpit-satellite-scrim {
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: var(--satellite-blur, blur(0px));
+  -webkit-backdrop-filter: var(--satellite-blur, blur(0px));
+}
+
+/* Le wallet-cell visible en lecture seule mais visuellement cliquable */
+.cockpit-wallet-cell {
+  cursor: default;
+}
+
+/* Page intérieure cockpit : centrage et padding par défaut pour pages héritées */
+.cockpit-page {
+  width: 100%;
+  max-width: 1640px;
+  margin-inline: auto;
+}
+
+/* Kimi Brutalist final unification: Store + Transfers */
+.kimi-luxury-store-page article,
+.kimi-luxury-transfers-page article,
+.kimi-luxury-transfers-page [class*='omjep-premium-panel'],
+.kimi-luxury-store-page [class*='omjep-premium-panel'] {
+  border: none !important;
+  box-shadow: var(--tw-shadow, 0 25px 50px -12px rgb(0 0 0 / 0.35)) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.kimi-luxury-store-page button,
+.kimi-luxury-transfers-page button {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+}
+
+.kimi-luxury-store-page button:hover,
+.kimi-luxury-transfers-page button:hover {
+  opacity: 0.78;
+}
+
+/* Community + Admin: remove heavy boxes, favor spacing */
+.kimi-community-page .tactical-bento,
+.kimi-community-page .hub-surface,
+.kimi-community-page article,
+.kimi-admin-page .tactical-floating-panel,
+.kimi-admin-page [class*='omjep-premium-panel'] {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.kimi-admin-page [class*='space-y-'] {
+  row-gap: 4rem;
+}
+
+/* Admin tables: tiny monospace, no column borders */
+.kimi-admin-page table {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px !important;
+  border-collapse: collapse;
+}
+
+.kimi-admin-page table th,
+.kimi-admin-page table td {
+  border-left: none !important;
+  border-right: none !important;
+  font-size: 11px !important;
+}
+
+/* Global modal refinement: pure glass */
+[role='dialog'],
+.tactical-modal-panel {
+  border: none !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+}
+
+:root[data-theme='light'] .kimi-luxury-store-page,
+:root[data-theme='light'] .kimi-luxury-transfers-page,
+:root[data-theme='light'] .kimi-community-page,
+:root[data-theme='light'] .kimi-admin-page {
+  color: #0f172a;
+}
+
+:root[data-theme='light'] .kimi-community-page {
+  background: #ffffff !important;
+}
+
+:root[data-theme='light'] .kimi-community-page [class*='text-slate-'],
+:root[data-theme='light'] .kimi-admin-page [class*='text-slate-'] {
+  color: #334155 !important;
+}
+
+:root[data-theme='dark'] .tactical-modal-panel,
+:root[data-theme='dark'] [role='dialog'] {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+:root[data-theme='light'] .tactical-modal-panel,
+:root[data-theme='light'] [role='dialog'] {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+:root[data-theme='light'] .dashboard-cockpit-topbar {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+:root[data-theme='dark'] .dashboard-cockpit-topbar {
+  background: rgba(0, 0, 0, 0.68) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Minimalism pass: brand integrity, no gaming aura */
+.lucide {
+  filter: none !important;
+  -webkit-filter: none !important;
+  box-shadow: none !important;
+}
+
+[class*='badge'],
+[class*='Badge'],
+[class*='pill'],
+[class*='Pill'],
+[class*='status'],
+[class*='Status'] {
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.2em !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+:root[data-theme='light'] [class*='badge'],
+:root[data-theme='light'] [class*='Badge'],
+:root[data-theme='light'] [class*='pill'],
+:root[data-theme='light'] [class*='Pill'],
+:root[data-theme='light'] [class*='status'],
+:root[data-theme='light'] [class*='Status'] {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+@keyframes skeleton-fade-slow {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse {
+  animation: skeleton-fade-slow 2.8s ease-in-out infinite !important;
+  background-color: rgb(23 23 23) !important;
+}
+
+:root[data-theme='light'] .animate-pulse {
+  background-color: rgb(245 245 245) !important;
+}
+
+.kimi-luxury-store-page article,
+.kimi-luxury-store-page .rounded-2xl,
+.kimi-luxury-store-page .rounded-3xl,
+.kimi-luxury-transfers-page .rounded-2xl,
+.kimi-luxury-transfers-page .rounded-xl,
+.kimi-luxury-transfers-page .omjep-premium-panel {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.kimi-luxury-store-page article,
+.kimi-luxury-store-page > div,
+.kimi-luxury-transfers-page > div,
+.kimi-luxury-transfers-page .omjep-premium-panel {
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+:root[data-theme='light'] .kimi-luxury-store-page article,
+:root[data-theme='light'] .kimi-luxury-store-page > div,
+:root[data-theme='light'] .kimi-luxury-transfers-page > div,
+:root[data-theme='light'] .kimi-luxury-transfers-page .omjep-premium-panel {
+  border-bottom-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.kimi-luxury-store-page button,
+.kimi-luxury-transfers-page button {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.2em !important;
+}
+
+:root[data-theme='light'] .kimi-luxury-store-page button,
+:root[data-theme='light'] .kimi-luxury-transfers-page button {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.kimi-luxury-store-page ul,
+.kimi-luxury-store-page ol,
+.kimi-luxury-store-page table,
+.kimi-luxury-transfers-page ul,
+.kimi-luxury-transfers-page ol,
+.kimi-luxury-transfers-page table,
+.dashboard-cockpit-shell ul,
+.dashboard-cockpit-shell ol,
+.dashboard-cockpit-shell table {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
 }

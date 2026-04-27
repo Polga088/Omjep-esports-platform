@@ -52,3 +52,16 @@ export interface HallOfFameEntry {
     assists: number;
   } | null;
 }
+
+export type LeaderboardFormLetter = 'W' | 'D' | 'L';
+
+export interface CompetitionLeaderboardRow {
+  id: string;
+  rank: number;
+  name: string;
+  club: string;
+  pts: number;
+  winrate: number;
+  ratio: number;
+  form: LeaderboardFormLetter[];
+}

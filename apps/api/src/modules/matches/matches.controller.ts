@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Param,
   Body,
   UseGuards,
@@ -14,6 +15,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ClubRoles } from '../auth/decorators/club-roles.decorator';
 import { ClubRolesGuard } from '../auth/guards/club-roles.guard';
 import { SubmitScoreReportDto } from './dto/submit-score-report.dto';
+import { ReportMatchDto } from './dto/report-match.dto';
+import { ConfirmMatchDto } from './dto/confirm-match.dto';
 
 @Controller('matches')
 export class MatchesController {
@@ -49,7 +52,28 @@ export class MatchesController {
       id,
       body.home_score,
       body.away_score,
+      body.proof_url,
     );
+  }
+
+  @Patch(':id/report')
+  @UseGuards(JwtAuthGuard)
+  reportMatch(
+    @Request() req: { user: { id: string } },
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: ReportMatchDto,
+  ) {
+    return this.matchesService.reportMatch(req.user.id, id, body);
+  }
+
+  @Patch(':id/confirm')
+  @UseGuards(JwtAuthGuard)
+  confirmMatch(
+    @Request() req: { user: { id: string } },
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: ConfirmMatchDto,
+  ) {
+    return this.matchesService.confirmMatch(req.user.id, id, body);
   }
 
   @Get('competition/:id')

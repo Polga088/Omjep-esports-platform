@@ -5,9 +5,10 @@ import { useAuth } from '@/hooks/useAuth';
 
 const navLinks = [
   { to: '/', label: 'Accueil' },
-  { to: '/leaderboard', label: 'Classement' },
+  { to: '/community', label: 'Community' },
+  { to: '/#leaderboard', label: 'Classement' },
   { to: '/hall-of-fame', label: 'Palmarès' },
-];
+]
 
 export default function LandingNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -15,21 +16,24 @@ export default function LandingNavbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const authed = isAuthenticated();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path.startsWith('/#')) return location.pathname === '/' && location.hash === path.slice(1)
+    return location.pathname === path
+  }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-indigo-500/10 bg-[#050505]/55 backdrop-blur-xl backdrop-saturate-150">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-500/15 bg-[#020202]/65 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="group flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500/30 to-indigo-600/20 shadow-[0_0_24px_-4px_rgba(99,102,241,0.45)] ring-1 ring-indigo-400/20 transition group-hover:ring-indigo-400/40">
-              <Crown className="h-5 w-5 text-indigo-200" fill="currentColor" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500/35 to-emerald-700/20 shadow-[0_0_24px_-4px_rgba(34,197,94,0.4)] ring-1 ring-emerald-400/25 transition group-hover:ring-emerald-400/45">
+              <Crown className="h-5 w-5 text-emerald-200" fill="currentColor" />
             </div>
             <div>
               <span className="font-display text-lg font-bold uppercase tracking-tighter text-white">
                 OMJEP
               </span>
-              <span className="hidden font-mono text-[9px] uppercase tracking-widest text-slate-500 sm:block">
+              <span className="hidden font-sans text-[9px] uppercase tracking-widest text-slate-500 sm:block">
                 EA FC · Maroc
               </span>
             </div>
@@ -42,7 +46,7 @@ export default function LandingNavbar() {
                 to={link.to}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   isActive(link.to)
-                    ? 'bg-indigo-500/10 text-indigo-300'
+                    ? 'bg-emerald-500/15 text-emerald-300'
                     : 'text-slate-400 hover:bg-white/[0.04] hover:text-white'
                 }`}
               >
@@ -57,7 +61,7 @@ export default function LandingNavbar() {
                 <span className="max-w-[10rem] truncate text-sm text-slate-500">{user?.ea_persona_name}</span>
                 <Link
                   to="/dashboard"
-                  className="rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_-6px_rgba(99,102,241,0.35)] transition-all hover:border-indigo-400/35 hover:shadow-[0_0_28px_-4px_rgba(99,102,241,0.45)]"
+                  className="rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_-6px_rgba(34,197,94,0.3)] transition-all hover:border-emerald-400/35 hover:shadow-[0_0_28px_-4px_rgba(34,197,94,0.4)]"
                 >
                   Accéder au Dashboard
                 </Link>
@@ -80,7 +84,7 @@ export default function LandingNavbar() {
                 </Link>
                 <Link
                   to="/register"
-                  className="rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-4 py-2 text-sm font-semibold text-white transition-all hover:border-indigo-400/35 hover:shadow-[0_0_24px_-6px_rgba(99,102,241,0.4)]"
+                  className="rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-4 py-2 text-sm font-semibold text-white transition-all hover:border-emerald-400/35 hover:shadow-[0_0_24px_-6px_rgba(34,197,94,0.4)]"
                 >
                   S&apos;inscrire
                 </Link>
@@ -100,7 +104,7 @@ export default function LandingNavbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-indigo-500/10 bg-[#050505]/95 px-4 py-4 backdrop-blur-xl md:hidden">
+        <div className="border-t border-emerald-500/10 bg-[#020202]/95 px-4 py-4 backdrop-blur-xl md:hidden">
           <div className="space-y-1">
             {navLinks.map((link) => (
               <Link
@@ -108,7 +112,7 @@ export default function LandingNavbar() {
                 to={link.to}
                 onClick={() => setMobileOpen(false)}
                 className={`block rounded-lg px-4 py-3 text-sm font-medium ${
-                  isActive(link.to) ? 'bg-indigo-500/10 text-indigo-300' : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                  isActive(link.to) ? 'bg-emerald-500/15 text-emerald-300' : 'text-slate-400 hover:bg-white/5 hover:text-white'
                 }`}
               >
                 {link.label}

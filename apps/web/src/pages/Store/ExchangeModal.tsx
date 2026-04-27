@@ -13,7 +13,8 @@ import {
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
-import { formatCurrency } from '@/utils/formatCurrency';
+import { formatCurrency } from '@/utils/formatCurrency'
+import { useModalOpenSound } from '@/hooks/useModalOpenSound'
 
 /** Taux unifié : 1000 OC ⟷ 1 Jepy */
 const OC_PER_JEPY = 1000;
@@ -188,9 +189,11 @@ export default function ExchangeModal({
     }
   };
 
-  if (!open) return null;
+  useModalOpenSound(open);
 
-  const inputLabel = mode === 'oc-to-jepy' ? 'Montant (OC)' : 'Montant (Jepy)';
+  if (!open) return null
+
+  const inputLabel = mode === 'oc-to-jepy' ? 'Montant (OC)' : 'Montant (Jepy)'
 
   const hintInvalid =
     mode === 'oc-to-jepy' && parsedAmount > 0 && !validOcToJepy
@@ -213,14 +216,14 @@ export default function ExchangeModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      className="tactical-modal-backdrop z-[200]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="exchange-modal-title"
     >
       <button
         type="button"
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="tactical-modal-dim"
         aria-label="Fermer"
         onClick={() => !submitting && onClose()}
       />
@@ -229,7 +232,8 @@ export default function ExchangeModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96 }}
         transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-        className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-[#0B0D13] shadow-2xl shadow-black/60"
+        onClick={(event) => event.stopPropagation()}
+        className="tactical-modal-panel z-10 max-w-md"
       >
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
           <div className="flex flex-col gap-1">

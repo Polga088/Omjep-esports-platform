@@ -182,6 +182,29 @@ exports.Prisma.PlayerStatsScalarFieldEnum = {
   average_rating: 'average_rating'
 };
 
+exports.Prisma.EaExternalStatsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  games: 'games',
+  goals: 'goals',
+  assists: 'assists',
+  avg_rating: 'avg_rating',
+  division: 'division',
+  overall_rating: 'overall_rating',
+  proclubs_url: 'proclubs_url',
+  last_synced_at: 'last_synced_at'
+};
+
+exports.Prisma.EaClubStatsScalarFieldEnum = {
+  id: 'id',
+  club_id: 'club_id',
+  division: 'division',
+  points: 'points',
+  record: 'record',
+  proclubs_url: 'proclubs_url',
+  last_synced_at: 'last_synced_at'
+};
+
 exports.Prisma.CompetitionScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -207,6 +230,7 @@ exports.Prisma.MatchScalarFieldEnum = {
   away_team_id: 'away_team_id',
   home_score: 'home_score',
   away_score: 'away_score',
+  proof_url: 'proof_url',
   status: 'status',
   played_at: 'played_at',
   startTime: 'startTime',
@@ -217,6 +241,21 @@ exports.Prisma.MatchScalarFieldEnum = {
   bracket_index: 'bracket_index',
   winner_advances_to_match_id: 'winner_advances_to_match_id',
   winner_slot_in_next: 'winner_slot_in_next'
+};
+
+exports.Prisma.LeagueTableScalarFieldEnum = {
+  id: 'id',
+  competition_id: 'competition_id',
+  team_id: 'team_id',
+  played: 'played',
+  won: 'won',
+  drawn: 'drawn',
+  lost: 'lost',
+  goals_for: 'goals_for',
+  goals_against: 'goals_against',
+  goal_difference: 'goal_difference',
+  points: 'points',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.MatchScoreReportScalarFieldEnum = {
@@ -485,6 +524,9 @@ exports.CupScenario = exports.$Enums.CupScenario = {
 
 exports.MatchStatus = exports.$Enums.MatchStatus = {
   SCHEDULED: 'SCHEDULED',
+  PENDING: 'PENDING',
+  VALIDATED: 'VALIDATED',
+  DISPUTE: 'DISPUTE',
   LIVE: 'LIVE',
   FINISHED: 'FINISHED',
   DISPUTED: 'DISPUTED',
@@ -598,9 +640,12 @@ exports.Prisma.ModelName = {
   Club: 'Club',
   TeamMember: 'TeamMember',
   PlayerStats: 'PlayerStats',
+  EaExternalStats: 'EaExternalStats',
+  EaClubStats: 'EaClubStats',
   Competition: 'Competition',
   CompetitionTeam: 'CompetitionTeam',
   Match: 'Match',
+  LeagueTable: 'LeagueTable',
   MatchScoreReport: 'MatchScoreReport',
   MatchEvent: 'MatchEvent',
   TransferRequest: 'TransferRequest',

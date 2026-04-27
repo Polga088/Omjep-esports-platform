@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react'
+import { useModalOpenSound } from '@/hooks/useModalOpenSound'
 import {
   X, Loader2, Globe, CheckCircle2, AlertTriangle,
   Goal, Swords, Link2, Search, Download,
@@ -70,7 +71,9 @@ export default function SyncPreviewModal({ match, open, onClose, onSynced }: Pro
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose, step]);
 
-  if (!open) return null;
+  useModalOpenSound(open)
+
+  if (!open) return null
 
   const handleScrape = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,13 +130,15 @@ export default function SyncPreviewModal({ match, open, onClose, onSynced }: Pro
   const canClose = step !== 'loading' && step !== 'confirming';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+    <div className="tactical-modal-backdrop z-50 animate-[fadeIn_0.2s_ease-out]">
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="tactical-modal-dim"
         onClick={canClose ? onClose : undefined}
+        role="presentation"
+        aria-hidden={!canClose}
       />
 
-      <div className="relative w-full max-w-lg bg-[#0a0f1e] border border-amber-400/15 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden animate-[slideUp_0.3s_ease-out]">
+      <div className="tactical-modal-panel relative max-w-lg animate-[slideUp_0.3s_ease-out] border border-amber-400/15">
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-amber-400/10 bg-gradient-to-r from-emerald-400/[0.04] to-transparent">
           <div className="flex items-center gap-3">

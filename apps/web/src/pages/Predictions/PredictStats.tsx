@@ -143,10 +143,17 @@ export default function PredictStats({ refreshKey = 0 }: PredictStatsProps) {
                 tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v))}
               />
               <Tooltip
+                allowEscapeViewBox={{ x: true, y: true }}
+                wrapperStyle={{ zIndex: 50, maxWidth: 'min(100vw - 1.5rem, 280px)' }}
                 contentStyle={{
-                  background: '#0f172a',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '12px',
+                  background: 'rgba(6, 8, 12, 0.94)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: 0,
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))',
+                  maxWidth: 'min(100vw - 1.5rem, 280px)',
+                  boxSizing: 'border-box',
                 }}
                 labelFormatter={(label) => `Date : ${label}`}
                 formatter={(value) => [
@@ -192,10 +199,17 @@ export default function PredictStats({ refreshKey = 0 }: PredictStatsProps) {
                     ))}
                   </Pie>
                   <Tooltip
+                    allowEscapeViewBox={{ x: true, y: true }}
+                    wrapperStyle={{ zIndex: 50, maxWidth: 'min(100vw - 1.5rem, 280px)' }}
                     contentStyle={{
-                      background: '#0f172a',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '12px',
+                      background: 'rgba(6, 8, 12, 0.94)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: 0,
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                      clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))',
+                      maxWidth: 'min(100vw - 1.5rem, 280px)',
+                      boxSizing: 'border-box',
                     }}
                   />
                 </PieChart>

@@ -6,6 +6,8 @@ import api from '@/lib/api';
 import { getCompTypeConfig } from '@/lib/competition-icons';
 import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
 import RankBadge from '@/components/RankBadge';
+import MatchReportModal from '@/components/MatchReportModal';
+import { MatchScoreProjection } from '@/components/kimi/MatchScoreProjection';
 
 interface Team {
   id: string;
@@ -16,10 +18,11 @@ interface Team {
 
 interface Match {
   id: string;
-  status: 'SCHEDULED' | 'PLAYED';
+  status: 'SCHEDULED' | 'PENDING' | 'VALIDATED' | 'DISPUTE' | 'PLAYED';
   scheduledAt: string;
   homeScore: number | null;
   awayScore: number | null;
+  proofUrl?: string | null;
   homeTeam: Team;
   awayTeam: Team;
   competition: {
@@ -94,31 +97,6 @@ function playMatchStartSound() {
 function captainLevel(team: Team): number {
   const lv = team.manager?.level;
   return typeof lv === 'number' && Number.isFinite(lv) && lv > 0 ? lv : 1;
-}
-
-function DuelSmokeBackdrop() {
-  return (
-    <div
-      className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] opacity-20"
-      aria-hidden
-    >
-      <motion.div
-        className="absolute left-[-18%] top-1/2 h-[135%] w-[65%] -translate-y-1/2 rounded-full bg-cyan-400 blur-[72px]"
-        animate={{ x: ['-4%', '10%', '-2%', '-4%'], scale: [1, 1.07, 1.02, 1] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute right-[-12%] top-[25%] h-[95%] w-[50%] rounded-full bg-violet-500 blur-[64px]"
-        animate={{ x: ['4%', '-8%', '2%', '4%'], y: ['0%', '5%', '-3%', '0%'] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute left-[20%] bottom-[-25%] h-[75%] w-[55%] rounded-full bg-slate-300 blur-[56px]"
-        animate={{ opacity: [0.35, 0.65, 0.4, 0.35], scale: [1, 1.06, 1, 1] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-      />
-    </div>
-  );
 }
 
 function TeamLogoXL({ team, side }: { team: Team; side: 'home' | 'away' }) {
@@ -216,12 +194,12 @@ function ResultBadge({ isWin, isDraw }: { isWin: boolean; isDraw: boolean }) {
   );
 }
 
-function DuelArenaCard({ match }: { match: Match }) {
+function DuelArenaCard({ match, onOpenReport }: { match: Match; onOpenReport: (match: Match) => void }) {
   const navigate = useNavigate();
   const [enteringArena, setEnteringArena] = useState(false);
   const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const isPlayed = match.status === 'PLAYED';
+  const isPlayed = match.status === 'PLAYED' || match.status === 'VALIDATED';
   const isHome = match.myTeamId === match.homeTeam.id;
 
   const myScore = isHome ? match.homeScore : match.awayScore;
@@ -258,17 +236,9 @@ function DuelArenaCard({ match }: { match: Match }) {
     }, MATCH_START_NAV_MS);
   };
 
-  const borderGlow = isPlayed
-    ? isWin
-      ? 'border-emerald-500/20 hover:border-emerald-400/35'
-      : isDraw
-        ? 'border-slate-500/20'
-        : 'border-red-500/15 hover:border-red-400/25'
-    : 'border-cyan-500/20 hover:border-cyan-400/40';
-
   return (
     <div
-      className={`group relative overflow-hidden rounded-3xl border bg-[#060a10]/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-colors duration-300 sm:p-8 ${borderGlow}`}
+      className="group relative overflow-hidden rounded-none border border-black/10 bg-black/[0.02] p-10 backdrop-blur-xl transition-colors duration-300 dark:border-white/20 dark:bg-black/40"
     >
       <AnimatePresence>
         {enteringArena ? (
@@ -282,8 +252,7 @@ function DuelArenaCard({ match }: { match: Match }) {
         ) : null}
       </AnimatePresence>
 
-      <DuelSmokeBackdrop />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-current opacity-20" />
 
       <div className="relative z-[1] mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
@@ -364,11 +333,12 @@ function DuelArenaCard({ match }: { match: Match }) {
           <NeonLightningDivider isPlayed={isPlayed} />
           {isPlayed ? (
             <>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <span className="font-display text-3xl font-black text-white sm:text-4xl">{match.homeScore}</span>
-                <span className="text-lg font-bold text-slate-600">—</span>
-                <span className="font-display text-3xl font-black text-white sm:text-4xl">{match.awayScore}</span>
-              </div>
+              <MatchScoreProjection
+                home={match.homeScore ?? 0}
+                away={match.awayScore ?? 0}
+                size="hero"
+                className="px-1"
+              />
               <span className="text-[10px] uppercase tracking-widest text-slate-600">Terminé</span>
               <span className="rounded-full border border-amber-400/10 bg-amber-400/5 px-2 py-0.5 text-[9px] font-semibold text-amber-400/45">
                 Source: ProClubs.io
@@ -419,33 +389,42 @@ function DuelArenaCard({ match }: { match: Match }) {
             Voir l&apos;arène
           </Link>
         ) : (
-          <motion.button
-            type="button"
-            disabled={enteringArena}
-            onClick={handleEnterArena}
-            className="inline-flex items-center justify-center rounded-xl border border-cyan-400/50 bg-gradient-to-r from-cyan-600/90 to-sky-600/90 px-10 py-3.5 text-xs font-black uppercase tracking-[0.28em] text-white shadow-[0_0_32px_rgba(34,211,238,0.35)] disabled:pointer-events-none disabled:opacity-60"
-            animate={
-              enteringArena
-                ? { scale: 0.94, opacity: 0.75 }
-                : {
-                    scale: [1, 1.045, 1],
-                    boxShadow: [
-                      '0 0 28px rgba(34,211,238,0.35)',
-                      '0 0 48px rgba(34,211,238,0.55)',
-                      '0 0 28px rgba(34,211,238,0.35)',
-                    ],
-                  }
-            }
-            transition={
-              enteringArena
-                ? { duration: 0.35 }
-                : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
-            }
-            whileHover={enteringArena ? undefined : { scale: 1.06 }}
-            whileTap={enteringArena ? undefined : { scale: 0.98 }}
-          >
-            {enteringArena ? 'Match Start…' : 'Enter Arena'}
-          </motion.button>
+          <div className="flex flex-wrap justify-center gap-3">
+            <motion.button
+              type="button"
+              disabled={enteringArena}
+              onClick={handleEnterArena}
+              className="inline-flex items-center justify-center rounded-xl border border-cyan-400/50 bg-gradient-to-r from-cyan-600/90 to-sky-600/90 px-8 py-3.5 text-xs font-black uppercase tracking-[0.24em] text-white shadow-[0_0_32px_rgba(34,211,238,0.35)] disabled:pointer-events-none disabled:opacity-60"
+              animate={
+                enteringArena
+                  ? { scale: 0.94, opacity: 0.75 }
+                  : {
+                      scale: [1, 1.045, 1],
+                      boxShadow: [
+                        '0 0 28px rgba(34,211,238,0.35)',
+                        '0 0 48px rgba(34,211,238,0.55)',
+                        '0 0 28px rgba(34,211,238,0.35)',
+                      ],
+                    }
+              }
+              transition={
+                enteringArena
+                  ? { duration: 0.35 }
+                  : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
+              }
+              whileHover={enteringArena ? undefined : { scale: 1.06 }}
+              whileTap={enteringArena ? undefined : { scale: 0.98 }}
+            >
+              {enteringArena ? 'Match Start…' : 'Enter Arena'}
+            </motion.button>
+            <button
+              type="button"
+              onClick={() => onOpenReport(match)}
+              className="inline-flex items-center justify-center rounded-xl border border-amber-300/30 bg-amber-400/10 px-6 py-3 text-xs font-black uppercase tracking-[0.17em] text-amber-200 transition hover:bg-amber-400/20"
+            >
+              Match Day Report
+            </button>
+          </div>
         )}
       </div>
     </div>
@@ -454,7 +433,7 @@ function DuelArenaCard({ match }: { match: Match }) {
 
 function SkeletonDuelCard() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.02] p-8">
+    <div className="animate-pulse overflow-hidden rounded-none border border-black/10 bg-black/[0.02] p-10 backdrop-blur-xl dark:border-white/20 dark:bg-black/40">
       <div className="mb-6 h-6 w-40 rounded-full bg-white/[0.06]" />
       <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
         <div className="flex flex-col items-center gap-3">
@@ -478,28 +457,9 @@ function SkeletonDuelCard() {
 
 function EmptyState({ tab }: { tab: Tab }) {
   return (
-    <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-12 text-center">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-800/10 to-transparent" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-400/[0.03] blur-[80px]" />
-
-      <div className="relative">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
-          {tab === 'upcoming' ? (
-            <Calendar className="h-9 w-9 text-slate-600" />
-          ) : (
-            <Swords className="h-9 w-9 text-slate-600" />
-          )}
-        </div>
-        <h3 className="mb-2 font-display text-xl font-bold text-slate-400">
-          {tab === 'upcoming' ? 'Aucun match prévu' : 'Aucun résultat'}
-        </h3>
-        <p className="mx-auto max-w-xs text-sm leading-relaxed text-slate-600">
-          {tab === 'upcoming'
-            ? 'Aucun match prévu pour le moment. Préparez vos crampons !'
-            : "Vous n'avez pas encore disputé de match. Les résultats apparaîtront ici."}
-        </p>
-      </div>
-    </div>
+    <p className="py-16 text-center text-sm font-thin text-black/50 dark:text-white/40">
+      {tab === 'upcoming' ? 'Pas de match prévu pour le moment.' : 'Pas encore de résultat enregistré.'}
+    </p>
   );
 }
 
@@ -508,6 +468,7 @@ export default function Matches() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('upcoming');
+  const [reportingMatch, setReportingMatch] = useState<Match | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -547,7 +508,7 @@ export default function Matches() {
   const upcoming = useMemo(
     () =>
       matches
-        .filter((m) => m.status === 'SCHEDULED')
+        .filter((m) => ['SCHEDULED', 'PENDING', 'DISPUTE'].includes(m.status))
         .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime()),
     [matches],
   );
@@ -555,7 +516,7 @@ export default function Matches() {
   const results = useMemo(
     () =>
       matches
-        .filter((m) => m.status === 'PLAYED')
+        .filter((m) => m.status === 'PLAYED' || m.status === 'VALIDATED')
         .sort((a, b) => new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()),
     [matches],
   );
@@ -568,30 +529,16 @@ export default function Matches() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="relative overflow-hidden rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8">
-        <div className="pointer-events-none absolute right-0 top-0 h-64 w-64 rounded-full bg-amber-400/5 blur-[80px]" />
-        <div className="relative flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-amber-400/20 bg-gradient-to-br from-amber-400/30 to-amber-600/30">
-            <Swords className="h-6 w-6 text-amber-400" />
-          </div>
-          <div>
-            <h1 className="ea-fc-hero-neon font-display text-2xl font-bold text-white">Matchs</h1>
-            <p className="text-sm text-slate-400">Calendrier et résultats de votre équipe</p>
-          </div>
-        </div>
+    <div className="cockpit-page space-y-6">
+      <div className="border-b border-black/10 px-12 py-12 dark:border-white/20">
+        <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">MATCHS</h1>
+        <p className="text-[12px] uppercase tracking-widest opacity-50">Calendrier et résultats</p>
       </div>
 
       {error === 'no-team' && (
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/10">
-            <AlertCircle className="h-7 w-7 text-amber-400" />
-          </div>
-          <h2 className="mb-2 font-display text-xl font-bold text-amber-300">Aucun club trouvé</h2>
-          <p className="mx-auto max-w-md text-sm text-slate-400">
-            Rejoignez un club pour voir vos matchs et résultats.
-          </p>
-        </div>
+        <p className="py-16 text-center text-sm font-thin text-black/50 dark:text-white/40">
+          Aucun club trouvé. Rejoignez un club pour voir vos matchs.
+        </p>
       )}
 
       {error === 'generic' && (
@@ -600,7 +547,7 @@ export default function Matches() {
 
       {!error && (
         <>
-          <div className="flex w-fit gap-2 rounded-xl border border-white/[0.06] bg-white/[0.03] p-1">
+          <div className="flex w-fit gap-2 border-b border-black/10 p-1 dark:border-white/20">
             {tabs.map(({ key, label, icon: Icon, count }) => {
               const active = activeTab === key;
               return (
@@ -608,20 +555,16 @@ export default function Matches() {
                   key={key}
                   type="button"
                   onClick={() => setActiveTab(key)}
-                  className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                  className={`flex items-center gap-2 rounded-none border border-black/10 px-4 py-2.5 text-sm font-semibold transition-all duration-200 dark:border-white/20 ${
                     active
-                      ? 'border-amber-400/20 bg-amber-400/10 text-amber-400 shadow-sm shadow-amber-400/5'
-                      : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white'
+                      ? 'bg-transparent text-black dark:text-white'
+                      : 'text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'
                   }`}
                 >
                   <Icon className="h-4 w-4" />
                   {label}
                   {!loading && (
-                    <span
-                      className={`ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                        active ? 'bg-amber-400/20 text-amber-400' : 'bg-white/5 text-slate-500'
-                      }`}
-                    >
+                    <span className="ml-1 px-1.5 py-0.5 font-mono text-[10px] font-bold text-black/70 dark:text-white/70">
                       {count}
                     </span>
                   )}
@@ -638,14 +581,51 @@ export default function Matches() {
           ) : currentList.length === 0 ? (
             <EmptyState tab={activeTab} />
           ) : (
-            <div className="space-y-6">
-              {currentList.map((match) => (
-                <DuelArenaCard key={match.id} match={match} />
-              ))}
+            <div className="space-y-0">
+              {currentList.map((match) => {
+                const isPlayed = match.status === 'PLAYED' || match.status === 'VALIDATED'
+                const statusLabel = isPlayed ? 'TERMINÉ' : 'À VENIR'
+                const scheduledDate = new Date(match.scheduledAt)
+                return (
+                  <div key={match.id} className="border-b border-black/10 px-12 py-12 dark:border-white/20">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto_auto] md:items-center">
+                      <div>
+                        <p className="text-[12px] uppercase tracking-widest opacity-50">{statusLabel}</p>
+                        <p className="font-mono text-2xl font-bold text-black dark:text-white">
+                          {match.homeTeam.name} — {match.awayTeam.name}
+                        </p>
+                        <p className="font-mono text-sm text-black/60 dark:text-white/60">
+                          {scheduledDate.toLocaleDateString('fr-FR')} {scheduledDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                      <p className="font-mono text-6xl font-bold text-black dark:text-white">
+                        {isPlayed ? `${match.homeScore ?? 0}:${match.awayScore ?? 0}` : '—'}
+                      </p>
+                      <div className="flex flex-wrap gap-3 md:justify-end">
+                        <button
+                          type="button"
+                          onClick={() => setReportingMatch(match)}
+                          className="rounded-none border border-black/10 bg-transparent px-3 py-2 text-xs uppercase tracking-[0.2em] dark:border-white/20"
+                        >
+                          [ ACTION ]
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           )}
         </>
       )}
+      <MatchReportModal
+        open={reportingMatch !== null}
+        match={reportingMatch}
+        onClose={() => setReportingMatch(null)}
+        onUpdated={() => {
+          window.dispatchEvent(new CustomEvent('omjep:matches-refresh'))
+        }}
+      />
     </div>
   );
 }

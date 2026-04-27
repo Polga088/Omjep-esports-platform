@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min, MaxLength } from 'class-validator';
 
 export class SubmitScoreReportDto {
   @Type(() => Number)
@@ -11,4 +11,9 @@ export class SubmitScoreReportDto {
   @IsInt()
   @Min(0)
   away_score!: number;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(4096)
+  proof_url?: string;
 }

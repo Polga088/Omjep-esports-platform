@@ -1,5 +1,6 @@
 import { Trophy, Shield, Swords } from 'lucide-react';
 import PlayerIdentity from '@/components/PlayerIdentity';
+import { MatchScoreProjection } from '@/components/kimi/MatchScoreProjection';
 
 export interface MatchBrief {
   id: string;
@@ -125,41 +126,33 @@ export function MatchCard({
   const inner = (
     <>
       {/* Home */}
-      <div className={`flex items-center gap-2 px-3 py-2 border-b border-white/[0.05] ${
+      <div className={`flex items-center gap-2 border-b border-dashed border-white/[0.08] px-3 py-2 ${
         homeWon ? 'bg-emerald-500/[0.06]' : ''
       } ${isMyHome ? 'bg-indigo-500/[0.08]' : ''}`}>
         <TeamLogo team={match.homeTeam} />
-        <span className={`text-xs font-semibold flex-1 truncate ${
+        <span className={`min-w-0 flex-1 truncate text-xs font-semibold ${
           homeWon ? 'text-white' : 'text-slate-300'
         } ${isMyHome ? 'text-indigo-300' : ''}`}>
           {match.homeTeam.name}
         </span>
-        {isPlayed && (
-          <span className={`text-sm font-black tabular-nums w-5 text-right ${
-            homeWon ? 'text-white' : 'text-slate-500'
-          }`}>
-            {match.home_score ?? 0}
-          </span>
-        )}
       </div>
+
+      {isPlayed && (
+        <div className="flex justify-center border-b border-dashed border-white/[0.08] bg-black/30 py-2">
+          <MatchScoreProjection home={match.home_score ?? 0} away={match.away_score ?? 0} size="card" />
+        </div>
+      )}
 
       {/* Away */}
       <div className={`flex items-center gap-2 px-3 py-2 ${
         awayWon ? 'bg-emerald-500/[0.06]' : ''
       } ${isMyAway ? 'bg-indigo-500/[0.08]' : ''}`}>
         <TeamLogo team={match.awayTeam} />
-        <span className={`text-xs font-semibold flex-1 truncate ${
+        <span className={`min-w-0 flex-1 truncate text-xs font-semibold ${
           awayWon ? 'text-white' : 'text-slate-300'
         } ${isMyAway ? 'text-indigo-300' : ''}`}>
           {match.awayTeam.name}
         </span>
-        {isPlayed && (
-          <span className={`text-sm font-black tabular-nums w-5 text-right ${
-            awayWon ? 'text-white' : 'text-slate-500'
-          }`}>
-            {match.away_score ?? 0}
-          </span>
-        )}
       </div>
 
       {/* Status badge */}

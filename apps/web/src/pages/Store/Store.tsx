@@ -383,13 +383,13 @@ export default function Store() {
   if (loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-amber-400" />
+        <Loader2 className="h-10 w-10 animate-spin text-black dark:text-white" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="kimi-luxury-store-page space-y-8">
       <ExchangeModal
         open={exchangeOpen}
         onClose={() => setExchangeOpen(false)}
@@ -400,41 +400,39 @@ export default function Store() {
         maxOc={omjep}
         maxJepy={jepy}
       />
-      <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0B0D13]/80 backdrop-blur-md">
-        <div className="border-b border-white/[0.06] bg-white/[0.02] px-6 py-5">
+      <div className="overflow-hidden rounded-none border border-black/10 bg-transparent backdrop-blur-xl dark:border-white/20">
+        <div className="border-b border-black/10 bg-transparent px-12 py-12 dark:border-white/20">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-400/25 bg-gradient-to-br from-amber-400/15 to-transparent">
-                <ShoppingBag className="h-5 w-5 text-amber-400" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-none border border-neutral-200 bg-transparent dark:border-neutral-800">
+                <ShoppingBag className="h-5 w-5 text-black dark:text-white" />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400/70">
+                <p className="text-[12px] font-bold uppercase tracking-widest text-black/70 dark:text-white/70">
                   Boutique
                 </p>
-                <h1 className="text-2xl font-black tracking-tight text-white">OMJEP Store</h1>
+                <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">Boutique</h1>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <div className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 backdrop-blur-sm">
-                <Coins className="h-4 w-4 text-amber-400" />
+              <div className="inline-flex items-center gap-2 rounded-none border border-black/10 bg-black/[0.02] px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-slate-500">OMJEP</p>
-                  <p className="tabular-nums text-sm font-bold text-white">{formatCurrency(omjep, 'OC')}</p>
+                  <p className="text-[12px] uppercase tracking-widest opacity-50">OMJEP</p>
+                  <p className="font-mono text-6xl font-bold tracking-tight text-black dark:text-white">{formatCurrency(omjep, 'OC')}</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setExchangeOpen(true)}
-                className="rounded-xl border border-amber-400/35 bg-amber-500/10 px-3 py-2 text-xs font-bold uppercase tracking-wide text-amber-200 transition hover:bg-amber-500/20"
+                className="rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-bold uppercase tracking-wide text-black transition dark:border-neutral-800 dark:text-white"
               >
                 Convertir
               </button>
-              <div className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-black/20 px-4 py-2.5 backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-cyan-400" />
+              <div className="inline-flex items-center gap-2 rounded-none border border-black/10 bg-black/[0.02] px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-slate-500">Jepy</p>
-                  <p className="tabular-nums text-sm font-bold text-cyan-100">{formatCurrency(jepy, 'Jepy')}</p>
+                  <p className="text-[12px] uppercase tracking-widest opacity-50">JPY</p>
+                  <p className="font-mono text-6xl font-bold tracking-tight text-black dark:text-white">{formatCurrency(jepy, 'Jepy')}</p>
                 </div>
               </div>
             </div>
@@ -445,20 +443,20 @@ export default function Store() {
               Cosmétiques et abonnements VIP — payez en Jepy.
             </p>
 
-            <div className="relative flex w-full max-w-lg rounded-xl border border-white/[0.08] bg-black/25 p-1 sm:w-auto">
+            <div className="relative flex w-full max-w-lg rounded-none border border-neutral-200 bg-transparent p-1 sm:w-auto dark:border-neutral-800">
               {(['cosmetics', 'card-styles', 'vip', 'rewards'] as const).map((key) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setTab(key)}
-                  className={`relative flex-1 rounded-lg py-2.5 text-center text-sm font-semibold transition-colors sm:min-w-[8rem] ${
-                    tab === key ? 'text-white' : 'text-slate-500 hover:text-slate-300'
+                  className={`relative flex-1 rounded-none py-2.5 text-center text-sm font-semibold transition-colors sm:min-w-[8rem] ${
+                    tab === key ? 'text-black dark:text-white' : 'text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'
                   }`}
                 >
                   {tab === key && (
                     <motion.div
                       layoutId="store-tab-pill"
-                      className="absolute inset-0 rounded-lg bg-gradient-to-r from-amber-500/25 via-amber-500/15 to-amber-600/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                      className="absolute inset-0 rounded-none bg-white/[0.02]"
                       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                     />
                   )}
@@ -466,11 +464,11 @@ export default function Store() {
                     {key === 'cosmetics' ? (
                       <><Gem className="h-4 w-4 opacity-80" />Cosmétiques</>
                     ) : key === 'card-styles' ? (
-                      <><Gem className="h-4 w-4 text-cyan-300" />Styles de Cartes 🦅</>
+                      <><Gem className="h-4 w-4 text-black dark:text-white" />Styles de Cartes 🦅</>
                     ) : key === 'vip' ? (
-                      <><Crown className="h-4 w-4 text-amber-300/90" />Abonnements VIP</>
+                      <><Crown className="h-4 w-4 text-black dark:text-white" />Abonnements VIP</>
                     ) : (
-                      <><Trophy className="h-4 w-4 text-amber-400/90" />Récompenses</>
+                      <><Trophy className="h-4 w-4 text-black dark:text-white" />Récompenses</>
                     )}
                   </span>
                 </button>
@@ -495,10 +493,10 @@ export default function Store() {
                 className={`xl:col-span-5 xl:sticky xl:top-6 xl:self-start ${storeVortexHud ? 'showcase-hud-vortex' : ''}`}
               >
                 {searchParams.get('bannerPreview') ? (
-                  <div className="relative mb-4 h-44 overflow-hidden rounded-2xl border border-cyan-500/20 shadow-[0_20px_60px_rgba(0,0,0,0.45)] sm:h-52">
+                  <div className="relative mb-4 h-44 overflow-hidden rounded-none border border-neutral-200 sm:h-52 dark:border-neutral-800">
                     <ProfileShowcaseHeroMedia bannerUrl={resolvedStoreBannerPreview} />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0D13] via-transparent to-transparent" />
-                    <p className="pointer-events-none absolute bottom-2 left-3 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/80">
+                    <div className="pointer-events-none absolute inset-0 bg-transparent" />
+                    <p className="pointer-events-none absolute bottom-2 left-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black/80 dark:text-white/80">
                       Aperçu profil
                     </p>
                   </div>
@@ -535,10 +533,10 @@ export default function Store() {
                         selectCosmeticItem(item);
                       }
                     }}
-                    className={`group flex cursor-pointer flex-col overflow-hidden rounded-2xl border bg-[#0B0D13]/90 shadow-lg shadow-black/30 backdrop-blur-md outline-none transition hover:border-amber-400/20 focus-visible:ring-2 focus-visible:ring-amber-400/40 ${
+                    className={`group flex cursor-pointer flex-col overflow-hidden rounded-none border bg-white/[0.02] backdrop-blur-md outline-none transition hover:border-neutral-200 focus-visible:ring-0 dark:hover:border-neutral-800 ${
                       isPreviewSelected
-                        ? 'border-amber-400/45 ring-2 ring-amber-400/35'
-                        : 'border-white/[0.06]'
+                        ? 'border-neutral-200 ring-0 dark:border-neutral-800'
+                        : 'border-neutral-200 dark:border-neutral-800'
                     }`}
                   >
                     <div className="relative aspect-[16/10] overflow-hidden bg-slate-900/50">
@@ -547,20 +545,20 @@ export default function Store() {
                         alt=""
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                       />
-                      <span className="absolute left-3 top-3 rounded-md border border-white/10 bg-black/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-200 backdrop-blur-sm">
+                      <span className="absolute left-3 top-3 rounded-none border border-neutral-200 bg-white/[0.02] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-black dark:border-neutral-800 dark:text-white">
                         {CATEGORY_LABEL[item.category]}
                       </span>
                     </div>
-                    <div className="flex flex-1 flex-col p-5">
-                      <h2 className="text-lg font-bold text-white">{item.name}</h2>
-                      <p className="mt-1 line-clamp-2 flex-1 text-sm text-slate-500">{item.description}</p>
+                    <div className="flex flex-1 flex-col p-12">
+                      <h2 className="text-lg font-bold text-black dark:text-white">{item.name}</h2>
+                      <p className="mt-1 line-clamp-2 flex-1 text-sm text-black/65 dark:text-white/65">{item.description}</p>
                       <div className="mt-4 flex items-center justify-between gap-3">
-                        <span className="inline-flex items-center gap-1.5 text-sm font-bold text-cyan-300">
-                          <Sparkles className="h-4 w-4" />
+                        <span className="inline-flex items-center gap-1.5 font-mono text-sm font-bold text-black dark:text-white">
+                          <Sparkles className="h-4 w-4 text-black dark:text-white" />
                           {formatCurrency(item.priceJepy, 'Jepy')}
                         </span>
                         {owned ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-400">
+                          <span className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-semibold text-black dark:border-neutral-800 dark:text-white">
                             <Check className="h-3.5 w-3.5" />
                             Possédé
                           </span>
@@ -572,14 +570,14 @@ export default function Store() {
                               e.stopPropagation();
                               void buy(item);
                             }}
-                            className="rounded-lg bg-gradient-to-r from-amber-400 to-amber-600 px-4 py-2 text-xs font-bold text-[#0B0D13] shadow-md shadow-amber-500/10 transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+                            className="rounded-none border border-neutral-200 bg-transparent px-4 py-2 text-xs font-bold text-black transition disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-800 dark:text-white"
                           >
                             {busy ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
                             ) : !canAfford ? (
                               'Solde insuffisant'
                             ) : (
-                              'Acheter'
+                              '[ ACQUÉRIR ]'
                             )}
                           </button>
                         )}
@@ -592,8 +590,8 @@ export default function Store() {
             </div>
 
             {sortedItems.length === 0 && (
-              <div className="rounded-2xl border border-white/5 bg-[#0B0D13]/60 p-12 text-center backdrop-blur-sm">
-                <p className="text-sm text-slate-500">Aucun article pour le moment.</p>
+              <div className="rounded-none border border-neutral-200 bg-white/[0.02] p-12 text-center backdrop-blur-sm dark:border-neutral-800">
+                <p className="text-sm text-black/60 dark:text-white/60">Aucun article pour le moment.</p>
               </div>
             )}
           </motion.div>
@@ -636,61 +634,53 @@ export default function Store() {
                   const canAfford = jepy >= plan.priceJepy;
                   const busy = buyingPlan === plan.code;
 
-                  const cardGradient = isPlayer
-                    ? 'from-violet-600/35 via-fuchsia-500/20 to-indigo-900/40'
-                    : 'from-amber-500/40 via-yellow-500/15 to-amber-900/35';
-
-                  const borderGlow = isPlayer
-                    ? 'border-violet-400/25 shadow-[0_0_40px_rgba(139,92,246,0.12)]'
-                    : 'border-amber-400/30 shadow-[0_0_44px_rgba(245,158,11,0.14)]';
-
                   return (
                     <div
                       key={plan.id}
-                      className={`relative overflow-hidden rounded-3xl border bg-gradient-to-br ${cardGradient} ${borderGlow} p-[1px]`}
+                      className="relative overflow-hidden rounded-none border border-neutral-200 bg-white/[0.02] p-[1px] dark:border-neutral-800"
                     >
                       <motion.div
-                        className="pointer-events-none absolute -inset-[40%] -left-1/2 top-0 h-[45%] w-[200%] rotate-12 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent"
+                        className="pointer-events-none absolute -inset-[40%] -left-1/2 top-0 h-[45%] w-[200%] rotate-12 bg-transparent"
                         animate={{ x: ['-30%', '120%'] }}
                         transition={{ duration: 4.5, repeat: Infinity, ease: 'linear' }}
                       />
-                      <div className="relative overflow-hidden rounded-[22px] bg-[#070a12]/80 p-6 sm:p-8 backdrop-blur-md">
+                      <div className="relative overflow-hidden rounded-none bg-white/[0.02] p-6 sm:p-8 backdrop-blur-md">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                           <div>
                             <div className="mb-2 flex flex-wrap items-center gap-2">
                               {isPlayer ? (
-                                <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-400/40 bg-violet-500/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-200">
+                                <span className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black dark:border-neutral-800 dark:text-white">
                                   <Sparkles className="h-3.5 w-3.5" />
                                   Player
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/45 bg-amber-500/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-200">
+                                <span className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black dark:border-neutral-800 dark:text-white">
                                   <Crown className="h-3.5 w-3.5" />
                                   President
                                 </span>
                               )}
                               {active && (
-                                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-300">
+                                <span className="inline-flex items-center gap-1 rounded-none border border-neutral-200 bg-transparent px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black dark:border-neutral-800 dark:text-white">
                                   Actif
                                 </span>
                               )}
                             </div>
-                            <h2 className="text-2xl font-black tracking-tight text-white">{plan.name}</h2>
+                            <h2 className="text-2xl font-black tracking-tight text-black dark:text-white">{plan.name}</h2>
                             {active && (
-                              <p className="mt-1 text-sm text-slate-400">
+                              <p className="mt-1 text-sm text-black/60 dark:text-white/60">
                                 Fin :{' '}
-                                <span className="font-semibold text-slate-200">
+                                <span className="font-semibold text-black dark:text-white">
                                   {formatEndDate(active.end_date)}
                                 </span>
                               </p>
                             )}
                           </div>
                           <div className="text-right">
-                            <p className="text-[10px] uppercase tracking-wider text-slate-500">Prix</p>
-                            <p className="text-2xl font-black tabular-nums text-cyan-200">
+                            <p className="text-[10px] uppercase tracking-wider text-black/60 dark:text-white/60">Prix</p>
+                            <p className="font-mono text-2xl font-black tabular-nums text-black dark:text-white">
                               {formatCurrency(plan.priceJepy, 'Jepy')}
                             </p>
-                            <p className="mt-0.5 text-xs text-slate-500">
+                            <p className="mt-0.5 text-xs text-black/60 dark:text-white/60">
                               +{plan.durationDays} jours par achat
                             </p>
                           </div>
@@ -698,19 +688,15 @@ export default function Store() {
 
                         <ul className="mt-6 space-y-2.5">
                           {features.length === 0 ? (
-                            <li className="text-sm text-slate-500">Aucun détail disponible.</li>
+                            <li className="text-sm text-black/60 dark:text-white/60">Aucun détail disponible.</li>
                           ) : (
                             features.map((f) => (
                               <li
                                 key={f}
-                                className="flex items-start gap-2.5 text-sm text-slate-300"
+                                className="flex items-start gap-2.5 text-sm text-black/75 dark:text-white/75"
                               >
                                 <span
-                                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                                    isPresident
-                                      ? 'border-amber-400/30 bg-amber-500/10 text-amber-300'
-                                      : 'border-violet-400/30 bg-violet-500/10 text-violet-200'
-                                  }`}
+                                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-none border border-neutral-200 bg-transparent text-black dark:border-neutral-800 dark:text-white"
                                 >
                                   <Check className="h-3 w-3" strokeWidth={3} />
                                 </span>
@@ -725,11 +711,7 @@ export default function Store() {
                             type="button"
                             disabled={busy || !canAfford}
                             onClick={() => void buySubscription(plan.code)}
-                            className={`w-full rounded-xl px-4 py-3.5 text-sm font-bold transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 ${
-                              isPresident
-                                ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-[#0B0D13] shadow-lg shadow-amber-500/10'
-                                : 'bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white shadow-lg shadow-violet-500/15'
-                            }`}
+                            className="w-full rounded-none border border-neutral-200 bg-transparent px-4 py-3.5 text-sm font-bold text-black transition disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-800 dark:text-white"
                           >
                             {busy ? (
                               <span className="inline-flex items-center justify-center gap-2">
@@ -753,8 +735,8 @@ export default function Store() {
             )}
 
             {sortedPlans.length === 0 && !vipLoading && (
-              <div className="rounded-2xl border border-white/5 bg-[#0B0D13]/60 p-12 text-center backdrop-blur-sm">
-                <p className="text-sm text-slate-500">Aucun plan VIP disponible.</p>
+              <div className="rounded-none border border-neutral-200 bg-white/[0.02] p-12 text-center backdrop-blur-sm dark:border-neutral-800">
+                <p className="text-sm text-black/60 dark:text-white/60">Aucun plan VIP disponible.</p>
               </div>
             )}
           </motion.div>
@@ -775,57 +757,57 @@ export default function Store() {
                   label: 'OMJEP Coins',
                   display: formatCurrency(omjep, 'OC'),
                   icon: Coins,
-                  color: 'text-amber-400',
-                  bg: 'bg-amber-400/10',
-                  border: 'border-amber-400/20',
+                  color: 'text-black dark:text-white',
+                  bg: 'bg-white/[0.02]',
+                  border: 'border-neutral-200 dark:border-neutral-800',
                   desc: 'Gagnés en jouant des matchs',
                 },
                 {
                   label: 'Jepy',
                   display: formatCurrency(jepy, 'Jepy'),
                   icon: Sparkles,
-                  color: 'text-cyan-400',
-                  bg: 'bg-cyan-400/10',
-                  border: 'border-cyan-400/20',
+                  color: 'text-black dark:text-white',
+                  bg: 'bg-white/[0.02]',
+                  border: 'border-neutral-200 dark:border-neutral-800',
                   desc: 'Monnaie premium (store)',
                 },
                 {
                   label: 'Niveau',
                   display: String(user?.level ?? 1),
                   icon: TrendingUp,
-                  color: 'text-emerald-400',
-                  bg: 'bg-emerald-400/10',
-                  border: 'border-emerald-400/20',
+                  color: 'text-black dark:text-white',
+                  bg: 'bg-white/[0.02]',
+                  border: 'border-neutral-200 dark:border-neutral-800',
                   desc: `${(user?.xp ?? 0).toLocaleString('fr-FR')} XP accumulés`,
                 },
               ].map(({ label, display, icon: Icon, color, bg, border, desc }) => (
-                <div key={label} className={`rounded-2xl border ${border} ${bg} p-6 flex items-center gap-4`}>
-                  <div className={`w-12 h-12 rounded-xl ${bg} border ${border} flex items-center justify-center shrink-0`}>
+                <div key={label} className={`rounded-none border ${border} ${bg} p-6 flex items-center gap-4`}>
+                  <div className={`w-12 h-12 rounded-none ${bg} border ${border} flex items-center justify-center shrink-0`}>
                     <Icon className={`w-6 h-6 ${color}`} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 uppercase tracking-wider">{label}</p>
-                    <p className={`text-2xl font-black tabular-nums ${color}`}>
+                    <p className="text-xs uppercase tracking-wider text-black/60 dark:text-white/60">{label}</p>
+                    <p className={`font-mono text-2xl font-black tabular-nums ${color}`}>
                       {display}
                     </p>
-                    <p className="text-[10px] text-slate-600 mt-0.5">{desc}</p>
+                    <p className="mt-0.5 text-[10px] text-black/60 dark:text-white/60">{desc}</p>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Historique EXCHANGE + ADMIN_GRANT */}
-            <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0B0D13]/90">
-              <div className="flex items-center gap-2 border-b border-white/[0.06] px-6 py-4">
-                <History className="h-4 w-4 text-cyan-400" />
-                <h2 className="text-sm font-bold text-white">Historique des gains</h2>
+            <div className="overflow-hidden rounded-none border border-neutral-200 bg-white/[0.02] dark:border-neutral-800">
+              <div className="flex items-center gap-2 border-b border-neutral-200 px-6 py-4 dark:border-neutral-800">
+                <History className="h-4 w-4 text-black dark:text-white" />
+                <h2 className="text-sm font-bold text-black dark:text-white">Historique des gains</h2>
               </div>
               {walletHistoryLoading ? (
                 <div className="flex justify-center py-10">
-                  <Loader2 className="h-8 w-8 animate-spin text-cyan-500/60" />
+                  <Loader2 className="h-8 w-8 animate-spin text-black/70 dark:text-white/70" />
                 </div>
               ) : walletHistory.length === 0 ? (
-                <p className="px-6 py-8 text-center text-sm text-slate-500">
+                <p className="px-6 py-8 text-center text-sm text-black/60 dark:text-white/60">
                   Aucun mouvement récent (échanges OC → Jepy ou récompenses admin).
                 </p>
               ) : (
@@ -836,20 +818,14 @@ export default function Store() {
                       className="flex flex-col gap-2 px-6 py-4 sm:flex-row sm:items-start sm:justify-between"
                     >
                       <div className="min-w-0">
-                        <span
-                          className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                            row.type === 'EXCHANGE'
-                              ? 'bg-blue-500/15 text-blue-300'
-                              : 'bg-emerald-500/15 text-emerald-300'
-                          }`}
-                        >
+                        <span className="inline-block rounded-none border border-neutral-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black dark:border-neutral-800 dark:text-white">
                           {row.type === 'EXCHANGE' ? 'Échange' : 'Récompense admin'}
                         </span>
-                        <p className="mt-1.5 text-sm text-slate-300">
+                        <p className="mt-1.5 text-sm text-black/75 dark:text-white/75">
                           {row.description ?? '—'}
                         </p>
                       </div>
-                      <p className="shrink-0 text-xs tabular-nums text-slate-500">
+                      <p className="shrink-0 font-mono text-xs tabular-nums text-black/60 dark:text-white/60">
                         {new Date(row.created_at).toLocaleString('fr-FR')}
                       </p>
                     </li>
@@ -859,10 +835,10 @@ export default function Store() {
             </div>
 
             {/* Rewards table */}
-            <div className="rounded-2xl border border-white/[0.06] bg-[#0B0D13]/90 overflow-hidden">
-              <div className="px-6 py-4 border-b border-white/[0.06] flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-amber-400" />
-                <h2 className="text-sm font-bold text-white">Barème des récompenses par match</h2>
+            <div className="overflow-hidden rounded-none border border-neutral-200 bg-white/[0.02] dark:border-neutral-800">
+              <div className="flex items-center gap-2 border-b border-neutral-200 px-6 py-4 dark:border-neutral-800">
+                <Trophy className="w-4 h-4 text-black dark:text-white" />
+                <h2 className="text-sm font-bold text-black dark:text-white">Barème des récompenses par match</h2>
               </div>
               <div className="divide-y divide-white/[0.04]">
                 {[
@@ -871,23 +847,23 @@ export default function Store() {
                     xp: '+50 XP',
                     coins: '+100 OC',
                     emoji: '🏆',
-                    color: 'text-emerald-400',
-                    bg: 'bg-emerald-500/[0.04]',
+                    color: 'text-black dark:text-white',
+                    bg: 'bg-white/[0.02]',
                   },
                   {
                     result: 'Match Nul',
                     xp: '+25 XP',
                     coins: '+50 OC',
                     emoji: '🤝',
-                    color: 'text-amber-400',
-                    bg: 'bg-amber-500/[0.04]',
+                    color: 'text-black dark:text-white',
+                    bg: 'bg-white/[0.02]',
                   },
                   {
                     result: 'Défaite',
                     xp: '+10 XP',
                     coins: '+20 OC',
                     emoji: '💪',
-                    color: 'text-slate-400',
+                    color: 'text-black/70 dark:text-white/70',
                     bg: '',
                   },
                 ].map(({ result, xp, coins, emoji, color, bg }) => (
@@ -898,52 +874,52 @@ export default function Store() {
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="text-xs text-slate-500">Expérience</p>
-                        <p className={`text-sm font-black tabular-nums ${color}`}>{xp}</p>
+                        <p className="text-xs text-black/60 dark:text-white/60">Expérience</p>
+                        <p className={`font-mono text-sm font-black tabular-nums ${color}`}>{xp}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-slate-500">OMJEP Coins</p>
-                        <p className={`text-sm font-black tabular-nums ${color}`}>{coins}</p>
+                        <p className="text-xs text-black/60 dark:text-white/60">OMJEP Coins</p>
+                        <p className={`font-mono text-sm font-black tabular-nums ${color}`}>{coins}</p>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="px-6 py-3 border-t border-white/[0.04] bg-white/[0.01]">
-                <p className="text-[11px] text-slate-600">
+              <div className="border-t border-neutral-200 bg-white/[0.01] px-6 py-3 dark:border-neutral-800">
+                <p className="text-[11px] text-black/60 dark:text-white/60">
                   Les récompenses sont distribuées automatiquement à tous les membres de l'équipe après validation du score par l'admin ou le commissaire.
                 </p>
               </div>
             </div>
 
             {/* Level system */}
-            <div className="rounded-2xl border border-white/[0.06] bg-[#0B0D13]/90 overflow-hidden">
-              <div className="px-6 py-4 border-b border-white/[0.06] flex items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-400" />
-                <h2 className="text-sm font-bold text-white">Système de niveaux</h2>
+            <div className="overflow-hidden rounded-none border border-neutral-200 bg-white/[0.02] dark:border-neutral-800">
+              <div className="flex items-center gap-2 border-b border-neutral-200 px-6 py-4 dark:border-neutral-800">
+                <Zap className="w-4 h-4 text-black dark:text-white" />
+                <h2 className="text-sm font-bold text-black dark:text-white">Système de niveaux</h2>
               </div>
               <div className="p-6 space-y-4">
-                <p className="text-sm text-slate-400">
-                  Chaque niveau requiert <span className="text-amber-400 font-semibold">niveau² × 100 XP</span> depuis le début.
+                <p className="text-sm text-black/70 dark:text-white/70">
+                  Chaque niveau requiert <span className="font-semibold text-black dark:text-white">niveau² × 100 XP</span> depuis le début.
                 </p>
                 <div className="grid sm:grid-cols-4 gap-3">
                   {[1, 5, 10, 20].map((lvl) => {
                     const needed = lvl * lvl * 100;
                     const isCurrentLevel = user?.level === lvl;
                     return (
-                      <div key={lvl} className={`rounded-xl border p-4 text-center ${
+                      <div key={lvl} className={`rounded-none border p-4 text-center ${
                         isCurrentLevel
-                          ? 'border-amber-400/40 bg-amber-400/10'
-                          : 'border-white/[0.06] bg-white/[0.02]'
+                          ? 'border-neutral-200 bg-white/[0.02] dark:border-neutral-800'
+                          : 'border-neutral-200 bg-white/[0.02] dark:border-neutral-800'
                       }`}>
-                        <p className={`text-2xl font-black ${isCurrentLevel ? 'text-amber-400' : 'text-white'}`}>
+                        <p className={`text-2xl font-black ${isCurrentLevel ? 'text-black dark:text-white' : 'text-black dark:text-white'}`}>
                           Niv.{lvl}
                         </p>
-                        <p className="text-[10px] text-slate-500 mt-1 tabular-nums">
+                        <p className="mt-1 font-mono text-[10px] tabular-nums text-black/60 dark:text-white/60">
                           {needed.toLocaleString('fr-FR')} XP
                         </p>
                         {isCurrentLevel && (
-                          <span className="mt-2 inline-block text-[9px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          <span className="mt-2 inline-block rounded-none border border-neutral-200 bg-transparent px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-black dark:border-neutral-800 dark:text-white">
                             Niveau actuel
                           </span>
                         )}

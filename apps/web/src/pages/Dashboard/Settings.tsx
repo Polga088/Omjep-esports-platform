@@ -2,9 +2,11 @@ import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { Component } from 'react';
 import {
   User, MapPin, Save, CheckCircle, Shield, Gamepad2,
-  Settings as SettingsIcon, Monitor,
+  Monitor, Cpu,
 } from 'lucide-react';
 import api from '@/lib/api';
+import { useTheme } from '@/context/ThemeContext';
+import ContactZone from '@/components/cockpit/ContactZone';
 
 const POSITIONS = [
   { value: 'GK', label: 'GK — Gardien' },
@@ -83,6 +85,7 @@ function LoadingSkeleton() {
 }
 
 function SettingsContent() {
+  const { theme, setTheme, toggleTheme } = useTheme();
   const [form, setForm] = useState<SettingsForm>({
     ea_persona_name: '',
     gamertag_psn: '',
@@ -141,54 +144,46 @@ function SettingsContent() {
   if (loading) return <LoadingSkeleton />;
 
   return (
-    <div className="max-w-2xl space-y-8">
+    <div className="max-w-3xl space-y-10">
       {/* Header */}
-      <div className="relative rounded-2xl border border-indigo-500/15 bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent p-8 overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-indigo-500/5 blur-[80px] pointer-events-none" />
-        <div className="relative">
-          <h1 className="font-display font-bold text-2xl text-white mb-2 flex items-center gap-3">
-            <SettingsIcon className="w-6 h-6 text-indigo-400" />
-            Paramètres
-          </h1>
-          <p className="text-slate-400 text-sm leading-relaxed max-w-lg">
-            Gérez vos identifiants de jeu et vos informations personnelles.
-            Les champs <span className="text-indigo-400 font-semibold">Pseudo EA</span> et{' '}
-            <span className="text-indigo-400 font-semibold">Gamertags</span> sont utilisés
-            pour la synchronisation automatique de vos statistiques.
-          </p>
-        </div>
+      <div className="space-y-4">
+        <p className="text-[12px] font-mono uppercase tracking-widest text-black/50 dark:text-white/50">
+          Control Terminal
+        </p>
+        <h1 className="font-sans text-4xl font-bold tracking-tight text-black dark:text-white">
+          PARAMÈTRES
+        </h1>
+        <p className="max-w-2xl text-sm text-black/65 dark:text-white/65">
+          Chaque réglage est présenté comme une ligne brute, sans surface décorative.
+        </p>
       </div>
 
       {success && (
-        <div className="flex items-center gap-3 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 animate-in fade-in slide-in-from-top-2">
-          <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
-          <p className="text-emerald-300 text-sm font-medium">
-            Paramètres mis à jour avec succès !
-          </p>
+        <div className="flex animate-in items-center gap-3 border-b border-black/10 py-3 fade-in slide-in-from-top-2 dark:border-white/20">
+          <CheckCircle className="h-5 w-5 shrink-0 text-[#22c55e]" />
+          <p className="text-sm font-mono text-[#22c55e]">PARAMÈTRES MIS À JOUR</p>
         </div>
       )}
 
       {error && (
-        <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/10">
-          <p className="text-red-300 text-sm">{error}</p>
+        <div className="border-b border-red-500/40 py-3">
+          <p className="text-sm font-mono text-red-400">{error}</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Section: Identifiants de Jeu */}
-        <section className="space-y-5">
+        <section className="space-y-6">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-amber-400/10 border border-amber-400/20 flex items-center justify-center">
-              <Gamepad2 className="w-4 h-4 text-amber-400" />
-            </div>
-            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
+            <Gamepad2 className="w-4 h-4 text-black/45 dark:text-white/45" />
+            <h2 className="text-[12px] font-mono text-black/55 uppercase tracking-widest dark:text-white/55">
               Identifiants de Jeu
             </h2>
           </div>
 
           {/* Pseudo EA Sports */}
-          <div className="space-y-2">
-            <label htmlFor="ea_name" className="block text-sm font-medium text-slate-300">
+          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+            <label htmlFor="ea_name" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
               Pseudo EA Sports
             </label>
             <div className="relative">
@@ -201,17 +196,17 @@ function SettingsContent() {
                 value={form.ea_persona_name}
                 onChange={(e) => update('ea_persona_name', e.target.value)}
                 placeholder="Ex: xEagle_Sniper"
-                className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-white/20"
+                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
               />
             </div>
-            <p className="text-xs text-slate-600">
+            <p className="text-[12px] font-mono uppercase tracking-widest text-black/45 dark:text-white/45">
               Doit correspondre exactement à votre pseudo en jeu.
             </p>
           </div>
 
           {/* Gamertag PSN */}
-          <div className="space-y-2">
-            <label htmlFor="gamertag_psn" className="block text-sm font-medium text-slate-300">
+          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+            <label htmlFor="gamertag_psn" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
               Gamertag PSN
             </label>
             <div className="relative">
@@ -224,14 +219,14 @@ function SettingsContent() {
                 value={form.gamertag_psn}
                 onChange={(e) => update('gamertag_psn', e.target.value)}
                 placeholder="Ex: Eagle_PSN"
-                className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-white/20"
+                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
               />
             </div>
           </div>
 
           {/* Gamertag Xbox */}
-          <div className="space-y-2">
-            <label htmlFor="gamertag_xbox" className="block text-sm font-medium text-slate-300">
+          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+            <label htmlFor="gamertag_xbox" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
               Gamertag Xbox
             </label>
             <div className="relative">
@@ -244,7 +239,7 @@ function SettingsContent() {
                 value={form.gamertag_xbox}
                 onChange={(e) => update('gamertag_xbox', e.target.value)}
                 placeholder="Ex: Eagle Xbox"
-                className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-white/20"
+                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
               />
             </div>
           </div>
@@ -253,19 +248,17 @@ function SettingsContent() {
         <div className="h-[1px] bg-white/5" />
 
         {/* Section: Profil Sportif */}
-        <section className="space-y-5">
+        <section className="space-y-6">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-[#FF6B35]/10 border border-[#FF6B35]/20 flex items-center justify-center">
-              <Shield className="w-4 h-4 text-[#FF6B35]" />
-            </div>
-            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
+            <Shield className="w-4 h-4 text-black/45 dark:text-white/45" />
+            <h2 className="text-[12px] font-mono text-black/55 uppercase tracking-widest dark:text-white/55">
               Profil Sportif
             </h2>
           </div>
 
           {/* Position Préférée */}
-          <div className="space-y-2">
-            <label htmlFor="position" className="block text-sm font-medium text-slate-300">
+          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+            <label htmlFor="position" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
               Position Préférée
             </label>
             <div className="relative">
@@ -273,19 +266,19 @@ function SettingsContent() {
                 id="position"
                 value={form.preferred_position}
                 onChange={(e) => update('preferred_position', e.target.value)}
-                className="w-full appearance-none rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-4 pr-10 text-sm text-white outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-white/20 cursor-pointer"
+                className="w-full appearance-none rounded-none border border-black/10 bg-transparent py-3 pl-4 pr-10 text-sm text-black outline-none cursor-pointer focus:border-black/40 dark:border-white/20 dark:text-white dark:focus:border-white/40"
               >
-                <option value="" className="bg-[#0D1221] text-slate-400">
+                <option value="" className="bg-white text-black dark:bg-black dark:text-white/80">
                   Sélectionnez une position
                 </option>
                 {POSITIONS.map(({ value, label }) => (
-                  <option key={value} value={value} className="bg-[#0D1221] text-white">
+                  <option key={value} value={value} className="bg-white text-black dark:bg-black dark:text-white">
                     {label}
                   </option>
                 ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-4 h-4 text-black/45 dark:text-white/45" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
@@ -293,8 +286,8 @@ function SettingsContent() {
           </div>
 
           {/* Nationalité */}
-          <div className="space-y-2">
-            <label htmlFor="nationality" className="block text-sm font-medium text-slate-300">
+          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+            <label htmlFor="nationality" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
               Nationalité
             </label>
             <div className="relative">
@@ -307,7 +300,7 @@ function SettingsContent() {
                 value={form.nationality}
                 onChange={(e) => update('nationality', e.target.value)}
                 placeholder="Ex: Marocain"
-                className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-white/20"
+                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
               />
             </div>
           </div>
@@ -315,11 +308,58 @@ function SettingsContent() {
 
         <div className="h-[1px] bg-white/5" />
 
+        {/* Section: Apparence */}
+        <section className="space-y-5">
+          <div className="mb-1 flex items-center gap-3">
+            <Cpu className="h-4 w-4 text-black/45 dark:text-white/45" />
+            <h2 className="text-[12px] font-mono text-black/55 uppercase tracking-widest dark:text-white/55">Apparence</h2>
+          </div>
+          <div className="rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-[12px] font-mono uppercase tracking-widest text-black/50 dark:text-white/50">
+                Mode sombre actif
+              </p>
+              <div className="flex items-center gap-4">
+                <ContactZone
+                  variant={theme === 'dark' ? 'primary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setTheme('dark')}
+                  className="rounded-none"
+                >
+                  &gt; [ ON ] &lt;
+                </ContactZone>
+                <ContactZone
+                  variant={theme === 'light' ? 'primary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setTheme('light')}
+                  className="rounded-none"
+                >
+                  &gt; [ OFF ] &lt;
+                </ContactZone>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-[12px] font-mono uppercase tracking-widest text-black/50 dark:text-white/50">
+                Changer de mode instantanément
+              </p>
+              <ContactZone type="button" size="sm" variant="ghost" onClick={toggleTheme} className="rounded-none">
+                &gt; [ SWITCH ] &lt;
+              </ContactZone>
+            </div>
+          </div>
+        </section>
+
+        <div className="h-[1px] bg-white/5" />
+
         {/* Submit */}
-        <button
+        <ContactZone
           type="submit"
+          size="md"
+          variant="primary"
           disabled={saving}
-          className="group relative inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-lg shadow-indigo-600/20 transition-all hover:bg-indigo-500 hover:shadow-indigo-500/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="rounded-none"
         >
           {saving ? (
             <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -329,8 +369,8 @@ function SettingsContent() {
           ) : (
             <Save className="w-4 h-4 transition-transform group-hover:scale-110" />
           )}
-          {saving ? 'Enregistrement…' : 'Sauvegarder'}
-        </button>
+          {saving ? 'Enregistrement…' : '> [ SAVE ] <'}
+        </ContactZone>
       </form>
     </div>
   );

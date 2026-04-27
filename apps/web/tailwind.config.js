@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ['variant', '&[data-theme="dark"]'],
   content: [
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
@@ -51,6 +52,11 @@ export default {
           '33%': { transform: 'translate(3px, -8px) scale(1.08)', opacity: '1' },
           '66%': { transform: 'translate(-4px, 5px) scale(0.96)', opacity: '0.9' },
         },
+        /** Ken Burns (hero) scale 1.1 → 1 */
+        'ken-burns-in': {
+          '0%': { transform: 'scale(1.1)' },
+          '100%': { transform: 'scale(1)' },
+        },
       },
       animation: {
         'spin-slow': 'spin-slow 4s linear infinite',
@@ -62,8 +68,15 @@ export default {
         'storm-float': 'storm-float 4s ease-in-out infinite',
         /** Alias demandé : animate-float */
         float: 'storm-float 4s ease-in-out infinite',
+        'ken-burns-in': 'ken-burns-in 28s ease-out forwards',
       },
       colors: {
+        'omjep-bg': 'var(--omjep-bg)',
+        'omjep-surface': 'var(--omjep-surface)',
+        'omjep-gold': 'var(--omjep-gold)',
+        'omjep-accent': 'var(--omjep-accent)',
+        'omjep-neutral': 'var(--omjep-neutral)',
+        'omjep-danger': 'var(--omjep-danger)',
         brand: {
           50: '#f0f9ff',
           100: '#e0f2fe',
@@ -76,6 +89,12 @@ export default {
           800: '#075985',
           900: '#0c4a6e',
           950: '#082f49',
+        },
+        /** Pixar-Sport Cinematic (landing) */
+        pixar: {
+          deep: '#020202',
+          accent: '#22c55e',
+          'accent-soft': 'rgba(34, 197, 94, 0.14)',
         },
         esport: {
           primary: '#00D4FF',
@@ -91,14 +110,34 @@ export default {
           muted: 'rgba(212, 175, 55, 0.35)',
           fg: '#F5E6A3',
         },
+        /** Theme-aware tokens */
+        omjep: {
+          bg: 'var(--omjep-bg)',
+          'bg-elevated': 'var(--omjep-bg-elevated)',
+          'bg-panel': 'var(--omjep-bg-panel)',
+          'bg-panel-soft': 'var(--omjep-bg-panel-soft)',
+          'text-primary': 'var(--omjep-text-primary)',
+          'text-secondary': 'var(--omjep-text-secondary)',
+          'text-muted': 'var(--omjep-text-muted)',
+          gold: 'var(--omjep-accent-gold)',
+          'gold-light': 'var(--omjep-accent-gold-light)',
+          cobalt: 'var(--omjep-accent-cobalt)',
+          border: 'var(--omjep-border)',
+          'border-gold': 'var(--omjep-border-gold)',
+          'border-cold': 'var(--omjep-border-cold)',
+        },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Rajdhani', 'sans-serif'],
-        /** Chiffres / HUD gaming (Orbitron + fallback display) */
-        gaming: ['Orbitron', 'Rajdhani', 'system-ui', 'sans-serif'],
-        /** Titres type science-fiction (Michroma en priorité) */
-        scifi: ['Michroma', 'Rajdhani', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Rajdhani', 'system-ui', 'sans-serif'],
+        heading: ['Rajdhani', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        display: ['Rajdhani', 'Inter', 'sans-serif'],
+        /** constrained to approved families only */
+        gaming: ['Rajdhani', 'Inter', 'system-ui', 'sans-serif'],
+        /** constrained to approved families only */
+        scifi: ['Rajdhani', 'Inter', 'system-ui', 'sans-serif'],
+        /** Typo technique aggressive pour les chiffres (Hub Athlète) */
+        tech: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
     },
   },

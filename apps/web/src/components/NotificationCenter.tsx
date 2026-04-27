@@ -205,7 +205,7 @@ export default function NotificationCenter({
       {open && (
         <div
           ref={popoverRef}
-          className="absolute right-0 top-full z-50 mt-2 flex max-h-[min(28rem,85vh)] w-80 flex-col overflow-hidden rounded-xl border-[0.5px] border-white/10 bg-[#08090c] shadow-2xl shadow-black/50 sm:w-96"
+          className="tactical-tooltip-surface absolute right-0 top-full z-50 mt-2 flex max-h-[min(28rem,85vh)] w-80 flex-col overflow-hidden sm:w-96"
         >
           <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-3 py-2.5">
             <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
@@ -232,7 +232,7 @@ export default function NotificationCenter({
             </div>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="tactical-scroll min-h-0 flex-1 overflow-y-auto">
             {isEmpty ? (
               <div className="px-4 py-10 text-center">
                 <Bell className="mx-auto mb-2 h-8 w-8 text-slate-700" />
