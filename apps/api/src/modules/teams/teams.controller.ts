@@ -51,6 +51,7 @@ export class TeamsController {
   }
 
   @Patch(':id')
+  // TODO(security): this generic team update endpoint should be role-scoped or deprecated in favor of dedicated guarded routes.
   update(@Param('id', ParseUUIDPipe) id: string, @Body() body: Prisma.ClubUpdateInput) {
     return this.teamsService.update(id, body);
   }

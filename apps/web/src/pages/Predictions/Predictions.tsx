@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Dices, Loader2, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { Loader2, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -7,6 +7,7 @@ import { formatCurrency } from '@/utils/formatCurrency';
 import PredictStats from './PredictStats';
 import PredictMatch from './PredictMatch';
 import type { TeamFormLetter } from './predictionTypes';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 type PredictionStatus = 'PENDING' | 'WON' | 'LOST';
 
@@ -61,6 +62,7 @@ export default function Predictions() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState<string | null>(null);
   const [statsRefreshKey, setStatsRefreshKey] = useState(0);
+  const [isLongLoading, setIsLongLoading] = useState(false);
   const [forms, setForms] = useState<
     Record<string, { home: string; away: string; bet: string }>
   >({});
@@ -96,6 +98,15 @@ export default function Predictions() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    if (!loading) {
+      setIsLongLoading(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setIsLongLoading(true), 4000);
+    return () => window.clearTimeout(timer);
+  }, [loading]);
 
   const predictedMatchIds = useMemo(
     () => new Set(mine.map((p) => p.match.id)),
@@ -159,8 +170,34 @@ export default function Predictions() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-emerald-400" />
+      <div className="space-y-5">
+        <div className="rounded-3xl border border-white/[0.06] bg-[#0B0D13]/90 p-5 backdrop-blur-md">
+          <div className="flex items-center gap-2 text-sm text-slate-300">
+            <Loader2 className="h-4 w-4 animate-spin text-emerald-400" />
+            Chargement des pronostics…
+          </div>
+          {isLongLoading ? (
+            <p className="mt-2 text-xs text-slate-500">
+              Les données arrivent, l’interface reste synchronisée avec votre session.
+            </p>
+          ) : null}
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, idx) => (
+            <div
+              key={`predictions-stat-loading-${idx}`}
+              className="h-24 animate-pulse rounded-2xl border border-white/10 bg-[#0B0D13]/70"
+            />
+          ))}
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 2 }).map((_, idx) => (
+            <div
+              key={`predictions-card-loading-${idx}`}
+              className="h-44 animate-pulse rounded-2xl border border-white/10 bg-[#0B0D13]/60"
+            />
+          ))}
+        </div>
       </div>
     );
   }
@@ -170,17 +207,12 @@ export default function Predictions() {
       <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0B0D13]/90 backdrop-blur-md">
         <div className="border-b border-white/[0.06] px-6 py-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10">
-                <Dices className="h-5 w-5 text-emerald-400" />
-              </div>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400/80">
-                  Predict &amp; Win
-                </p>
-                <h1 className="text-2xl font-black tracking-tight text-white">Pronostics Jepy</h1>
-              </div>
-            </div>
+            <DashboardPageHeading
+              eyebrow="Predict & Win"
+              title="Pronostics Jepy"
+              subtitle="Pariez sur les scores et suivez vos performances"
+              className="border-b-0 pb-0"
+            />
             <div className="inline-flex rounded-xl border border-white/10 bg-black/30 p-1">
               <button
                 type="button"

@@ -267,7 +267,7 @@ export default function IdentityPreview({
                 Cet article est déjà dans votre inventaire.
               </p>
             )}
-            <p className="text-center text-[10px] text-slate-600">
+            <p className="text-center text-[10px] text-omjep-text-secondary">
               Cadre sélectionné : aperçu instantané · mode Après : légendaire + Royal Eagle si hors cadre
             </p>
           </div>
@@ -275,7 +275,7 @@ export default function IdentityPreview({
       </div>
 
       {!selectedItem && (
-        <p className="mt-6 text-center text-xs text-slate-500">
+        <p className="mt-6 text-center text-xs text-omjep-text-secondary">
           Sélectionnez un article ci-dessous pour prévisualiser votre identité et débloquer avec vos Jepy.
         </p>
       )}

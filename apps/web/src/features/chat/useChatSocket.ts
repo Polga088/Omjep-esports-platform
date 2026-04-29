@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
 
 export const CHAT_SOCKET_PATH = '/socket.io';
+const IS_SOCKET_ENABLED = import.meta.env.VITE_ENABLE_SOCKET !== 'false'
 
 /**
  * URL du serveur API (Socket.io sur le même hôte que Nest).
@@ -26,6 +27,7 @@ export function useChatSocket(meId: string): {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    if (!IS_SOCKET_ENABLED) return;
     const token = localStorage.getItem('token');
     if (!token) return;
 

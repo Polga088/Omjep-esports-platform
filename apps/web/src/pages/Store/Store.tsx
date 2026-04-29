@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  ShoppingBag,
   Loader2,
   Coins,
   Sparkles,
@@ -27,6 +26,7 @@ import ExchangeModal from './ExchangeModal';
 import IdentityPreview, { inferStoreItemRarity, type StoreItemRow } from './IdentityPreview';
 import CardStyleStore from '@/features/store/components/CardStyleStore';
 import { mapCardRarityToIdentityRarity } from '@/features/profile/mocks/premiumProfile.mock';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 type StoreCategory = 'BANNER' | 'AVATAR_FRAME' | 'BADGE';
 
@@ -382,8 +382,32 @@ export default function Store() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-black dark:text-white" />
+      <div className="space-y-6">
+        <div className="overflow-hidden rounded-none border border-neutral-200 bg-white/70 px-8 py-8 backdrop-blur-sm dark:border-neutral-800 dark:bg-black/45">
+          <div className="h-4 w-28 animate-pulse rounded bg-black/10 dark:bg-white/10" />
+          <div className="mt-3 h-10 w-56 animate-pulse rounded bg-black/10 dark:bg-white/10" />
+          <div className="mt-3 h-4 w-80 max-w-full animate-pulse rounded bg-black/10 dark:bg-white/10" />
+        </div>
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+          <div className="rounded-2xl border border-neutral-200 bg-white/70 p-6 dark:border-neutral-800 dark:bg-black/45 xl:col-span-5">
+            <div className="aspect-square max-w-[320px] animate-pulse rounded-xl bg-black/10 dark:bg-white/10" />
+            <div className="mt-4 h-3 w-64 max-w-full animate-pulse rounded bg-black/10 dark:bg-white/10" />
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:col-span-7">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <div key={`store-loading-${idx}`} className="overflow-hidden rounded-none border border-neutral-200 bg-white/60 p-5 dark:border-neutral-800 dark:bg-black/40">
+                <div className="aspect-[16/10] animate-pulse rounded bg-black/10 dark:bg-white/10" />
+                <div className="mt-4 h-5 w-2/3 animate-pulse rounded bg-black/10 dark:bg-white/10" />
+                <div className="mt-2 h-4 w-full animate-pulse rounded bg-black/10 dark:bg-white/10" />
+                <div className="mt-5 h-9 w-1/2 animate-pulse rounded bg-black/10 dark:bg-white/10" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white/70 py-3 text-sm text-black/70 dark:border-neutral-800 dark:bg-black/45 dark:text-white/70">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Chargement de la boutique OMJEP…
+        </div>
       </div>
     );
   }
@@ -403,23 +427,18 @@ export default function Store() {
       <div className="overflow-hidden rounded-none border border-black/10 bg-transparent backdrop-blur-xl dark:border-white/20">
         <div className="border-b border-black/10 bg-transparent px-12 py-12 dark:border-white/20">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-none border border-neutral-200 bg-transparent dark:border-neutral-800">
-                <ShoppingBag className="h-5 w-5 text-black dark:text-white" />
-              </div>
-              <div>
-                <p className="text-[12px] font-bold uppercase tracking-widest text-black/70 dark:text-white/70">
-                  Boutique
-                </p>
-                <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">Boutique</h1>
-              </div>
-            </div>
+            <DashboardPageHeading
+              eyebrow="Storefront"
+              title="Boutique"
+              subtitle="Cosmétiques, styles de cartes et abonnements VIP"
+              className="border-b-0 pb-0"
+            />
 
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <div className="inline-flex items-center gap-2 rounded-none border border-black/10 bg-black/[0.02] px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
+              <div className="inline-flex items-center gap-2 rounded-none border border-violet-200/70 bg-white/70 px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
                 <div>
-                  <p className="text-[12px] uppercase tracking-widest opacity-50">OMJEP</p>
-                  <p className="font-mono text-6xl font-bold tracking-tight text-black dark:text-white">{formatCurrency(omjep, 'OC')}</p>
+                  <p className="text-[12px] uppercase tracking-widest text-slate-600 dark:text-white/65">OMJEP</p>
+                  <p className="font-mono text-6xl font-bold tracking-tight text-slate-950 dark:text-white">{formatCurrency(omjep, 'OC')}</p>
                 </div>
               </div>
               <button
@@ -429,10 +448,10 @@ export default function Store() {
               >
                 Convertir
               </button>
-              <div className="inline-flex items-center gap-2 rounded-none border border-black/10 bg-black/[0.02] px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
+              <div className="inline-flex items-center gap-2 rounded-none border border-violet-200/70 bg-white/70 px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
                 <div>
-                  <p className="text-[12px] uppercase tracking-widest opacity-50">JPY</p>
-                  <p className="font-mono text-6xl font-bold tracking-tight text-black dark:text-white">{formatCurrency(jepy, 'Jepy')}</p>
+                  <p className="text-[12px] uppercase tracking-widest text-slate-600 dark:text-white/65">JPY</p>
+                  <p className="font-mono text-6xl font-bold tracking-tight text-slate-950 dark:text-white">{formatCurrency(jepy, 'Jepy')}</p>
                 </div>
               </div>
             </div>
@@ -443,20 +462,22 @@ export default function Store() {
               Cosmétiques et abonnements VIP — payez en Jepy.
             </p>
 
-            <div className="relative flex w-full max-w-lg rounded-none border border-neutral-200 bg-transparent p-1 sm:w-auto dark:border-neutral-800">
+            <div className="relative flex w-full max-w-lg rounded-none border border-violet-200 bg-white/80 p-1 sm:w-auto dark:border-neutral-800 dark:bg-black/35">
               {(['cosmetics', 'card-styles', 'vip', 'rewards'] as const).map((key) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setTab(key)}
                   className={`relative flex-1 rounded-none py-2.5 text-center text-sm font-semibold transition-colors sm:min-w-[8rem] ${
-                    tab === key ? 'text-black dark:text-white' : 'text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'
+                    tab === key
+                      ? 'text-slate-950 dark:text-white'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white'
                   }`}
                 >
                   {tab === key && (
                     <motion.div
                       layoutId="store-tab-pill"
-                      className="absolute inset-0 rounded-none bg-white/[0.02]"
+                      className="absolute inset-0 rounded-none bg-violet-100/80 dark:bg-white/[0.10]"
                       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                     />
                   )}
@@ -628,7 +649,6 @@ export default function Store() {
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 {sortedPlans.map((plan) => {
                   const isPlayer = plan.code === 'PLAYER';
-                  const isPresident = plan.code === 'PRESIDENT';
                   const active = activeByPlanCode.get(plan.code);
                   const features = parseFeatureList(plan.features);
                   const canAfford = jepy >= plan.priceJepy;

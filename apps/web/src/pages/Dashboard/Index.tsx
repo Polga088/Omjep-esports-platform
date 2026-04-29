@@ -19,6 +19,7 @@ import { TechnicalDataValue } from '@/components/kimi/TechnicalDataValue'
 import WidgetGrid from '@/components/cockpit/WidgetGrid'
 import WidgetTile from '@/components/cockpit/WidgetTile'
 import ContactZone from '@/components/cockpit/ContactZone'
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 function xpForLevel(level: number) { return (level - 1) ** 2 * 100 }
 function xpForNextLevel(level: number) { return level ** 2 * 100 }
@@ -72,7 +73,7 @@ function useCountUp(target: number, decimals: number, enabled: boolean, delay = 
 }
 
 function WidgetSkeleton() {
-  return <div className="h-full w-full animate-pulse border border-white/5 bg-neutral-900 dark:bg-neutral-900" />
+  return <div className="h-full w-full animate-pulse border border-omjep-border bg-omjep-bg-panel/55" />
 }
 
 export default function DashboardIndex() {
@@ -149,8 +150,14 @@ export default function DashboardIndex() {
   const jepyRef = useCountUp(jepy, 0, !loading, 0.25)
 
   return (
-    <div className="cockpit-hub mx-auto h-full w-full max-w-[1640px]">
-      <WidgetGrid cols={12} rowHeight="minmax(260px, auto)">
+    <div className="cockpit-hub dashboard-phase3-home mx-auto h-full w-full max-w-[1640px] px-1 sm:px-0">
+      <DashboardPageHeading
+        eyebrow="Cockpit Overview"
+        title="Cockpit"
+        subtitle="Vue d’ensemble de votre progression, portefeuille et activité live"
+        className="mb-6 border-omjep-border/60 pb-5"
+      />
+      <WidgetGrid cols={12} rowHeight="minmax(250px, auto)">
         {/* INFLUENCE — XP + niveau */}
         <WidgetTile
           serial="MOD-INF-010"
@@ -161,7 +168,7 @@ export default function DashboardIndex() {
           controls={
             <Link
               to="/dashboard/gamification"
-              className="contact-zone rounded-md border border-emerald-500/25 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-emerald-300 hover:border-emerald-300 hover:text-white"
+              className="contact-zone rounded-md border border-omjep-border bg-omjep-bg-panel/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary hover:border-omjep-border-gold hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-omjep-border-gold"
             >
               XP+
             </Link>
@@ -170,22 +177,22 @@ export default function DashboardIndex() {
           {loading ? (
             <WidgetSkeleton />
           ) : (
-            <div className="flex h-full flex-col justify-between">
+            <div className="flex h-full flex-col justify-between px-1 py-0.5 sm:px-1.5">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">Niveau</span>
-                <Crown className="h-5 w-5 text-white/40" aria-hidden />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-secondary">Niveau</span>
+                <Crown className="h-5 w-5 text-omjep-gold/85" aria-hidden />
               </div>
-              <div className="my-3 flex items-end gap-2">
-                <TechnicalDataValue accent="gold" symbolScale="lg" className="text-6xl">
-                  <span ref={influenceRef} className="font-mono text-6xl font-bold text-black dark:text-white" />
+              <div className="my-2.5 flex flex-col items-start gap-1 sm:my-3 sm:flex-row sm:items-end sm:gap-2">
+                <TechnicalDataValue accent="gold" symbolScale="lg" className="text-5xl sm:text-6xl">
+                  <span ref={influenceRef} className="font-mono text-5xl font-bold text-omjep-text-primary sm:text-6xl" />
                 </TechnicalDataValue>
-                <span className="pb-2 font-mono text-[12px] uppercase tracking-widest text-black/45 dark:text-white/45">Influence</span>
+                <span className="pb-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-omjep-text-muted sm:pb-2 sm:text-[12px]">Influence</span>
               </div>
-              <div className="space-y-2">
-                <div className="h-[2px] w-full bg-white/10">
-                  <div className="h-[2px] bg-emerald-500" style={{ width: `${xpPct}%` }} />
+              <div className="space-y-1.5 sm:space-y-2">
+                <div className="h-[2px] w-full bg-omjep-border">
+                  <div className="h-[2px] bg-omjep-mauve" style={{ width: `${xpPct}%` }} />
                 </div>
-                <p className="text-right text-[10px] uppercase tracking-[0.2em] text-white/40">Lvl {level}</p>
+                <p className="text-right text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">Lvl {level}</p>
               </div>
             </div>
           )}
@@ -222,7 +229,7 @@ export default function DashboardIndex() {
           controls={
             <Link
               to="/dashboard/store"
-              className="contact-zone rounded-md border border-emerald-500/25 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-emerald-300 hover:border-emerald-300 hover:text-white"
+              className="contact-zone rounded-md border border-omjep-border bg-omjep-bg-panel/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary hover:border-omjep-border-gold hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-omjep-border-gold"
             >
               Spend
             </Link>
@@ -231,24 +238,24 @@ export default function DashboardIndex() {
           {loading ? (
             <WidgetSkeleton />
           ) : (
-            <div className="flex h-full flex-col justify-between">
+            <div className="flex h-full flex-col justify-between px-1 py-0.5 sm:px-1.5">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">Portefeuille</span>
-                <Coins className="h-5 w-5 text-white/40" aria-hidden />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-secondary">Portefeuille</span>
+                <Coins className="h-5 w-5 text-omjep-gold/85" aria-hidden />
               </div>
-              <div className="my-3">
-                <TechnicalDataValue accent="gold" symbolScale="md" className="text-6xl">
-                  <span ref={ocRef} className="font-mono text-6xl font-bold text-black dark:text-white" />
+              <div className="my-2.5 sm:my-3">
+                <TechnicalDataValue accent="gold" symbolScale="md" className="text-5xl sm:text-6xl">
+                  <span ref={ocRef} className="font-mono text-5xl font-bold text-omjep-text-primary sm:text-6xl" />
                 </TechnicalDataValue>
-                <p className="mt-2 font-mono text-[12px] uppercase tracking-widest text-black/45 dark:text-white/45" aria-label={formatCurrency(oc, 'OC')}>
+                <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-omjep-text-muted sm:mt-2 sm:text-[12px]" aria-label={formatCurrency(oc, 'OC')}>
                   OC
                 </p>
               </div>
-              <div className="space-y-2">
-                <div className="h-[2px] w-full bg-white/10">
-                  <div className="h-[2px] bg-emerald-500" style={{ width: `${walletSegOc}%` }} />
+              <div className="space-y-1.5 sm:space-y-2">
+                <div className="h-[2px] w-full bg-omjep-border">
+                  <div className="h-[2px] bg-omjep-mauve" style={{ width: `${walletSegOc}%` }} />
                 </div>
-                <p className="text-right text-[10px] uppercase tracking-[0.2em] text-white/40">{walletSegOc}%</p>
+                <p className="text-right text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">{walletSegOc}%</p>
               </div>
             </div>
           )}
@@ -264,7 +271,7 @@ export default function DashboardIndex() {
           controls={
             <Link
               to="/dashboard/predictions"
-              className="contact-zone rounded-md border border-cyan-400/25 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-cyan-300 hover:border-cyan-300 hover:text-white"
+              className="contact-zone rounded-md border border-omjep-border bg-omjep-bg-panel/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary hover:border-omjep-border-gold hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-omjep-border-gold"
             >
               Bet
             </Link>
@@ -273,24 +280,24 @@ export default function DashboardIndex() {
           {loading ? (
             <WidgetSkeleton />
           ) : (
-            <div className="flex h-full flex-col justify-between">
+            <div className="flex h-full flex-col justify-between px-1 py-0.5 sm:px-1.5">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">Balance</span>
-                <Coins className="h-5 w-5 text-white/40" aria-hidden />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-secondary">Balance</span>
+                <Coins className="h-5 w-5 text-omjep-mauve/85" aria-hidden />
               </div>
-              <div className="my-3">
-                <TechnicalDataValue accent="cyan" symbolScale="md" className="text-6xl">
-                  <span ref={jepyRef} className="font-mono text-6xl font-bold text-[var(--omjep-accent)]" />
+              <div className="my-2.5 sm:my-3">
+                <TechnicalDataValue accent="cyan" symbolScale="md" className="text-5xl sm:text-6xl">
+                  <span ref={jepyRef} className="font-mono text-5xl font-bold text-omjep-mauve sm:text-6xl" />
                 </TechnicalDataValue>
-                <p className="mt-2 font-mono text-[12px] uppercase tracking-widest text-black/45 dark:text-white/45" aria-label={formatCurrency(jepy, 'Jepy')}>
+                <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-omjep-text-muted sm:mt-2 sm:text-[12px]" aria-label={formatCurrency(jepy, 'Jepy')}>
                   Jepy
                 </p>
               </div>
-              <div className="space-y-2">
-                <div className="h-[2px] w-full bg-white/10">
-                  <div className="h-[2px] bg-emerald-500" style={{ width: `${walletSegJ}%` }} />
+              <div className="space-y-1.5 sm:space-y-2">
+                <div className="h-[2px] w-full bg-omjep-border">
+                  <div className="h-[2px] bg-omjep-mauve" style={{ width: `${walletSegJ}%` }} />
                 </div>
-                <p className="text-right text-[10px] uppercase tracking-[0.2em] text-white/40">{walletSegJ}%</p>
+                <p className="text-right text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">{walletSegJ}%</p>
               </div>
             </div>
           )}
@@ -307,20 +314,20 @@ export default function DashboardIndex() {
           {loading ? (
             <WidgetSkeleton />
           ) : data?.topScorer ? (
-            <div className="flex h-full flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+            <div className="flex h-full flex-col justify-between px-1 py-0.5 sm:px-1.5">
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-md border border-omjep-border-gold bg-omjep-gold/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-omjep-gold">
                   Golden boot
                 </span>
-                <Flame className="h-4 w-4 text-emerald-400/70" aria-hidden />
+                <Flame className="h-4 w-4 text-omjep-gold/80" aria-hidden />
               </div>
-              <div className="my-3">
-                <p className="font-display text-base font-bold text-white">{data.topScorer.displayName ?? 'Anonyme'}</p>
+              <div className="my-2.5 sm:my-3">
+                <p className="font-display text-[15px] font-bold text-omjep-text-primary sm:text-base">{data.topScorer.displayName ?? 'Anonyme'}</p>
                 <div className="mt-2 flex items-baseline gap-2">
-                  <TechnicalDataValue accent="gold" symbolScale="lg" className="text-5xl">
+                  <TechnicalDataValue accent="gold" symbolScale="lg" className="text-4xl sm:text-5xl">
                     <span className="omjep-metric-metallic omjep-metric-crt">{data.topScorer.goals}</span>
                   </TechnicalDataValue>
-                  <span className="kimi-kpi-label text-emerald-500/65">GOL</span>
+                  <span className="kimi-kpi-label text-omjep-text-muted">BUTS</span>
                 </div>
               </div>
               <ContactZone
@@ -335,8 +342,8 @@ export default function DashboardIndex() {
             </div>
           ) : (
             <div className="flex h-full flex-col items-center justify-center text-center">
-              <Trophy className="mb-2 h-8 w-8 text-emerald-400/35" />
-              <p className="text-xs text-slate-500">Aucun but enregistré</p>
+              <Trophy className="mb-2 h-8 w-8 text-omjep-gold/75" />
+              <p className="text-xs text-omjep-text-secondary">Aucun but enregistré</p>
             </div>
           )}
         </WidgetTile>
@@ -352,49 +359,49 @@ export default function DashboardIndex() {
           {loading ? (
             <WidgetSkeleton />
           ) : data?.mvp ? (
-            <div className="flex h-full flex-col justify-between gap-3">
+            <div className="flex h-full flex-col justify-between gap-3 px-1 py-0.5 sm:px-1.5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="font-display text-lg font-bold leading-tight text-white">
+                  <p className="font-display text-[17px] font-bold leading-tight text-omjep-text-primary sm:text-lg">
                     {data.mvp.displayName ?? 'Anonyme'}
                   </p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-emerald-400/85">MVP courant</p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-omjep-gold">MVP courant</p>
                 </div>
-                <Crown className="h-6 w-6 text-emerald-300" aria-hidden />
+                <Crown className="h-6 w-6 text-omjep-gold" aria-hidden />
               </div>
-              <div className="grid grid-cols-3 items-end gap-3">
+              <div className="grid grid-cols-3 items-end gap-2.5 sm:gap-3">
                 <div>
                   <TechnicalDataValue accent="cyan" symbolScale="md" className="text-3xl">
-                    <span className="font-mono font-bold text-[#22c55e]">
+                    <span className="font-mono font-bold text-omjep-mauve">
                       {Number(data.mvp.averageRating ?? 0).toFixed(1)}
                     </span>
                   </TechnicalDataValue>
-                  <p className="kimi-kpi-label mt-0.5 text-cyan-300/55">AMR</p>
+                  <p className="kimi-kpi-label mt-0.5 text-omjep-text-muted">AMR</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Swords className="h-4 w-4 text-emerald-400/65" />
+                  <Swords className="h-4 w-4 text-omjep-gold/80" />
                   <div>
-                    <TechnicalDataValue accent="gold" symbolScale="sm" className="text-xl text-white">
+                    <TechnicalDataValue accent="gold" symbolScale="sm" className="text-xl text-omjep-text-primary">
                       <span>{data.mvp.goals}</span>
                     </TechnicalDataValue>
-                    <p className="kimi-kpi-label text-emerald-500/45">BUT</p>
+                    <p className="kimi-kpi-label text-omjep-text-muted">BUT</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Star className="h-4 w-4 text-emerald-400/65" />
+                  <Star className="h-4 w-4 text-omjep-gold/80" />
                   <div>
-                    <TechnicalDataValue accent="gold" symbolScale="sm" className="text-xl text-white">
+                    <TechnicalDataValue accent="gold" symbolScale="sm" className="text-xl text-omjep-text-primary">
                       <span>{data.mvp.assists}</span>
                     </TechnicalDataValue>
-                    <p className="kimi-kpi-label text-emerald-500/45">PAS_D</p>
+                    <p className="kimi-kpi-label text-omjep-text-muted">PAS_D</p>
                   </div>
                 </div>
               </div>
             </div>
           ) : (
             <div className="flex h-full flex-col items-center justify-center text-center">
-              <Crown className="mb-2 h-8 w-8 text-emerald-400/35" />
-              <p className="text-xs text-slate-500">MVP en attente — jouez des matchs</p>
+              <Crown className="mb-2 h-8 w-8 text-omjep-gold/75" />
+              <p className="text-xs text-omjep-text-secondary">MVP en attente — jouez des matchs</p>
             </div>
           )}
         </WidgetTile>
@@ -410,7 +417,7 @@ export default function DashboardIndex() {
           controls={
             <Link
               to="/dashboard/transfers"
-              className="contact-zone rounded-md border border-emerald-500/25 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-emerald-300 hover:border-emerald-300 hover:text-white"
+              className="contact-zone rounded-md border border-omjep-border bg-omjep-bg-panel/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary hover:border-omjep-border-gold hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-omjep-border-gold"
             >
               Mercato
             </Link>
@@ -422,22 +429,22 @@ export default function DashboardIndex() {
             </div>
           ) : news.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center p-6 text-center">
-              <Newspaper className="mb-2 h-8 w-8 text-emerald-400/35" />
-              <p className="text-xs text-slate-500">Aucune actualité récente</p>
+              <Newspaper className="mb-2 h-8 w-8 text-omjep-mauve/75" />
+              <p className="text-xs text-omjep-text-secondary">Aucune actualité récente</p>
             </div>
           ) : (
-            <div className="flex h-full snap-x snap-mandatory gap-3 overflow-x-auto p-3 sm:p-4">
+            <div className="flex h-full snap-x snap-mandatory gap-3 overflow-x-auto p-3 sm:gap-4 sm:p-4">
               {news.map((n) => (
                 <motion.article
                   key={n.id}
                   layout
-                  className="min-w-[320px] max-w-[420px] shrink-0 snap-start rounded-3xl border-none bg-white/[0.03] p-10 shadow-2xl backdrop-blur-xl transition-colors"
+                  className="min-w-[280px] max-w-[420px] shrink-0 snap-start rounded-2xl border border-omjep-border bg-omjep-bg-panel/35 p-5 shadow-xl backdrop-blur-xl transition-colors hover:border-omjep-border-gold sm:min-w-[320px] sm:p-7"
                 >
-                  <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">
+                  <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-gold">
                     {n.type === 'TRANSFER' || n.type === 'CONTRACT_RENEWAL' ? 'Signature' : 'Actualité'}
                   </p>
-                  <p className="mt-3 line-clamp-2 font-display text-base font-bold text-white">{n.title}</p>
-                  <p className="mt-3 line-clamp-3 text-[12px] text-white/65">{n.description}</p>
+                  <p className="mt-2.5 line-clamp-2 font-display text-[15px] font-bold text-omjep-text-primary sm:mt-3 sm:text-base">{n.title}</p>
+                  <p className="mt-2 line-clamp-3 text-[12px] leading-relaxed text-omjep-text-secondary sm:mt-2.5">{n.description}</p>
                 </motion.article>
               ))}
             </div>
@@ -453,9 +460,9 @@ export default function DashboardIndex() {
             rowSpan={1}
           >
             <div className="flex h-full flex-col items-center justify-center text-center">
-              <Trophy className="mb-2 h-8 w-8 text-amber-300/85" />
-              <p className="font-display text-base font-bold text-amber-200">Aucun club détecté</p>
-              <p className="mt-1 text-xs text-slate-400">Rejoignez ou créez un club pour activer le cockpit complet.</p>
+              <Trophy className="mb-2 h-8 w-8 text-omjep-gold/90" />
+              <p className="font-display text-base font-bold text-omjep-gold">Aucun club détecté</p>
+              <p className="mt-1 text-xs text-omjep-text-secondary">Rejoignez ou créez un club pour activer le cockpit complet.</p>
               <ContactZone as="link" to="/dashboard/manager/club" size="sm" className="mt-3">
                 Créer mon club
               </ContactZone>

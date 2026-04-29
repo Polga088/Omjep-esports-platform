@@ -6,10 +6,14 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+/// <reference types="multer" />
+import { unlink } from 'fs/promises';
 import { ClubRole, Prisma } from '@omjep/database';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { RequestClubCreationDto } from './dto/request-club-creation.dto';
 import { AdminValidateClubDto } from './dto/admin-validate-club.dto';
+import { UpdateManagedClubDto } from './dto/update-managed-club.dto';
+import { UpdateAdminClubDto } from './dto/update-admin-club.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ProClubsService } from '../sync/proclubs.service';
 
@@ -51,6 +55,42 @@ export class ClubsService {
     }
   }
 
+  async updateClubByAdmin(clubId: string, dto: UpdateAdminClubDto) {
+    const data: Prisma.ClubUpdateInput = {}
+
+    if (dto.name !== undefined) data.name = dto.name.trim()
+    if (dto.description !== undefined) data.description = dto.description.trim() || null
+    if (dto.platform !== undefined) data.platform = dto.platform
+    if (dto.primaryColor !== undefined) data.primaryColor = dto.primaryColor
+    if (dto.secondaryColor !== undefined) data.secondaryColor = dto.secondaryColor
+    if (dto.proclubs_url !== undefined) data.proclubs_url = dto.proclubs_url.trim() || null
+    if (dto.budget !== undefined) data.budget = dto.budget
+    if (dto.prestige_level !== undefined) data.prestige_level = Math.trunc(dto.prestige_level)
+    if (dto.validation_status !== undefined) data.validation_status = dto.validation_status
+    if (dto.logo_url !== undefined) data.logo_url = dto.logo_url.trim() || null
+
+    try {
+      return await this.prisma.club.update({
+        where: { id: clubId },
+        data,
+      })
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Club #${clubId} introuvable.`)
+      }
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Unicité violée: nom, URL Pro Clubs ou logo déjà utilisé.')
+      }
+      throw error
+    }
+  }
+
   async findAllForAdmin() {
     try {
       return await this.prisma.club.findMany({
@@ -88,6 +128,113 @@ export class ClubsService {
       });
     } catch {
       return null;
+    }
+  }
+
+  private async removeFileIfExists(path: string | undefined) {
+    if (!path) return;
+    try {
+      await unlink(path);
+    } catch {
+      // ignore cleanup errors
+    }
+  }
+
+  async updateManagedClub(managerId: string, dto: UpdateManagedClubDto) {
+    const managedClub = await this.prisma.club.findFirst({
+      where: { manager_id: managerId },
+      select: { id: true },
+    });
+
+    if (!managedClub) {
+      throw new NotFoundException('Aucun club géré trouvé pour ce manager.');
+    }
+
+    const data: Prisma.ClubUpdateInput = {};
+
+    if (dto.name !== undefined) data.name = dto.name.trim();
+    if (dto.description !== undefined) data.description = dto.description.trim() || null;
+    if (dto.platform !== undefined) data.platform = dto.platform;
+    if (dto.primaryColor !== undefined) data.primaryColor = dto.primaryColor;
+    if (dto.secondaryColor !== undefined) data.secondaryColor = dto.secondaryColor;
+    if (dto.proclubs_url !== undefined) data.proclubs_url = dto.proclubs_url.trim() || null;
+
+    try {
+      return await this.prisma.club.update({
+        where: { id: managedClub.id },
+        data,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Unicité violée: nom ou URL Pro Clubs déjà utilisée.');
+      }
+      throw error;
+    }
+  }
+
+  async uploadManagedClubLogo(managerId: string, file?: Express.Multer.File) {
+    if (!file?.filename) {
+      await this.removeFileIfExists(file?.path);
+      throw new BadRequestException('Fichier logo requis.');
+    }
+
+    const isAllowedMime = /^image\/(jpeg|jpg|png|webp)$/i.test(file.mimetype);
+    if (!isAllowedMime) {
+      await this.removeFileIfExists(file.path);
+      throw new BadRequestException('Logo invalide: PNG, JPG, JPEG ou WebP uniquement.');
+    }
+
+    const managedClub = await this.prisma.club.findFirst({
+      where: { manager_id: managerId },
+      select: { id: true },
+    });
+    if (!managedClub) {
+      await this.removeFileIfExists(file.path);
+      throw new NotFoundException('Aucun club géré trouvé pour ce manager.');
+    }
+
+    const publicUrl = `/api/v1/uploads/clubs/${file.filename}`;
+    const updated = await this.prisma.club.update({
+      where: { id: managedClub.id },
+      data: { logo_url: publicUrl },
+      select: { logo_url: true },
+    });
+
+    return { logo_url: updated.logo_url };
+  }
+
+  async uploadClubLogoByAdmin(clubId: string, file?: Express.Multer.File) {
+    if (!file?.filename) {
+      await this.removeFileIfExists(file?.path)
+      throw new BadRequestException('Fichier logo requis.')
+    }
+
+    const isAllowedMime = /^image\/(jpeg|jpg|png|webp)$/i.test(file.mimetype)
+    if (!isAllowedMime) {
+      await this.removeFileIfExists(file.path)
+      throw new BadRequestException('Logo invalide: PNG, JPG, JPEG ou WebP uniquement.')
+    }
+
+    const publicUrl = `/api/v1/uploads/clubs/${file.filename}`
+    try {
+      const updated = await this.prisma.club.update({
+        where: { id: clubId },
+        data: { logo_url: publicUrl },
+        select: { logo_url: true },
+      })
+      return { logo_url: updated.logo_url }
+    } catch (error) {
+      await this.removeFileIfExists(file.path)
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Club #${clubId} introuvable.`)
+      }
+      throw error
     }
   }
 

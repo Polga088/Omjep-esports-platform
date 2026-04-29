@@ -66,7 +66,7 @@ export default function LiveTicker() {
             {lines.map((text, i) => (
               <span
                 key={`a-${i}`}
-                className={`whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.18em] ${isDark ? 'text-white/70' : 'text-black/70'}`}
+                className={`whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] ${isDark ? 'text-omjep-text-secondary' : 'text-omjep-text-secondary'}`}
               >
                 {text}
               </span>
@@ -76,7 +76,7 @@ export default function LiveTicker() {
             {lines.map((text, i) => (
               <span
                 key={`b-${i}`}
-                className={`whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.18em] ${isDark ? 'text-white/70' : 'text-black/70'}`}
+                className={`whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] ${isDark ? 'text-omjep-text-secondary' : 'text-omjep-text-secondary'}`}
               >
                 {text}
               </span>

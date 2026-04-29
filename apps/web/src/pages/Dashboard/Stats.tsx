@@ -4,6 +4,7 @@ import {
   Trophy, Zap, ArrowLeft, Loader2, ShieldAlert, Crown,
 } from 'lucide-react';
 import api from '@/lib/api';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 function PlayerLink({ id, children, className }: { id: string; children: React.ReactNode; className?: string }) {
   return (
@@ -248,20 +249,12 @@ export default function Stats() {
           Retour au classement
         </Link>
 
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-500/5 border border-amber-500/20 flex items-center justify-center">
-            <Trophy className="w-4 h-4 text-amber-400" />
-          </div>
-          <span className="text-xs font-semibold uppercase tracking-widest text-amber-400/70">
-            Statistiques
-          </span>
-        </div>
-        <h1 className="text-3xl font-black text-white tracking-tight">
-          Podium des Légendes
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Les meilleurs buteurs et passeurs de la compétition
-        </p>
+        <DashboardPageHeading
+          eyebrow="Competition Stats"
+          title="Podium des légendes"
+          subtitle="Les meilleurs buteurs et passeurs de la compétition"
+          className="border-b-0 pb-1"
+        />
       </div>
 
       {/* Error */}

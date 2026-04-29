@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Archive, Loader2, Gem } from 'lucide-react';
+import { Loader2, Gem } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuthStore, type User } from '@/store/useAuthStore';
 import {
@@ -10,6 +10,7 @@ import {
 } from '@/components/ProfileShowcaseHeroMedia';
 import MaintenancePrestige from '@/components/MaintenancePrestige';
 import type { StoreItemRow } from '@/pages/Store/IdentityPreview';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 const CATEGORY_LABEL: Record<StoreItemRow['category'], string> = {
   BANNER: 'Bannière',
@@ -61,19 +62,11 @@ function isItemEquipped(item: StoreItemRow, user: User | null): boolean {
 
 function VaultHeader() {
   return (
-    <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0B0D13]/80 backdrop-blur-md">
-      <div className="border-b border-white/[0.06] bg-white/[0.02] px-6 py-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-cyan-400/25 bg-gradient-to-br from-cyan-400/15 to-transparent">
-            <Archive className="h-5 w-5 text-cyan-400" />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/70">Inventaire</p>
-            <h1 className="text-2xl font-black tracking-tight text-white">The Vault</h1>
-          </div>
-        </div>
-      </div>
-    </div>
+    <DashboardPageHeading
+      eyebrow="Inventory"
+      title="The Vault"
+      subtitle="Cosmétiques possédés et prévisualisation de votre identité"
+    />
   );
 }
 

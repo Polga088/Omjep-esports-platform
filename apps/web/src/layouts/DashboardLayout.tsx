@@ -1,8 +1,6 @@
-import { useState, useEffect, useCallback, useMemo, type MouseEvent as ReactMouseEvent } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard,
   Users,
   ShoppingBag,
   UserCog,
@@ -15,21 +13,16 @@ import {
   Dices,
   Medal,
   MessageCircle,
-  Coins,
   Archive,
+  ChevronRight,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import PlayerIdentity from '@/components/PlayerIdentity';
-import NotificationCenter from '@/components/NotificationCenter';
 import LiveTicker from '@/components/LiveTicker';
 import GoldConfetti from '@/components/GoldConfetti';
 import SystemStatusIndicator from '@/components/SystemStatusIndicator';
-import BottomDock, { type DockItem } from '@/components/cockpit/BottomDock';
-import CinematicRouteStage from '@/components/cockpit/CinematicRouteStage';
-import ContactZone from '@/components/cockpit/ContactZone';
+import type { DockItem } from '@/components/cockpit/BottomDock';
 import { useTransferNotifications } from '@/hooks/useTransferNotifications';
-import { useAppNotifications } from '@/hooks/useAppNotifications';
-import { useAppNotificationStore } from '@/store/useAppNotificationStore';
 import api from '@/lib/api';
 import { formatAmountDigits } from '@/utils/formatCurrency';
 import {
@@ -47,13 +40,6 @@ const dockPrimary: DockItem[] = [
   { to: '/dashboard/store', label: 'Boutique', icon: ShoppingBag },
   { to: '/dashboard/predictions', label: 'Predict', icon: Dices },
 ];
-
-const dockCenter: DockItem = {
-  to: '/dashboard',
-  label: 'Cockpit',
-  icon: LayoutDashboard,
-  exact: true,
-};
 
 const dockSecondary: DockItem[] = [
   { to: '/dashboard/schedule', label: 'Calendrier', icon: Calendar },
@@ -81,20 +67,18 @@ const pageTitles: Record<string, string> = {
   '/dashboard/profile': 'Mon Profil',
   '/dashboard/settings': 'Paramètres',
   '/dashboard/manager/club': 'Créer mon club',
+  '/dashboard-preview': 'Cockpit Preview',
 };
 
 export default function DashboardLayout() {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, patchUser } = useAuthStore();
   const isManagerRole = user?.role === 'MANAGER';
   const [budget, setBudget] = useState<number | null>(null);
-  const [extraOpen, setExtraOpen] = useState(false);
   const { showConfetti, mercatoLiveBadge } = useTransferNotifications();
-  const { notifications, refreshNotifications, syncUnread } = useAppNotifications();
-  const appUnreadCount = useAppNotificationStore((s) => s.unreadCount);
 
   const refreshTeamBudget = useCallback(() => {
     void api
@@ -106,20 +90,6 @@ export default function DashboardLayout() {
   useEffect(() => {
     refreshTeamBudget();
   }, [refreshTeamBudget]);
-
-  /** Plein écran cockpit : bloque le scroll body. */
-  useEffect(() => {
-    const prevHtml = document.documentElement.style.overflow;
-    const prevBody = document.body.style.overflow;
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
-    document.documentElement.classList.add('cockpit-fullscreen');
-    return () => {
-      document.documentElement.style.overflow = prevHtml;
-      document.body.style.overflow = prevBody;
-      document.documentElement.classList.remove('cockpit-fullscreen');
-    };
-  }, []);
 
   /** Mercato / transferts : budget club + portefeuille à jour */
   useEffect(() => {
@@ -215,11 +185,6 @@ export default function DashboardLayout() {
     };
   }, [patchUser]);
 
-  /** Auto-close du panneau extras quand la route change */
-  useEffect(() => {
-    setExtraOpen(false);
-  }, [location.pathname]);
-
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -229,236 +194,115 @@ export default function DashboardLayout() {
     pageTitles[location.pathname] ?? location.pathname.split('/').pop() ?? '';
   const rawOc = user?.omjepCoins ?? 100000;
   const rawJepy = user?.jepyCoins ?? 0;
-  const walletText = `${rawOc.toLocaleString('de-DE')} OC`;
-  const jepyText = `${rawJepy.toLocaleString('de-DE')} JPY`;
+  const walletText = `${rawOc.toLocaleString('de-DE')} OC`
+  const jepyText = `${rawJepy.toLocaleString('de-DE')} JPY`
   const budgetText = budget !== null ? `${formatAmountDigits(budget)} OC` : null;
-
-  const handleDashboardMouseMove = (event: ReactMouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left - rect.width / 2;
-    const y = event.clientY - rect.top - rect.height / 2;
-    event.currentTarget.style.setProperty('--omjep-mx', `${x}px`);
-    event.currentTarget.style.setProperty('--omjep-my', `${y}px`);
-  };
-
-  const handleDashboardMouseLeave = (event: ReactMouseEvent<HTMLDivElement>) => {
-    event.currentTarget.style.setProperty('--omjep-mx', '0px');
-    event.currentTarget.style.setProperty('--omjep-my', '0px');
-  };
-
-  const dockItems = useMemo(() => {
+  const sidebarItems = useMemo(() => {
     const list = [...dockPrimary];
     if (isManagerRole) list.push({ to: '/dashboard/manager/club', label: 'Club Manager', icon: Building2 });
+    list.push(...dockSecondary);
     return list;
   }, [isManagerRole]);
 
-  return (
-    <div
-      className={`dashboard-layout-shell dashboard-cockpit-shell fixed inset-0 z-0 flex h-[100dvh] w-[100vw] flex-col overflow-hidden ${isDark ? 'bg-[#000000] text-slate-100' : 'bg-[#FFFFFF] text-slate-900'}`}
-      onMouseMove={handleDashboardMouseMove}
-      onMouseLeave={handleDashboardMouseLeave}
-    >
-      <GoldConfetti active={showConfetti} />
+  const isItemActive = (item: DockItem) =>
+    item.exact ? location.pathname === item.to : location.pathname.startsWith(item.to)
 
-      {/* Top HUD compact (toujours visible) */}
-      <header className={`dashboard-cockpit-topbar relative z-30 flex h-14 shrink-0 items-center gap-3 border-b px-3 backdrop-blur-2xl sm:px-5 ${isDark ? 'border-white/10 bg-black' : 'border-black/10 bg-white'}`}>
-        <Link
-          to="/dashboard"
-          className="flex shrink-0 items-center gap-2"
-          aria-label="Cockpit OMJEP"
-        >
-          <span className={`font-heading text-[11px] font-semibold uppercase tracking-[0.28em] ${isDark ? 'text-white/80' : 'text-black/80'}`}>
-            OMJEP
-          </span>
+  return (
+    <div className={`dashboard-layout-shell flex min-h-[100dvh] bg-omjep-bg text-omjep-text-primary`}>
+      <GoldConfetti active={showConfetti} />
+      <aside
+        className={`fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-omjep-border px-4 py-5 lg:flex lg:flex-col ${isDark ? 'bg-omjep-bg-panel/82 backdrop-blur-2xl' : 'bg-white/92 backdrop-blur-2xl'}`}
+      >
+        <Link to="/dashboard" className="mb-6 flex items-center gap-2 px-2" aria-label="Cockpit OMJEP">
+          <span className="font-heading text-xs font-semibold uppercase tracking-[0.28em] text-omjep-gold">OMJEP</span>
         </Link>
 
-        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
+        <nav className="flex-1 space-y-1.5" aria-label="Navigation dashboard">
+          {sidebarItems.map((item) => {
+            const Icon = item.icon
+            const active = isItemActive(item)
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`group flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-all ${
+                  active
+                    ? 'border-omjep-mauve/65 bg-omjep-mauve/15 text-omjep-mauve shadow-[0_0_24px_-8px_rgba(110,89,217,0.7)]'
+                    : 'border-transparent text-omjep-text-secondary hover:border-omjep-mauve/35 hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-text-primary hover:shadow-[0_0_20px_-10px_rgba(110,89,217,0.75)]'
+                }`}
+                aria-current={active ? 'page' : undefined}
+              >
+                <Icon className={`h-[18px] w-[18px] ${active ? 'text-omjep-mauve' : ''}`} aria-hidden />
+                <span className="text-sm font-semibold tracking-wide">{item.label}</span>
+                {active ? <ChevronRight className="ml-auto h-4 w-4 text-omjep-mauve/80" aria-hidden /> : null}
+              </Link>
+            )
+          })}
+        </nav>
 
-        <div className={`font-mono min-w-0 flex-1 truncate text-[11px] uppercase tracking-[0.24em] ${isDark ? 'text-white/50' : 'text-black/50'}`}>
-          {currentPageTitle}
+        <div className="space-y-2 rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/35 p-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">{walletText}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">{jepyText}</p>
+          {isManagerRole && budgetText ? (
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-omjep-gold">{budgetText}</p>
+          ) : null}
         </div>
+      </aside>
 
-        {/* Identité minimale */}
-        <div className="hidden items-center gap-2 lg:flex">
-          <PlayerIdentity
-            size="sm"
-            initial={user?.ea_persona_name?.charAt(0) ?? 'U'}
-            avatarUrl={user?.avatarUrl}
-            rarity={user?.avatarRarity ?? 'common'}
-            activeFrameUrl={user?.activeFrameUrl}
-            activeJerseyId={user?.activeJerseyId}
-            teamPrimaryColor={user?.teamPrimaryColor}
-            teamSecondaryColor={user?.teamSecondaryColor}
-          />
-          <div className="min-w-0 leading-none">
-            <p className={`truncate font-display text-xs font-bold ${isDark ? 'text-white' : 'text-black'}`}>
-              {user?.ea_persona_name ?? 'Joueur'}
-            </p>
-            <p className={`text-[9px] font-bold uppercase tracking-[0.22em] ${isDark ? 'text-white/45' : 'text-black/45'}`}>
-              {user?.role === 'MANAGER' ? 'Manager' : user?.role === 'ADMIN' ? 'Admin' : 'Joueur'}
-            </p>
+      <section className="flex min-h-[100dvh] w-full flex-col lg:pl-72">
+        <header className={`dashboard-cockpit-topbar sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-omjep-border px-5 ${isDark ? 'bg-omjep-bg/88 backdrop-blur-xl' : 'bg-white/92 backdrop-blur-xl'}`}>
+          <div className="min-w-0">
+            <h1 className="truncate text-xl font-extrabold text-omjep-text-primary">{currentPageTitle}</h1>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-omjep-text-muted">Dashboard operation shell</p>
           </div>
-        </div>
-
-        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
-
-        <button
-          type="button"
-          className={`font-mono text-[11px] tracking-[0.14em] rounded-none border px-3 py-1.5 ${isDark ? 'border-white/20 bg-black/60 text-white' : 'border-black/10 bg-black/[0.03] text-black'}`}
-        >
-          {walletText}
-        </button>
-        <button
-          type="button"
-          className={`font-mono text-[11px] tracking-[0.14em] rounded-none border px-3 py-1.5 ${isDark ? 'border-white/20 bg-black/60 text-white' : 'border-black/10 bg-black/[0.03] text-black'}`}
-        >
-          {jepyText}
-        </button>
-        {isManagerRole && budgetText ? (
-          <>
-            <span className={`hidden h-5 w-px md:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
-            <div className={`hidden rounded-none border px-3 py-1.5 font-mono text-[11px] tracking-[0.14em] md:block ${isDark ? 'border-white/20 bg-black/60 text-white/85' : 'border-black/10 bg-black/[0.03] text-black/85'}`}>
-              {budgetText}
-            </div>
-          </>
-        ) : null}
-
-        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
-        <button
-          type="button"
-          onClick={() => setTheme(isDark ? 'light' : 'dark')}
-          aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-          className={`font-mono text-[11px] uppercase tracking-[0.2em] transition-none ${isDark ? 'text-white hover:text-white' : 'text-black hover:text-black'}`}
-        >
-          [ {isDark ? 'DARK' : 'LIGHT'} ]
-        </button>
-        <span className={`hidden h-5 w-px sm:block ${isDark ? 'bg-white/10' : 'bg-black/10'}`} aria-hidden />
-        <div className={`${isDark ? 'text-white/70' : 'text-black/70'}`}>
-          <SystemStatusIndicator />
-        </div>
-
-        <NotificationCenter
-          appUnreadCount={appUnreadCount}
-          inboxNotifications={notifications}
-          onRefreshInbox={async () => {
-            await refreshNotifications();
-            await syncUnread();
-          }}
-        />
-
-        <button
-          type="button"
-          onClick={handleLogout}
-          aria-label="Déconnexion"
-          className={`hidden rounded-none border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] transition-none md:inline-flex ${isDark ? 'border-white/20 bg-black/60 text-white hover:text-white' : 'border-black/10 bg-black/[0.03] text-black hover:text-black'}`}
-        >
-          &gt; [ LOGOUT ] &lt;
-        </button>
-      </header>
-
-      {/* Live ticker tout en haut du flux principal */}
-      <div className={`shrink-0 ${isDark ? 'bg-black' : 'bg-white'}`}>
-        <LiveTicker />
-      </div>
-
-      {/* Stage cinématique — 100% width, scroll interne par widget */}
-      <main
-        id="cockpit-stage"
-        className="dashboard-cockpit-stage relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-hidden"
-      >
-        <div className="relative flex h-full w-full flex-1 flex-col overflow-hidden p-4 sm:p-6 lg:p-7">
-          <CinematicRouteStage>
-            <div className="dashboard-cockpit-canvas relative h-full w-full overflow-hidden">
-              <div className="absolute inset-0 overflow-y-auto pb-28 pr-1.5">
-                <Outlet />
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 sm:flex">
+              <PlayerIdentity
+                size="sm"
+                initial={user?.ea_persona_name?.charAt(0) ?? 'U'}
+                avatarUrl={user?.avatarUrl}
+                rarity={user?.avatarRarity ?? 'common'}
+                activeFrameUrl={user?.activeFrameUrl}
+                activeJerseyId={user?.activeJerseyId}
+                teamPrimaryColor={user?.teamPrimaryColor}
+                teamSecondaryColor={user?.teamSecondaryColor}
+              />
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-omjep-text-primary">{user?.ea_persona_name ?? 'Joueur'}</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">
+                  {user?.role === 'MANAGER' ? 'Manager' : user?.role === 'ADMIN' ? 'Admin' : 'Joueur'}
+                </p>
               </div>
             </div>
-          </CinematicRouteStage>
-        </div>
-        {mercatoLiveBadge && (
-          <span
-            className="pointer-events-none fixed right-4 top-16 z-40 rounded-full border border-emerald-400/55 bg-[#020202]/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-200 shadow-[0_0_24px_-4px_rgba(34,197,94,0.55)]"
-            aria-live="polite"
-          >
-            Mercato live
-          </span>
-        )}
-      </main>
-
-      {/* Satellite hub : flou gaussien progressif sur le cockpit */}
-      <AnimatePresence>
-        {extraOpen ? (
-          <>
-            <motion.button
-              key="cockpit-satellite-scrim"
+            <SystemStatusIndicator />
+            <button
               type="button"
-              aria-label="Fermer le menu étendu"
-              onClick={() => setExtraOpen(false)}
-              className="cockpit-satellite-scrim fixed inset-0 z-[38] cursor-default border-0 p-0"
-              initial={{ opacity: 0, ['--satellite-blur' as string]: 'blur(0px)' }}
-              animate={{ opacity: 1, ['--satellite-blur' as string]: 'blur(24px)' }}
-              exit={{ opacity: 0, ['--satellite-blur' as string]: 'blur(0px)' }}
-              transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
-            />
-            <motion.aside
-              key="cockpit-satellite-panel"
-              role="dialog"
-              aria-label="Modules secondaires"
-              aria-modal="true"
-              className={`cockpit-satellite-panel fixed bottom-24 left-1/2 z-[45] w-[min(92vw,520px)] -translate-x-1/2 rounded-3xl border-none p-8 shadow-2xl backdrop-blur-2xl ${isDark ? 'bg-white/[0.05]' : 'bg-black/[0.05]'}`}
-              initial={{ opacity: 0, y: 32, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.94 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 34, mass: 0.85 }}
+              onClick={handleLogout}
+              aria-label="Déconnexion"
+              className="rounded-lg border border-omjep-border px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-omjep-text-secondary transition-colors hover:border-omjep-border-gold hover:text-omjep-text-primary"
             >
-              <div className="mb-6 flex items-center justify-between">
-              <p className={`font-heading text-[11px] font-semibold uppercase tracking-[0.24em] ${isDark ? 'text-white/70' : 'text-black/70'}`}>
-                Modules satellites
-              </p>
-                <button
-                  type="button"
-                  onClick={() => setExtraOpen(false)}
-                  className={`text-[10px] uppercase tracking-[0.2em] transition ${isDark ? 'text-white/55 hover:text-white' : 'text-black/55 hover:text-black'}`}
-                >
-                  Close
-                </button>
-              </div>
-              <div className="mt-3 grid grid-cols-3 gap-3">
-                {dockSecondary.map((it) => {
-                  const Icon = it.icon;
-                  return (
-                    <Link
-                      key={it.to}
-                      to={it.to}
-                      onClick={() => setExtraOpen(false)}
-                      className={`group flex flex-col items-center justify-center gap-1.5 rounded-2xl border-none p-4 shadow-2xl backdrop-blur-xl transition-colors ${isDark ? 'bg-white/[0.04] text-white/85 hover:text-white' : 'bg-black/[0.04] text-black/85 hover:text-black'}`}
-                    >
-                      <Icon className="h-5 w-5" aria-hidden />
-                      <span className={`text-[10px] font-semibold uppercase tracking-wider ${isDark ? 'text-white/70' : 'text-black/70'}`}>
-                        {it.label}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </motion.aside>
-          </>
-        ) : null}
-      </AnimatePresence>
+              Logout
+            </button>
+          </div>
+        </header>
 
-      {/* Dock flottant */}
-      <BottomDock items={dockItems} centerItem={dockCenter} />
+        <div className={`border-b border-omjep-border/60 ${isDark ? 'bg-omjep-bg-panel/70' : 'bg-white/90'}`}>
+          <LiveTicker />
+          {mercatoLiveBadge ? (
+            <div className="container-dashboard pt-0">
+              <span className="inline-flex rounded-full border border-omjep-border-gold bg-omjep-bg-panel/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-omjep-gold">
+                Mercato live
+              </span>
+            </div>
+          ) : null}
+        </div>
 
-      {/* Bouton "+" extras */}
-      <button
-        type="button"
-        onClick={() => setExtraOpen((v) => !v)}
-        aria-label="Ouvrir les modules secondaires"
-        aria-expanded={extraOpen}
-        className="contact-zone fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-emerald-500/35 bg-[#020202]/90 text-emerald-300 backdrop-blur-2xl transition-[border-color,box-shadow,color] hover:border-emerald-300/85 hover:text-white hover:shadow-[0_0_28px_-4px_rgba(34,197,94,0.6)]"
-      >
-        <span className={`text-xl font-light leading-none transition-transform ${extraOpen ? 'rotate-45' : ''}`}>+</span>
-      </button>
+        <main className="dashboard-layout-scroll flex-1 overflow-y-auto py-6">
+          <div className="container-dashboard">
+            <Outlet />
+          </div>
+        </main>
+      </section>
     </div>
   );
 }

@@ -6,8 +6,8 @@ import TacticalHudFrame from '@/components/TacticalHudFrame'
 export type IconTone = 'gold' | 'neutral'
 
 const labelToneClass: Record<IconTone, string> = {
-  gold: 'text-omjep-gold/85',
-  neutral: 'text-omjep-neutral/90',
+  gold: 'text-omjep-gold',
+  neutral: 'text-omjep-text-secondary',
 }
 
 const labelVariantClass = {
@@ -16,8 +16,8 @@ const labelVariantClass = {
 } as const
 
 const iconToneClass: Record<IconTone, string> = {
-  gold: 'text-omjep-gold/55 [stroke-width:1.7]',
-  neutral: 'text-omjep-neutral/55 [stroke-width:1.7]',
+  gold: 'text-omjep-gold/85 [stroke-width:1.7]',
+  neutral: 'text-omjep-mauve/85 [stroke-width:1.7]',
 }
 
 /**
@@ -57,7 +57,7 @@ export default function TacticalBentoStatLinkCard({
     <Link
       to={to}
       {...linkProps}
-      className="group tactical-bento relative flex min-h-[8.5rem] flex-col items-start justify-between p-5 transition-all hover:bg-white/[0.04]"
+      className="group tactical-bento relative flex min-h-[8.5rem] flex-col items-start justify-between p-5 transition-all hover:border-omjep-mauve/45 hover:bg-omjep-bg-panel-soft/35"
     >
       <TacticalHudFrame topLeftCode={hudTopLeft} bottomRightCode={hudBottomRight} />
       <div className="relative z-[1] flex w-full items-start justify-between gap-2">
@@ -66,14 +66,14 @@ export default function TacticalBentoStatLinkCard({
         </span>
         <div className="flex shrink-0 items-center gap-1.5">
           <Icon className={`h-4 w-4 transition-colors ${iconToneClass[iconTone]}`} />
-          <ArrowRight className="h-3.5 w-3.5 text-omjep-neutral/50 transition-colors group-hover:text-omjep-gold/80" />
+          <ArrowRight className="h-3.5 w-3.5 text-omjep-text-muted transition-colors group-hover:text-omjep-gold" />
         </div>
       </div>
       <div className="relative z-[1] mt-3 w-full min-w-0">
-        <p className="font-tech text-3xl font-bold tabular-nums tracking-tighter text-white">
+        <p className="font-tech text-3xl font-bold tabular-nums tracking-tighter text-omjep-text-primary">
           {value}
         </p>
-        <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-omjep-neutral">{hint}</p>
+        <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-omjep-text-secondary">{hint}</p>
       </div>
     </Link>
   )
@@ -116,12 +116,12 @@ export function TacticalBentoStatBlock({
       </div>
       <div className="relative z-[1] mt-3 w-full min-w-0">
         {valueNode ?? (
-          <span className="font-tech text-3xl font-bold tabular-nums tracking-tighter text-white">
+          <span className="font-tech text-3xl font-bold tabular-nums tracking-tighter text-omjep-text-primary">
             {value}
           </span>
         )}
         {sublabel ? (
-          <p className="mt-1 text-[10px] font-medium uppercase tracking-widest text-omjep-neutral/80">
+          <p className="mt-1 text-[10px] font-medium uppercase tracking-widest text-omjep-text-muted">
             {sublabel}
           </p>
         ) : null}

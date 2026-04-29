@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { LifeBuoy, Loader2, Send, Terminal } from 'lucide-react';
+import { Loader2, Send, Terminal } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 type TicketCategory = 'BUG' | 'LITIGE' | 'COMPTE';
 type TicketStatus = 'OPEN' | 'CLOSED' | 'URGENT';
@@ -116,17 +117,11 @@ export default function Support() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-10 pb-16">
-      <div>
-        <h1 className="flex items-center gap-3 font-scifi text-xl font-bold tracking-tight text-white">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-950/40">
-            <LifeBuoy className="h-5 w-5 text-emerald-400" />
-          </span>
-          Support
-        </h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Signalez un bug, un litige ou un problème de compte. Réponses visibles ci-dessous.
-        </p>
-      </div>
+      <DashboardPageHeading
+        eyebrow="Support Desk"
+        title="Support"
+        subtitle="Signalez un bug, un litige ou un problème de compte"
+      />
 
       <section
         className="rounded-lg border-[0.5px] border-emerald-500/20 bg-[#080a0c] p-5 shadow-[inset_0_1px_0_rgba(16,185,129,0.06)]"

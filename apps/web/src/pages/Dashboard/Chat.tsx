@@ -3,6 +3,7 @@ import api from '@/lib/api';
 import { ChatBox } from '@/features/chat';
 import { Loader2 } from 'lucide-react';
 import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 type Me = { id: string; email: string; role?: string; level?: number };
 
@@ -26,12 +27,11 @@ export default function ChatPage() {
   if (err) {
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="font-mono text-lg font-medium uppercase tracking-wider text-slate-300">
-            Messagerie
-          </h1>
-          <p className="mt-1 font-mono text-[11px] text-slate-600">Salon club · messages privés</p>
-        </div>
+        <DashboardPageHeading
+          eyebrow="Comms Hub"
+          title="Messagerie"
+          subtitle="Salon club et messages privés"
+        />
         <MaintenancePrestige
           title="Session sécurisée"
           message={PRESTIGE_MSG}
@@ -50,12 +50,11 @@ export default function ChatPage() {
 
   return (
     <div className="relative z-0 space-y-6">
-      <div>
-        <h1 className="font-mono text-lg font-medium uppercase tracking-wider text-slate-300">
-          Messagerie
-        </h1>
-        <p className="mt-1 font-mono text-[11px] text-slate-600">Salon club · messages privés</p>
-      </div>
+      <DashboardPageHeading
+        eyebrow="Comms Hub"
+        title="Messagerie"
+        subtitle="Salon club et messages privés"
+      />
       <ChatBox me={me} />
     </div>
   );

@@ -2,7 +2,7 @@ import { useState, useEffect, Component } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  UserPlus, UserMinus, Star, Gamepad2, Shield, Swords, Crown, Users, Link2,
+  UserPlus, UserMinus, Star, Shield, Swords, Crown, Users, Link2,
   CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
   FileText, TrendingUp, Banknote, Trophy, Repeat, Gem, Info,
   AlertTriangle,
@@ -14,6 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import InvitePlayerModal from '@/components/InvitePlayerModal';
 import { xpProgress } from '@/lib/leveling';
 import { formatCurrency } from '@/utils/formatCurrency';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 // ─── Error Boundary ──────────────────────────────────────────────────────────
 
@@ -526,39 +527,31 @@ export default function MyTeam() {
 
   return (
     <TeamErrorBoundary>
-    <div className="cockpit-page space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="mb-1 flex items-center gap-3">
-            <span className="text-[12px] font-semibold uppercase tracking-widest opacity-50">Gestion du Club</span>
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">
-            {isLoading ? (
-              <span className="inline-block h-8 w-48 animate-pulse border-[0.5px] border-black/5 dark:border-white/10" />
-            ) : (
-              'MON ÉQUIPE'
-            )}
-          </h1>
-          <p className="mt-1 text-[12px] uppercase tracking-widest opacity-50">
-            {isLoading ? '\u00a0' : `${allMembers.length} membres enregistrés dans le système`}
-          </p>
-        </div>
-
-        {canRecruit && (
-          <button
-            onClick={() => setInviteModalOpen(true)}
-            className="group inline-flex items-center gap-2.5 rounded-none border border-black/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-black transition-all duration-200 whitespace-nowrap dark:border-white/20 dark:text-white"
-          >
-            [ ACTION ]
-          </button>
-        )}
-      </div>
+    <div className="cockpit-page dashboard-phase3-team space-y-6">
+      <DashboardPageHeading
+        eyebrow="Club Operations"
+        title={isLoading ? 'Mon équipe' : 'Mon équipe'}
+        subtitle={
+          isLoading
+            ? 'Gestion de l’effectif, des rôles et des finances club'
+            : `${allMembers.length} membres enregistrés dans le système`
+        }
+        action={
+          canRecruit ? (
+            <button
+              onClick={() => setInviteModalOpen(true)}
+              className="group inline-flex items-center gap-2.5 rounded-none border border-black/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-black transition-all duration-200 whitespace-nowrap dark:border-white/20 dark:text-white"
+            >
+              [ ACTION ]
+            </button>
+          ) : undefined
+        }
+      />
 
       {/* Stats Bento — aligné 3 colonnes desktop, 1 colonne mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Total joueurs */}
-        <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/80 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg hover:shadow-black/25">
+        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
           <svg
             className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-white opacity-[0.05]"
             viewBox="0 0 24 24"
@@ -570,14 +563,14 @@ export default function MyTeam() {
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Total joueurs</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-omjep-text-secondary">Total joueurs</p>
           <p className="mt-2 text-4xl font-black tabular-nums text-white">
             {isLoading ? '—' : players.length}
           </p>
         </div>
 
         {/* Staff / Managers */}
-        <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/80 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg hover:shadow-black/25">
+        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
           <svg
             className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-emerald-400 opacity-[0.05]"
             viewBox="0 0 24 24"
@@ -590,14 +583,14 @@ export default function MyTeam() {
             <path d="M4 10l2-6 4 3 4-6 4 6 4-3 2 6v10H4V10z" />
             <path d="M4 20h16" />
           </svg>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Staff / Managers</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-omjep-text-secondary">Staff / Managers</p>
           <p className="mt-2 text-4xl font-black tabular-nums text-emerald-400">
             {isLoading ? '—' : staff.length}
           </p>
         </div>
 
         {/* Note moy. équipe */}
-        <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/80 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg hover:shadow-black/25">
+        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
           <svg
             className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-yellow-500 opacity-[0.05]"
             viewBox="0 0 24 24"
@@ -608,7 +601,7 @@ export default function MyTeam() {
           >
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Note moy. équipe</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-omjep-text-secondary">Note moy. équipe</p>
           <p className="mt-2 text-4xl font-black tabular-nums text-yellow-500">
             {isLoading ? '—' : avgRating > 0 ? avgRating.toFixed(1) : 'N/A'}
           </p>

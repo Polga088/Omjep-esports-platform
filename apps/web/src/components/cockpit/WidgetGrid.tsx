@@ -22,7 +22,7 @@ export default function WidgetGrid({
     display: 'grid',
     gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
     gridAutoRows: rowHeight,
-    gap: '24px',
+    gap: 'clamp(14px, 1.8vw, 24px)',
     ...style,
   }
 

@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Trophy, Plus, Calendar, Loader2, X, Trash2,
+  Trophy, Plus, Calendar, Loader2, X, Trash2, Pencil,
   CheckCircle2, AlertCircle, Search, Shuffle, Shield, Sparkles, Network, GitBranch,
 } from 'lucide-react';
+import type { AxiosResponse } from 'axios';
 import api from '@/lib/api';
 import { COMPETITION_TYPE_CONFIG, getCompTypeConfig } from '@/lib/competition-icons';
 
@@ -49,6 +50,29 @@ const CALENDAR_WEEKDAYS: { value: number; label: string }[] = [
 function normalizeCompetition(c: Competition): Competition {
   return { ...c, isTransferMarketOpen: c.isTransferMarketOpen === true };
 }
+
+const extractApiList = (res: AxiosResponse<unknown>): unknown[] => {
+  const d = res.data as Record<string, unknown> | unknown[] | null | undefined;
+  if (Array.isArray(d)) return d;
+  if (d && typeof d === 'object' && Array.isArray((d as { data?: unknown[] }).data)) {
+    return (d as { data: unknown[] }).data;
+  }
+  return [];
+};
+
+const apiErrMessage = (err: unknown, fallback: string) => {
+  const ax = err as { response?: { data?: { message?: string | string[] } } };
+  const m = ax.response?.data?.message;
+  if (typeof m === 'string') return m;
+  if (Array.isArray(m) && m[0]) return String(m[0]);
+  return fallback;
+};
+
+const toDateInputValue = (iso: string | null | undefined) => {
+  if (!iso) return '';
+  const s = String(iso);
+  return s.length >= 10 ? s.slice(0, 10) : '';
+};
 
 const STATUS_CONFIG = {
   DRAFT: {
@@ -112,6 +136,18 @@ export default function AdminCompetitions() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const [editComp, setEditComp] = useState<Competition | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editStart, setEditStart] = useState('');
+  const [editEnd, setEditEnd] = useState('');
+  const [editCupScenario, setEditCupScenario] = useState<
+    'SINGLE_ELIMINATION' | 'TWO_LEGGED_TIE' | 'GROUPS_AND_KNOCKOUT'
+  >('SINGLE_ELIMINATION');
+  const [editStatus, setEditStatus] = useState<Competition['status']>('DRAFT');
+  const [editSaving, setEditSaving] = useState(false);
+  const [editAddTeamId, setEditAddTeamId] = useState('');
+  const [editTeamBusy, setEditTeamBusy] = useState(false);
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -128,21 +164,145 @@ export default function AdminCompetitions() {
 
   const fetchData = async () => {
     setLoading(true);
+    setError('');
+    const parts: string[] = [];
     try {
-      const [compsRes, teamsRes] = await Promise.all([
+      const [compsRes, teamsRes] = await Promise.allSettled([
         api.get('/admin/competitions'),
         api.get('/teams'),
       ]);
-      const compsData = compsRes.data.data ?? compsRes.data;
-      const teamsData = teamsRes.data.data ?? teamsRes.data;
-      setCompetitions(
-        Array.isArray(compsData) ? compsData.map((c: Competition) => normalizeCompetition(c)) : [],
-      );
-      setTeams(Array.isArray(teamsData) ? teamsData : []);
-    } catch {
-      setError('Impossible de charger les données.');
+      if (compsRes.status === 'fulfilled') {
+        const compsList = extractApiList(compsRes.value) as Competition[];
+        setCompetitions(compsList.map((c) => normalizeCompetition(c)));
+      } else {
+        parts.push(`Compétitions : ${apiErrMessage(compsRes.reason, 'chargement impossible.')}`);
+      }
+      if (teamsRes.status === 'fulfilled') {
+        setTeams(extractApiList(teamsRes.value) as Team[]);
+      } else {
+        parts.push(`Équipes : ${apiErrMessage(teamsRes.reason, 'chargement impossible.')}`);
+      }
+      if (parts.length) setError(parts.join(' '));
+    } catch (e) {
+      setError(apiErrMessage(e, 'Impossible de charger les données.'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openEditModal = (comp: Competition) => {
+    setEditComp(comp);
+    setEditName(comp.name);
+    setEditStart(toDateInputValue(comp.start_date));
+    setEditEnd(toDateInputValue(comp.end_date));
+    setEditCupScenario(
+      comp.cup_scenario ?? 'SINGLE_ELIMINATION',
+    );
+    setEditStatus(comp.status);
+    setEditAddTeamId('');
+    setError('');
+  };
+
+  const closeEditModal = () => {
+    setEditComp(null);
+    setEditSaving(false);
+    setEditTeamBusy(false);
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editComp) return;
+    const hasMatches = (editComp._count?.matches ?? 0) > 0;
+    if (!editName.trim()) {
+      setError('Le nom est requis.');
+      return;
+    }
+    if (!hasMatches && (!editStart || !editEnd)) {
+      setError('Les dates de début et de fin sont requises.');
+      return;
+    }
+    if (!hasMatches && new Date(editEnd) <= new Date(editStart)) {
+      setError('La date de fin doit être postérieure à la date de début.');
+      return;
+    }
+    setEditSaving(true);
+    setError('');
+    try {
+      const body: Record<string, unknown> = {
+        name: editName.trim(),
+        status: editStatus,
+      };
+      if (!hasMatches) {
+        body.start_date = editStart;
+        body.end_date = editEnd;
+        if (editComp.type === 'CUP' && editComp.status === 'DRAFT') {
+          body.cup_scenario = editCupScenario;
+        }
+      }
+      await api.patch(`/admin/competitions/${editComp.id}`, body);
+      setSuccess('Compétition mise à jour.');
+      closeEditModal();
+      await fetchData();
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err) {
+      setError(apiErrMessage(err, 'Enregistrement impossible.'));
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const handleEditRemoveTeam = async (teamId: string) => {
+    if (!editComp) return;
+    if (!window.confirm('Retirer ce club de la compétition ?')) return;
+    const compId = editComp.id;
+    setEditTeamBusy(true);
+    setError('');
+    try {
+      await api.delete(`/admin/competitions/${compId}/teams/${teamId}`);
+      setSuccess('Club retiré.');
+      await fetchData();
+      const res = await api.get('/admin/competitions');
+      const list = extractApiList(res) as Competition[];
+      const row = list.find((c) => c.id === compId);
+      if (row) openEditModal(normalizeCompetition(row));
+      else closeEditModal();
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err) {
+      setError(apiErrMessage(err, 'Retrait impossible.'));
+    } finally {
+      setEditTeamBusy(false);
+    }
+  };
+
+  const handleEditAddTeam = async () => {
+    if (!editComp || !editAddTeamId.trim()) return;
+    const compId = editComp.id;
+    setEditTeamBusy(true);
+    setError('');
+    try {
+      await api.post(`/admin/competitions/${compId}/teams`, {
+        team_id: editAddTeamId.trim(),
+      });
+      setSuccess('Club ajouté.');
+      await fetchData();
+      const res = await api.get('/admin/competitions');
+      const list = extractApiList(res) as Competition[];
+      const row = list.find((c) => c.id === compId);
+      if (row) {
+        const n = normalizeCompetition(row);
+        setEditComp(n);
+        setEditName(n.name);
+        setEditStart(toDateInputValue(n.start_date));
+        setEditEnd(toDateInputValue(n.end_date));
+        setEditCupScenario(n.cup_scenario ?? 'SINGLE_ELIMINATION');
+        setEditStatus(n.status);
+      }
+      setEditAddTeamId('');
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err) {
+      setError(apiErrMessage(err, 'Ajout impossible.'));
+    } finally {
+      setEditTeamBusy(false);
     }
   };
 
@@ -411,7 +571,7 @@ export default function AdminCompetitions() {
           {success}
         </div>
       )}
-      {error && !showForm && (
+      {error && !showForm && !editComp && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-[fadeIn_0.3s_ease-out]">
           <AlertCircle className="w-4 h-4 shrink-0" />
           {error}
@@ -546,6 +706,15 @@ export default function AdminCompetitions() {
                       )}
                     </div>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => openEditModal(comp)}
+                    className="mb-4 w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold border border-white/[0.08] text-slate-300 hover:border-amber-400/30 hover:text-amber-400 hover:bg-amber-400/5 transition-colors"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Modifier
+                  </button>
 
                   <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
                     <span className="text-[11px] font-medium text-slate-500">État du Marché</span>
@@ -886,6 +1055,211 @@ export default function AdminCompetitions() {
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   Créer la Compétition
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {editComp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => !editSaving && !editTeamBusy && closeEditModal()}
+            aria-hidden
+          />
+          <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0a0f1e] border border-amber-400/15 rounded-2xl shadow-2xl shadow-black/50 animate-[slideUp_0.3s_ease-out]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-amber-400/10 bg-gradient-to-r from-amber-400/[0.03] to-transparent sticky top-0 bg-[#0a0f1e] z-10">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <Pencil className="w-5 h-5 text-amber-400" />
+                Modifier la compétition
+              </h2>
+              <button
+                type="button"
+                disabled={editSaving || editTeamBusy}
+                onClick={() => closeEditModal()}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all disabled:opacity-40"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <form onSubmit={(e) => void handleEditSubmit(e)} className="p-6 space-y-4">
+              {error && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  {error}
+                </div>
+              )}
+              {(editComp._count?.matches ?? 0) > 0 ? (
+                <p className="text-xs text-slate-500 rounded-lg border border-amber-400/15 bg-amber-400/5 px-3 py-2">
+                  Des matchs existent : seuls le <span className="text-amber-400/90 font-medium">nom</span> et le{' '}
+                  <span className="text-amber-400/90 font-medium">statut</span> (sauf DRAFT) peuvent être modifiés.
+                </p>
+              ) : null}
+              <div>
+                <label htmlFor="edit-comp-name" className="block text-xs font-medium text-slate-400 mb-1.5">
+                  Nom
+                </label>
+                <input
+                  id="edit-comp-name"
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  required
+                  className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="edit-comp-start" className="block text-xs font-medium text-slate-400 mb-1.5">
+                    Début
+                  </label>
+                  <input
+                    id="edit-comp-start"
+                    type="date"
+                    value={editStart}
+                    onChange={(e) => setEditStart(e.target.value)}
+                    disabled={(editComp._count?.matches ?? 0) > 0}
+                    required={(editComp._count?.matches ?? 0) === 0}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30 disabled:opacity-40 [color-scheme:dark]"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="edit-comp-end" className="block text-xs font-medium text-slate-400 mb-1.5">
+                    Fin
+                  </label>
+                  <input
+                    id="edit-comp-end"
+                    type="date"
+                    value={editEnd}
+                    onChange={(e) => setEditEnd(e.target.value)}
+                    disabled={(editComp._count?.matches ?? 0) > 0}
+                    required={(editComp._count?.matches ?? 0) === 0}
+                    min={editStart || undefined}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30 disabled:opacity-40 [color-scheme:dark]"
+                  />
+                </div>
+              </div>
+              {editComp.type === 'CUP' &&
+                editComp.status === 'DRAFT' &&
+                (editComp._count?.matches ?? 0) === 0 && (
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                      Scénario de coupe
+                    </p>
+                    <div className="grid gap-2">
+                      {(
+                        [
+                          ['SINGLE_ELIMINATION', 'Élimination directe'],
+                          ['TWO_LEGGED_TIE', 'Aller-retour'],
+                          ['GROUPS_AND_KNOCKOUT', 'Groupes + élimination'],
+                        ] as const
+                      ).map(([value, title]) => (
+                        <label
+                          key={value}
+                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2 text-xs ${
+                            editCupScenario === value
+                              ? 'border-amber-400/35 bg-amber-400/[0.06]'
+                              : 'border-white/[0.06] bg-white/[0.02]'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="editCupScenario"
+                            checked={editCupScenario === value}
+                            onChange={() => setEditCupScenario(value)}
+                            className="border-amber-400/40 bg-white/[0.04] text-amber-500"
+                          />
+                          {title}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              <div>
+                <label htmlFor="edit-comp-status" className="block text-xs font-medium text-slate-400 mb-1.5">
+                  Statut
+                </label>
+                <select
+                  id="edit-comp-status"
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value as Competition['status'])}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30"
+                >
+                  <option value="DRAFT">DRAFT</option>
+                  <option value="ONGOING">ONGOING</option>
+                  <option value="FINISHED">FINISHED</option>
+                </select>
+              </div>
+              {(editComp._count?.matches ?? 0) === 0 && (
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 space-y-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                    Clubs inscrits
+                  </p>
+                  <ul className="space-y-1.5 max-h-32 overflow-y-auto">
+                    {(editComp.teams ?? []).map((ct) => (
+                      <li
+                        key={ct.team_id}
+                        className="flex items-center justify-between gap-2 text-xs text-slate-300"
+                      >
+                        <span className="truncate">{ct.team.name}</span>
+                        <button
+                          type="button"
+                          disabled={editTeamBusy}
+                          onClick={() => void handleEditRemoveTeam(ct.team_id)}
+                          className="shrink-0 p-1 rounded text-slate-500 hover:text-red-400 hover:bg-red-500/10 disabled:opacity-40"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex gap-2">
+                    <select
+                      value={editAddTeamId}
+                      onChange={(e) => setEditAddTeamId(e.target.value)}
+                      className="flex-1 min-w-0 px-2 py-2 rounded-lg bg-white/[0.04] border border-amber-400/10 text-xs text-white focus:outline-none focus:border-amber-400/30"
+                    >
+                      <option value="">Ajouter un club…</option>
+                      {teams
+                        .filter(
+                          (t) =>
+                            !(editComp.teams ?? []).some((ct) => ct.team_id === t.id),
+                        )
+                        .map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.name}
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      disabled={editTeamBusy || !editAddTeamId}
+                      onClick={() => void handleEditAddTeam()}
+                      className="shrink-0 px-3 py-2 rounded-lg text-xs font-bold bg-amber-400/15 text-amber-400 border border-amber-400/25 hover:bg-amber-400/25 disabled:opacity-40"
+                    >
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  disabled={editSaving}
+                  onClick={() => closeEditModal()}
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 disabled:opacity-40"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSaving || editTeamBusy}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#020617] text-sm font-bold hover:from-amber-300 hover:to-amber-400 disabled:opacity-40"
+                >
+                  {editSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  Enregistrer
                 </button>
               </div>
             </form>

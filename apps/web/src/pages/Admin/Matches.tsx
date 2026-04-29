@@ -6,6 +6,7 @@ import {
   ShieldAlert, CalendarClock, LayoutList, Network, Wrench,
 } from 'lucide-react';
 import api from '@/lib/api';
+import type { AxiosResponse } from 'axios';
 import SyncPreviewModal from '@/components/SyncPreviewModal';
 import TacticalEmptyState from '@/components/TacticalEmptyState';
 import TournamentBrackets, { type MatchBrief } from '@/pages/Dashboard/TournamentBrackets';
@@ -27,6 +28,43 @@ function isChampionsType(t: string | null | undefined): boolean {
 function labelTeamName(name: string) {
   return name === BRACKET_PLACEHOLDER_NAME ? 'À déterminer' : name;
 }
+
+const extractApiList = (res: AxiosResponse<unknown>): unknown[] => {
+  const d = res.data as Record<string, unknown> | unknown[] | null | undefined;
+  if (Array.isArray(d)) return d;
+  if (d && typeof d === 'object' && Array.isArray((d as { data?: unknown[] }).data)) {
+    return (d as { data: unknown[] }).data;
+  }
+  return [];
+};
+
+const apiErrMessage = (err: unknown, fallback: string) => {
+  const ax = err as { response?: { data?: { message?: string | string[] } } };
+  const m = ax.response?.data?.message;
+  if (typeof m === 'string') return m;
+  if (Array.isArray(m) && m[0]) return String(m[0]);
+  return fallback;
+};
+
+const toDatetimeLocalValue = (iso: string | null | undefined) => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+const MATCH_FORM_STATUSES = [
+  'SCHEDULED',
+  'LIVE',
+  'PENDING',
+  'PLAYED',
+  'FINISHED',
+  'VALIDATED',
+  'CANCELLED',
+  'DISPUTED',
+  'DISPUTE',
+] as const;
 
 function toMatchBrief(m: Match): MatchBrief {
   return {
@@ -77,10 +115,15 @@ interface Team {
   logo_url?: string | null;
 }
 
+interface CompetitionTeamRow {
+  team: { id: string; name: string; logo_url?: string | null };
+}
+
 interface Competition {
   id: string;
   name: string;
   type: string; // LEAGUE | CUP | CHAMPIONS
+  teams?: CompetitionTeamRow[];
 }
 
 interface MatchEvent {
@@ -97,8 +140,9 @@ interface Match {
   bracket_index?: number | null;
   home_score: number | null;
   away_score: number | null;
-  status: 'SCHEDULED' | 'LIVE' | 'PLAYED' | 'FINISHED' | 'CANCELLED' | 'DISPUTED';
+  status: string;
   played_at: string | null;
+  startTime?: string | null;
   competition: Competition | null;
   homeTeam: Team;
   awayTeam: Team;
@@ -161,6 +205,27 @@ const STATUS_CONFIG: Record<string, { label: string; bg: string; border: string;
     text: 'text-orange-400',
     dot: 'bg-orange-400',
   },
+  PENDING: {
+    label: 'En attente',
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+    text: 'text-violet-400',
+    dot: 'bg-violet-400',
+  },
+  VALIDATED: {
+    label: 'Validé (legacy)',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+    text: 'text-amber-400',
+    dot: 'bg-amber-400',
+  },
+  DISPUTE: {
+    label: 'Litige (legacy)',
+    bg: 'bg-orange-500/10',
+    border: 'border-orange-500/20',
+    text: 'text-orange-400',
+    dot: 'bg-orange-400',
+  },
 };
 
 export default function AdminMatches() {
@@ -171,6 +236,7 @@ export default function AdminMatches() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'SCHEDULED' | 'PLAYED'>('SCHEDULED');
   const [viewMode, setViewMode] = useState<'list' | 'bracket'>('list');
+  const [listLayout, setListLayout] = useState<'cards' | 'table'>('table');
 
   const [scoreModal, setScoreModal] = useState<Match | null>(null);
   const [homeScore, setHomeScore] = useState('');
@@ -200,6 +266,19 @@ export default function AdminMatches() {
   const [rescheduling, setRescheduling] = useState(false);
   const [repairingBracket, setRepairingBracket] = useState(false);
 
+  const [formModal, setFormModal] = useState<'create' | 'edit' | null>(null);
+  const [formCompetitionId, setFormCompetitionId] = useState('');
+  const [formHomeId, setFormHomeId] = useState('');
+  const [formAwayId, setFormAwayId] = useState('');
+  const [formRound, setFormRound] = useState('');
+  const [formScheduledAt, setFormScheduledAt] = useState('');
+  const [formStatus, setFormStatus] = useState<string>('SCHEDULED');
+  const [formHomeScore, setFormHomeScore] = useState('');
+  const [formAwayScore, setFormAwayScore] = useState('');
+  const [formSaving, setFormSaving] = useState(false);
+  const [editingMatchId, setEditingMatchId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   const [searchParams] = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -211,8 +290,7 @@ export default function AdminMatches() {
       ? `/admin/matches?competition_id=${encodeURIComponent(fid)}`
       : '/admin/matches';
     const matchesRes = await api.get(url);
-    const matchesData = matchesRes.data.data ?? matchesRes.data;
-    setMatches(Array.isArray(matchesData) ? matchesData : []);
+    setMatches(extractApiList(matchesRes) as Match[]);
   };
 
   useEffect(() => {
@@ -227,26 +305,35 @@ export default function AdminMatches() {
     (async () => {
       setLoading(true);
       setError('');
+      const parts: string[] = [];
       try {
-        const [matchesRes, compsRes] = await Promise.all([
+        const [matchesRes, compsRes] = await Promise.allSettled([
           api.get('/admin/matches'),
           api.get('/admin/competitions'),
         ]);
-        const matchesData = matchesRes.data.data ?? matchesRes.data;
-        const compsData = compsRes.data.data ?? compsRes.data;
         if (!cancelled) {
-          setMatches(Array.isArray(matchesData) ? matchesData : []);
-          const compsList = Array.isArray(compsData) ? compsData : [];
-          setCompetitions(
-            compsList.map((c: { id: string; name: string; type: string }) => ({
-              id: String(c.id).trim(),
-              name: c.name,
-              type: String(c.type ?? '').toUpperCase(),
-            })),
-          );
+          if (compsRes.status === 'fulfilled') {
+            const compsList = extractApiList(compsRes.value) as Record<string, unknown>[];
+            setCompetitions(
+              compsList.map((c) => ({
+                id: String(c.id).trim(),
+                name: String(c.name ?? ''),
+                type: String(c.type ?? '').toUpperCase(),
+                teams: Array.isArray(c.teams) ? (c.teams as CompetitionTeamRow[]) : [],
+              })),
+            );
+          } else {
+            parts.push(`Compétitions : ${apiErrMessage(compsRes.reason, 'chargement impossible.')}`);
+          }
+          if (matchesRes.status === 'fulfilled') {
+            setMatches(extractApiList(matchesRes.value) as Match[]);
+          } else {
+            parts.push(`Matchs : ${apiErrMessage(matchesRes.reason, 'chargement impossible.')}`);
+          }
+          if (parts.length) setError(parts.join(' '));
         }
-      } catch {
-        if (!cancelled) setError('Impossible de charger les matchs.');
+      } catch (e) {
+        if (!cancelled) setError(apiErrMessage(e, 'Impossible de charger les données.'));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -265,8 +352,8 @@ export default function AdminMatches() {
     (async () => {
       try {
         await loadMatchesForFilter(filterCompetition);
-      } catch {
-        if (!cancelled) setError('Impossible de charger les matchs.');
+      } catch (e) {
+        if (!cancelled) setError(apiErrMessage(e, 'Impossible de charger les matchs.'));
       }
     })();
     return () => {
@@ -286,22 +373,136 @@ export default function AdminMatches() {
 
   const fetchData = async () => {
     setLoading(true);
+    setError('');
     try {
       const compsRes = await api.get('/admin/competitions');
-      const compsData = compsRes.data.data ?? compsRes.data;
-      const compsList = Array.isArray(compsData) ? compsData : [];
+      const compsList = extractApiList(compsRes) as Record<string, unknown>[];
       setCompetitions(
-        compsList.map((c: { id: string; name: string; type: string }) => ({
+        compsList.map((c) => ({
           id: String(c.id).trim(),
-          name: c.name,
+          name: String(c.name ?? ''),
           type: String(c.type ?? '').toUpperCase(),
+          teams: Array.isArray(c.teams) ? (c.teams as CompetitionTeamRow[]) : [],
         })),
       );
       await loadMatchesForFilter(filterCompetition);
-    } catch {
-      setError('Impossible de charger les données.');
+    } catch (e) {
+      setError(apiErrMessage(e, 'Impossible de charger les données.'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const closeFormModal = () => {
+    setFormModal(null);
+    setEditingMatchId(null);
+    setFormSaving(false);
+  };
+
+  const openCreateModal = () => {
+    setFormModal('create');
+    setEditingMatchId(null);
+    setFormCompetitionId(filterCompetition.trim());
+    setFormHomeId('');
+    setFormAwayId('');
+    setFormRound('');
+    setFormScheduledAt('');
+    setFormStatus('SCHEDULED');
+    setFormHomeScore('');
+    setFormAwayScore('');
+    setError('');
+  };
+
+  const openEditModal = (m: Match, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setFormModal('edit');
+    setEditingMatchId(m.id);
+    setFormCompetitionId(String(m.competition?.id ?? m.competition_id ?? '').trim());
+    setFormHomeId(m.homeTeam.id);
+    setFormAwayId(m.awayTeam.id);
+    setFormRound(m.round ?? '');
+    setFormScheduledAt(toDatetimeLocalValue(m.startTime ?? null));
+    setFormStatus(m.status);
+    setFormHomeScore(m.home_score != null ? String(m.home_score) : '');
+    setFormAwayScore(m.away_score != null ? String(m.away_score) : '');
+    setError('');
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formCompetitionId.trim() || !formHomeId || !formAwayId) {
+      setError('Compétition et deux équipes sont requis.');
+      return;
+    }
+    if (formHomeId === formAwayId) {
+      setError('Les deux équipes doivent être différentes.');
+      return;
+    }
+    setFormSaving(true);
+    setError('');
+    try {
+      if (formModal === 'create') {
+        await api.post('/admin/matches', {
+          competition_id: formCompetitionId.trim(),
+          home_team_id: formHomeId,
+          away_team_id: formAwayId,
+          round: formRound.trim() || undefined,
+          scheduled_at: formScheduledAt
+            ? new Date(formScheduledAt).toISOString()
+            : undefined,
+          status: formStatus,
+        });
+        setSuccess('Rencontre créée.');
+      } else if (editingMatchId) {
+        const payload: Record<string, unknown> = {
+          competition_id: formCompetitionId.trim(),
+          home_team_id: formHomeId,
+          away_team_id: formAwayId,
+          round: formRound.trim(),
+          status: formStatus,
+          scheduled_at: formScheduledAt
+            ? new Date(formScheduledAt).toISOString()
+            : null,
+        };
+        const hs = parseInt(formHomeScore, 10);
+        const as = parseInt(formAwayScore, 10);
+        if (formHomeScore !== '' && formAwayScore !== '' && !Number.isNaN(hs) && !Number.isNaN(as)) {
+          payload.home_score = hs;
+          payload.away_score = as;
+        }
+        await api.patch(`/admin/matches/${editingMatchId}`, payload);
+        setSuccess('Rencontre mise à jour.');
+      }
+      closeFormModal();
+      await fetchData();
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err) {
+      setError(apiErrMessage(err, 'Enregistrement impossible.'));
+    } finally {
+      setFormSaving(false);
+    }
+  };
+
+  const handleDeleteMatch = async (m: Match, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (
+      !window.confirm(
+        `Supprimer définitivement ce match ? (${m.homeTeam.name} vs ${m.awayTeam.name})`,
+      )
+    ) {
+      return;
+    }
+    setDeletingId(m.id);
+    setError('');
+    try {
+      await api.delete(`/admin/matches/${m.id}`);
+      setSuccess('Match supprimé.');
+      await fetchData();
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err) {
+      setError(apiErrMessage(err, 'Suppression impossible.'));
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -545,6 +746,15 @@ export default function AdminMatches() {
   const scheduledCount = matches.filter((m) => m.status === 'SCHEDULED' || m.status === 'LIVE').length;
   const playedCount = matches.filter((m) => m.status !== 'SCHEDULED' && m.status !== 'LIVE').length;
 
+  const formatMatchWhen = (m: Match) => {
+    const t = m.startTime ?? m.played_at;
+    if (!t) return '—';
+    return new Date(t).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+  };
+
+  const formTeamChoices =
+    competitions.find((c) => c.id === formCompetitionId.trim())?.teams ?? [];
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -569,40 +779,54 @@ export default function AdminMatches() {
           </p>
         </div>
 
-        {/* Competition filter */}
-        <div className="relative" ref={filterRef}>
+        <div className="flex items-center gap-2 flex-wrap">
           <button
-            onClick={() => setFilterOpen((o) => !o)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-400/15 bg-white/[0.03] text-sm text-slate-300 hover:border-amber-400/30 hover:bg-white/[0.05] transition-all duration-200"
+            type="button"
+            onClick={() => openCreateModal()}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-400/25 bg-amber-400/10 text-sm font-semibold text-amber-300 hover:bg-amber-400/15 hover:border-amber-400/40 transition-all duration-200"
           >
-            <Filter className="w-4 h-4 text-amber-400/60" />
-            <span className="max-w-[180px] truncate">{selectedCompName}</span>
-            <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${filterOpen ? 'rotate-180' : ''}`} />
+            <Plus className="w-4 h-4" />
+            Nouvelle rencontre
           </button>
 
-          {filterOpen && (
-            <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-amber-400/15 bg-[#0a0f1e] shadow-2xl shadow-black/50 overflow-hidden z-20 animate-[fadeIn_0.15s_ease-out]">
-              <button
-                onClick={() => { setFilterCompetition(''); setFilterOpen(false); }}
-                className={`w-full text-left px-4 py-3 text-sm transition-colors ${
-                  !filterId ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
-                }`}
-              >
-                Toutes les compétitions
-              </button>
-              {competitions.map((comp) => (
+          {/* Competition filter */}
+          <div className="relative" ref={filterRef}>
+            <button
+              type="button"
+              onClick={() => setFilterOpen((o) => !o)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-400/15 bg-white/[0.03] text-sm text-slate-300 hover:border-amber-400/30 hover:bg-white/[0.05] transition-all duration-200"
+            >
+              <Filter className="w-4 h-4 text-amber-400/60" />
+              <span className="max-w-[180px] truncate">{selectedCompName}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${filterOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {filterOpen && (
+              <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-amber-400/15 bg-[#0a0f1e] shadow-2xl shadow-black/50 overflow-hidden z-20 animate-[fadeIn_0.15s_ease-out]">
                 <button
-                  key={comp.id}
-                  onClick={() => { setFilterCompetition(String(comp.id).trim()); setFilterOpen(false); }}
-                  className={`w-full text-left px-4 py-3 text-sm border-t border-white/[0.03] transition-colors ${
-                    filterId === String(comp.id).trim() ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
+                  type="button"
+                  onClick={() => { setFilterCompetition(''); setFilterOpen(false); }}
+                  className={`w-full text-left px-4 py-3 text-sm transition-colors ${
+                    !filterId ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
                   }`}
                 >
-                  <span className="truncate block">{comp.name}</span>
+                  Toutes les compétitions
                 </button>
-              ))}
-            </div>
-          )}
+                {competitions.map((comp) => (
+                  <button
+                    type="button"
+                    key={comp.id}
+                    onClick={() => { setFilterCompetition(String(comp.id).trim()); setFilterOpen(false); }}
+                    className={`w-full text-left px-4 py-3 text-sm border-t border-white/[0.03] transition-colors ${
+                      filterId === String(comp.id).trim() ? 'text-amber-400 bg-amber-400/5' : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'
+                    }`}
+                  >
+                    <span className="truncate block">{comp.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -613,7 +837,7 @@ export default function AdminMatches() {
           {success}
         </div>
       )}
-      {error && !scoreModal && (
+      {error && !scoreModal && !formModal && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-[fadeIn_0.3s_ease-out]">
           <AlertCircle className="w-4 h-4 shrink-0" />
           {error}
@@ -698,6 +922,33 @@ export default function AdminMatches() {
       </div>
       )}
 
+      {viewMode === 'list' && (
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-amber-400/10 w-fit">
+          <button
+            type="button"
+            onClick={() => setListLayout('table')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              listLayout === 'table'
+                ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20 shadow-sm'
+                : 'text-slate-500 hover:text-slate-300 border border-transparent'
+            }`}
+          >
+            Tableau
+          </button>
+          <button
+            type="button"
+            onClick={() => setListLayout('cards')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              listLayout === 'cards'
+                ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20 shadow-sm'
+                : 'text-slate-500 hover:text-slate-300 border border-transparent'
+            }`}
+          >
+            Cartes
+          </button>
+        </div>
+      )}
+
       {/* Bracket — matchs filtrés par la compétition sélectionnée (API + état local) */}
       {viewMode === 'bracket' && showBracketView && (
         <div className="rounded-2xl border border-amber-400/10 bg-white/[0.02] p-4 sm:p-6">
@@ -751,6 +1002,132 @@ export default function AdminMatches() {
               : 'Aucun résultat disponible pour ce filtre.'
           }
         />
+      ) : viewMode === 'list' && listLayout === 'table' ? (
+        <div className="rounded-2xl border border-amber-400/10 bg-white/[0.02] overflow-hidden overflow-x-auto">
+          <table className="w-full min-w-[880px] text-left text-sm text-slate-300">
+            <thead className="border-b border-white/[0.06] bg-white/[0.02] text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <tr>
+                <th className="px-4 py-3">Compétition</th>
+                <th className="px-4 py-3 w-28">Tour</th>
+                <th className="px-4 py-3">Domicile</th>
+                <th className="px-4 py-3 w-24 text-center">Score</th>
+                <th className="px-4 py-3">Extérieur</th>
+                <th className="px-4 py-3 w-32">Statut</th>
+                <th className="px-4 py-3 w-36">Date</th>
+                <th className="px-4 py-3 w-52 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.04]">
+              {filtered.map((match) => {
+                const statusCfg = STATUS_CONFIG[match.status] ?? STATUS_CONFIG.SCHEDULED;
+                const isScheduled = match.status === 'SCHEDULED';
+                const isPlayed = match.status === 'PLAYED';
+                const isDisputed = match.status === 'DISPUTED';
+                return (
+                  <tr
+                    key={match.id}
+                    onClick={isScheduled ? () => void openScoreModal(match) : undefined}
+                    className={isScheduled ? 'cursor-pointer hover:bg-white/[0.03]' : 'hover:bg-white/[0.02]'}
+                  >
+                    <td className="px-4 py-3 max-w-[160px]">
+                      <span className="truncate block text-slate-400 text-xs">
+                        {match.competition?.name ?? '—'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{match.round ?? '—'}</td>
+                    <td className="px-4 py-3 font-medium text-white max-w-[140px] truncate">{match.homeTeam.name}</td>
+                    <td className="px-4 py-3 text-center tabular-nums text-white font-semibold">
+                      {match.home_score != null && match.away_score != null
+                        ? `${match.home_score} – ${match.away_score}`
+                        : '—'}
+                    </td>
+                    <td className="px-4 py-3 font-medium text-white max-w-[140px] truncate">{match.awayTeam.name}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-1 rounded-lg border ${statusCfg.bg} ${statusCfg.border} ${statusCfg.text}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
+                        {statusCfg.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-slate-500 whitespace-nowrap">{formatMatchWhen(match)}</td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="inline-flex flex-wrap items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          onClick={(e) => openEditModal(match, e)}
+                          title="Modifier"
+                          className="p-2 rounded-lg border border-white/[0.08] text-slate-400 hover:text-amber-400 hover:border-amber-400/30"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={deletingId === match.id}
+                          onClick={(e) => void handleDeleteMatch(match, e)}
+                          title="Supprimer"
+                          className="p-2 rounded-lg border border-red-500/15 text-red-400/70 hover:text-red-400 hover:border-red-500/40 disabled:opacity-40"
+                        >
+                          {deletingId === match.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                        {isScheduled && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSyncPreviewMatch(match);
+                            }}
+                            title="Importer via ProClubs.io"
+                            className="p-2 rounded-lg border border-emerald-400/15 text-emerald-400/70 hover:text-emerald-400"
+                          >
+                            <Globe className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        {isPlayed && (
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); openCorrectModal(match); }}
+                            title="Corriger le score"
+                            className="p-2 rounded-lg border border-orange-400/15 text-orange-400/70 hover:text-orange-400"
+                          >
+                            <Award className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        {(isPlayed || isScheduled) && (
+                          <button
+                            type="button"
+                            disabled={disputingId === match.id}
+                            onClick={(e) => handleDisputeMatch(match, e)}
+                            title="Litige"
+                            className="p-2 rounded-lg border border-red-500/15 text-red-400/70 hover:text-red-400 disabled:opacity-40"
+                          >
+                            {disputingId === match.id ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <ShieldAlert className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        )}
+                        {isDisputed && (
+                          <button
+                            type="button"
+                            onClick={(e) => openRescheduleModal(match, e)}
+                            title="Reprogrammer"
+                            className="p-2 rounded-lg border border-cyan-400/15 text-cyan-400/70 hover:text-cyan-400"
+                          >
+                            <CalendarClock className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       ) : viewMode === 'list' ? (
         <div className="space-y-3">
           {filtered.map((match) => {
@@ -840,6 +1217,30 @@ export default function AdminMatches() {
                   {statusCfg.label}
                 </span>
 
+                <button
+                  type="button"
+                  onClick={(e) => openEditModal(match, e)}
+                  title="Modifier la rencontre"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-400 hover:text-amber-400 hover:border-amber-400/25 transition-all duration-200 shrink-0"
+                >
+                  <Pencil className="w-4 h-4" />
+                  <span className="hidden xl:inline text-[11px] font-semibold">Modifier</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={deletingId === match.id}
+                  onClick={(e) => void handleDeleteMatch(match, e)}
+                  title="Supprimer le match"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-500/15 bg-red-500/[0.04] text-red-400/70 hover:text-red-400 hover:border-red-500/30 transition-all duration-200 shrink-0 disabled:opacity-40"
+                >
+                  {deletingId === match.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                  <span className="hidden xl:inline text-[11px] font-semibold">Supprimer</span>
+                </button>
+
                 {/* ProClubs import button */}
                 {isScheduled && (
                   <button
@@ -909,6 +1310,200 @@ export default function AdminMatches() {
           })}
         </div>
       ) : null}
+
+      {/* Modal création / édition rencontre */}
+      {formModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => !formSaving && closeFormModal()}
+            aria-hidden
+          />
+          <div className="relative w-full max-w-lg bg-[#0a0f1e] border border-amber-400/15 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden animate-[slideUp_0.3s_ease-out]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-amber-400/10 bg-gradient-to-r from-amber-400/[0.03] to-transparent">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <Plus className="w-5 h-5 text-amber-400" />
+                {formModal === 'create' ? 'Nouvelle rencontre' : 'Modifier la rencontre'}
+              </h2>
+              <button
+                type="button"
+                disabled={formSaving}
+                onClick={() => closeFormModal()}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all duration-200 disabled:opacity-40"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <form onSubmit={(e) => void handleFormSubmit(e)} className="p-6 space-y-4">
+              {error && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  {error}
+                </div>
+              )}
+              <div>
+                <label htmlFor="admin-match-comp" className="block text-xs font-medium text-slate-400 mb-1.5">
+                  Compétition
+                </label>
+                <select
+                  id="admin-match-comp"
+                  value={formCompetitionId}
+                  onChange={(e) => setFormCompetitionId(e.target.value)}
+                  required
+                  className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30"
+                >
+                  <option value="">— Choisir —</option>
+                  {competitions.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="admin-match-home" className="block text-xs font-medium text-slate-400 mb-1.5">
+                    Domicile
+                  </label>
+                  <select
+                    id="admin-match-home"
+                    value={formHomeId}
+                    onChange={(e) => setFormHomeId(e.target.value)}
+                    required
+                    disabled={!formCompetitionId.trim() || formTeamChoices.length === 0}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30 disabled:opacity-40"
+                  >
+                    <option value="">— Club —</option>
+                    {formTeamChoices.map((row) => (
+                      <option key={row.team.id} value={row.team.id}>
+                        {row.team.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="admin-match-away" className="block text-xs font-medium text-slate-400 mb-1.5">
+                    Extérieur
+                  </label>
+                  <select
+                    id="admin-match-away"
+                    value={formAwayId}
+                    onChange={(e) => setFormAwayId(e.target.value)}
+                    required
+                    disabled={!formCompetitionId.trim() || formTeamChoices.length === 0}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30 disabled:opacity-40"
+                  >
+                    <option value="">— Club —</option>
+                    {formTeamChoices.map((row) => (
+                      <option key={`a-${row.team.id}`} value={row.team.id}>
+                        {row.team.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {!formCompetitionId.trim() || formTeamChoices.length === 0 ? (
+                <p className="text-[11px] text-slate-500">
+                  Sélectionnez une compétition qui a des clubs inscrits pour choisir les équipes.
+                </p>
+              ) : null}
+              <div>
+                <label htmlFor="admin-match-round" className="block text-xs font-medium text-slate-400 mb-1.5">
+                  Tour / journée
+                </label>
+                <input
+                  id="admin-match-round"
+                  type="text"
+                  value={formRound}
+                  onChange={(e) => setFormRound(e.target.value)}
+                  placeholder="ex. Journée 3"
+                  className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400/30"
+                />
+              </div>
+              <div>
+                <label htmlFor="admin-match-when" className="block text-xs font-medium text-slate-400 mb-1.5">
+                  Date et heure
+                </label>
+                <input
+                  id="admin-match-when"
+                  type="datetime-local"
+                  value={formScheduledAt}
+                  onChange={(e) => setFormScheduledAt(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30 [color-scheme:dark]"
+                />
+              </div>
+              <div>
+                <label htmlFor="admin-match-status" className="block text-xs font-medium text-slate-400 mb-1.5">
+                  Statut
+                </label>
+                <select
+                  id="admin-match-status"
+                  value={formStatus}
+                  onChange={(e) => setFormStatus(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white focus:outline-none focus:border-amber-400/30"
+                >
+                  {MATCH_FORM_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {formModal === 'edit' && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="admin-match-hs" className="block text-xs font-medium text-slate-400 mb-1.5">
+                      Score domicile
+                    </label>
+                    <input
+                      id="admin-match-hs"
+                      type="number"
+                      min={0}
+                      value={formHomeScore}
+                      onChange={(e) => setFormHomeScore(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white tabular-nums focus:outline-none focus:border-amber-400/30"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="admin-match-as" className="block text-xs font-medium text-slate-400 mb-1.5">
+                      Score extérieur
+                    </label>
+                    <input
+                      id="admin-match-as"
+                      type="number"
+                      min={0}
+                      value={formAwayScore}
+                      onChange={(e) => setFormAwayScore(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-amber-400/10 text-sm text-white tabular-nums focus:outline-none focus:border-amber-400/30"
+                    />
+                  </div>
+                  <p className="col-span-2 text-[10px] text-slate-500">
+                    Laissez les scores vides pour ne pas les modifier. Pour valider un résultat depuis SCHEDULED, renseignez les deux scores et passez le statut à PLAYED.
+                  </p>
+                </div>
+              )}
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  disabled={formSaving}
+                  onClick={() => closeFormModal()}
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-all"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={formSaving}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#020617] text-sm font-bold hover:from-amber-300 hover:to-amber-400 disabled:opacity-40"
+                >
+                  {formSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  {formModal === 'create' ? 'Créer' : 'Enregistrer'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Score Modal */}
       {scoreModal && (

@@ -1,9 +1,11 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Prisma } from '@omjep/database';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { CreateCompetitionDto } from './dto/create-competition.dto';
 import { DrawDto } from './dto/draw-competition.dto';
 import { ValidatePotsDto } from './dto/validate-pots.dto';
 import { GenerateLeagueCalendarDto } from './dto/generate-league-calendar.dto';
+import { UpdateCompetitionDto } from './dto/update-competition.dto';
 import { DrawService } from './draw.service';
 import { assignLeagueKickoffs } from './league-schedule.util';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -57,6 +59,220 @@ export class AdminCompetitionsService {
       message: isTransferMarketOpen
         ? 'Marché des transferts ouvert pour cette compétition.'
         : 'Marché des transferts fermé pour cette compétition.',
+      competition: {
+        ...competition,
+        isTransferMarketOpen: competition.isTransferMarketOpen === true,
+      },
+    };
+  }
+
+  async updateCompetition(id: string, dto: UpdateCompetitionDto) {
+    const hasPatchField =
+      dto.name !== undefined ||
+      dto.start_date !== undefined ||
+      dto.end_date !== undefined ||
+      dto.cup_scenario !== undefined ||
+      dto.status !== undefined;
+    if (!hasPatchField) {
+      throw new BadRequestException('Aucun champ fourni pour la mise à jour.');
+    }
+
+    const existing = await this.prisma.competition.findUnique({
+      where: { id },
+      include: { _count: { select: { matches: true } } },
+    });
+    if (!existing) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+
+    const hasMatches = existing._count.matches > 0;
+
+    if (hasMatches) {
+      if (
+        dto.start_date !== undefined ||
+        dto.end_date !== undefined ||
+        dto.cup_scenario !== undefined
+      ) {
+        throw new BadRequestException(
+          'Des matchs existent : seuls le nom et le statut peuvent être modifiés (pas les dates ni le scénario de coupe).',
+        );
+      }
+      if (dto.status === 'DRAFT') {
+        throw new BadRequestException(
+          'Impossible de repasser en DRAFT : des matchs existent déjà.',
+        );
+      }
+    }
+
+    if (dto.cup_scenario !== undefined) {
+      if (existing.type !== 'CUP') {
+        throw new BadRequestException(
+          'cup_scenario ne s’applique qu’aux compétitions de type CUP.',
+        );
+      }
+      if (existing.status !== 'DRAFT') {
+        throw new BadRequestException(
+          'Le scénario de coupe n’est modifiable que lorsque la compétition est en brouillon (DRAFT).',
+        );
+      }
+    }
+
+    const nextStart =
+      !hasMatches && dto.start_date !== undefined
+        ? new Date(dto.start_date)
+        : existing.start_date;
+    const nextEnd =
+      !hasMatches && dto.end_date !== undefined
+        ? new Date(dto.end_date)
+        : existing.end_date;
+    if (nextEnd <= nextStart) {
+      throw new BadRequestException(
+        'La date de fin doit être postérieure à la date de début.',
+      );
+    }
+
+    const data: Prisma.CompetitionUpdateInput = {};
+    if (dto.name !== undefined) {
+      data.name = dto.name.trim();
+    }
+    if (!hasMatches && dto.start_date !== undefined) {
+      data.start_date = new Date(dto.start_date);
+    }
+    if (!hasMatches && dto.end_date !== undefined) {
+      data.end_date = new Date(dto.end_date);
+    }
+    if (!hasMatches && dto.cup_scenario !== undefined) {
+      data.cup_scenario = dto.cup_scenario;
+    }
+    if (dto.status !== undefined) {
+      data.status = dto.status;
+    }
+
+    try {
+      const competition = await this.prisma.competition.update({
+        where: { id },
+        data,
+        include: {
+          teams: { include: { team: true } },
+          _count: { select: { matches: true } },
+        },
+      });
+      return {
+        message: 'Compétition mise à jour.',
+        competition: {
+          ...competition,
+          isTransferMarketOpen: competition.isTransferMarketOpen === true,
+        },
+      };
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new BadRequestException('Ce nom de compétition est déjà utilisé.');
+      }
+      throw e;
+    }
+  }
+
+  async addCompetitionTeam(competitionId: string, teamId: string) {
+    const existing = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      include: { _count: { select: { matches: true } } },
+    });
+    if (!existing) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+    if (existing._count.matches > 0) {
+      throw new BadRequestException(
+        'Impossible d’ajouter une équipe : des matchs existent déjà pour cette compétition.',
+      );
+    }
+    const team = await this.prisma.club.findUnique({ where: { id: teamId } });
+    if (!team) {
+      throw new BadRequestException('Club introuvable.');
+    }
+    const dup = await this.prisma.competitionTeam.findUnique({
+      where: {
+        competition_id_team_id: {
+          competition_id: competitionId,
+          team_id: teamId,
+        },
+      },
+    });
+    if (dup) {
+      throw new BadRequestException(
+        'Ce club est déjà inscrit à cette compétition.',
+      );
+    }
+    await this.prisma.competitionTeam.create({
+      data: { competition_id: competitionId, team_id: teamId },
+    });
+    const competition = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      include: {
+        teams: { include: { team: true } },
+        _count: { select: { matches: true } },
+      },
+    });
+    if (!competition) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+    return {
+      message: 'Club ajouté à la compétition.',
+      competition: {
+        ...competition,
+        isTransferMarketOpen: competition.isTransferMarketOpen === true,
+      },
+    };
+  }
+
+  async removeCompetitionTeam(competitionId: string, teamId: string) {
+    const existing = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      include: { _count: { select: { matches: true } } },
+    });
+    if (!existing) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+    if (existing._count.matches > 0) {
+      throw new BadRequestException(
+        'Impossible de retirer une équipe : des matchs existent déjà pour cette compétition.',
+      );
+    }
+    const row = await this.prisma.competitionTeam.findUnique({
+      where: {
+        competition_id_team_id: {
+          competition_id: competitionId,
+          team_id: teamId,
+        },
+      },
+    });
+    if (!row) {
+      throw new BadRequestException(
+        'Ce club n’est pas inscrit à cette compétition.',
+      );
+    }
+    await this.prisma.competitionTeam.delete({
+      where: {
+        competition_id_team_id: {
+          competition_id: competitionId,
+          team_id: teamId,
+        },
+      },
+    });
+    const competition = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      include: {
+        teams: { include: { team: true } },
+        _count: { select: { matches: true } },
+      },
+    });
+    if (!competition) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+    return {
+      message: 'Club retiré de la compétition.',
       competition: {
         ...competition,
         isTransferMarketOpen: competition.isTransferMarketOpen === true,

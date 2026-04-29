@@ -7,6 +7,7 @@ import {
 import api from '@/lib/api';
 import { useTheme } from '@/context/ThemeContext';
 import ContactZone from '@/components/cockpit/ContactZone';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 const POSITIONS = [
   { value: 'GK', label: 'GK — Gardien' },
@@ -143,30 +144,31 @@ function SettingsContent() {
 
   if (loading) return <LoadingSkeleton />;
 
+  const fieldShellClassName =
+    'space-y-2 rounded-xl border border-omjep-border bg-omjep-bg-panel/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+  const inputClassName =
+    'w-full rounded-lg border border-omjep-border bg-omjep-bg-elevated/80 py-3 pl-11 pr-4 text-sm text-omjep-text-primary placeholder:text-omjep-text-muted outline-none transition-colors focus:border-omjep-focus-ring focus:ring-2 focus:ring-omjep-focus-ring/30'
+  const labelClassName =
+    'block text-[12px] font-mono uppercase tracking-widest text-omjep-text-secondary'
+
   return (
     <div className="max-w-3xl space-y-10">
       {/* Header */}
-      <div className="space-y-4">
-        <p className="text-[12px] font-mono uppercase tracking-widest text-black/50 dark:text-white/50">
-          Control Terminal
-        </p>
-        <h1 className="font-sans text-4xl font-bold tracking-tight text-black dark:text-white">
-          PARAMÈTRES
-        </h1>
-        <p className="max-w-2xl text-sm text-black/65 dark:text-white/65">
-          Chaque réglage est présenté comme une ligne brute, sans surface décorative.
-        </p>
-      </div>
+      <DashboardPageHeading
+        eyebrow="Control Terminal"
+        title="Paramètres"
+        subtitle="Identité, préférences de jeu et apparence du cockpit"
+      />
 
       {success && (
-        <div className="flex animate-in items-center gap-3 border-b border-black/10 py-3 fade-in slide-in-from-top-2 dark:border-white/20">
+        <div className="flex animate-in items-center gap-3 border-b border-omjep-border py-3 fade-in slide-in-from-top-2">
           <CheckCircle className="h-5 w-5 shrink-0 text-[#22c55e]" />
           <p className="text-sm font-mono text-[#22c55e]">PARAMÈTRES MIS À JOUR</p>
         </div>
       )}
 
       {error && (
-        <div className="border-b border-red-500/40 py-3">
+        <div className="border-b border-omjep-danger/40 py-3">
           <p className="text-sm font-mono text-red-400">{error}</p>
         </div>
       )}
@@ -175,20 +177,20 @@ function SettingsContent() {
         {/* Section: Identifiants de Jeu */}
         <section className="space-y-6">
           <div className="flex items-center gap-3 mb-1">
-            <Gamepad2 className="w-4 h-4 text-black/45 dark:text-white/45" />
-            <h2 className="text-[12px] font-mono text-black/55 uppercase tracking-widest dark:text-white/55">
+            <Gamepad2 className="w-4 h-4 text-omjep-text-muted" />
+            <h2 className="text-[12px] font-mono text-omjep-text-secondary uppercase tracking-widest">
               Identifiants de Jeu
             </h2>
           </div>
 
           {/* Pseudo EA Sports */}
-          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
-            <label htmlFor="ea_name" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
+          <div className={fieldShellClassName}>
+            <label htmlFor="ea_name" className={labelClassName}>
               Pseudo EA Sports
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <User className="w-4 h-4 text-slate-500" />
+                <User className="w-4 h-4 text-omjep-text-muted" />
               </div>
               <input
                 id="ea_name"
@@ -196,22 +198,22 @@ function SettingsContent() {
                 value={form.ea_persona_name}
                 onChange={(e) => update('ea_persona_name', e.target.value)}
                 placeholder="Ex: xEagle_Sniper"
-                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
+                className={inputClassName}
               />
             </div>
-            <p className="text-[12px] font-mono uppercase tracking-widest text-black/45 dark:text-white/45">
+            <p className="text-[12px] font-mono uppercase tracking-widest text-omjep-text-muted">
               Doit correspondre exactement à votre pseudo en jeu.
             </p>
           </div>
 
           {/* Gamertag PSN */}
-          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
-            <label htmlFor="gamertag_psn" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
+          <div className={fieldShellClassName}>
+            <label htmlFor="gamertag_psn" className={labelClassName}>
               Gamertag PSN
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <Monitor className="w-4 h-4 text-slate-500" />
+                <Monitor className="w-4 h-4 text-omjep-text-muted" />
               </div>
               <input
                 id="gamertag_psn"
@@ -219,19 +221,19 @@ function SettingsContent() {
                 value={form.gamertag_psn}
                 onChange={(e) => update('gamertag_psn', e.target.value)}
                 placeholder="Ex: Eagle_PSN"
-                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
+                className={inputClassName}
               />
             </div>
           </div>
 
           {/* Gamertag Xbox */}
-          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
-            <label htmlFor="gamertag_xbox" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
+          <div className={fieldShellClassName}>
+            <label htmlFor="gamertag_xbox" className={labelClassName}>
               Gamertag Xbox
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <Monitor className="w-4 h-4 text-slate-500" />
+                <Monitor className="w-4 h-4 text-omjep-text-muted" />
               </div>
               <input
                 id="gamertag_xbox"
@@ -239,7 +241,7 @@ function SettingsContent() {
                 value={form.gamertag_xbox}
                 onChange={(e) => update('gamertag_xbox', e.target.value)}
                 placeholder="Ex: Eagle Xbox"
-                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
+                className={inputClassName}
               />
             </div>
           </div>
@@ -250,15 +252,15 @@ function SettingsContent() {
         {/* Section: Profil Sportif */}
         <section className="space-y-6">
           <div className="flex items-center gap-3 mb-1">
-            <Shield className="w-4 h-4 text-black/45 dark:text-white/45" />
-            <h2 className="text-[12px] font-mono text-black/55 uppercase tracking-widest dark:text-white/55">
+            <Shield className="w-4 h-4 text-omjep-text-muted" />
+            <h2 className="text-[12px] font-mono text-omjep-text-secondary uppercase tracking-widest">
               Profil Sportif
             </h2>
           </div>
 
           {/* Position Préférée */}
-          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
-            <label htmlFor="position" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
+          <div className={fieldShellClassName}>
+            <label htmlFor="position" className={labelClassName}>
               Position Préférée
             </label>
             <div className="relative">
@@ -266,7 +268,7 @@ function SettingsContent() {
                 id="position"
                 value={form.preferred_position}
                 onChange={(e) => update('preferred_position', e.target.value)}
-                className="w-full appearance-none rounded-none border border-black/10 bg-transparent py-3 pl-4 pr-10 text-sm text-black outline-none cursor-pointer focus:border-black/40 dark:border-white/20 dark:text-white dark:focus:border-white/40"
+                className="w-full appearance-none rounded-lg border border-omjep-border bg-omjep-bg-elevated/80 py-3 pl-4 pr-10 text-sm text-omjep-text-primary outline-none cursor-pointer transition-colors focus:border-omjep-focus-ring focus:ring-2 focus:ring-omjep-focus-ring/30"
               >
                 <option value="" className="bg-white text-black dark:bg-black dark:text-white/80">
                   Sélectionnez une position
@@ -278,7 +280,7 @@ function SettingsContent() {
                 ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                  <svg className="w-4 h-4 text-black/45 dark:text-white/45" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-4 h-4 text-omjep-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
@@ -286,13 +288,13 @@ function SettingsContent() {
           </div>
 
           {/* Nationalité */}
-          <div className="space-y-2 rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
-            <label htmlFor="nationality" className="block text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">
+          <div className={fieldShellClassName}>
+            <label htmlFor="nationality" className={labelClassName}>
               Nationalité
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <MapPin className="w-4 h-4 text-slate-500" />
+                <MapPin className="w-4 h-4 text-omjep-text-muted" />
               </div>
               <input
                 id="nationality"
@@ -300,7 +302,7 @@ function SettingsContent() {
                 value={form.nationality}
                 onChange={(e) => update('nationality', e.target.value)}
                 placeholder="Ex: Marocain"
-                className="w-full rounded-none border border-black/10 bg-transparent py-3 pl-11 pr-4 text-sm text-black placeholder:text-black/35 outline-none focus:border-black/40 dark:border-white/20 dark:text-white dark:placeholder:text-white/35 dark:focus:border-white/40"
+                className={inputClassName}
               />
             </div>
           </div>
@@ -311,12 +313,12 @@ function SettingsContent() {
         {/* Section: Apparence */}
         <section className="space-y-5">
           <div className="mb-1 flex items-center gap-3">
-            <Cpu className="h-4 w-4 text-black/45 dark:text-white/45" />
-            <h2 className="text-[12px] font-mono text-black/55 uppercase tracking-widest dark:text-white/55">Apparence</h2>
+            <Cpu className="h-4 w-4 text-omjep-text-muted" />
+            <h2 className="text-[12px] font-mono text-omjep-text-secondary uppercase tracking-widest">Apparence</h2>
           </div>
-          <div className="rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+          <div className="rounded-xl border border-omjep-border bg-omjep-bg-panel/70 p-4">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-[12px] font-mono uppercase tracking-widest text-black/50 dark:text-white/50">
+              <p className="text-[12px] font-mono uppercase tracking-widest text-omjep-text-muted">
                 Mode sombre actif
               </p>
               <div className="flex items-center gap-4">
@@ -339,9 +341,9 @@ function SettingsContent() {
               </div>
             </div>
           </div>
-          <div className="rounded-none border border-black/10 bg-black/[0.02] p-4 dark:border-white/20 dark:bg-black/40">
+          <div className="rounded-xl border border-omjep-border bg-omjep-bg-panel/70 p-4">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-[12px] font-mono uppercase tracking-widest text-black/50 dark:text-white/50">
+              <p className="text-[12px] font-mono uppercase tracking-widest text-omjep-text-muted">
                 Changer de mode instantanément
               </p>
               <ContactZone type="button" size="sm" variant="ghost" onClick={toggleTheme} className="rounded-none">

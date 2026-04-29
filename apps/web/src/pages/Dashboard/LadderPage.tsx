@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Search, Users, ShieldAlert } from 'lucide-react';
 import api from '@/lib/api';
 import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 /** Réponse GET /teams/ladder (critère principal : xp_prestige). */
 interface LadderTeam {
@@ -108,20 +109,16 @@ export default function LadderPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-500/5 border border-amber-500/20 flex items-center justify-center">
-              <Trophy className="w-4 h-4 text-amber-400" />
-            </div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-amber-400/70">Ligue</span>
-          </div>
-          <h1 className="ea-fc-hero-neon font-display text-3xl font-black tracking-tight">Classement</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            {loading ? '\u00a0' : `${teams.length} club${teams.length > 1 ? 's' : ''} enregistré${teams.length > 1 ? 's' : ''}`}
-          </p>
-        </div>
+      <div className="space-y-4">
+        <DashboardPageHeading
+          eyebrow="League Ranking"
+          title="Classement clubs"
+          subtitle={
+            loading
+              ? 'Classement basé sur le prestige et la performance collective'
+              : `${teams.length} club${teams.length > 1 ? 's' : ''} enregistré${teams.length > 1 ? 's' : ''}`
+          }
+        />
 
         {/* Search */}
         <div className="relative w-full sm:w-72">

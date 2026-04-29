@@ -2,6 +2,41 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+const VITE_DEV_PORT = 3000
+/** Align with `apps/api` default `PORT` (see `apps/api/.env.example` and `main.ts`). */
+const API_PROXY_TARGET = (process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:3001').trim()
+
+function resolvePort(url: URL): string {
+  if (url.port) return url.port
+  if (url.protocol === 'https:') return '443'
+  if (url.protocol === 'http:') return '80'
+  return ''
+}
+
+function assertValidProxyTarget(target: string, viteActivePort: number) {
+  let parsed: URL
+  try {
+    parsed = new URL(target)
+  } catch {
+    throw new Error(
+      `[vite] Invalid VITE_API_PROXY_TARGET="${target}". Expected a full URL like "http://localhost:3002".`,
+    )
+  }
+
+  const isLoopbackHost = ['localhost', '127.0.0.1', '::1'].includes(parsed.hostname)
+  const targetPort = resolvePort(parsed)
+  const isSelfProxy = isLoopbackHost && targetPort === String(viteActivePort)
+
+  if (isSelfProxy) {
+    throw new Error(
+      `[vite] Refusing self-proxy: VITE_API_PROXY_TARGET="${target}" resolves to same active Vite server port ${viteActivePort}. ` +
+        `Use a backend URL on a different port (example: http://localhost:3002).`,
+    )
+  }
+}
+
+assertValidProxyTarget(API_PROXY_TARGET, VITE_DEV_PORT)
+
 export default defineConfig({
   plugins: [react()],
   build: {
@@ -29,14 +64,15 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: VITE_DEV_PORT,
+    strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: API_PROXY_TARGET,
         changeOrigin: true,
       },
       '/socket.io': {
-        target: 'http://localhost:3001',
+        target: API_PROXY_TARGET,
         changeOrigin: true,
         ws: true,
       },

@@ -57,6 +57,7 @@ const LeagueHome = lazy(() => import('@/pages/Admin/league/LeagueHome'))
 const LeagueCompetitions = lazy(() => import('@/pages/Admin/league/LeagueCompetitions'))
 const LeagueMatches = lazy(() => import('@/pages/Admin/league/LeagueMatches'))
 const LeagueStandings = lazy(() => import('@/pages/Admin/league/LeagueStandings'))
+const isDevDashboardPreviewEnabled = import.meta.env.DEV
 
 function ThemedToaster() {
   const { theme } = useTheme()
@@ -144,6 +145,13 @@ function AnimatedAppRoutes() {
                 }
               />
             </Route>
+
+            {isDevDashboardPreviewEnabled ? (
+              <Route element={<DashboardLayout />}>
+                {/* Dev-only preview route for local visual audits without real auth session */}
+                <Route path="/dashboard-preview" element={<DashboardIndex />} />
+              </Route>
+            ) : null}
 
             <Route
               element={

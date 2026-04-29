@@ -118,6 +118,34 @@ function buildLeagueTable(
   return withRank;
 }
 
+/** Web dashboard `/dashboard/matches` attend ces alias camelCase sur ce endpoint uniquement. */
+function toIsoFromMatchSchedule(
+  startTime: Date | string | null | undefined,
+  playedAt: Date | string | null | undefined,
+): string {
+  const raw = startTime ?? playedAt
+  if (raw == null) return new Date(0).toISOString()
+  if (typeof raw === 'string') {
+    const parsed = new Date(raw)
+    return Number.isNaN(parsed.getTime()) ? new Date(0).toISOString() : parsed.toISOString()
+  }
+  return raw.toISOString()
+}
+
+function mapClubForMyTeamDashboardWeb(team: {
+  id: string
+  name: string
+  logo_url: string | null
+  manager?: { level: number } | null
+}) {
+  return {
+    id: team.id,
+    name: team.name,
+    logoUrl: team.logo_url ?? null,
+    ...(team.manager != null ? { manager: team.manager } : {}),
+  }
+}
+
 function sortMatchesCalendar<T extends { status: MatchStatus; played_at: Date | null }>(
   matches: T[],
 ): T[] {
@@ -202,7 +230,17 @@ export class MatchesService {
     });
 
     const sorted = sortMatchesCalendar(matches);
-    return this.competitionsService.enrichMatchesWithFormAndRank(sorted);
+    const enriched = await this.competitionsService.enrichMatchesWithFormAndRank(sorted);
+    return enriched.map((m) => ({
+      ...m,
+      scheduledAt: toIsoFromMatchSchedule(m.startTime, m.played_at),
+      homeScore: m.home_score,
+      awayScore: m.away_score,
+      proofUrl: m.proof_url ?? null,
+      homeTeam: mapClubForMyTeamDashboardWeb(m.homeTeam),
+      awayTeam: mapClubForMyTeamDashboardWeb(m.awayTeam),
+      myTeamId: teamId,
+    }));
   }
 
   async findCompetitionMatches(competitionId: string) {

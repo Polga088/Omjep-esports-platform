@@ -26,11 +26,11 @@ export default function TacticalBentoElite({
     >
       <div className="tactical-bento-elite__rim" aria-hidden />
       <div className="tactical-bento-elite__scanlines" aria-hidden />
-      <header className="tactical-bento-elite__head flex shrink-0 items-center justify-between gap-3 border-b border-dashed border-emerald-500/30 px-4 py-2.5">
-        <span className="tactical-os-label max-w-[62%] truncate text-[10px] text-emerald-300/95 [filter:drop-shadow(0_0_10px_rgba(34,197,94,0.35))]">{title}</span>
+      <header className="tactical-bento-elite__head flex shrink-0 items-center justify-between gap-3 border-b border-dashed border-omjep-border px-4 py-2.5">
+        <span className="tactical-os-label max-w-[62%] truncate text-[10px] text-omjep-text-primary">{title}</span>
         <div className="flex shrink-0 items-center gap-2">
-          <AutoSparkline className="opacity-95 [filter:drop-shadow(0_0_10px_rgba(34,197,94,0.35))]" height={22} />
-          <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-emerald-300/90 [filter:drop-shadow(0_0_8px_rgba(34,197,94,0.38))]">
+          <AutoSparkline className="opacity-95 text-omjep-mauve" height={22} />
+          <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary">
             {serial}
           </span>
         </div>

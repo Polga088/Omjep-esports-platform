@@ -18,6 +18,8 @@ import { ValidatePotsDto } from './dto/validate-pots.dto';
 import { AdminCompetitionsService } from './admin-competitions.service';
 import { UpdateCompetitionTransferMarketDto } from './dto/update-competition-transfer-market.dto';
 import { GenerateLeagueCalendarDto } from './dto/generate-league-calendar.dto';
+import { UpdateCompetitionDto } from './dto/update-competition.dto';
+import { AddCompetitionTeamDto } from './dto/add-competition-team.dto';
 
 /**
  * Gestion des compétitions — réservé aux administrateurs.
@@ -86,5 +88,29 @@ export class AdminCompetitionsController {
     @Body() dto: DrawDto,
   ) {
     return this.adminCompetitionsService.performDraw(id, dto);
+  }
+
+  @Patch(':id')
+  updateCompetition(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateCompetitionDto,
+  ) {
+    return this.adminCompetitionsService.updateCompetition(id, dto);
+  }
+
+  @Post(':id/teams')
+  addCompetitionTeam(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: AddCompetitionTeamDto,
+  ) {
+    return this.adminCompetitionsService.addCompetitionTeam(id, dto.team_id);
+  }
+
+  @Delete(':id/teams/:teamId')
+  removeCompetitionTeam(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('teamId', ParseUUIDPipe) teamId: string,
+  ) {
+    return this.adminCompetitionsService.removeCompetitionTeam(id, teamId);
   }
 }

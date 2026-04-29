@@ -54,15 +54,15 @@ export default function BottomDock({ items, centerItem, className = '', onItemCl
         className={`dock-item group relative flex h-12 w-12 shrink-0 items-center justify-center rounded-none border transition-none ${
           active
             ? isDark
-              ? 'border-white/25 bg-white/5 text-white'
-              : 'text-black'
+              ? 'border-omjep-border-gold bg-omjep-bg-panel-soft/75 text-omjep-text-primary'
+              : 'border-omjep-border-gold bg-omjep-bg-panel/5 text-omjep-text-primary'
             : isDark
-              ? 'border-white/10 text-white/65 hover:text-white'
-              : 'border-black/10 text-black/65 hover:text-black'
+              ? 'border-omjep-border text-omjep-text-secondary hover:border-omjep-mauve/45 hover:text-omjep-text-primary'
+              : 'border-omjep-border text-omjep-text-secondary hover:border-omjep-mauve/45 hover:text-omjep-text-primary'
         }`}
       >
         <Icon className="h-5 w-5 stroke-[1]" aria-hidden />
-        <span className={`pointer-events-none absolute -top-7 hidden whitespace-nowrap rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] group-hover:block ${isDark ? 'border-white/15 bg-black/90 text-white/70' : 'border-black/10 bg-white/90 text-black/55'}`}>
+        <span className={`pointer-events-none absolute -top-7 hidden whitespace-nowrap rounded-md border border-omjep-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-secondary group-hover:block group-focus-visible:block ${isDark ? 'bg-omjep-bg-panel/95' : 'bg-white/95'}`}>
           {it.label}
         </span>
       </Link>
@@ -76,9 +76,9 @@ export default function BottomDock({ items, centerItem, className = '', onItemCl
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 320, damping: 30, delay: 0.2 }}
-      className={`pointer-events-auto fixed bottom-5 left-1/2 z-50 -translate-x-1/2 ${className}`.trim()}
+      className={`pointer-events-auto fixed bottom-4 left-1/2 z-50 w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2 md:bottom-6 ${className}`.trim()}
     >
-      <div className={`flex items-center gap-2 rounded-none border p-2 backdrop-blur-xl ${isDark ? 'border-white/20 bg-black/80' : 'border-black/10 bg-white/80'}`}>
+      <div className={`flex items-center gap-1.5 overflow-x-auto rounded-none border border-omjep-border p-1.5 backdrop-blur-xl sm:gap-2 sm:p-2 ${isDark ? 'bg-omjep-bg-panel/80' : 'bg-white/90'}`}>
         {centerItem ? (
           <>
             <div className="flex items-center gap-1.5">{sliced.left.map(renderItem)}</div>
@@ -90,18 +90,18 @@ export default function BottomDock({ items, centerItem, className = '', onItemCl
                   to={centerItem.to}
                   onClick={() => handleModuleActivate(centerItem)}
                   aria-current={active ? 'page' : undefined}
-                  className={`dock-center group relative flex h-14 w-14 items-center justify-center rounded-none border transition-none ${
+                  className={`dock-center group relative flex h-12 w-12 items-center justify-center rounded-none border transition-none sm:h-14 sm:w-14 ${
                     active
                       ? isDark
-                        ? 'border-white/30 bg-white/5 text-white'
-                        : 'border-black/15 bg-black/[0.03] text-black'
+                        ? 'border-omjep-border-gold bg-omjep-bg-panel-soft/75 text-omjep-gold'
+                        : 'border-omjep-border-gold bg-omjep-bg-panel/5 text-omjep-gold'
                       : isDark
-                        ? 'border-white/10 text-white/75 hover:text-white'
-                        : 'border-black/10 text-black/70 hover:text-black'
+                        ? 'border-omjep-border text-omjep-text-secondary hover:border-omjep-mauve/45 hover:text-omjep-text-primary'
+                        : 'border-omjep-border text-omjep-text-secondary hover:border-omjep-mauve/45 hover:text-omjep-text-primary'
                   }`}
                 >
-                  <Icon className="h-6 w-6 stroke-[1]" aria-hidden />
-                  <span className={`pointer-events-none absolute -top-7 hidden whitespace-nowrap rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] group-hover:block ${isDark ? 'border-white/15 bg-black/90 text-white/70' : 'border-black/10 bg-white/90 text-black/55'}`}>
+                  <Icon className="h-5 w-5 stroke-[1] sm:h-6 sm:w-6" aria-hidden />
+                  <span className={`pointer-events-none absolute -top-7 hidden whitespace-nowrap rounded-md border border-omjep-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-secondary group-hover:block group-focus-visible:block ${isDark ? 'bg-omjep-bg-panel/95' : 'bg-white/95'}`}>
                     {centerItem.label}
                   </span>
                 </Link>

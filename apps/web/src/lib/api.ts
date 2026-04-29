@@ -22,6 +22,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      const isDevDashboardPreview =
+        import.meta.env.DEV && window.location.pathname.startsWith('/dashboard-preview');
+      if (isDevDashboardPreview) {
+        return Promise.reject(error);
+      }
       localStorage.removeItem('token');
       window.location.href = '/login';
     }

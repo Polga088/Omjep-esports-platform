@@ -10,8 +10,8 @@ type TechnicalDataValueProps = {
 }
 
 const accentChev: Record<NonNullable<TechnicalDataValueProps['accent']>, string> = {
-  gold: 'text-[#22c55e]/55',
-  cyan: 'text-[#00F2FF]/50',
+  gold: 'text-omjep-mauve/70',
+  cyan: 'text-omjep-mauve/60',
 }
 
 const symbolScaleClass: Record<NonNullable<TechnicalDataValueProps['symbolScale']>, string> = {

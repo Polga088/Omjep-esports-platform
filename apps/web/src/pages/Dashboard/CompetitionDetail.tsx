@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Trophy, ArrowLeft, BarChart3, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, BarChart3, Loader2, AlertCircle } from 'lucide-react';
 import { getCompTypeConfig } from '@/lib/competition-icons';
 import api from '@/lib/api';
 import LeagueView from './LeagueView';
@@ -8,6 +8,7 @@ import CupView from './CupView';
 import ChampionsView from './ChampionsView';
 import type { StandingRow } from './LeagueTable';
 import type { MatchBrief } from './TournamentBrackets';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 interface CompetitionMeta {
   id: string;
@@ -112,8 +113,6 @@ export default function CompetitionDetail() {
 
   const competition = data?.competition ?? null;
   const typeCfg = competition ? getCompTypeConfig(competition.type) : null;
-  const TypeIcon = typeCfg?.Icon ?? Trophy;
-
   const body = (() => {
     if (loading || error || !data) return null;
     switch (data.type) {
@@ -153,26 +152,12 @@ export default function CompetitionDetail() {
               Retour aux matchs
             </Link>
 
-            <div className="flex items-center gap-3 mb-1">
-              <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center border ${typeCfg?.bg ?? 'bg-amber-500/10'} ${typeCfg?.border ?? 'border-amber-500/20'}`}
-              >
-                <TypeIcon className={`w-4 h-4 ${typeCfg?.color ?? 'text-amber-400'}`} />
-              </div>
-              <span
-                className={`text-xs font-semibold uppercase tracking-widest ${typeCfg?.color ?? 'text-amber-400/70'}`}
-              >
-                {typeCfg?.label ?? 'Compétition'}
-              </span>
-            </div>
-
-            <h1 className="text-3xl font-black text-white tracking-tight">
-              {loading ? (
-                <span className="inline-block w-56 h-8 rounded-lg bg-white/5 animate-pulse" />
-              ) : (
-                competition?.name ?? 'Compétition'
-              )}
-            </h1>
+            <DashboardPageHeading
+              eyebrow={typeCfg?.label ?? 'Compétition'}
+              title={loading ? 'Compétition' : competition?.name ?? 'Compétition'}
+              subtitle="Classement officiel, vue compétition et statistiques associées"
+              className="border-b-0 pb-2"
+            />
 
             {id && !loading && (
               <Link

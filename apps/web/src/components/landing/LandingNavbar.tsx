@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
 const navLinks = [
-  { to: '/', label: 'Accueil' },
-  { to: '/community', label: 'Community' },
-  { to: '/#leaderboard', label: 'Classement' },
-  { to: '/hall-of-fame', label: 'Palmarès' },
+  { to: '/', label: 'Dashboard' },
+  { to: '/#statistics', label: 'KPIs' },
+  { to: '/#leaderboard', label: 'Ranking national' },
+  { to: '/#live-matches', label: 'Matchs officiels' },
+  { to: '/community', label: 'Communauté' },
 ]
 
 export default function LandingNavbar() {
@@ -34,7 +35,7 @@ export default function LandingNavbar() {
                 OMJEP
               </span>
               <span className="hidden font-sans text-[9px] uppercase tracking-widest text-slate-500 sm:block">
-                EA FC · Maroc
+                Organisation Marocaine eSport · EA FC
               </span>
             </div>
           </Link>
@@ -63,7 +64,7 @@ export default function LandingNavbar() {
                   to="/dashboard"
                   className="rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_-6px_rgba(34,197,94,0.3)] transition-all hover:border-emerald-400/35 hover:shadow-[0_0_28px_-4px_rgba(34,197,94,0.4)]"
                 >
-                  Accéder au Dashboard
+                  Accéder au portail compétition
                 </Link>
                 <button
                   type="button"
@@ -86,7 +87,7 @@ export default function LandingNavbar() {
                   to="/register"
                   className="rounded-lg border-[0.5px] border-white/10 bg-[#08090c] px-4 py-2 text-sm font-semibold text-white transition-all hover:border-emerald-400/35 hover:shadow-[0_0_24px_-6px_rgba(34,197,94,0.4)]"
                 >
-                  S&apos;inscrire
+                  Rejoindre OMJEP
                 </Link>
               </>
             )}
@@ -127,7 +128,7 @@ export default function LandingNavbar() {
                   onClick={() => setMobileOpen(false)}
                   className="rounded-lg border border-white/10 bg-[#08090c] py-3 text-center text-sm font-semibold text-white"
                 >
-                  Accéder au Dashboard
+                  Accéder au portail compétition
                 </Link>
                 <button
                   type="button"
@@ -150,7 +151,7 @@ export default function LandingNavbar() {
                   onClick={() => setMobileOpen(false)}
                   className="block rounded-lg border border-white/10 bg-[#08090c] py-3 text-center text-sm font-semibold text-white"
                 >
-                  S&apos;inscrire
+                  Rejoindre OMJEP
                 </Link>
               </>
             )}

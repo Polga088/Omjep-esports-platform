@@ -88,21 +88,21 @@ export default function ClubCard({ unframed = false }: ClubCardProps) {
     Date.now() - new Date(data.last_synced_at).getTime() <= 24 * 60 * 60 * 1000
 
   const loadShell = unframed
-    ? 'mt-0 flex min-h-[140px] items-center justify-center rounded-xl border border-white/[0.08] bg-black/15 p-5'
+    ? 'mt-0 flex min-h-[140px] items-center justify-center rounded-xl border border-omjep-border bg-omjep-bg-panel/35 p-5'
     : 'tactical-bento mt-4 flex min-h-[170px] items-center justify-center rounded-2xl p-5'
 
   const emptyShell = unframed
-    ? 'mt-0 rounded-xl border border-amber-400/25 bg-gradient-to-b from-amber-400/[0.06] to-transparent p-5 shadow-[0_0_28px_rgba(212,175,55,0.05)]'
+    ? 'mt-0 rounded-xl border border-omjep-border-gold bg-gradient-to-b from-omjep-gold/[0.07] to-transparent p-5 shadow-[0_0_28px_rgba(212,175,55,0.05)]'
     : 'tactical-bento mt-4 rounded-2xl border border-amber-400/20 bg-gradient-to-b from-amber-400/[0.06] to-transparent p-5 shadow-[0_0_40px_rgba(212,175,55,0.06)]'
 
   const dataShell = unframed
-    ? 'mt-0 rounded-xl border border-white/[0.08] bg-black/15 p-4 sm:p-5'
+    ? 'mt-0 rounded-xl border border-omjep-border bg-omjep-bg-panel/35 p-4 sm:p-5'
     : 'tactical-bento mt-4 rounded-2xl p-5'
 
   if (isLoading) {
     return (
       <div className={loadShell}>
-        <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-cyan-200/75">
+        <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-omjep-text-secondary">
           <Loader2 className="h-4 w-4 animate-spin" />
           Chargement club…
         </div>
@@ -115,10 +115,10 @@ export default function ClubCard({ unframed = false }: ClubCardProps) {
       <div className={emptyShell}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-200/95">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-omjep-gold">
               VOTRE CARRIÈRE COMMENCE ICI
             </p>
-            <p className="mt-2 max-w-[18rem] text-sm leading-snug text-slate-200">
+            <p className="mt-2 max-w-[18rem] text-sm leading-snug text-omjep-text-secondary">
               Liez votre club EA ou rejoignez une équipe OMJEP pour afficher division, record et points en direct.
             </p>
           </div>
@@ -131,42 +131,42 @@ export default function ClubCard({ unframed = false }: ClubCardProps) {
           aria-label="Ouvrir la recherche de club et mon équipe"
           onClick={handleGoToClubSearch}
           onKeyDown={handleClubSearchKeyDown}
-          className="mt-5 cursor-pointer space-y-3 rounded-xl border border-white/12 bg-black/25 p-3 transition-colors hover:border-amber-400/35 hover:bg-black/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400/60"
+          className="mt-5 cursor-pointer space-y-3 rounded-xl border border-omjep-border bg-omjep-bg-panel/40 p-3 transition-colors hover:border-omjep-gold/45 hover:bg-omjep-bg-panel-soft/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-omjep-gold/70"
         >
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Division</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-omjep-text-muted">Division</p>
               <input
                 readOnly
                 tabIndex={-1}
                 value="—"
-                className="mt-1 w-full cursor-pointer rounded-lg border border-white/15 bg-white/[0.07] px-2.5 py-2 font-mono text-sm text-slate-100 outline-none"
+                className="mt-1 w-full cursor-pointer rounded-lg border border-omjep-border bg-omjep-bg-panel/45 px-2.5 py-2 font-mono text-sm text-omjep-text-primary outline-none"
                 aria-hidden
               />
             </div>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Record</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-omjep-text-muted">Record</p>
               <input
                 readOnly
                 tabIndex={-1}
                 value="0-0-0"
-                className="mt-1 w-full cursor-pointer rounded-lg border border-white/15 bg-white/[0.07] px-2.5 py-2 font-mono text-sm text-slate-100 outline-none"
+                className="mt-1 w-full cursor-pointer rounded-lg border border-omjep-border bg-omjep-bg-panel/45 px-2.5 py-2 font-mono text-sm text-omjep-text-primary outline-none"
                 aria-hidden
               />
             </div>
           </div>
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Points</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-omjep-text-muted">Points</p>
             <input
               readOnly
               tabIndex={-1}
               value="0"
-              className="mt-1 w-full cursor-pointer rounded-lg border border-white/15 bg-white/[0.07] px-2.5 py-2 font-mono text-sm text-slate-100 outline-none"
+              className="mt-1 w-full cursor-pointer rounded-lg border border-omjep-border bg-omjep-bg-panel/45 px-2.5 py-2 font-mono text-sm text-omjep-text-primary outline-none"
               aria-hidden
             />
           </div>
           <div className="flex items-center justify-between gap-2 border-t border-white/10 pt-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-amber-200/90">
+            <span className="text-xs font-semibold uppercase tracking-wide text-omjep-gold">
               Rechercher / lier mon club
             </span>
             <ChevronRight className="h-4 w-4 shrink-0 text-amber-300" aria-hidden />
@@ -183,12 +183,12 @@ export default function ClubCard({ unframed = false }: ClubCardProps) {
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-amber-300/80">
             Club Sync
           </p>
-          <p className="mt-1 font-['Rajdhani'] text-xl font-black italic uppercase tracking-[0.05em] text-white">
+          <p className="mt-1 font-heading text-xl font-black italic uppercase tracking-[0.05em] text-omjep-text-primary">
             Division & Record
           </p>
         </div>
         {isLive && (
-          <span className="inline-flex animate-pulse items-center gap-1 rounded border border-[#00F2FF]/35 bg-[#00F2FF]/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#00F2FF]">
+            <span className="inline-flex animate-pulse items-center gap-1 rounded border border-omjep-mauve/35 bg-omjep-mauve/15 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-omjep-text-primary">
             LIVE
           </span>
         )}
@@ -201,36 +201,36 @@ export default function ClubCard({ unframed = false }: ClubCardProps) {
           className="h-8 rounded"
         />
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.14em] text-slate-400">
+          <p className="font-mono text-xs uppercase tracking-[0.14em] text-omjep-text-muted">
             {data.division ?? 'D5'}
           </p>
-          <p className="text-sm text-slate-300">Record {data.record ?? '0-0-0'}</p>
+          <p className="text-sm text-omjep-text-secondary">Record {data.record ?? '0-0-0'}</p>
         </div>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <div className="rounded border border-dashed border-[#22c55e]/22 bg-black/40 px-3 py-2 backdrop-blur-sm">
-          <p className="kimi-kpi-label text-[#22c55e]/45">PTS</p>
+        <div className="rounded border border-dashed border-omjep-border bg-omjep-bg-panel/40 px-3 py-2 backdrop-blur-sm">
+          <p className="kimi-kpi-label text-omjep-text-muted">PTS</p>
           <div className="mt-1 flex flex-wrap items-baseline gap-1.5">
             <TechnicalDataValue accent="gold" symbolScale="sm" className="text-lg font-bold">
-              <span className="text-[#22c55e]">{data.points}</span>
+              <span className="text-omjep-mauve">{data.points}</span>
             </TechnicalDataValue>
             {pointsDelta > 0 && (
-              <span className="animate-pulse text-[11px] font-bold text-[#00F2FF]">+{pointsDelta}</span>
+              <span className="animate-pulse text-[11px] font-bold text-omjep-gold">+{pointsDelta}</span>
             )}
           </div>
         </div>
-        <div className="rounded border border-dashed border-[#00F2FF]/15 bg-black/40 px-3 py-2 backdrop-blur-sm">
-          <p className="kimi-kpi-label text-[#00F2FF]/45">STAT</p>
-          <p className="mt-1 inline-flex items-center gap-1 font-mono text-xs text-[#00F2FF]">
+        <div className="rounded border border-dashed border-omjep-border bg-omjep-bg-panel/40 px-3 py-2 backdrop-blur-sm">
+          <p className="kimi-kpi-label text-omjep-text-muted">STAT</p>
+          <p className="mt-1 inline-flex items-center gap-1 font-mono text-xs text-omjep-mauve">
             <ShieldCheck className="h-3.5 w-3.5" />
             Synced
           </p>
         </div>
       </div>
 
-      <div className="mt-3 flex items-center gap-1 text-[10px] uppercase tracking-[0.12em] text-slate-500">
-        <TrendingUp className="h-3 w-3 text-[#00F2FF]/70" />
+      <div className="mt-3 flex items-center gap-1 text-[10px] uppercase tracking-[0.12em] text-omjep-text-muted">
+        <TrendingUp className="h-3 w-3 text-omjep-mauve/70" />
         Refetch en continu actif
       </div>
     </div>

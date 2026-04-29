@@ -1,35 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Rajdhani:ital,wght@0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, Rajdhani, system-ui, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
   color-scheme: dark;
 
-  /* ─── OMJEP Theme Tokens — Dark (default) ─────────────────────────────── */
-  --omjep-bg: #000000;
-  --omjep-surface: rgba(8, 8, 8, 0.72);
+  /* ─── OMJEP V2 Foundations — Dark (default) ───────────────────────────── */
+  --omjep-bg: #090b16;
+  --omjep-surface: rgba(16, 19, 35, 0.86);
   --omjep-gold: #d4af37;
-  /* Pixar-Sport Cinematic — accent global émeraude */
-  --omjep-accent: #22c55e;
-  --omjep-neutral: #94a3b8;
-  --omjep-danger: #ff2d55;
-  --omjep-bg-elevated: #0a0a0a;
-  --omjep-bg-panel: #111111;
-  --omjep-bg-panel-soft: #1a1a1a;
-  --omjep-text-primary: #f1f5f9;
-  --omjep-text-secondary: #94a3b8;
-  --omjep-text-muted: #64748b;
-  --omjep-accent-gold: #22c55e;
-  --omjep-accent-gold-light: #E8C547;
-  --omjep-accent-cobalt: #22c55e;
-  --omjep-border: rgba(255, 255, 255, 0.08);
-  --omjep-border-gold: rgba(212, 175, 55, 0.35);
-  --omjep-border-cold: rgba(255, 255, 255, 0.06);
-  --omjep-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --omjep-shadow-lg: 0 20px 80px rgba(0, 0, 0, 0.45);
+  --omjep-accent: #6c52d9;
+  --omjep-neutral: #aab0c8;
+  --omjep-bg-elevated: #10142a;
+  --omjep-bg-panel: #151b37;
+  --omjep-bg-panel-soft: #1c2348;
+  --omjep-text-primary: #f3f2ff;
+  --omjep-text-secondary: #c7c5e7;
+  --omjep-text-muted: #9692b9;
+  --omjep-accent-gold: #d4af37;
+  --omjep-accent-gold-light: #edd48b;
+  --omjep-accent-cobalt: #6e59d9;
+  --omjep-border: rgba(168, 151, 255, 0.28);
+  --omjep-border-gold: rgba(212, 175, 55, 0.34);
+  --omjep-border-cold: rgba(203, 210, 244, 0.16);
+  --omjep-focus-ring: rgba(153, 124, 255, 0.62);
+  --omjep-focus-ring-gold: rgba(212, 175, 55, 0.52);
+  --omjep-success: #36a67b;
+  --omjep-warning: #cb9b2c;
+  --omjep-danger: #db4d58;
+  --omjep-shadow-sm: 0 6px 16px rgba(8, 10, 24, 0.26);
+  --omjep-shadow-md: 0 16px 30px rgba(7, 9, 22, 0.34);
+  --omjep-shadow-lg: 0 28px 60px rgba(6, 8, 20, 0.42);
+  --omjep-glow-mauve-soft: 0 0 24px rgba(108, 82, 217, 0.24);
+  --omjep-glow-gold-soft: 0 0 24px rgba(212, 175, 55, 0.2);
+  --omjep-heading-font: 'Sora', Inter, system-ui, sans-serif;
+  --omjep-body-font: Inter, system-ui, sans-serif;
+  --omjep-mono-font: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   /* Biseaux tactiques — réduits sur mobile pour préserver les marges */
   --tactical-bento-bevel: 22px;
   --tactical-modal-bevel: 20px;
@@ -39,13 +48,32 @@
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --omjep-bg: #ffffff;
-  --omjep-surface: rgba(255, 255, 255, 0.78);
-  --omjep-accent: #166534;
-  --omjep-text-primary: #0f172a;
-  --omjep-text-secondary: #334155;
-  --omjep-text-muted: #475569;
-  --omjep-border: rgba(15, 23, 42, 0.08);
+  --omjep-bg: #f8f7f3;
+  --omjep-surface: rgba(255, 255, 255, 0.92);
+  --omjep-accent: #684fcf;
+  --omjep-neutral: #4f5a79;
+  --omjep-bg-elevated: #f0eef8;
+  --omjep-bg-panel: #ffffff;
+  --omjep-bg-panel-soft: #f4f2fc;
+  --omjep-text-primary: #171d37;
+  --omjep-text-secondary: #2a3658;
+  --omjep-text-muted: #5a6687;
+  --omjep-accent-gold: #b88a22;
+  --omjep-accent-gold-light: #ceaa56;
+  --omjep-accent-cobalt: #5a42c8;
+  --omjep-border: rgba(87, 65, 173, 0.24);
+  --omjep-border-gold: rgba(184, 138, 34, 0.34);
+  --omjep-border-cold: rgba(24, 37, 80, 0.14);
+  --omjep-focus-ring: rgba(104, 79, 207, 0.45);
+  --omjep-focus-ring-gold: rgba(184, 138, 34, 0.4);
+  --omjep-success: #309b72;
+  --omjep-warning: #b98b20;
+  --omjep-danger: #d24452;
+  --omjep-shadow-sm: 0 6px 16px rgba(33, 40, 74, 0.1);
+  --omjep-shadow-md: 0 16px 28px rgba(31, 39, 74, 0.16);
+  --omjep-shadow-lg: 0 24px 48px rgba(28, 36, 70, 0.2);
+  --omjep-glow-mauve-soft: 0 0 20px rgba(104, 79, 207, 0.16);
+  --omjep-glow-gold-soft: 0 0 20px rgba(184, 138, 34, 0.14);
 }
 
 @media (max-width: 767px) {
@@ -59,8 +87,6 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html,
@@ -68,36 +94,84 @@ body,
 #root {
   background-color: var(--omjep-bg);
   color: var(--omjep-text-primary);
-  transition: none;
-  border: none;
-  outline: none;
-}
-
-main {
-  border: none;
-  outline: none;
-}
-
-/* Dashboard / landing main scroll — pas de cadre clair sur le panneau flottant */
-.dashboard-main-scroll.tactical-floating-panel {
-  border: none;
-  outline: none;
-}
-
-.dashboard-sidebar .lucide,
-.dashboard-top-glass .lucide {
-  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.4));
 }
 
 body {
-  font-family: Inter, Rajdhani, system-ui, sans-serif;
+  font-family: var(--omjep-body-font);
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Thème dynamique — transition 0.5s sur tous les éléments thématiques */
-*,
-*::before,
-*::after {
-  transition: none;
+::selection {
+  background: color-mix(in srgb, var(--omjep-accent) 30%, transparent);
+  color: var(--omjep-text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--omjep-focus-ring);
+  outline-offset: 2px;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--omjep-heading-font);
+    letter-spacing: -0.015em;
+    color: var(--omjep-text-primary);
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 2.8vw, 2.8rem);
+    line-height: 1.1;
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: clamp(1.45rem, 2.2vw, 2.1rem);
+    line-height: 1.15;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  p,
+  li,
+  span,
+  small,
+  label,
+  input,
+  textarea,
+  select,
+  button {
+    font-family: var(--omjep-body-font);
+  }
+
+  p,
+  li,
+  label {
+    color: var(--omjep-text-secondary);
+  }
+
+  a {
+    color: var(--omjep-text-primary);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--omjep-text-muted);
+    opacity: 1;
+  }
 }
 
 /* Pronostics — bordure « snake » (trait lumineux qui tourne) autour du bloc scores */
@@ -237,8 +311,8 @@ body {
 
 /* Topbar dashboard — glass sombre + laser bas */
 .dashboard-top-glass {
-  background: rgba(0, 0, 0, 0.6) !important;
-  border-bottom: 1px dashed rgba(212, 175, 55, 0.28) !important;
+  background: rgba(0, 0, 0, 0.6);
+  border-bottom: 1px dashed rgba(212, 175, 55, 0.28);
   box-shadow: 0 0 50px -14px rgba(212, 175, 55, 0.18);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -270,67 +344,56 @@ body {
     drop-shadow(-1.25px 0 0 rgba(0, 242, 255, 0.28));
 }
 
-/* ─── Scrollbars globales — ultra-fines, accent OMJEP sur noir (#22c55e) ─── */
+/* ─── Scrollbars globales minimales (non agressives) ─────────────────────── */
 html {
   scrollbar-width: thin;
-  scrollbar-color: #d4af37 #000000;
+  scrollbar-color: color-mix(in srgb, var(--omjep-accent) 38%, transparent) transparent;
 }
 
 html::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+  width: 8px;
+  height: 8px;
 }
 
 html::-webkit-scrollbar-track {
-  background: #000000;
+  background: transparent;
 }
 
 html::-webkit-scrollbar-thumb {
-  background: #d4af37;
+  background: color-mix(in srgb, var(--omjep-accent) 35%, transparent);
   border-radius: 9999px;
-  box-shadow: 0 0 6px rgba(212, 175, 55, 0.35);
 }
 
 html::-webkit-scrollbar-thumb:hover {
-  background: #e8c547;
-}
-
-html::-webkit-scrollbar-corner {
-  background: #000000;
+  background: color-mix(in srgb, var(--omjep-accent) 48%, transparent);
 }
 
 .tactical-scroll,
 .dashboard-layout-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #d4af37 #000000;
+  scrollbar-color: color-mix(in srgb, var(--omjep-accent) 38%, transparent) transparent;
 }
 
 .tactical-scroll::-webkit-scrollbar,
 .dashboard-layout-scroll::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+  width: 8px;
+  height: 8px;
 }
 
 .tactical-scroll::-webkit-scrollbar-track,
 .dashboard-layout-scroll::-webkit-scrollbar-track {
-  background: #000000;
+  background: transparent;
 }
 
 .tactical-scroll::-webkit-scrollbar-thumb,
 .dashboard-layout-scroll::-webkit-scrollbar-thumb {
-  background: #d4af37;
+  background: color-mix(in srgb, var(--omjep-accent) 35%, transparent);
   border-radius: 9999px;
-  box-shadow: 0 0 6px rgba(212, 175, 55, 0.35);
 }
 
 .tactical-scroll::-webkit-scrollbar-thumb:hover,
 .dashboard-layout-scroll::-webkit-scrollbar-thumb:hover {
-  background: #e8c547;
-}
-
-.tactical-scroll::-webkit-scrollbar-corner,
-.dashboard-layout-scroll::-webkit-scrollbar-corner {
-  background: #000000;
+  background: color-mix(in srgb, var(--omjep-accent) 48%, transparent);
 }
 
 /* Modales & surfaces volantes — flou + biseau tactique */
@@ -391,11 +454,11 @@ html::-webkit-scrollbar-corner {
 /* Tooltips Recharts — ne pas dépasser l’écran sur mobile */
 @media (max-width: 767px) {
   .recharts-tooltip-wrapper {
-    max-width: calc(100vw - 1.5rem) !important;
+    max-width: calc(100vw - 1.5rem);
   }
 
   .recharts-default-tooltip {
-    max-width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem);
     box-sizing: border-box;
   }
 }
@@ -656,7 +719,7 @@ html::-webkit-scrollbar-corner {
 
 /* Classement — focus au survol : aura plus présente */
 .leaderboard-row:hover .player-identity-aura {
-  opacity: 1 !important;
+  opacity: 1;
   animation-duration: 4.5s;
 }
 
@@ -816,9 +879,9 @@ html::-webkit-scrollbar-corner {
 h1.ea-fc-hero-neon,
 h2.ea-fc-hero-neon,
 h3.ea-fc-hero-neon {
-  background: none !important;
-  mix-blend-mode: normal !important;
-  filter: none !important;
+  background: none;
+  mix-blend-mode: normal;
+  filter: none;
   animation: ea-fc-title-neon-pulse 3.2s ease-in-out infinite;
   color: #f8fafc;
 }
@@ -1477,7 +1540,7 @@ span.mercato-live-badge-ea-pulse {
 }
 
 .dashboard-bento-focus-grid .tactical-bento-elite:hover {
-  opacity: 1 !important;
+  opacity: 1;
   filter: saturate(1.06);
   transform: translate3d(0, -1px, 0);
   box-shadow:
@@ -1538,9 +1601,113 @@ span.mercato-live-badge-ea-pulse {
 
 .app-loader-overlay {
   background:
-    radial-gradient(ellipse 45% 30% at 20% 0%, rgba(30, 58, 138, 0.28) 0%, transparent 70%),
-    radial-gradient(ellipse 45% 30% at 85% 100%, rgba(212, 175, 55, 0.18) 0%, transparent 70%),
-    #050505;
+    radial-gradient(ellipse 42% 28% at 18% 0%, rgba(124, 58, 237, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 48% 32% at 86% 100%, rgba(212, 175, 55, 0.12) 0%, transparent 72%),
+    linear-gradient(160deg, rgba(244, 240, 255, 0.94) 0%, rgba(234, 226, 255, 0.92) 45%, rgba(252, 250, 245, 0.96) 100%);
+}
+
+.dark .app-loader-overlay {
+  background:
+    radial-gradient(ellipse 45% 30% at 20% 0%, rgba(124, 58, 237, 0.22) 0%, transparent 72%),
+    radial-gradient(ellipse 45% 30% at 85% 100%, rgba(212, 175, 55, 0.16) 0%, transparent 70%),
+    #08050f;
+}
+
+@keyframes app-loader-glint {
+  0% {
+    transform: translateX(-145%) skewX(-16deg);
+  }
+  100% {
+    transform: translateX(190%) skewX(-16deg);
+  }
+}
+
+.app-loader-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(124, 58, 237, 0.24);
+  background:
+    linear-gradient(145deg, rgba(124, 58, 237, 0.08) 0%, rgba(255, 255, 255, 0.78) 40%, rgba(212, 175, 55, 0.08) 100%),
+    rgba(255, 255, 255, 0.76);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    0 20px 42px rgba(76, 29, 149, 0.12);
+}
+
+.dark .app-loader-panel {
+  border-color: rgba(212, 175, 55, 0.26);
+  background:
+    linear-gradient(155deg, rgba(124, 58, 237, 0.22) 0%, rgba(12, 8, 23, 0.88) 55%, rgba(212, 175, 55, 0.09) 100%),
+    rgba(8, 5, 15, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 20px 45px rgba(0, 0, 0, 0.5);
+}
+
+.app-loader-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: -22%;
+  pointer-events: none;
+  background: linear-gradient(
+    95deg,
+    rgba(212, 175, 55, 0) 16%,
+    rgba(212, 175, 55, 0.08) 42%,
+    rgba(212, 175, 55, 0.2) 50%,
+    rgba(124, 58, 237, 0.1) 58%,
+    rgba(212, 175, 55, 0) 84%
+  );
+  animation: app-loader-glint 2.2s linear infinite;
+}
+
+.app-loader-emblem {
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: rgba(212, 175, 55, 0.14);
+}
+
+.dark .app-loader-emblem {
+  border-color: rgba(212, 175, 55, 0.38);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.app-loader-title {
+  color: rgba(67, 20, 117, 0.9);
+}
+
+.dark .app-loader-title {
+  color: rgba(245, 240, 255, 0.94);
+}
+
+.app-loader-subtitle {
+  color: rgba(67, 20, 117, 0.78);
+}
+
+.dark .app-loader-subtitle {
+  color: rgba(231, 213, 255, 0.74);
+}
+
+.app-loader-progress {
+  background: rgba(124, 58, 237, 0.14);
+}
+
+.dark .app-loader-progress {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.app-loader-progress-bar {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.78) 0%, rgba(212, 175, 55, 0.84) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-loader-shimmer::before {
+    animation: none;
+    opacity: 0.22;
+  }
+
+  .app-loader-progress-bar {
+    transform: translateX(0);
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.64) 0%, rgba(212, 175, 55, 0.72) 100%);
+  }
 }
 
 .tactical-bento::after {
@@ -1758,6 +1925,7 @@ html.cockpit-fullscreen body {
 /* ─── Widget magnétique ──────────────────────────────────────────────────── */
 .widget-tile {
   transform-style: preserve-3d;
+  box-shadow: 0 12px 26px -18px rgba(16, 24, 40, 0.35);
 }
 
 .widget-tile::after {
@@ -1766,7 +1934,7 @@ html.cockpit-fullscreen body {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: none;
+  background: linear-gradient(180deg, rgba(110, 89, 217, 0.04), transparent 40%);
 }
 
 .widget-tile__bar {
@@ -1774,7 +1942,7 @@ html.cockpit-fullscreen body {
 }
 
 .widget-tile__body {
-  scrollbar-color: rgba(34, 197, 94, 0.4) transparent;
+  scrollbar-color: rgba(110, 89, 217, 0.45) transparent;
 }
 
 /* ─── Zone de Contact (remplace les boutons standards) ─────────────────── */
@@ -1794,30 +1962,28 @@ html.cockpit-fullscreen body {
 }
 
 .contact-zone:hover::before {
-  border-color: rgba(34, 197, 94, 0.45);
-  box-shadow: 0 0 28px -4px rgba(34, 197, 94, 0.45);
+  border-color: rgba(110, 89, 217, 0.5);
+  box-shadow: 0 0 28px -4px rgba(110, 89, 217, 0.45);
 }
 
 /* Override discret : tous les <button> nus dans le cockpit prennent un look "zone de contact"
    sauf s'ils déclarent déjà la classe .contact-zone ou sont des contrôles internes connus */
-.dashboard-cockpit-shell button:where(:not(.contact-zone):not(.tactical-ghost-button):not([data-cockpit-skin='off'])) {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background-color: rgba(2, 2, 2, 0.7);
+.dashboard-cockpit-shell button[data-cockpit-button='true'] {
+  border: 1px solid var(--omjep-border);
+  background-color: color-mix(in srgb, var(--omjep-bg-panel) 78%, transparent);
   border-radius: 8px;
   transition: border-color 220ms ease, box-shadow 220ms ease, color 220ms ease, background-color 220ms ease;
 }
 
-.dashboard-cockpit-shell
-  button:where(:not(.contact-zone):not(.tactical-ghost-button):not([data-cockpit-skin='off'])):hover {
-  border-color: rgba(34, 197, 94, 0.65);
-  box-shadow: 0 0 22px -6px rgba(34, 197, 94, 0.55);
+.dashboard-cockpit-shell button[data-cockpit-button='true']:hover {
+  border-color: rgba(110, 89, 217, 0.65);
+  box-shadow: 0 0 22px -6px rgba(110, 89, 217, 0.5);
 }
 
-.dashboard-cockpit-shell
-  button:where(:not(.contact-zone):not(.tactical-ghost-button):not([data-cockpit-skin='off'])):focus-visible {
+.dashboard-cockpit-shell button[data-cockpit-button='true']:focus-visible {
   outline: none;
-  border-color: rgba(34, 197, 94, 0.85);
-  box-shadow: 0 0 28px -2px rgba(34, 197, 94, 0.65);
+  border-color: rgba(212, 175, 55, 0.85);
+  box-shadow: 0 0 28px -2px rgba(212, 175, 55, 0.5);
 }
 
 /* Dock minimal */
@@ -1830,7 +1996,7 @@ html.cockpit-fullscreen body {
   .dock-item,
   .dock-center,
   .widget-tile {
-    transition: none !important;
+    transition: none;
   }
 
   .widget-tile::after {
@@ -1838,11 +2004,11 @@ html.cockpit-fullscreen body {
   }
 }
 
-/* Icônes drawer satellite — néon émeraude intense */
+/* Icônes drawer satellite — néon mauve */
 .cockpit-neon-icon {
-  color: rgb(52 211 153);
-  filter: drop-shadow(0 0 1px rgb(16 185 129))
-    drop-shadow(0 0 6px rgba(34, 197, 94, 0.95)) drop-shadow(0 0 14px rgba(52, 211, 153, 0.55));
+  color: rgb(110 89 217);
+  filter: drop-shadow(0 0 1px rgba(110, 89, 217, 0.8))
+    drop-shadow(0 0 6px rgba(110, 89, 217, 0.75)) drop-shadow(0 0 14px rgba(110, 89, 217, 0.5));
 }
 
 /* Scrim drawer satellite : flou piloté par Framer (--satellite-blur) */
@@ -1860,71 +2026,92 @@ html.cockpit-fullscreen body {
 /* Page intérieure cockpit : centrage et padding par défaut pour pages héritées */
 .cockpit-page {
   width: 100%;
-  max-width: 1640px;
+  max-width: 100%;
   margin-inline: auto;
 }
 
-/* Kimi Brutalist final unification: Store + Transfers */
+.container-dashboard {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Dashboard shell: enforce clearer surface rhythm for cards */
+.container-dashboard .tactical-bento,
+.container-dashboard .tactical-bento-elite,
+.container-dashboard .omjep-premium-panel,
+.container-dashboard .hub-surface,
+.container-dashboard .tactical-floating-panel {
+  background: color-mix(in srgb, var(--omjep-bg-panel) 88%, transparent);
+  border-color: color-mix(in srgb, var(--omjep-border) 85%, transparent);
+  box-shadow: var(--omjep-shadow-md);
+}
+
+/* Kimi Brutalist final unification: Store + Transfers (scopé, sans global agressif) */
 .kimi-luxury-store-page article,
 .kimi-luxury-transfers-page article,
-.kimi-luxury-transfers-page [class*='omjep-premium-panel'],
-.kimi-luxury-store-page [class*='omjep-premium-panel'] {
-  border: none !important;
-  box-shadow: var(--tw-shadow, 0 25px 50px -12px rgb(0 0 0 / 0.35)) !important;
+.kimi-luxury-transfers-page .omjep-premium-panel,
+.kimi-luxury-store-page .omjep-premium-panel {
+  border: none;
+  box-shadow: var(--tw-shadow, 0 25px 50px -12px rgb(0 0 0 / 0.35));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
-.kimi-luxury-store-page button,
-.kimi-luxury-transfers-page button {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+.kimi-luxury-store-page [data-kimi-store-button='true'],
+.kimi-luxury-transfers-page [data-kimi-store-button='true'] {
+  border: none;
+  background: transparent;
+  box-shadow: none;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-weight: 600;
 }
 
-.kimi-luxury-store-page button:hover,
-.kimi-luxury-transfers-page button:hover {
+.kimi-luxury-store-page [data-kimi-store-button='true']:hover,
+.kimi-luxury-transfers-page [data-kimi-store-button='true']:hover {
   opacity: 0.78;
 }
 
-/* Community + Admin: remove heavy boxes, favor spacing */
+/* Community + Admin: remove heavy boxes, favor spacing (scopé) */
 .kimi-community-page .tactical-bento,
 .kimi-community-page .hub-surface,
 .kimi-community-page article,
 .kimi-admin-page .tactical-floating-panel,
-.kimi-admin-page [class*='omjep-premium-panel'] {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
+.kimi-admin-page .omjep-premium-panel {
+  border: none;
+  box-shadow: none;
+  background: transparent;
 }
 
 .kimi-admin-page [class*='space-y-'] {
   row-gap: 4rem;
 }
 
-/* Admin tables: tiny monospace, no column borders */
+/* Admin tables (scopé): tiny monospace, no column borders */
 .kimi-admin-page table {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px !important;
+  font-size: 11px;
   border-collapse: collapse;
 }
 
 .kimi-admin-page table th,
 .kimi-admin-page table td {
-  border-left: none !important;
-  border-right: none !important;
-  font-size: 11px !important;
+  border-left: none;
+  border-right: none;
+  font-size: 11px;
 }
 
-/* Global modal refinement: pure glass */
-[role='dialog'],
+/* Modal refinement (scopé, stabilité d'abord) */
+.dashboard-cockpit-shell [role='dialog'],
+.kimi-luxury-store-page [role='dialog'],
+.kimi-luxury-transfers-page [role='dialog'],
+.kimi-admin-page [role='dialog'],
 .tactical-modal-panel {
-  border: none !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
+  border: none;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 :root[data-theme='light'] .kimi-luxury-store-page,
@@ -1935,85 +2122,37 @@ html.cockpit-fullscreen body {
 }
 
 :root[data-theme='light'] .kimi-community-page {
-  background: #ffffff !important;
+  background: #ffffff;
 }
 
-:root[data-theme='light'] .kimi-community-page [class*='text-slate-'],
-:root[data-theme='light'] .kimi-admin-page [class*='text-slate-'] {
-  color: #334155 !important;
+:root[data-theme='dark'] .dashboard-cockpit-shell [role='dialog'],
+:root[data-theme='dark'] .kimi-luxury-store-page [role='dialog'],
+:root[data-theme='dark'] .kimi-luxury-transfers-page [role='dialog'],
+:root[data-theme='dark'] .kimi-admin-page [role='dialog'],
+:root[data-theme='dark'] .tactical-modal-panel {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-:root[data-theme='dark'] .tactical-modal-panel,
-:root[data-theme='dark'] [role='dialog'] {
-  background: #000000 !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
-
-:root[data-theme='light'] .tactical-modal-panel,
-:root[data-theme='light'] [role='dialog'] {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+:root[data-theme='light'] .dashboard-cockpit-shell [role='dialog'],
+:root[data-theme='light'] .kimi-luxury-store-page [role='dialog'],
+:root[data-theme='light'] .kimi-luxury-transfers-page [role='dialog'],
+:root[data-theme='light'] .kimi-admin-page [role='dialog'],
+:root[data-theme='light'] .tactical-modal-panel {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 :root[data-theme='light'] .dashboard-cockpit-topbar {
-  background: rgba(255, 255, 255, 0.82) !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(38, 52, 86, 0.18);
 }
 
 :root[data-theme='dark'] .dashboard-cockpit-topbar {
-  background: rgba(0, 0, 0, 0.68) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Minimalism pass: brand integrity, no gaming aura */
-.lucide {
-  filter: none !important;
-  -webkit-filter: none !important;
-  box-shadow: none !important;
-}
-
-[class*='badge'],
-[class*='Badge'],
-[class*='pill'],
-[class*='Pill'],
-[class*='status'],
-[class*='Status'] {
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.2em !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-:root[data-theme='light'] [class*='badge'],
-:root[data-theme='light'] [class*='Badge'],
-:root[data-theme='light'] [class*='pill'],
-:root[data-theme='light'] [class*='Pill'],
-:root[data-theme='light'] [class*='status'],
-:root[data-theme='light'] [class*='Status'] {
-  border-color: rgba(0, 0, 0, 0.1) !important;
-}
-
-@keyframes skeleton-fade-slow {
-  0%,
-  100% {
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.animate-pulse {
-  animation: skeleton-fade-slow 2.8s ease-in-out infinite !important;
-  background-color: rgb(23 23 23) !important;
-}
-
-:root[data-theme='light'] .animate-pulse {
-  background-color: rgb(245 245 245) !important;
+  background: rgba(0, 0, 0, 0.68);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .kimi-luxury-store-page article,
@@ -2022,40 +2161,40 @@ html.cockpit-fullscreen body {
 .kimi-luxury-transfers-page .rounded-2xl,
 .kimi-luxury-transfers-page .rounded-xl,
 .kimi-luxury-transfers-page .omjep-premium-panel {
-  box-shadow: none !important;
-  border-radius: 0 !important;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .kimi-luxury-store-page article,
 .kimi-luxury-store-page > div,
 .kimi-luxury-transfers-page > div,
 .kimi-luxury-transfers-page .omjep-premium-panel {
-  border-top: 0 !important;
-  border-left: 0 !important;
-  border-right: 0 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 :root[data-theme='light'] .kimi-luxury-store-page article,
 :root[data-theme='light'] .kimi-luxury-store-page > div,
 :root[data-theme='light'] .kimi-luxury-transfers-page > div,
 :root[data-theme='light'] .kimi-luxury-transfers-page .omjep-premium-panel {
-  border-bottom-color: rgba(0, 0, 0, 0.05) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.05);
 }
 
-.kimi-luxury-store-page button,
-.kimi-luxury-transfers-page button {
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.2em !important;
+.kimi-luxury-store-page [data-kimi-store-button='true'],
+.kimi-luxury-transfers-page [data-kimi-store-button='true'] {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  box-shadow: none;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
 }
 
-:root[data-theme='light'] .kimi-luxury-store-page button,
-:root[data-theme='light'] .kimi-luxury-transfers-page button {
-  border-color: rgba(0, 0, 0, 0.1) !important;
+:root[data-theme='light'] .kimi-luxury-store-page [data-kimi-store-button='true'],
+:root[data-theme='light'] .kimi-luxury-transfers-page [data-kimi-store-button='true'] {
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 .kimi-luxury-store-page ul,
@@ -2063,11 +2202,33 @@ html.cockpit-fullscreen body {
 .kimi-luxury-store-page table,
 .kimi-luxury-transfers-page ul,
 .kimi-luxury-transfers-page ol,
-.kimi-luxury-transfers-page table,
-.dashboard-cockpit-shell ul,
-.dashboard-cockpit-shell ol,
-.dashboard-cockpit-shell table {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace !important;
-  font-size: 11px !important;
-  line-height: 1.5 !important;
+.kimi-luxury-transfers-page table {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* Phase 3 scoped fixes: dark readability and surface depth */
+.dashboard-phase3-home .widget-tile {
+  border-color: color-mix(in srgb, var(--omjep-border) 95%, transparent);
+  background: color-mix(in srgb, var(--omjep-bg-panel) 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 28px rgba(0, 0, 0, 0.26);
+}
+
+.dashboard-phase3-home .widget-tile__body,
+.dashboard-phase3-home .widget-tile__head p,
+.dashboard-phase3-team p.text-slate-500,
+.dashboard-phase3-team p.text-slate-600,
+.dashboard-phase3-matches p.text-black\/50 {
+  color: var(--omjep-text-secondary);
+}
+
+@media (max-width: 767px) {
+  .dashboard-phase3-home .widget-grid,
+  .dashboard-phase3-team,
+  .dashboard-phase3-matches {
+    row-gap: 1.25rem;
+  }
 }

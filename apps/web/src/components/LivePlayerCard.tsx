@@ -72,7 +72,7 @@ export default function LivePlayerCard({ user, embedded = false }: LivePlayerCar
     : 'eafc-card-3d relative mx-auto w-full max-w-[22rem]'
 
   const panelClass = embedded
-    ? 'relative flex min-h-[20rem] w-full flex-col rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:min-h-[22rem] sm:p-5'
+    ? 'relative flex min-h-[20rem] w-full flex-col rounded-xl border border-omjep-border bg-omjep-bg-panel/35 p-4 sm:min-h-[22rem] sm:p-5'
     : 'tactical-bento relative flex min-h-[22rem] flex-col p-4 sm:min-h-[24rem] sm:p-5'
 
   return (
@@ -85,13 +85,13 @@ export default function LivePlayerCard({ user, embedded = false }: LivePlayerCar
       >
         <TacticalHudFrame topLeftCode="EA-FC" bottomRightCode="LIVE" />
         {isLive && (
-          <span className="absolute right-4 top-3 z-[5] inline-flex animate-pulse items-center gap-1 rounded border border-[#00F2FF]/35 bg-[#00F2FF]/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#00F2FF]">LIVE</span>
+          <span className="absolute right-4 top-3 z-[5] inline-flex animate-pulse items-center gap-1 rounded border border-omjep-mauve/35 bg-omjep-mauve/15 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-omjep-text-primary">LIVE</span>
         )}
 
         <div className="relative z-[3] flex items-start gap-3">
           <div className="relative">
             <div className="flex h-20 w-20 items-center justify-center overflow-hidden [clip-path:polygon(8%_0,100%_0,100%_92%,92%_100%,0_100%,0_8%)] sm:h-24 sm:w-24">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-[#0a0a0a] ring-1 ring-amber-400/35" />
+              <div className="absolute inset-0 bg-gradient-to-br from-omjep-mauve/25 to-omjep-bg ring-1 ring-omjep-border-gold" />
               <PlayerIdentity
                 size="md"
                 initial={(user?.ea_persona_name ?? 'J').charAt(0).toUpperCase()}
@@ -102,27 +102,27 @@ export default function LivePlayerCard({ user, embedded = false }: LivePlayerCar
                 className="scale-[1.02]"
               />
             </div>
-            <div className="absolute -right-1 -top-1 flex h-8 w-8 items-center justify-center border border-amber-400/40 bg-[#080808]/90 font-display text-sm font-black tabular-nums text-amber-200 [clip-path:polygon(50%_0,100%_25%,100%_75%,50%_100%,0_75%,0_25%)] sm:h-9 sm:w-9 sm:text-base">{overall}</div>
+            <div className="absolute -right-1 -top-1 flex h-8 w-8 items-center justify-center border border-omjep-border-gold bg-omjep-bg-panel/90 font-display text-sm font-black tabular-nums text-omjep-gold [clip-path:polygon(50%_0,100%_25%,100%_75%,50%_100%,0_75%,0_25%)] sm:h-9 sm:w-9 sm:text-base">{overall}</div>
           </div>
 
           <div className="min-w-0 flex-1 pt-1">
             <div className="flex items-center gap-2">
-              <h3 className="truncate font-display text-lg font-extrabold italic tracking-wide text-white sm:text-xl">{user?.ea_persona_name ?? 'Persona'}</h3>
+              <h3 className="truncate font-display text-lg font-extrabold italic tracking-wide text-omjep-text-primary sm:text-xl">{user?.ea_persona_name ?? 'Persona'}</h3>
               {user?.level !== undefined && <RankBadge level={user.level} size="sm" className="shrink-0" />}
             </div>
-            <p className="mt-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.2em] text-amber-400/75">Pro Clubs · Uplink</p>
+            <p className="mt-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.2em] text-omjep-gold">Pro Clubs · Uplink</p>
             {hasStats && eaStats?.division && (
-              <span className="mt-2 inline-flex items-center border border-[#00F2FF]/25 bg-[#00F2FF]/5 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-[#00F2FF]/90">{eaStats.division}</span>
+              <span className="mt-2 inline-flex items-center border border-omjep-border bg-omjep-bg-panel-soft/35 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-omjep-text-secondary">{eaStats.division}</span>
             )}
           </div>
         </div>
 
-        <div className="mt-4 h-px w-full bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
+        <div className="mt-4 h-px w-full bg-gradient-to-r from-transparent via-omjep-border-gold to-transparent" />
 
         {isLoading && (
-          <div className="mt-4 flex min-h-[11rem] flex-col items-center justify-center gap-3 rounded-sm border border-dashed border-amber-400/20 bg-black/25 px-3 py-6">
-            <Activity className="h-8 w-8 animate-pulse text-[#00F2FF]/70" />
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#00F2FF]/80">Uplink EA FC…</p>
+          <div className="mt-4 flex min-h-[11rem] flex-col items-center justify-center gap-3 rounded-sm border border-dashed border-omjep-border bg-omjep-bg-panel/30 px-3 py-6">
+            <Activity className="h-8 w-8 animate-pulse text-omjep-mauve/75" />
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-omjep-text-secondary">Uplink EA FC…</p>
           </div>
         )}
 
@@ -130,28 +130,28 @@ export default function LivePlayerCard({ user, embedded = false }: LivePlayerCar
           <div className="mt-4 grid grid-cols-2 gap-2">
             <StatPill
               accent="gold"
-              icon={<Swords className="h-3.5 w-3.5 text-[#22c55e]" strokeWidth={1.5} />}
+              icon={<Swords className="h-3.5 w-3.5 text-omjep-gold" strokeWidth={1.5} />}
               label="Buts"
               value={eaStats.goals}
               delta={deltaMap.goals}
             />
             <StatPill
               accent="cyan"
-              icon={<Star className="h-3.5 w-3.5 text-[#00F2FF]" strokeWidth={1.5} />}
+              icon={<Star className="h-3.5 w-3.5 text-omjep-mauve" strokeWidth={1.5} />}
               label="Passes D."
               value={eaStats.assists}
               delta={deltaMap.assists}
             />
             <StatPill
               accent="cyan"
-              icon={<Activity className="h-3.5 w-3.5 text-[#00F2FF]" strokeWidth={1.5} />}
+              icon={<Activity className="h-3.5 w-3.5 text-omjep-mauve" strokeWidth={1.5} />}
               label="Matchs"
               value={eaStats.games}
               delta={deltaMap.games}
             />
             <StatPill
               accent="gold"
-              icon={<TrendingUp className="h-3.5 w-3.5 text-amber-400" strokeWidth={1.5} />}
+              icon={<TrendingUp className="h-3.5 w-3.5 text-omjep-gold" strokeWidth={1.5} />}
               label="Note"
               value={eaStats.avg_rating.toFixed(1)}
             />
@@ -176,18 +176,18 @@ function StatPill({
   accent?: 'gold' | 'cyan'
 }) {
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded border border-dashed border-white/10 bg-black/30 px-2.5 py-2 backdrop-blur-sm transition-colors hover:border-amber-400/25">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center border border-dashed border-white/[0.08] bg-white/[0.04]">
+    <div className="flex min-w-0 items-center gap-2 rounded border border-dashed border-omjep-border bg-omjep-bg-panel/35 px-2.5 py-2 backdrop-blur-sm transition-colors hover:border-omjep-mauve/45">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center border border-dashed border-omjep-border bg-omjep-bg-panel-soft/35">
         {icon}
       </div>
       <div className="min-w-0">
         <div className="flex flex-wrap items-baseline gap-1.5">
-          <TechnicalDataValue accent={accent} symbolScale="sm" className="text-sm font-semibold text-white">
+          <TechnicalDataValue accent={accent} symbolScale="sm" className="text-sm font-semibold text-omjep-text-primary">
             <span>{value}</span>
           </TechnicalDataValue>
-          {!!delta && <span className="animate-pulse text-[10px] font-bold text-[#00F2FF]">+{delta}</span>}
+          {!!delta && <span className="animate-pulse text-[10px] font-bold text-omjep-gold">+{delta}</span>}
         </div>
-        <p className="kimi-kpi-label mt-0.5 text-[#22c55e]/42">{label}</p>
+        <p className="kimi-kpi-label mt-0.5 text-omjep-text-muted">{label}</p>
       </div>
     </div>
   )

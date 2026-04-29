@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Param,
   Body,
   Query,
@@ -11,6 +12,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
+import type { Prisma } from '@omjep/database';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -26,6 +28,8 @@ import { CupBracketService } from './cup-bracket.service';
 import { GenerateBracketDto } from './dto/generate-bracket.dto';
 import { RepairBracketPositionsDto } from './dto/repair-bracket-positions.dto';
 import { PromoteFromGroupsDto } from './dto/promote-from-groups.dto';
+import { CreateAdminMatchDto } from './dto/create-admin-match.dto';
+import { UpdateAdminMatchDto } from './dto/update-admin-match.dto';
 
 interface ScoreEventDto {
   player_id: string;
@@ -67,17 +71,69 @@ export class AdminMatchesController {
 
   @Get()
   async findAll(@Query('competition_id') competitionId?: string) {
-    // Sans filtre explicite : uniquement les matchs rattachés à une compétition existante
-    // (exclut competition_id null et lignes orphelines / incohérentes pour les compteurs admin).
-    const where = competitionId
-      ? { competition_id: competitionId }
-      : { competition: { is: {} } };
+    const trimmed = competitionId?.trim();
+    const where = trimmed
+      ? { competition_id: trimmed }
+      : { competition_id: { not: null } };
 
     return this.prisma.match.findMany({
       where,
       orderBy: [{ status: 'asc' }, { round: 'asc' }],
       include: MATCH_INCLUDE,
     });
+  }
+
+  @Post()
+  async create(@Body() dto: CreateAdminMatchDto) {
+    if (dto.home_team_id === dto.away_team_id) {
+      throw new BadRequestException(
+        'Les équipes domicile et extérieur doivent être distinctes.',
+      );
+    }
+    const comp = await this.prisma.competition.findUnique({
+      where: { id: dto.competition_id },
+    });
+    if (!comp) {
+      throw new BadRequestException('Compétition introuvable.');
+    }
+    const [homeCt, awayCt] = await Promise.all([
+      this.prisma.competitionTeam.findUnique({
+        where: {
+          competition_id_team_id: {
+            competition_id: dto.competition_id,
+            team_id: dto.home_team_id,
+          },
+        },
+      }),
+      this.prisma.competitionTeam.findUnique({
+        where: {
+          competition_id_team_id: {
+            competition_id: dto.competition_id,
+            team_id: dto.away_team_id,
+          },
+        },
+      }),
+    ]);
+    if (!homeCt || !awayCt) {
+      throw new BadRequestException(
+        'Les deux clubs doivent être inscrits à cette compétition.',
+      );
+    }
+    const match = await this.prisma.match.create({
+      data: {
+        competition_id: dto.competition_id,
+        home_team_id: dto.home_team_id,
+        away_team_id: dto.away_team_id,
+        round: dto.round?.trim() ? dto.round.trim() : null,
+        startTime: dto.scheduled_at ? new Date(dto.scheduled_at) : null,
+        status: dto.status ?? 'SCHEDULED',
+        bracket_round: dto.bracket_round ?? null,
+        bracket_index: dto.bracket_index ?? null,
+        isVisible: dto.isVisible ?? true,
+      },
+      include: MATCH_INCLUDE,
+    });
+    return { message: 'Match créé.', match };
   }
 
   /**
@@ -396,5 +452,157 @@ export class AdminMatchesController {
     ]);
 
     return { message: `Match reprogrammé au ${dateStr}. Les managers ont été notifiés.`, match: updated };
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateAdminMatchDto,
+  ) {
+    const match = await this.prisma.match.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        status: true,
+        competition_id: true,
+        home_team_id: true,
+        away_team_id: true,
+        home_score: true,
+        away_score: true,
+      },
+    });
+    if (!match) {
+      throw new NotFoundException('Match introuvable.');
+    }
+    const nextCompetitionId =
+      dto.competition_id !== undefined
+        ? dto.competition_id
+        : match.competition_id;
+    const nextHome =
+      dto.home_team_id !== undefined ? dto.home_team_id : match.home_team_id;
+    const nextAway =
+      dto.away_team_id !== undefined ? dto.away_team_id : match.away_team_id;
+    if (nextHome === nextAway) {
+      throw new BadRequestException(
+        'Les équipes domicile et extérieur doivent être distinctes.',
+      );
+    }
+    if (nextCompetitionId) {
+      const [homeCt, awayCt] = await Promise.all([
+        this.prisma.competitionTeam.findUnique({
+          where: {
+            competition_id_team_id: {
+              competition_id: nextCompetitionId,
+              team_id: nextHome,
+            },
+          },
+        }),
+        this.prisma.competitionTeam.findUnique({
+          where: {
+            competition_id_team_id: {
+              competition_id: nextCompetitionId,
+              team_id: nextAway,
+            },
+          },
+        }),
+      ]);
+      if (!homeCt || !awayCt) {
+        throw new BadRequestException(
+          'Les deux clubs doivent être inscrits à la compétition cible.',
+        );
+      }
+    }
+    const prevStatus = match.status;
+    const mergedHomeScore =
+      dto.home_score !== undefined ? dto.home_score : match.home_score;
+    const mergedAwayScore =
+      dto.away_score !== undefined ? dto.away_score : match.away_score;
+    if (dto.status === 'PLAYED' && prevStatus === 'SCHEDULED') {
+      if (mergedHomeScore == null || mergedAwayScore == null) {
+        throw new BadRequestException(
+          'home_score et away_score sont requis pour passer un match SCHEDULED en PLAYED.',
+        );
+      }
+    }
+    const data: Prisma.MatchUncheckedUpdateInput = {};
+    if (dto.competition_id !== undefined) {
+      data.competition_id = dto.competition_id;
+    }
+    if (dto.home_team_id !== undefined) {
+      data.home_team_id = dto.home_team_id;
+    }
+    if (dto.away_team_id !== undefined) {
+      data.away_team_id = dto.away_team_id;
+    }
+    if (dto.round !== undefined) {
+      const r = dto.round;
+      data.round = typeof r === 'string' && r.trim() ? r.trim() : null;
+    }
+    if (dto.scheduled_at !== undefined) {
+      data.startTime = dto.scheduled_at
+        ? new Date(dto.scheduled_at)
+        : null;
+    }
+    if (dto.status !== undefined) {
+      data.status = dto.status;
+    }
+    if (dto.home_score !== undefined) {
+      data.home_score = dto.home_score;
+    }
+    if (dto.away_score !== undefined) {
+      data.away_score = dto.away_score;
+    }
+    if (dto.played_at !== undefined) {
+      data.played_at = dto.played_at ? new Date(dto.played_at) : null;
+    }
+    if (dto.isVisible !== undefined) {
+      data.isVisible = dto.isVisible;
+    }
+    if (dto.bracket_round !== undefined) {
+      data.bracket_round = dto.bracket_round;
+    }
+    if (dto.bracket_index !== undefined) {
+      data.bracket_index = dto.bracket_index;
+    }
+    if (dto.status === 'PLAYED' && prevStatus === 'SCHEDULED') {
+      data.played_at = dto.played_at
+        ? new Date(dto.played_at)
+        : new Date();
+    }
+    const updated = await this.prisma.match.update({
+      where: { id },
+      data,
+      include: MATCH_INCLUDE,
+    });
+    const becamePlayed =
+      prevStatus === 'SCHEDULED' && updated.status === 'PLAYED';
+    if (becamePlayed) {
+      await this.predictionsService.resolvePredictions(id);
+      await Promise.all([
+        this.rewardsService.distributeRewards(id),
+        this.playerStatsService.updateFromMatch(id),
+      ]);
+      await this.cupBracketService.promoteWinnerIfBracket(id);
+    } else if (
+      prevStatus === 'PLAYED' &&
+      updated.status === 'PLAYED' &&
+      (dto.home_score !== undefined || dto.away_score !== undefined)
+    ) {
+      await this.cupBracketService.promoteWinnerIfBracket(id);
+    }
+    return { message: 'Match mis à jour.', match: updated };
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const match = await this.prisma.match.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!match) {
+      throw new NotFoundException('Match introuvable.');
+    }
+    await this.prisma.match.delete({ where: { id } });
+    return { message: 'Match supprimé.' };
   }
 }

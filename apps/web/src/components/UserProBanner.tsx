@@ -37,7 +37,7 @@ export default function UserProBanner({ user, loading }: UserProBannerProps) {
   return (
     <div className="relative -mx-4 w-[calc(100%+2rem)] overflow-visible hub-athlete-bg lg:-mx-8 lg:w-[calc(100%+4rem)]">
       <section
-        className="relative h-64 w-full overflow-hidden rounded-t-2xl border-b border-amber-400/15 shadow-[0_20px_80px_rgba(0,0,0,0.45)] outline-none"
+        className="relative h-64 w-full overflow-hidden rounded-t-2xl border-b border-omjep-border shadow-[0_20px_80px_rgba(0,0,0,0.45)] outline-none"
         aria-label="Bannière du tableau de bord"
       >
         {loading ? (
@@ -48,7 +48,7 @@ export default function UserProBanner({ user, loading }: UserProBannerProps) {
         <div
           className="pointer-events-none absolute inset-0 z-[2]"
           style={{
-            background: 'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.15), transparent)',
+            background: 'radial-gradient(circle at 20% 50%, rgba(110,89,217,0.2), transparent)',
           }}
           aria-hidden
         />
@@ -59,8 +59,8 @@ export default function UserProBanner({ user, loading }: UserProBannerProps) {
           {user?.omjepCoins !== undefined && (
             <div className="hud-surface flex flex-col gap-0.5 rounded-lg px-2.5 py-1.5 sm:flex-row sm:items-baseline sm:gap-1.5">
               <div className="flex items-center gap-1">
-                <Coins className="h-3.5 w-3.5 text-amber-400" />
-                <span className="kimi-kpi-label text-amber-400/60">OC</span>
+                <Coins className="h-3.5 w-3.5 text-omjep-gold" />
+                <span className="kimi-kpi-label text-omjep-gold/75">OC</span>
               </div>
               <TechnicalDataValue
                 accent="gold"
@@ -75,8 +75,8 @@ export default function UserProBanner({ user, loading }: UserProBannerProps) {
           {user?.jepyCoins !== undefined && user.jepyCoins > 0 && (
             <div className="hud-surface flex flex-col gap-0.5 rounded-lg px-2.5 py-1.5 sm:flex-row sm:items-baseline sm:gap-1.5">
               <div className="flex items-center gap-1">
-                <Zap className="h-3.5 w-3.5 text-[#00F2FF]" />
-                <span className="kimi-kpi-label text-[#00F2FF]/55">Jepy</span>
+                <Zap className="h-3.5 w-3.5 text-omjep-mauve" />
+                <span className="kimi-kpi-label text-omjep-mauve/75">Jepy</span>
               </div>
               <TechnicalDataValue
                 accent="cyan"
@@ -139,16 +139,16 @@ export default function UserProBanner({ user, loading }: UserProBannerProps) {
           </div>
         </div>
         <div className="relative z-[52] flex flex-col items-center text-center sm:items-start sm:text-left">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-omjep-neutral">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-omjep-text-secondary">
             {greeting().toUpperCase()},
           </p>
           <div className="mt-1 flex min-w-0 items-center justify-center gap-2.5 sm:justify-start">
-            <h1 className="font-heading min-w-0 truncate text-3xl font-extrabold italic tracking-wide text-omjep-gold sm:text-4xl">
+            <h1 className="font-heading min-w-0 truncate text-3xl font-extrabold italic tracking-wide text-omjep-text-primary sm:text-4xl">
               {user?.ea_persona_name ?? 'Joueur'}
             </h1>
             {user?.level !== undefined && <RankBadge level={user.level} size="sm" className="shrink-0" />}
           </div>
-          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400/90">
+          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-gold">
             {roleLine(user?.role)}
           </p>
         </div>

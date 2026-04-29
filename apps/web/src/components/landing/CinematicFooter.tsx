@@ -4,21 +4,21 @@ import { Crown, Send } from 'lucide-react'
 import { toast } from 'sonner'
 
 const linksNav = [
-  { to: '/', label: 'Accueil' },
-  { to: '/community', label: 'Community' },
-  { to: '/hall-of-fame', label: 'Palmarès' },
-  { to: '/login', label: 'Connexion' },
+  { to: '/', label: 'Dashboard OMJEP' },
+  { to: '/#leaderboard', label: 'Ranking national' },
+  { to: '/#live-matches', label: 'Matchs officiels' },
+  { to: '/community', label: 'Communauté eSport' },
 ]
 
 const linksPro = [
-  { to: '/register', label: 'Inscription' },
-  { to: '/register', label: 'Règlement' },
-  { to: '/community', label: 'Actualités' },
+  { to: '/register', label: 'Inscription pro' },
+  { to: '/hall-of-fame', label: 'Palmarès officiel' },
+  { to: '/community', label: 'Actualités EA FC' },
 ]
 
 const linksLegal: { href: string; label: string; external?: boolean }[] = [
-  { href: 'https://omjep.ma', label: 'Site institutionnel', external: true },
-  { href: 'mailto:contact@omjep.ma', label: 'Contact' },
+  { href: 'https://omjep.ma', label: 'Institution OMJEP', external: true },
+  { href: 'mailto:contact@omjep.ma', label: 'Contact fédération' },
 ]
 
 /**
@@ -52,8 +52,8 @@ export default function CinematicFooter() {
                 <p className="text-[10px] uppercase tracking-widest text-slate-500">EA FC — Maroc</p>
               </div>
             </div>
-            <p className="max-w-xs font-sans text-sm leading-relaxed text-slate-400">
-              Fédération e-sport &gt; compétition ciné, stats vivantes, communauté unie.
+              <p className="max-w-xs font-sans text-sm leading-relaxed text-slate-400">
+              Plateforme officielle des compétitions professionnelles EA FC au Maroc.
             </p>
           </div>
 
@@ -112,7 +112,7 @@ export default function CinematicFooter() {
               Newsletter
             </h3>
             <p className="mb-3 font-sans text-sm text-slate-500">
-              Calendrier, patchs, mercato : une fois par semaine, sans bruit.
+              Calendrier officiel, résultats homologués et annonces de tournois.
             </p>
             <form
               onSubmit={handleSubmit}
@@ -130,7 +130,7 @@ export default function CinematicFooter() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                placeholder="adresse@email.com"
+                placeholder="votre@email.ma"
                 className="w-full rounded-lg border border-white/10 bg-[#050505]/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
               />
               <button
@@ -138,7 +138,7 @@ export default function CinematicFooter() {
                 className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-emerald-500/35 bg-emerald-500/10 py-2.5 text-sm font-semibold text-emerald-200 transition hover:border-emerald-400/50 hover:bg-emerald-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
               >
                 <Send className="h-4 w-4" aria-hidden />
-                S’inscrire
+                Recevoir les actualités
               </button>
             </form>
           </div>
@@ -146,7 +146,7 @@ export default function CinematicFooter() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/[0.06] pt-8 text-center sm:flex-row sm:text-left">
           <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-slate-600">
-            Proudly Moroccan · Pixar-sport design
+            Organisation Marocaine des Jeux Électroniques Professionnels
           </p>
           <p className="text-xs text-slate-600">© {new Date().getFullYear()} OMJEP — Fédération E-sport Maroc</p>
         </div>

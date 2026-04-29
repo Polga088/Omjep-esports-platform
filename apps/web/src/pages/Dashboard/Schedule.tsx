@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Calendar, Loader2, MapPin, Swords } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '@/lib/api';
+import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
 interface TeamBrief {
   id: string;
@@ -67,20 +68,11 @@ export default function Schedule() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-16">
-      <div className="relative overflow-hidden rounded-2xl border border-cyan-500/15 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent p-8">
-        <div className="pointer-events-none absolute right-0 top-0 h-64 w-64 rounded-full bg-cyan-500/5 blur-[80px]" />
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-400/25 bg-cyan-500/10">
-              <Calendar className="h-6 w-6 text-cyan-300" />
-            </div>
-            <div>
-              <h1 className="font-display text-2xl font-bold text-white">Mon calendrier</h1>
-              <p className="text-sm text-slate-400">
-                Prochains matchs de vos clubs, triés par date de coup d&apos;envoi.
-              </p>
-            </div>
-          </div>
+      <DashboardPageHeading
+        eyebrow="Season Timeline"
+        title="Mon calendrier"
+        subtitle="Prochains matchs de vos clubs, triés par date de coup d’envoi"
+        action={
           <Link
             to="/dashboard/matches"
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-slate-200 hover:border-cyan-500/30 hover:text-white"
@@ -88,8 +80,8 @@ export default function Schedule() {
             <Swords className="h-4 w-4 text-cyan-400/80" />
             Vue Matchs complète
           </Link>
-        </div>
-      </div>
+        }
+      />
 
       {loading ? (
         <div className="flex justify-center py-20">
