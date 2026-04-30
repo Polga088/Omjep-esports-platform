@@ -92,8 +92,39 @@ model Club {
   messages          Message[]
   eaClubStats       EaClubStats?
   leagueTableEntries LeagueTable[]
+  wallet            ClubWallet?
 
   @@map("teams")
+}
+
+model ClubWallet {
+  id                     String   @id @default(uuid()) @db.Uuid
+  team_id                String   @unique @db.Uuid
+  omjep_coins_balance    Float    @default(0)
+  season_transfer_budget Float    @default(10000000)
+  reserved_amount        Float    @default(0)
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+  team                   Club     @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("club_wallets")
+}
+
+model Season {
+  id         String       @id @default(uuid()) @db.Uuid
+  name       String       @unique
+  start_date DateTime
+  end_date   DateTime
+  status     SeasonStatus @default(DRAFT)
+  is_current Boolean      @default(false)
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  contractsAsStart Contract[]     @relation("ContractStartSeason")
+  contractsAsEnd   Contract[]     @relation("ContractEndSeason")
+  offersAsContractStart TransferOffer[] @relation("OfferContractStartSeason")
+
+  @@index([is_current])
+  @@map("seasons")
 }
 
 model TeamMember {
@@ -302,12 +333,22 @@ model Contract {
   user_id        String         @db.Uuid
   salary         Float
   release_clause Float
+  /// Durée contractuelle métier en saisons (V2)
+  seasons_count  Int?
+  /// Saison de début du contrat (V2)
+  start_season_id String?       @db.Uuid
+  /// Saison de fin du contrat (V2)
+  end_season_id   String?       @db.Uuid
   start_date     DateTime       @default(now())
   end_date       DateTime
   status         ContractStatus @default(ACTIVE)
+  startSeason    Season?        @relation("ContractStartSeason", fields: [start_season_id], references: [id], onDelete: SetNull)
+  endSeason      Season?        @relation("ContractEndSeason", fields: [end_season_id], references: [id], onDelete: SetNull)
   team           Club           @relation(fields: [team_id], references: [id], onDelete: Cascade)
   user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([start_season_id])
+  @@index([end_season_id])
   @@map("contracts")
 }
 
@@ -339,16 +380,27 @@ model TransferOffer {
   offered_clause    Float
   /// Indemnité versée au club vendeur
   transfer_fee      Float
+  /// Durée de contrat cible en saisons (V2)
+  seasons_count     Int?
+  /// Montant réservé côté wallet club tant que l'offre est active (V2)
+  reserved_amount   Float?              @default(0)
+  /// Expiration technique de l'offre (V2)
+  expires_at        DateTime?
+  /// Saison de début du contrat proposé (V2)
+  contract_start_season_id String?      @db.Uuid
   duration_months   Int                 @default(12)
   status            TransferOfferStatus @default(PENDING)
   /// À qui de répondre : joueur ou club acheteur (contre-proposition)
   negotiation_turn  NegotiationTurn     @default(PLAYER)
   created_at        DateTime            @default(now())
   responded_at      DateTime?
+  contractStartSeason Season?           @relation("OfferContractStartSeason", fields: [contract_start_season_id], references: [id], onDelete: SetNull)
   fromTeam          Club                @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
   player            User                @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
   toTeam            Club?               @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
 
+  @@index([contract_start_season_id])
+  @@index([expires_at])
   @@map("transfer_offers")
 }
 
@@ -510,7 +562,14 @@ enum TransferOfferStatus {
   ACCEPTED
   REJECTED
   COUNTER_OFFER
+  EXPIRED
   CANCELLED
+}
+
+enum SeasonStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
 }
 
 enum NegotiationTurn {
@@ -543,6 +602,12 @@ enum EventType {
 enum TransactionType {
   MATCH_REWARD
   TRANSFER
+  /// Réservation de fonds mercato côté wallet club.
+  TRANSFER_RESERVE
+  /// Libération de fonds réservés (refus/expiration/annulation).
+  TRANSFER_RELEASE
+  /// Crédit de budget de début de saison côté wallet club.
+  SEASON_BUDGET_CREDIT
   WAGE
   /// Échange OMJEP Coins → Jepy (portefeuille utilisateur).
   EXCHANGE
