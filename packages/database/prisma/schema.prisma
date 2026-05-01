@@ -606,6 +606,8 @@ enum TransactionType {
   TRANSFER_RESERVE
   /// Libération de fonds réservés (refus/expiration/annulation).
   TRANSFER_RELEASE
+  /// Consommation des fonds réservés + débit du solde club (acceptation / exécution).
+  TRANSFER_SETTLEMENT
   /// Crédit de budget de début de saison côté wallet club.
   SEASON_BUDGET_CREDIT
   WAGE
