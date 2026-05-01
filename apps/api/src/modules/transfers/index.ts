@@ -1,2 +1,2 @@
 export { TransfersModule } from './transfers.module';
-export { ClubWalletService } from './club-wallet.service';
+export { ClubWalletService, type PrismaTx } from './club-wallet.service';

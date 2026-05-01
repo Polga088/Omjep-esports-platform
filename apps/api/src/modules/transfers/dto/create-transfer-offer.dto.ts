@@ -58,4 +58,16 @@ export class CreateTransferOfferDto {
   @Min(1)
   @Max(60)
   duration_months!: number;
+
+  /** Durée cible du contrat en saisons (V2). Défaut : dérivé de `duration_months` si absent. */
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(24)
+  seasons_count?: number;
+
+  /** Saison de début du contrat proposé (V2). Défaut : saison `is_current` si présente. */
+  @IsOptional()
+  @IsUUID()
+  contract_start_season_id?: string;
 }
