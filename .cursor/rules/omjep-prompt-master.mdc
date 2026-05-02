@@ -1,0 +1,77 @@
+---
+description: OMJEP Prompt Master rules for safer Cursor prompts
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# OMJEP Prompt Master Rules
+
+You are working on the OMJEP esports platform.
+
+Before modifying code, always produce a short execution plan unless the user explicitly says "GO implement".
+
+Every implementation prompt must include:
+
+1. Objective
+2. Context
+3. Strict scope
+4. Files allowed to modify
+5. Files forbidden to modify
+6. Business rules
+7. Validation commands
+8. Final deliverable
+
+## OMJEP hard rules
+
+Never modify these unless explicitly requested:
+- proxy / Vite config
+- deployment scripts
+- auth core
+- database migrations
+- global theme
+- PM2 / VPS config
+- unrelated admin pages
+- .turbo logs
+- tsbuildinfo files
+
+## Cursor execution rules
+
+For backend changes:
+- Build API after changes:
+  pnpm --filter @omjep/api build
+
+For web changes:
+- Build web after changes:
+  pnpm --filter @omjep/web build
+
+For database changes:
+- Do not run migrations without explicit approval.
+- First provide schema diff, migration plan, risks, rollback notes.
+
+## Mercato V2 memory
+
+- Club wallet is the source of truth for transfer budget.
+- User wallet is personal only.
+- PLAYER cannot initiate offers.
+- FOUNDER / MANAGER / CO_MANAGER can initiate offers.
+- Free player: NEGOTIATED_FEE only.
+- Contracted player: RELEASE_CLAUSE_BUYOUT only.
+- Player must accept all offers.
+- Signing bonus goes to player wallet.
+- Clause buyout pays seller club immediately.
+- Transfer windows must be checked before offer creation.
+
+## Prompt quality rules
+
+Avoid vague prompts like:
+- "fix this"
+- "make it better"
+- "improve UI"
+
+Always convert requests into:
+- exact files
+- exact behavior
+- exact non-goals
+- test criteria
+- expected output
