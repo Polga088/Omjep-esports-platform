@@ -5,11 +5,9 @@ import {
   useRef,
   useState,
   type FormEvent,
-  type MouseEvent,
-  type ReactNode,
 } from 'react';
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Link, useSearchParams } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import {
   User,
   MapPin,
@@ -17,7 +15,6 @@ import {
   CheckCircle,
   Shield,
   Gamepad2,
-  Sparkles,
   Camera,
   X,
   Share2,
@@ -26,23 +23,23 @@ import confetti from 'canvas-confetti';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { OMJEP_XP_FLOW_EVENT, type XpFlowDetail } from '@/lib/refreshEconomyFromApi';
-import PlayerIdentity, { type PlayerIdentityRarity } from '@/components/PlayerIdentity';
+import { type PlayerIdentityRarity } from '@/components/PlayerIdentity';
 import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige';
-import { ProfileHeroMedia } from '@/components/ProfileHeroMedia';
-import { useShowcaseVortexHue } from '@/components/ProfileShowcaseHeroMedia';
 import { uploadAvatar, uploadBanner } from '@/lib/profileUploads'
+import { xpProgress, calculateLevel } from '@/lib/leveling'
 import { useModalOpenSound } from '@/hooks/useModalOpenSound'
 import PremiumPlayerProfile from '@/features/profile/components/PremiumPlayerProfile';
+import ProfileIdentityDashboard from '@/features/profile/components/ProfileIdentityDashboard';
 import {
   fetchMyPremiumProfile,
   getEquippedCardStyle,
   mapCardRarityToIdentityRarity,
   type UserPremiumProfile,
 } from '@/features/profile/mocks/premiumProfile.mock';
-/** Portrait Lamine Yamal — CC BY 4.0, Wikimedia Commons (`yamal-photo.jpg`). */
-import yamalPhotoUrl from '@/assets/profile/yamal-photo.jpg?url';
-/** Asset transparent — remplaçable par `golden-boot.webp` ou `.png` (même dossier, même import `?url`). */
-import goldenBootTrophyUrl from '@/assets/trophies/golden-boot.svg?url';
+import {
+  PLAYER_CARD_STORE_CHANGED,
+  resolveEquippedPlayerCardFromMock,
+} from '@/features/store/models/playerCardStore.model';
 
 const POSITIONS = [
   { value: 'GK', label: 'GK — Gardien' },
@@ -76,28 +73,30 @@ interface MePayload extends ProfileForm {
   teamSecondaryColor?: string;
 }
 
-const profileBentoContainer = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
-  },
-};
-
-const profileBentoItem = {
-  hidden: { opacity: 0, scale: 0.82, y: 44 },
-  show: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { type: 'spring' as const, stiffness: 420, damping: 24 },
-  },
-};
-
 function formatXp(n: number) {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
   return String(Math.round(n));
 }
+
+const POSITION_SECONDARIES: Record<string, string[]> = {
+  GK: ['DC'],
+  DC: ['LAT', 'RAT'],
+  LAT: ['DC', 'MDC'],
+  RAT: ['DC', 'MDC'],
+  MDC: ['MOC', 'DC'],
+  MOC: ['ATT', 'MD'],
+  MG: ['MOC', 'BU'],
+  MD: ['MOC', 'BU'],
+  BU: ['ATT', 'MOC'],
+  ATT: ['BU', 'MOC'],
+  LW: ['RW', 'CAM'],
+  RW: ['LW', 'CAM'],
+  CAM: ['LW', 'RW'],
+  LM: ['MG', 'MOC'],
+  RM: ['MD', 'MOC'],
+  ST: ['BU', 'ATT'],
+};
 
 const LEVEL_UP_GOLD_CONFETTI = [
   '#FFD700',
@@ -164,220 +163,6 @@ function fireLevelUpBlastAtAnchor(el: HTMLElement | null) {
   });
 }
 
-/** Radar SVG tournant — filigrane collection / accent */
-function StatRadarWatermark() {
-  const rid = useId().replace(/:/g, '');
-  const gradId = `ea-rw-${rid}`;
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      className="pointer-events-none absolute -bottom-1 -right-1 h-[5.5rem] w-[5.5rem] opacity-[0.14]"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#eab308" stopOpacity="0.7" />
-        </linearGradient>
-      </defs>
-      <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-      <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-      <circle cx="50" cy="50" r="16" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-      <line x1="50" y1="6" x2="50" y2="94" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-      <line x1="6" y1="50" x2="94" y2="50" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-      <g className="ea-fc-stat-radar-sweep" style={{ transformOrigin: '50px 50px' }}>
-        <path d="M 50 50 L 50 8 A 42 42 0 0 1 88 50 Z" fill={`url(#${gradId})`} opacity="0.55" />
-      </g>
-    </svg>
-  );
-}
-
-function StatGaugeIcon({ pct, animationDelay = 0.12 }: { pct: number; animationDelay?: number }) {
-  const gid = useId().replace(/:/g, '');
-  const gradId = `ea-g-${gid}`;
-  const r = 36;
-  const c = 2 * Math.PI * r;
-  const target = c * (1 - Math.min(100, Math.max(0, pct)) / 100);
-  return (
-    <svg viewBox="0 0 100 100" className="relative z-[1] h-16 w-16 shrink-0" aria-hidden>
-      <defs>
-        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#22d3ee" />
-          <stop offset="55%" stopColor="#38bdf8" />
-          <stop offset="100%" stopColor="#eab308" />
-        </linearGradient>
-      </defs>
-      <g transform="translate(50 50) rotate(-90)">
-        <circle r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="8" />
-        <motion.circle
-          r={r}
-          fill="none"
-          stroke={`url(#${gradId})`}
-          strokeWidth="8"
-          strokeLinecap="round"
-          strokeDasharray={c}
-          initial={{ strokeDashoffset: c }}
-          animate={{ strokeDashoffset: target }}
-          transition={{ duration: 1.35, ease: [0.22, 1, 0.36, 1] as const, delay: animationDelay }}
-        />
-      </g>
-    </svg>
-  );
-}
-
-function BentoStatCard({
-  label,
-  value,
-  sub,
-  icon,
-  valuePopDelay = 0.28,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  icon: ReactNode;
-  valuePopDelay?: number;
-}) {
-  return (
-    <motion.div
-      variants={profileBentoItem}
-      className="ea-fc-carbon-card ea-fc-bento-collection group relative overflow-hidden rounded-2xl border border-cyan-500/20 p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.07)] transition-[box-shadow,border-color] duration-500 hover:border-cyan-400/40 hover:shadow-[0_0_48px_rgba(34,211,238,0.22),0_0_80px_rgba(34,211,238,0.08),0_0_60px_rgba(234,179,8,0.06)]"
-    >
-      <div
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{
-          background:
-            'radial-gradient(ellipse 95% 75% at 50% -15%, rgba(34,211,238,0.28), transparent 55%), radial-gradient(ellipse 60% 45% at 100% 100%, rgba(234,179,8,0.12), transparent 50%)',
-        }}
-      />
-      <StatRadarWatermark />
-      <div className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-cyan-500/10 blur-2xl transition-opacity duration-500 group-hover:opacity-[1.35]" />
-      <div className="relative z-[1] flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-[10px] font-black uppercase tracking-[0.42em] text-cyan-300/95 drop-shadow-[0_0_14px_rgba(34,211,238,0.45)]">
-            {label}
-          </p>
-          <motion.p
-            className="mt-2 truncate font-display text-3xl font-black tabular-nums tracking-tight text-white [text-shadow:0_0_28px_rgba(34,211,238,0.35),0_0_4px_rgba(234,179,8,0.45)]"
-            initial={{ scale: 0.35, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring' as const, stiffness: 480, damping: 17, delay: valuePopDelay }}
-          >
-            {value}
-          </motion.p>
-          {sub ? (
-            <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{sub}</p>
-          ) : null}
-        </div>
-        <div className="relative z-[1] opacity-95 transition-transform duration-300 group-hover:scale-105">
-          {icon}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-const goldenBootParallaxSpring = { stiffness: 100, damping: 22, mass: 0.45 } as const;
-
-/** Trophée Golden Boot — parallaxe souris + aura 4s (sync avatar) + drop-shadow doré */
-function GoldenBootTrophyParallax({ goalsText, popDelay = 0.45 }: { goalsText: string; popDelay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [4.5, -4.5]), goldenBootParallaxSpring);
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-5.5, 5.5]), goldenBootParallaxSpring);
-
-  const onMove = (e: MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    mx.set((e.clientX - r.left) / r.width - 0.5);
-    my.set((e.clientY - r.top) / r.height - 0.5);
-  };
-  const onLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
-  return (
-    <div
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      className="relative z-[1] mt-4 flex w-full flex-col items-center [perspective:720px]"
-    >
-      <div className="relative flex h-[108px] w-full max-w-[160px] items-center justify-center">
-        <div
-          className="golden-boot-trophy-aura pointer-events-none absolute left-1/2 top-1/2 h-[92px] w-[88px] -translate-x-1/2 -translate-y-1/2 rounded-[45%] bg-[#EAB308]/40 blur-2xl"
-          aria-hidden
-        />
-        <motion.div
-          className="relative z-[1] will-change-transform"
-          style={{
-            rotateX,
-            rotateY,
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          <img
-            src={goldenBootTrophyUrl}
-            alt="Trophée Golden Boot"
-            className="mx-auto h-[84px] w-auto max-w-[120px] select-none object-contain"
-            style={{ filter: 'drop-shadow(0 0 30px #EAB308)' }}
-            draggable={false}
-          />
-        </motion.div>
-      </div>
-      <motion.p
-        className="mt-2 bg-gradient-to-br from-[#FEF9C3] from-25% via-[#EAB308] via-50% to-cyan-400 to-95% bg-clip-text font-display text-3xl font-black tabular-nums tracking-tight text-transparent [filter:drop-shadow(0_0_10px_rgba(234,179,8,0.4))]"
-        initial={{ scale: 0.3, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring' as const, stiffness: 500, damping: 16, delay: popDelay }}
-      >
-        {goalsText}
-      </motion.p>
-    </div>
-  );
-}
-
-function BentoGoldenBootCard({
-  label,
-  goalsText,
-  sub,
-  goalsPopDelay = 0.52,
-}: {
-  label: string;
-  goalsText: string;
-  sub?: string;
-  goalsPopDelay?: number;
-}) {
-  return (
-    <motion.div
-      variants={profileBentoItem}
-      className="ea-fc-carbon-card ea-fc-bento-collection group relative overflow-hidden rounded-2xl border border-cyan-500/20 p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.07)] transition-[box-shadow,border-color] duration-500 hover:border-amber-400/40 hover:shadow-[0_0_52px_rgba(234,179,8,0.18),0_0_64px_rgba(34,211,238,0.12)]"
-    >
-      <div
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{
-          background:
-            'radial-gradient(ellipse 90% 70% at 50% -10%, rgba(234,179,8,0.2), transparent 52%), radial-gradient(ellipse 55% 40% at 0% 100%, rgba(34,211,238,0.14), transparent 48%)',
-        }}
-      />
-      <StatRadarWatermark />
-      <div className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-amber-500/10 blur-2xl transition-opacity duration-500 group-hover:opacity-[1.35]" />
-      <p className="relative z-[1] text-center font-display text-[10px] font-black uppercase tracking-[0.42em] text-cyan-300/95 drop-shadow-[0_0_14px_rgba(34,211,238,0.45)] sm:text-left">
-        {label}
-      </p>
-      <GoldenBootTrophyParallax goalsText={goalsText} popDelay={goalsPopDelay} />
-      {sub ? (
-        <p className="relative z-[1] mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:text-left">
-          {sub}
-        </p>
-      ) : null}
-    </motion.div>
-  );
-}
-
 export default function ProfilePage() {
   const { user, patchUser } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -405,6 +190,9 @@ export default function ProfilePage() {
   const [isLoadingPremiumProfile, setIsLoadingPremiumProfile] = useState(false);
   const [premiumProfile, setPremiumProfile] = useState<UserPremiumProfile | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [isPublicProfile, setIsPublicProfile] = useState(true);
+  const [cardStoreRev, setCardStoreRev] = useState(0);
+  const [gamePlatform, setGamePlatform] = useState<'PS5' | 'XBOX' | 'PC'>('PS5');
 
   useModalOpenSound(identityModalOpen);
 
@@ -415,7 +203,6 @@ export default function ProfilePage() {
   const levelBaselineRef = useRef(1);
   const overloadClearRef = useRef<any>(null);
 
-  const vortexHud = useShowcaseVortexHue();
   const storeCosmeticsHref = useMemo(() => {
     const p = new URLSearchParams();
     p.set('tab', 'cosmetics');
@@ -425,6 +212,14 @@ export default function ProfilePage() {
     if (bh) p.set('bannerHue', bh);
     return `/dashboard/store?${p.toString()}`;
   }, [searchParams]);
+
+  const storePlayerCardsHref = useMemo(() => '/dashboard/store?tab=card-styles', []);
+
+  useEffect(() => {
+    const handler = () => setCardStoreRev((n) => n + 1);
+    window.addEventListener(PLAYER_CARD_STORE_CHANGED, handler);
+    return () => window.removeEventListener(PLAYER_CARD_STORE_CHANGED, handler);
+  }, []);
 
   useEffect(() => {
     const profileView = searchParams.get('view');
@@ -455,6 +250,14 @@ export default function ProfilePage() {
       isCancelled = true;
     };
   }, [isPremiumView, patchUser]);
+
+  useEffect(() => {
+    if (isPremiumView) return;
+    const equipped = resolveEquippedPlayerCardFromMock();
+    if (equipped) {
+      patchUser({ avatarRarity: mapCardRarityToIdentityRarity(equipped.rarity) });
+    }
+  }, [isPremiumView, cardStoreRev, patchUser]);
 
   useEffect(() => {
     let cancelled = false;
@@ -633,20 +436,121 @@ export default function ProfilePage() {
     }
   };
 
-  const level = me?.level ?? 1;
   const xp = me?.xp ?? 0;
-  const levelGaugePct = Math.min(100, Math.max(0, ((level % 10) / 10) * 100 || 35));
-  const xpGaugePct = Math.min(100, (xp % 5000) / 50);
+  const computedLevel = Math.max(1, calculateLevel(xp));
+  const level = me?.level ?? computedLevel;
+  const xpProg = xpProgress(xp, computedLevel);
+  const roleLabel =
+    user?.role === 'MANAGER'
+      ? 'Manager'
+      : user?.role === 'ADMIN'
+        ? 'Admin'
+        : user?.role === 'MODERATOR'
+          ? 'Modérateur'
+          : 'Joueur';
+  const equippedCardStyle = useMemo(() => {
+    const fromMockStore = resolveEquippedPlayerCardFromMock();
+    if (fromMockStore) return fromMockStore;
+    return premiumProfile ? getEquippedCardStyle(premiumProfile) : undefined;
+  }, [premiumProfile, cardStoreRev]);
+  const playerName =
+    form.ea_persona_name.trim() || user?.ea_persona_name || premiumProfile?.displayName || 'Joueur OMJEP';
+  const playerPseudo = premiumProfile?.username || playerName.toLowerCase().replace(/\s+/g, '_');
+  const nationality = form.nationality.trim() || premiumProfile?.nationality || user?.nationality || 'Non renseignée';
+  const clubName = premiumProfile?.currentClub?.name || 'Sans club';
+  const mainPosition = form.preferred_position || premiumProfile?.mainPosition || 'ATT';
+  const secondaryPositions = POSITION_SECONDARIES[mainPosition] ?? ['MOC', 'BU'];
+  const archetypes = premiumProfile?.playStyles?.length
+    ? premiumProfile.playStyles.map((style) => style.label)
+    : ['Vitesse explosive', 'Créateur', 'Finisseur'];
+  const nameParts = playerName.trim().split(/\s+/).filter(Boolean);
+  const profileFirstName = nameParts[0] ?? '';
+  const profileLastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+  const profileTagline = '';
+  const platformConsoleLabel =
+    gamePlatform === 'PS5' ? 'PlayStation 5' : gamePlatform === 'XBOX' ? 'Xbox Series X|S' : 'PC';
+
+  const socialRows = [
+    {
+      id: 'instagram' as const,
+      label: 'Instagram',
+      value: '',
+      href: null as string | null,
+      isEmpty: true,
+    },
+    {
+      id: 'whatsapp' as const,
+      label: 'WhatsApp',
+      value: '',
+      href: null,
+      isEmpty: true,
+    },
+    {
+      id: 'discord' as const,
+      label: 'Discord',
+      value: `${playerPseudo}`,
+      href: null,
+      isEmpty: false,
+    },
+    {
+      id: 'youtube' as const,
+      label: 'YouTube',
+      value: '',
+      href: null,
+      isEmpty: true,
+    },
+    {
+      id: 'kick' as const,
+      label: 'Kick',
+      value: '',
+      href: null,
+      isEmpty: true,
+    },
+  ];
+
+  const creatorBundle = {
+    youtubeChannel: premiumProfile?.streamingProfile?.youtubeChannel ?? '',
+    kickChannel: premiumProfile?.streamingProfile?.kickChannel ?? '',
+    discordCommunity: premiumProfile?.streamingProfile?.discordCommunity ?? '',
+    mainStreamUrl: premiumProfile?.streamingProfile?.mainStreamUrl ?? '',
+    latestVideoLabel: premiumProfile?.streamingProfile?.latestVideoLabel ?? '',
+    latestLiveLabel: premiumProfile?.streamingProfile?.latestLiveLabel ?? '',
+  };
+
+  const showVipBadge = Boolean(premiumProfile?.vipActive);
+  const proClubIoPending = premiumProfile?.proClubIoSynced !== true;
+  const statValues: Array<{ id: 'PAC' | 'SHO' | 'PAS' | 'DRI' | 'DEF' | 'PHY'; value: number }> = premiumProfile?.attributes
+    ? [
+        { id: 'PAC', value: premiumProfile.attributes.pace },
+        { id: 'SHO', value: premiumProfile.attributes.shooting },
+        { id: 'PAS', value: premiumProfile.attributes.passing },
+        { id: 'DRI', value: premiumProfile.attributes.dribbling },
+        { id: 'DEF', value: premiumProfile.attributes.defense },
+        { id: 'PHY', value: premiumProfile.attributes.physical },
+      ]
+    : [
+        { id: 'PAC', value: Math.min(99, 55 + Math.round(level * 1.3)) },
+        { id: 'SHO', value: Math.min(99, 50 + (stats?.goals ?? 0) * 3 + Math.round(level * 0.7)) },
+        { id: 'PAS', value: Math.min(99, 48 + (stats?.assists ?? 0) * 4 + Math.round(level * 0.6)) },
+        { id: 'DRI', value: Math.min(99, 54 + Math.round(level * 1.1)) },
+        { id: 'DEF', value: Math.min(99, 46 + Math.round(level * 0.8)) },
+        { id: 'PHY', value: Math.min(99, 52 + Math.round(level * 0.9)) },
+      ];
+  const overallRating = Math.min(
+    99,
+    Math.round(statValues.reduce((a, s) => a + s.value, 0) / Math.max(statValues.length, 1)),
+  );
+  const cleanSheetsFromPremium = premiumProfile?.performance?.cleanSheets ?? null;
 
   if (loading) {
     return (
       <div className="relative min-h-[60vh] max-w-4xl space-y-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-96 w-full rounded-b-[2rem] bg-white/[0.06]" />
-          <div className="mx-auto h-40 w-40 rounded-full bg-white/[0.06]" />
+          <div className="h-72 w-full rounded-2xl bg-omjep-bg-panel-soft/80" />
+          <div className="mx-auto h-40 w-40 rounded-full bg-omjep-bg-panel-soft/80" />
           <div className="grid grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-28 rounded-2xl bg-white/[0.06]" />
+              <div key={i} className="h-28 rounded-2xl bg-omjep-bg-panel-soft/80" />
             ))}
           </div>
         </div>
@@ -664,12 +568,12 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0a0d16] p-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-omjep-border bg-omjep-bg-panel/90 p-4 shadow-[var(--omjep-shadow-sm)]">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/90">
-            Affichage Profil
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-mauve">
+            Affichage profil
           </p>
-          <p className="text-sm text-slate-300">Basculer entre le rendu classique et premium</p>
+          <p className="text-sm text-omjep-text-secondary">Classique ou carte premium OMJEP</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -677,35 +581,35 @@ export default function ProfilePage() {
             onClick={() => void handleShareProfile()}
             className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold uppercase tracking-wide transition ${
               shareCopied
-                ? 'border-emerald-400/45 bg-emerald-500/15 text-emerald-200'
-                : 'border-cyan-400/35 bg-cyan-500/10 text-cyan-100 hover:border-cyan-300/60 hover:bg-cyan-500/15'
+                ? 'border-omjep-success/45 bg-omjep-success/12 text-omjep-text-primary'
+                : 'border-omjep-border bg-omjep-bg-elevated/80 text-omjep-text-primary hover:border-omjep-mauve/40 hover:bg-omjep-mauve/10'
             }`}
           >
             <Share2 className="h-3.5 w-3.5" />
             {shareCopied ? 'Lien copié' : 'Partager mon profil'}
           </button>
-          <div className="inline-flex rounded-xl border border-white/10 bg-black/30 p-1">
+          <div className="inline-flex rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/60 p-1">
             <button
               type="button"
               onClick={() => handleProfileViewChange('classic')}
               className={`rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
                 !isPremiumView
-                  ? 'bg-cyan-500/25 text-white'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-omjep-mauve/20 text-omjep-text-primary'
+                  : 'text-omjep-text-muted hover:text-omjep-text-primary'
               }`}
             >
-              Vue Classique
+              Vue classique
             </button>
             <button
               type="button"
               onClick={() => handleProfileViewChange('premium')}
               className={`rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
                 isPremiumView
-                  ? 'bg-amber-500/25 text-amber-100'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'border border-omjep-border-gold/45 bg-omjep-gold/12 text-omjep-gold'
+                  : 'text-omjep-text-muted hover:text-omjep-text-primary'
               }`}
             >
-              Vue Premium
+              Vue premium
             </button>
           </div>
         </div>
@@ -730,155 +634,94 @@ export default function ProfilePage() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22 }}
           >
-            <div
-              className={`ea-fc-tactical-profile relative w-full max-w-4xl bg-transparent pb-16 ${vortexHud ? 'showcase-hud-vortex' : ''}`}
-            >
-      {/* Hero — média sync URL (bannerPreview) + crossfade */}
-      <section className="relative z-[1] -mx-4 mb-0 h-96 w-[calc(100%+2rem)] overflow-hidden border-b-[0.5px] border-black/5 lg:-mx-8 lg:w-[calc(100%+4rem)] dark:border-white/10">
-        <ProfileHeroMedia savedBannerUrl={user?.activeBannerUrl ?? me?.activeBannerUrl ?? null} />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070b12] via-[#070b12]/78 to-[#070b12]/28" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/45" />
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-[2] h-32 bg-gradient-to-t from-[#070b12] to-transparent" />
-
-        <div className="relative z-[3] flex h-full flex-col justify-end px-6 pb-10 md:px-10">
-          <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-black/55 dark:text-white/55">
-            Identity Card
-          </p>
-          <h1 className="mt-1 font-sans text-4xl font-bold uppercase tracking-tight text-black dark:text-white">
-            PROFIL
-          </h1>
-        </div>
-      </section>
-
-      {/* Bloc identité + stats — aura radiale légère derrière l’avatar */}
-      <div className="relative z-[2] -mt-32 px-4 md:px-6">
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 z-0 h-[min(400px,92vw)] w-[min(400px,92vw)] -translate-x-1/2 -translate-y-[46%] transition-[background] duration-700 md:left-8 md:h-[400px] md:w-[400px] md:translate-x-0 md:-translate-y-[46%]"
-          style={{
-            background: auraGoldOverload
-              ? 'radial-gradient(ellipse 68% 64% at 50% 50%, rgba(251, 191, 36, 0.14) 0%, rgba(234, 179, 8, 0.08) 38%, transparent 70%)'
-              : 'radial-gradient(ellipse 68% 64% at 50% 50%, rgba(56, 189, 248, 0.065) 0%, rgba(15, 23, 42, 0.04) 38%, transparent 70%)',
-          }}
-          aria-hidden
-        />
-        <div
-          ref={avatarAnchorRef}
-          className="absolute left-1/2 top-0 z-[4] w-[280px] max-w-[min(280px,88vw)] -translate-x-1/2 -translate-y-[56%] md:left-8 md:translate-x-0"
-        >
-          <div
-            className={`transition-[filter] duration-500 ${
-              auraGoldOverload
-                ? 'drop-shadow-[0_52px_100px_rgba(0,0,0,0.94),0_0_90px_rgba(251,191,36,0.5),0_0_150px_rgba(234,179,8,0.32)]'
-                : 'drop-shadow-[0_52px_100px_rgba(0,0,0,0.88),0_28px_64px_rgba(0,0,0,0.72),0_0_48px_rgba(34,211,238,0.52),0_0_88px_rgba(6,182,212,0.32),0_0_140px_rgba(34,211,238,0.14)]'
-            }`}
-          >
-            <div className="aspect-square w-full isolate overflow-hidden rounded-full [clip-path:inset(0_round_50%)]">
-              <PlayerIdentity
-                size="xl"
-                initial={(user?.ea_persona_name || me?.ea_persona_name || 'Y').charAt(0).toUpperCase()}
-                avatarUrl={
-                  (user?.avatarUrl ?? me?.avatarUrl)?.trim() ? (user?.avatarUrl ?? me?.avatarUrl) : yamalPhotoUrl
-                }
-                rarity={user?.avatarRarity ?? me?.avatarRarity ?? 'legendary'}
-                activeFrameUrl={user?.activeFrameUrl ?? me?.activeFrameUrl}
-                royalEagleFrame={!(user?.activeFrameUrl ?? me?.activeFrameUrl)?.trim()}
-                activeJerseyId={user?.activeJerseyId ?? me?.activeJerseyId}
-                teamPrimaryColor={user?.teamPrimaryColor ?? me?.teamPrimaryColor ?? '#c41e3a'}
-                teamSecondaryColor={user?.teamSecondaryColor ?? me?.teamSecondaryColor ?? '#fbbf24'}
-                showcaseCutout
+            <div className="space-y-8">
+              <div className="rounded-2xl border border-omjep-border bg-omjep-bg-panel/90 p-4 shadow-[var(--omjep-shadow-sm)]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-cobalt">Plateforme principale</p>
+                <p className="mt-1 text-xs text-omjep-text-secondary">EA SPORTS FC 26 · Crossplay</p>
+                <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Choisir la plateforme">
+                  {(['PS5', 'XBOX', 'PC'] as const).map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setGamePlatform(p)}
+                      className={`min-h-[44px] min-w-[5.5rem] rounded-xl border px-4 py-2.5 text-xs font-bold uppercase tracking-wide transition ${
+                        gamePlatform === p
+                          ? 'border-omjep-mauve/55 bg-omjep-mauve/20 text-omjep-text-primary'
+                          : 'border-omjep-border bg-omjep-bg-elevated text-omjep-text-secondary hover:border-omjep-mauve/35'
+                      }`}
+                    >
+                      {p === 'PS5' ? 'PS5' : p === 'XBOX' ? 'Xbox' : 'PC'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <ProfileIdentityDashboard
+                playerName={playerName}
+                playerPseudo={playerPseudo}
+                firstName={profileFirstName}
+                lastName={profileLastName}
+                eaPersonaId={form.ea_persona_name.trim() || user?.ea_persona_name || '—'}
+                tagline={profileTagline}
+                platformConsole={platformConsoleLabel}
+                nationality={nationality}
+                clubName={clubName}
+                roleLabel={roleLabel}
+                level={level}
+                xp={xp}
+                xpProgressPct={Math.min(100, Math.max(0, xpProg.percentage))}
+                xpProgressText={`${formatXp(xp)} XP · Palier ${xpProg.nextLevel}`}
+                mainPosition={mainPosition}
+                secondaryPositions={secondaryPositions}
+                archetypes={archetypes}
+                socialRows={socialRows}
+                isPublicProfile={isPublicProfile}
+                onTogglePublicProfile={() => setIsPublicProfile((prev) => !prev)}
+                onOpenIdentityEditor={() => {
+                  setIdentityModalOpen(true);
+                  setAvatarFile(null);
+                  setBannerFile(null);
+                  setError(null);
+                }}
+                onShareProfile={() => void handleShareProfile()}
+                shareCopied={shareCopied}
+                storeCosmeticsHref={storeCosmeticsHref}
+                storePlayerCardsHref={storePlayerCardsHref}
+                equippedCardStyle={equippedCardStyle}
+                avatarUrl={user?.avatarUrl ?? me?.avatarUrl ?? null}
+                avatarRarity={user?.avatarRarity ?? me?.avatarRarity ?? 'legendary'}
+                activeFrameUrl={user?.activeFrameUrl ?? me?.activeFrameUrl ?? null}
+                activeJerseyId={user?.activeJerseyId ?? me?.activeJerseyId ?? null}
+                activeBannerUrl={user?.activeBannerUrl ?? me?.activeBannerUrl ?? null}
+                teamPrimaryColor={user?.teamPrimaryColor ?? me?.teamPrimaryColor}
+                teamSecondaryColor={user?.teamSecondaryColor ?? me?.teamSecondaryColor}
                 auraGoldOverload={auraGoldOverload}
-                imgAlt={form.ea_persona_name?.trim() || user?.ea_persona_name || me?.ea_persona_name || 'Joueur'}
+                avatarAnchorRef={avatarAnchorRef}
+                stats={statValues}
+                matchStats={stats}
+                cleanSheets={cleanSheetsFromPremium}
+                overallRating={overallRating}
+                proClubLevel={level}
+                proClubIoPending={proClubIoPending}
+                showVipBadge={showVipBadge}
+                creator={creatorBundle}
+                onConfigureStreamer={() => {
+                  setIdentityModalOpen(true);
+                  setAvatarFile(null);
+                  setBannerFile(null);
+                  setError(null);
+                }}
               />
-            </div>
-          </div>
-        </div>
 
-        <div className="relative z-[16] flex flex-col gap-6 pt-[160px] md:flex-row md:items-end md:gap-8 md:pl-[300px] md:pt-12 md:pb-1">
-          <div className="min-w-0 flex-1 text-center md:text-left">
-            <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-black/55 dark:text-white/55">
-              Identité
-            </p>
-            <p className="mt-1 truncate font-mono text-4xl font-semibold text-black dark:text-white">
-              {form.ea_persona_name?.trim() || 'Votre pseudo EA'}
-            </p>
-            <p className="mt-3 text-[10px] font-mono uppercase tracking-[0.3em] text-black/45 dark:text-white/45">
-              {form.preferred_position
-                ? POSITIONS.find((p) => p.value === form.preferred_position)?.label ?? form.preferred_position
-                : 'Position à définir'}
-              {form.nationality ? ` · ${form.nationality}` : ''}
-            </p>
-            <Link
-              to={storeCosmeticsHref}
-              className="mt-5 inline-flex items-center justify-center gap-2 border-[0.5px] border-black/20 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.3em] text-black dark:border-white/20 dark:text-white md:inline-flex"
-            >
-              <Sparkles className="h-4 w-4" />
-              [ PERSONNALISER ]
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-10 space-y-5 border-t-[0.5px] border-black/5 pt-8 dark:border-white/10">
-          <div className="border-b-[0.5px] border-black/5 pb-4 dark:border-white/10">
-            <p className="text-[9px] font-mono uppercase tracking-[0.35em] text-black/50 dark:text-white/50">PSEUDO EA</p>
-            <p className="mt-1 font-mono text-4xl text-black dark:text-white">{form.ea_persona_name?.trim() || '—'}</p>
-          </div>
-          <div className="border-b-[0.5px] border-black/5 pb-4 dark:border-white/10">
-            <p className="text-[9px] font-mono uppercase tracking-[0.35em] text-black/50 dark:text-white/50">POSITION</p>
-            <p className="mt-1 font-mono text-4xl text-black dark:text-white">
-              {form.preferred_position
-                ? POSITIONS.find((p) => p.value === form.preferred_position)?.label ?? form.preferred_position
-                : '—'}
-            </p>
-          </div>
-          <div className="border-b-[0.5px] border-black/5 pb-4 dark:border-white/10">
-            <p className="text-[9px] font-mono uppercase tracking-[0.35em] text-black/50 dark:text-white/50">NATIONALITÉ</p>
-            <p className="mt-1 font-mono text-4xl text-black dark:text-white">{form.nationality || '—'}</p>
-          </div>
-        </div>
-
-        <motion.div
-          className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3"
-          variants={profileBentoContainer}
-          initial="hidden"
-          animate="show"
-        >
-          <BentoStatCard
-            label="Niveau"
-            value={String(level)}
-            sub="Carrière"
-            valuePopDelay={0.3}
-            icon={<StatGaugeIcon pct={levelGaugePct} animationDelay={0.38} />}
-          />
-          <BentoStatCard
-            label="XP Total"
-            value={formatXp(xp)}
-            sub="Progression"
-            valuePopDelay={0.42}
-            icon={<StatGaugeIcon pct={xpGaugePct} animationDelay={0.5} />}
-          />
-          <BentoGoldenBootCard
-            label="Buts"
-            goalsText={stats ? String(stats.goals) : '—'}
-            goalsPopDelay={0.58}
-            sub={
-              stats
-                ? `${stats.assists} passes D. · ${stats.matches} m. équipe`
-                : 'Sync. stats'
-            }
-          />
-        </motion.div>
-      </div>
-
-      {/* Formulaire */}
-      <div className="relative z-[1] mt-14 space-y-8 px-1">
-        <div className="relative overflow-hidden rounded-2xl border border-cyan-500/10 bg-[#0c1018]/90 p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-sm">
-          <div className="pointer-events-none absolute -right-20 top-0 h-48 w-48 rounded-full bg-cyan-500/5 blur-3xl" />
+      {/* Réglages compétition — même logique formulaire, présentation carte */}
+      <div className="relative z-[1] mt-8 space-y-6 sm:mt-10 sm:space-y-8">
+        <div className="relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/95 p-8 shadow-[var(--omjep-shadow-sm)] backdrop-blur-sm">
+          <div className="pointer-events-none absolute -right-20 top-0 h-48 w-48 rounded-full bg-omjep-mauve/10 blur-3xl" />
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0 flex-1">
-            <h2 className="font-display font-bold text-xl text-white">Paramètres du profil</h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-400">
+            <h2 className="font-display text-xl font-bold text-omjep-text-primary">Réglages compétition</h2>
+            <p className="mt-2 text-sm leading-relaxed text-omjep-text-secondary">
               Votre{' '}
-              <span className="font-semibold text-cyan-400">pseudo EA Sports</span> est utilisé pour la
+              <span className="font-semibold text-omjep-mauve">pseudo EA Sports</span> est utilisé pour la
               récupération des stats. Il doit correspondre à votre gamertag.
             </p>
             </div>
@@ -890,45 +733,48 @@ export default function ProfilePage() {
                 setBannerFile(null);
                 setError(null);
               }}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-cyan-400/45 bg-cyan-500/10 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-cyan-100 shadow-[0_0_20px_rgba(34,211,238,0.2)] transition hover:border-cyan-300/70 hover:bg-cyan-500/15"
+              className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl border border-omjep-mauve/45 bg-omjep-mauve/15 px-5 py-3 text-xs font-bold uppercase tracking-wide text-omjep-text-primary shadow-sm transition hover:border-omjep-mauve hover:bg-omjep-mauve/25 sm:min-h-0 sm:py-2.5"
             >
-              <Camera className="h-4 w-4 text-cyan-300" aria-hidden />
-              Modifier l&apos;Identité
+              <Camera className="h-4 w-4" aria-hidden />
+              Modifier l&apos;identité
             </button>
           </div>
         </div>
 
         {success && (
-          <div className="flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 animate-in fade-in slide-in-from-top-2">
-            <CheckCircle className="h-5 w-5 shrink-0 text-emerald-400" />
-            <p className="text-sm font-medium text-emerald-300">Profil mis à jour avec succès !</p>
+          <div className="flex items-center gap-3 rounded-xl border border-omjep-success/30 bg-omjep-success/10 p-4 animate-in fade-in slide-in-from-top-2">
+            <CheckCircle className="h-5 w-5 shrink-0 text-omjep-success" />
+            <p className="text-sm font-medium text-omjep-text-primary">Profil mis à jour avec succès !</p>
           </div>
         )}
 
         {error && (
-          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4">
-            <p className="text-sm text-red-300">{error}</p>
+          <div className="rounded-xl border border-omjep-danger/25 bg-omjep-danger/10 p-4">
+            <p className="text-sm text-omjep-danger">{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-8 rounded-2xl border border-omjep-border bg-omjep-bg-panel/80 p-6 shadow-[var(--omjep-shadow-sm)] md:p-8"
+        >
           <section className="space-y-5">
             <div className="mb-1 flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-amber-400/25 bg-amber-400/10">
-                <Gamepad2 className="h-4 w-4 text-amber-400" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-omjep-mauve/30 bg-omjep-mauve/10">
+                <Gamepad2 className="h-4 w-4 text-omjep-mauve" />
               </div>
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">
                 Informations de jeu
               </h3>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="ea_name" className="block text-sm font-medium text-slate-300">
+              <label htmlFor="ea_name" className="block text-sm font-medium text-omjep-text-primary">
                 Pseudo EA Sports
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                  <User className="h-4 w-4 text-slate-500" />
+                  <User className="h-4 w-4 text-omjep-text-muted" />
                 </div>
                 <input
                   id="ea_name"
@@ -936,14 +782,14 @@ export default function ProfilePage() {
                   value={form.ea_persona_name}
                   onChange={(e) => update('ea_persona_name', e.target.value)}
                   placeholder="Ex: xEagle_Sniper"
-                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white outline-none transition-all placeholder:text-slate-600 hover:border-white/20 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                  className="w-full rounded-xl border border-omjep-border bg-omjep-bg-panel-soft py-3 pl-11 pr-4 text-sm text-omjep-text-primary outline-none transition-all placeholder:text-omjep-text-muted hover:border-omjep-mauve/35 focus:border-omjep-mauve focus:ring-2 focus:ring-omjep-mauve/20"
                 />
               </div>
-              <p className="text-xs text-slate-600">Doit correspondre exactement à votre pseudo en jeu.</p>
+              <p className="text-xs text-omjep-text-muted">Doit correspondre exactement à votre pseudo en jeu.</p>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="position" className="block text-sm font-medium text-slate-300">
+              <label htmlFor="position" className="block text-sm font-medium text-omjep-text-primary">
                 Position préférée
               </label>
               <div className="relative">
@@ -951,19 +797,19 @@ export default function ProfilePage() {
                   id="position"
                   value={form.preferred_position}
                   onChange={(e) => update('preferred_position', e.target.value)}
-                  className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-4 pr-10 text-sm text-white outline-none transition-all hover:border-white/20 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                  className="w-full cursor-pointer appearance-none rounded-xl border border-omjep-border bg-omjep-bg-panel-soft py-3 pl-4 pr-10 text-sm text-omjep-text-primary outline-none transition-all hover:border-omjep-mauve/35 focus:border-omjep-mauve focus:ring-2 focus:ring-omjep-mauve/20"
                 >
-                  <option value="" className="bg-[#0D1221] text-slate-400">
+                  <option value="" className="bg-omjep-bg-panel text-omjep-text-muted">
                     Sélectionnez une position
                   </option>
                   {POSITIONS.map(({ value, label }) => (
-                    <option key={value} value={value} className="bg-[#0D1221] text-white">
+                    <option key={value} value={value} className="bg-omjep-bg-panel text-omjep-text-primary">
                       {label}
                     </option>
                   ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                  <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="h-4 w-4 text-omjep-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -971,23 +817,23 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          <div className="h-px bg-white/5" />
+          <div className="h-px bg-omjep-border/60" />
 
           <section className="space-y-5">
             <div className="mb-1 flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FF6B35]/20 bg-[#FF6B35]/10">
-                <Shield className="h-4 w-4 text-[#FF6B35]" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-omjep-border bg-omjep-bg-elevated/80">
+                <Shield className="h-4 w-4 text-omjep-mauve" />
               </div>
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Identité</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">Identité</h3>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="nationality" className="block text-sm font-medium text-slate-300">
+              <label htmlFor="nationality" className="block text-sm font-medium text-omjep-text-primary">
                 Nationalité
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                  <MapPin className="h-4 w-4 text-slate-500" />
+                  <MapPin className="h-4 w-4 text-omjep-text-muted" />
                 </div>
                 <input
                   id="nationality"
@@ -995,18 +841,18 @@ export default function ProfilePage() {
                   value={form.nationality}
                   onChange={(e) => update('nationality', e.target.value)}
                   placeholder="Ex: Marocain"
-                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white outline-none transition-all placeholder:text-slate-600 hover:border-white/20 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                  className="w-full rounded-xl border border-omjep-border bg-omjep-bg-panel-soft py-3 pl-11 pr-4 text-sm text-omjep-text-primary outline-none transition-all placeholder:text-omjep-text-muted hover:border-omjep-mauve/35 focus:border-omjep-mauve focus:ring-2 focus:ring-omjep-mauve/20"
                 />
               </div>
             </div>
           </section>
 
-          <div className="h-px bg-white/5" />
+          <div className="h-px bg-omjep-border/60" />
 
           <button
             type="submit"
             disabled={saving}
-            className="showcase-neon-submit group relative inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-sky-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-600/25 transition-all hover:from-cyan-500 hover:to-sky-500 hover:shadow-cyan-500/35 hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+            className="group relative inline-flex items-center gap-2.5 rounded-xl border border-omjep-mauve/50 bg-omjep-mauve/20 px-6 py-3 text-sm font-semibold text-omjep-text-primary shadow-[var(--omjep-glow-mauve-soft)] transition-all hover:bg-omjep-mauve/30 hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
           >
             {saving ? (
               <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -1039,7 +885,7 @@ export default function ProfilePage() {
             aria-hidden
           />
           <div
-            className="tactical-modal-panel max-w-md border border-cyan-500/20 p-6 shadow-[0_0_48px_rgba(34,211,238,0.12)]"
+            className="tactical-modal-panel max-w-md border border-omjep-border p-6 shadow-[var(--omjep-shadow-md)]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -1049,48 +895,48 @@ export default function ProfilePage() {
                 setAvatarFile(null);
                 setBannerFile(null);
               }}
-              className="absolute right-4 top-4 rounded-lg p-1 text-slate-500 transition hover:bg-white/5 hover:text-white"
+              className="absolute right-4 top-4 rounded-lg p-1 text-omjep-text-muted transition hover:bg-omjep-bg-panel-soft hover:text-omjep-text-primary"
               aria-label="Fermer"
             >
               <X className="h-5 w-5" />
             </button>
-            <h2 id="identity-modal-title" className="font-display pr-10 text-lg font-bold text-white">
+            <h2 id="identity-modal-title" className="font-display pr-10 text-lg font-bold text-omjep-text-primary">
               Modifier l&apos;identité
             </h2>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-omjep-text-secondary">
               Photo de profil (400x400px, max 5 Mo) et bannière (1500x500px ou vidéo MP4/WebM, max 30 Mo).
             </p>
             <div className="mt-6 space-y-5">
               <div className="space-y-2">
-                <label htmlFor={avatarInputId} className="block text-sm font-medium text-slate-300">
+                <label htmlFor={avatarInputId} className="block text-sm font-medium text-omjep-text-primary">
                   Avatar
                 </label>
                 <input
                   id={avatarInputId}
                   type="file"
                   accept="image/jpeg,image/png,image/gif,image/webp"
-                  className="block w-full text-sm text-slate-400 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-500/15 file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:text-cyan-200"
+                  className="block w-full text-sm text-omjep-text-secondary file:mr-3 file:rounded-lg file:border-0 file:border file:border-omjep-border file:bg-omjep-mauve/12 file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:text-omjep-text-primary"
                   onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
                 />
-                <p className="text-[10px] font-mono text-slate-500">Recommandé : Carré (PNG/JPG)</p>
+                <p className="text-[10px] font-mono text-omjep-text-muted">Recommandé : Carré (PNG/JPG)</p>
                 {avatarFile ? (
-                  <p className="text-xs text-cyan-400/80">{avatarFile.name}</p>
+                  <p className="text-xs text-omjep-mauve">{avatarFile.name}</p>
                 ) : null}
               </div>
               <div className="space-y-2">
-                <label htmlFor={bannerInputId} className="block text-sm font-medium text-slate-300">
+                <label htmlFor={bannerInputId} className="block text-sm font-medium text-omjep-text-primary">
                   Bannière
                 </label>
                 <input
                   id={bannerInputId}
                   type="file"
                   accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm"
-                  className="block w-full text-sm text-slate-400 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-500/15 file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:text-cyan-200"
+                  className="block w-full text-sm text-omjep-text-secondary file:mr-3 file:rounded-lg file:border-0 file:border file:border-omjep-border file:bg-omjep-mauve/12 file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:text-omjep-text-primary"
                   onChange={(e) => setBannerFile(e.target.files?.[0] ?? null)}
                 />
-                <p className="text-[10px] font-mono text-slate-500">Recommandé : 3:1 (JPG ou MP4)</p>
+                <p className="text-[10px] font-mono text-omjep-text-muted">Recommandé : 3:1 (JPG ou MP4)</p>
                 {bannerFile ? (
-                  <p className="text-xs text-cyan-400/80">{bannerFile.name}</p>
+                  <p className="text-xs text-omjep-mauve">{bannerFile.name}</p>
                 ) : null}
               </div>
             </div>
@@ -1102,7 +948,7 @@ export default function ProfilePage() {
                   setAvatarFile(null);
                   setBannerFile(null);
                 }}
-                className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5"
+                className="rounded-xl border border-omjep-border px-4 py-2.5 text-sm font-medium text-omjep-text-secondary transition hover:bg-omjep-bg-panel-soft"
               >
                 Annuler
               </button>
@@ -1110,7 +956,7 @@ export default function ProfilePage() {
                 type="button"
                 disabled={mediaUploading}
                 onClick={() => void handleSaveIdentityMedia()}
-                className="rounded-xl bg-gradient-to-r from-cyan-600 to-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-600/25 transition hover:from-cyan-500 hover:to-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-xl border border-omjep-mauve/45 bg-omjep-mauve/25 px-5 py-2.5 text-sm font-semibold text-omjep-text-primary shadow-[var(--omjep-glow-mauve-soft)] transition hover:bg-omjep-mauve/35 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {mediaUploading ? 'Envoi…' : 'Enregistrer'}
               </button>

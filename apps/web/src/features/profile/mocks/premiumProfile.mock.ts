@@ -1,14 +1,7 @@
 import api from '@/lib/api'
+import type { PlayerCardStoreRarity, UserCardStyle } from '@/features/store/models/playerCardStore.model'
 
-export interface UserCardStyle {
-  storeItemId: string
-  rarity: 'BRONZE' | 'SILVER' | 'GOLD'
-  name: string
-  imageUrl: string
-  cssEffect?: string
-  isEquipped: boolean
-  unlockedAt: string
-}
+export type { UserCardStyle }
 
 export interface UserPremiumProfile {
   id: string
@@ -45,8 +38,20 @@ export interface UserPremiumProfile {
     goals: number
     assists: number
     marketValue: number
+    cleanSheets?: number
   }
   cardStylesInventory: UserCardStyle[]
+  /** false / undefined = callout synchronisation proclub.io côté UI */
+  proClubIoSynced?: boolean
+  vipActive?: boolean
+  streamingProfile?: {
+    youtubeChannel: string
+    kickChannel: string
+    discordCommunity: string
+    mainStreamUrl: string
+    latestVideoLabel: string
+    latestLiveLabel: string
+  }
 }
 
 export const premiumProfileMock: UserPremiumProfile = {
@@ -86,30 +91,41 @@ export const premiumProfileMock: UserPremiumProfile = {
     goals: 38,
     assists: 27,
     marketValue: 18_500_000,
+    cleanSheets: 41,
+  },
+  proClubIoSynced: false,
+  vipActive: true,
+  streamingProfile: {
+    youtubeChannel: 'https://youtube.com/@omjep-showcase',
+    kickChannel: 'https://kick.com/omjep',
+    discordCommunity: 'https://discord.gg/omjep',
+    mainStreamUrl: 'https://twitch.tv/omjep',
+    latestVideoLabel: 'Highlights OMJEP — Pro Clubs Semaine 12',
+    latestLiveLabel: 'Mercato Live — samedi 21h',
   },
   cardStylesInventory: [
     {
-      storeItemId: 'card-style-bronze-ea-fc-26',
-      rarity: 'BRONZE',
-      name: 'Style Non Rare Bronze EA FC 26',
+      storeItemId: 'pc-carbon-common',
+      rarity: 'COMMON',
+      name: 'Carbon Standard',
       imageUrl: '/assets/card-shell-non-rare.svg',
       cssEffect: 'glimmer-bronze',
       isEquipped: false,
       unlockedAt: '2026-04-10T10:30:00.000Z',
     },
     {
-      storeItemId: 'card-style-silver-ea-fc-26',
-      rarity: 'SILVER',
-      name: 'Style Non Rare Argent EA FC 26',
+      storeItemId: 'pc-velocity-rare',
+      rarity: 'RARE',
+      name: 'Velocity Rare',
       imageUrl: '/assets/card-shell-non-rare.svg',
       cssEffect: 'shine-silver',
       isEquipped: false,
       unlockedAt: '2026-04-14T11:45:00.000Z',
     },
     {
-      storeItemId: 'card-style-gold-ea-fc-26',
-      rarity: 'GOLD',
-      name: 'Style Non Rare Or EA FC 26',
+      storeItemId: 'pc-titan-elite',
+      rarity: 'ELITE',
+      name: 'Titan Élite',
       imageUrl: '/assets/card-shell-non-rare.svg',
       cssEffect: 'aura-gold',
       isEquipped: true,
@@ -118,11 +134,12 @@ export const premiumProfileMock: UserPremiumProfile = {
   ],
 }
 
+/** Mappe rareté carte → aura avatar (inclut anciennes valeurs API mock BRONZE/SILVER/GOLD). */
 export const mapCardRarityToIdentityRarity = (
-  rarity: UserCardStyle['rarity'],
+  rarity: PlayerCardStoreRarity | 'BRONZE' | 'SILVER' | 'GOLD',
 ): 'common' | 'premium' | 'legendary' => {
-  if (rarity === 'GOLD') return 'legendary'
-  if (rarity === 'SILVER') return 'premium'
+  if (rarity === 'LEGENDARY' || rarity === 'EPIC' || rarity === 'GOLD') return 'legendary'
+  if (rarity === 'ELITE' || rarity === 'RARE' || rarity === 'SILVER') return 'premium'
   return 'common'
 }
 

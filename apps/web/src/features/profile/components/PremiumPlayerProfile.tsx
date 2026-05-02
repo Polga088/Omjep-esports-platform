@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Loader2,
   Sparkles,
@@ -47,7 +48,9 @@ const PremiumPlayerProfile = ({ profile, isLoading = false }: PremiumPlayerProfi
   )
 
   const hasPremiumEffect =
-    equippedStyle?.rarity === 'GOLD' || equippedStyle?.rarity === 'SILVER'
+    equippedStyle?.rarity === 'LEGENDARY' ||
+    equippedStyle?.rarity === 'EPIC' ||
+    equippedStyle?.rarity === 'ELITE'
 
   const playerPhotoUrl = useMemo(() => {
     if (!profile) return ''
@@ -77,22 +80,22 @@ const PremiumPlayerProfile = ({ profile, isLoading = false }: PremiumPlayerProfi
 
   if (isLoading || !profile || !equippedStyle) {
     return (
-      <div className="flex min-h-[420px] items-center justify-center rounded-2xl border border-white/10 bg-[#080a11]">
-        <Loader2 className="h-9 w-9 animate-spin text-amber-400" />
+      <div className="flex min-h-[420px] items-center justify-center rounded-2xl border border-omjep-border bg-omjep-bg-panel/95">
+        <Loader2 className="h-9 w-9 animate-spin text-omjep-gold" />
       </div>
     )
   }
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-amber-400/15 bg-[#06080f] p-5 shadow-[0_25px_70px_rgba(0,0,0,0.65)] lg:p-7">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(29,78,216,0.2),transparent_45%),radial-gradient(circle_at_bottom_left,rgba(251,191,36,0.2),transparent_38%)]" />
+    <section className="relative overflow-hidden rounded-3xl border border-omjep-border bg-omjep-bg-panel/95 p-5 shadow-[var(--omjep-shadow-lg)] ring-1 ring-omjep-border/70 lg:p-7">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,color-mix(in_srgb,var(--omjep-cobalt)_20%,transparent),transparent_45%),radial-gradient(circle_at_bottom_left,color-mix(in_srgb,var(--omjep-gold)_18%,transparent),transparent_38%)]" />
       <div className="relative grid gap-6 lg:grid-cols-[minmax(320px,420px)_1fr]">
         <article className="relative">
           <button
             type="button"
             onClick={() => void handleDownloadCard()}
             disabled={isDownloading}
-            className="absolute right-3 top-3 z-30 inline-flex items-center gap-2 rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs font-semibold text-slate-100 backdrop-blur-sm transition hover:border-cyan-300/45 hover:text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+            className="absolute right-3 top-3 z-30 inline-flex items-center gap-2 rounded-lg border border-omjep-border bg-omjep-bg-elevated/95 px-3 py-2 text-xs font-semibold text-omjep-text-primary backdrop-blur-sm transition hover:border-omjep-mauve/45 hover:text-omjep-mauve disabled:cursor-not-allowed disabled:opacity-60"
             aria-label="Télécharger la carte premium"
             title="Télécharger la carte premium"
           >
@@ -104,18 +107,18 @@ const PremiumPlayerProfile = ({ profile, isLoading = false }: PremiumPlayerProfi
             PNG HD
           </button>
           {hasPremiumEffect && (
-            <div className="pointer-events-none absolute -inset-3 rounded-3xl bg-gradient-to-r from-amber-400/20 via-cyan-400/15 to-blue-500/20 blur-2xl animate-pulse" />
+            <div className="pointer-events-none absolute -inset-3 rounded-3xl bg-gradient-to-r from-omjep-gold/18 via-omjep-cobalt/14 to-omjep-mauve/16 blur-2xl animate-pulse" />
           )}
           <div
             ref={cardCaptureRef}
-            className="relative rounded-3xl border border-amber-400/35 bg-gradient-to-b from-[#121520] to-[#090c14] p-4"
+            className="relative rounded-3xl border border-omjep-border-gold/35 bg-gradient-to-b from-omjep-bg-elevated to-omjep-bg-panel p-4"
           >
             <img
               src={equippedStyle.imageUrl}
               alt={equippedStyle.name}
-              className={`w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)] ${
+              className={`w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.45)] ${
                 hasPremiumEffect
-                  ? 'brightness-110 drop-shadow-[0_0_30px_rgba(250,204,21,0.2)]'
+                  ? 'brightness-110 drop-shadow-[0_0_28px_color-mix(in_srgb,var(--omjep-gold)_25%,transparent)]'
                   : ''
               }`}
             />
@@ -123,30 +126,30 @@ const PremiumPlayerProfile = ({ profile, isLoading = false }: PremiumPlayerProfi
             <img
               src={playerPhotoUrl}
               alt={profile.displayName}
-              className="pointer-events-none absolute left-1/2 top-[28%] h-[52%] w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white/10 object-cover shadow-[0_20px_45px_rgba(0,0,0,0.65)]"
+              className="pointer-events-none absolute left-1/2 top-[28%] h-[52%] w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-omjep-border object-cover shadow-[var(--omjep-shadow-lg)]"
             />
 
-            <div className="absolute left-6 top-6 text-amber-200">
+            <div className="absolute left-6 top-6 text-omjep-gold">
               <p className="text-5xl font-black leading-none">87</p>
-              <p className="mt-1 text-3xl font-black">{profile.mainPosition}</p>
+              <p className="mt-1 text-3xl font-black text-omjep-text-primary">{profile.mainPosition}</p>
             </div>
 
             <div className="absolute bottom-8 left-6 right-6">
-              <h2 className="text-center text-3xl font-black uppercase tracking-wide text-white drop-shadow-md">
+              <h2 className="text-center text-3xl font-black uppercase tracking-wide text-omjep-text-primary drop-shadow-sm">
                 {profile.displayName}
               </h2>
-              <div className="mt-1 flex items-center justify-center gap-2 text-sm font-bold text-slate-200">
+              <div className="mt-1 flex items-center justify-center gap-2 text-sm font-bold text-omjep-text-secondary">
                 <span>{profile.nationality}</span>
-                <span className="text-slate-500">•</span>
+                <span className="text-omjep-text-muted">•</span>
                 <span>{profile.mainPosition}</span>
               </div>
-              <div className="mt-4 grid grid-cols-6 gap-2 border-t border-white/15 pt-3">
+              <div className="mt-4 grid grid-cols-6 gap-2 border-t border-omjep-border/80 pt-3">
                 {statList.map(({ key, label }) => (
                   <div key={key} className="text-center">
-                    <p className="text-[11px] uppercase tracking-wide text-amber-300/85">
+                    <p className="text-[11px] uppercase tracking-wide text-omjep-gold/90">
                       {label.slice(0, 3)}
                     </p>
-                    <p className="text-xl font-black text-white">
+                    <p className="text-xl font-black text-omjep-text-primary">
                       {profile.attributes[key]}
                     </p>
                   </div>
@@ -156,73 +159,73 @@ const PremiumPlayerProfile = ({ profile, isLoading = false }: PremiumPlayerProfi
           </div>
         </article>
 
-        <article className="space-y-5 rounded-2xl border border-white/10 bg-[#090c15]/90 p-5">
-          <header className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-4">
+        <article className="space-y-5 rounded-2xl border border-omjep-border bg-omjep-bg-panel/95 p-5">
+          <header className="flex flex-wrap items-start justify-between gap-3 border-b border-omjep-border pb-4">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-300/90">
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-omjep-cobalt">
                 {profile.username}
               </p>
-              <h3 className="text-3xl font-black uppercase leading-tight text-white">
+              <h3 className="text-3xl font-black uppercase leading-tight text-omjep-text-primary">
                 {profile.displayName}
               </h3>
-              <p className="mt-2 text-sm text-slate-300">
+              <p className="mt-2 text-sm text-omjep-text-secondary">
                 {profile.age} ans • {profile.heightCm / 100} m • Pied{' '}
                 {profile.preferredFoot === 'LEFT' ? 'gauche' : 'droit'}
               </p>
             </div>
-            <div className="rounded-xl border border-white/15 bg-black/30 px-3 py-2">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">Poste principal</p>
-              <p className="text-3xl font-black text-cyan-200">{profile.mainPosition}</p>
+            <div className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-omjep-text-muted">Poste principal</p>
+              <p className="text-3xl font-black text-omjep-cobalt">{profile.mainPosition}</p>
             </div>
           </header>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">Équipe actuelle</p>
+            <div className="rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/80 p-3">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-omjep-text-muted">Équipe actuelle</p>
               <div className="mt-2 flex items-center gap-2">
                 <img
                   src={profile.currentClub.logoUrl}
                   alt={profile.currentClub.name}
-                  className="h-10 w-10 rounded-md bg-white object-contain p-1"
+                  className="h-10 w-10 rounded-md border border-omjep-border bg-omjep-bg-elevated object-contain p-1"
                 />
                 <div>
-                  <p className="text-base font-bold text-white">{profile.currentClub.name}</p>
-                  <p className="text-xs text-cyan-200">{profile.currentClub.league}</p>
+                  <p className="text-base font-bold text-omjep-text-primary">{profile.currentClub.name}</p>
+                  <p className="text-xs text-omjep-cobalt">{profile.currentClub.league}</p>
                 </div>
               </div>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">Valeur marchande</p>
-              <p className="mt-2 text-4xl font-black text-amber-300">
+            <div className="rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/80 p-3">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-omjep-text-muted">Valeur marchande (OC)</p>
+              <p className="mt-2 text-4xl font-black text-omjep-gold">
                 {formatMarketValue(profile.performance.marketValue)}
               </p>
-              <p className="text-xs text-slate-400">OMJEP Coins</p>
+              <p className="text-xs text-omjep-text-muted">Économie club — pas JPY cosmétique</p>
             </div>
           </div>
 
-          <div className="space-y-3 rounded-xl border border-white/10 bg-[#05070c]/75 p-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/90">
+          <div className="space-y-3 rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/70 p-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-cobalt">
               Attributs clés
             </p>
             {statList.map(({ key, label }) => {
               const value = profile.attributes[key]
               return (
                 <div key={key} className="grid grid-cols-[90px_1fr_42px] items-center gap-3">
-                  <p className="text-sm font-semibold text-slate-200">{label}</p>
-                  <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
+                  <p className="text-sm font-semibold text-omjep-text-primary">{label}</p>
+                  <div className="h-2.5 overflow-hidden rounded-full bg-omjep-bg-elevated">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-300 shadow-[0_0_14px_rgba(251,191,36,0.45)]"
+                      className="h-full rounded-full bg-gradient-to-r from-omjep-mauve via-omjep-cobalt to-omjep-gold/90 shadow-[0_0_12px_color-mix(in_srgb,var(--omjep-mauve)_35%,transparent)]"
                       style={{ width: `${value}%` }}
                     />
                   </div>
-                  <p className="text-right text-xl font-black text-white">{value}</p>
+                  <p className="text-right text-xl font-black text-omjep-text-primary">{value}</p>
                 </div>
               )
             })}
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-[#05070c]/75 p-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/90">
+          <div className="rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/70 p-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-cobalt">
               Styles de jeu
             </p>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -231,14 +234,30 @@ const PremiumPlayerProfile = ({ profile, isLoading = false }: PremiumPlayerProfi
                 return (
                   <div
                     key={style.id}
-                    className="inline-flex items-center gap-2 rounded-lg border border-amber-400/25 bg-amber-500/10 px-3 py-2"
+                    className="inline-flex items-center gap-2 rounded-lg border border-omjep-mauve/35 bg-omjep-mauve/10 px-3 py-2"
                   >
-                    <Icon className="h-4 w-4 text-amber-200" />
-                    <span className="text-sm font-semibold text-slate-100">{style.label}</span>
+                    <Icon className="h-4 w-4 text-omjep-mauve" />
+                    <span className="text-sm font-semibold text-omjep-text-primary">{style.label}</span>
                   </div>
                 )
               })}
             </div>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <Link
+              to="/dashboard/store?tab=card-styles"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-omjep-mauve/50 bg-omjep-mauve px-4 py-3 text-center text-xs font-black uppercase tracking-wide text-white shadow-[var(--omjep-glow-mauve-soft)] transition hover:brightness-110"
+            >
+              <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
+              Personnaliser ma carte
+            </Link>
+            <Link
+              to="/dashboard/store?tab=cosmetics"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-omjep-border bg-omjep-bg-elevated px-4 py-3 text-xs font-bold uppercase tracking-wide text-omjep-text-primary transition hover:border-omjep-mauve/40"
+            >
+              Boutique cosmétiques
+            </Link>
           </div>
         </article>
       </div>
