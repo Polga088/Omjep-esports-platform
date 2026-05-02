@@ -8,6 +8,10 @@ import LevelUpOverlay from '@/components/LevelUpOverlay';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { xpProgress } from '@/lib/leveling';
+import {
+  mercatoCanInitiateTransferOffer,
+  type MercatoMyTeamPayload,
+} from '@/utils/mercatoInitiatorPermission';
 
 interface ProfileCardResponse {
   user: {
@@ -59,11 +63,6 @@ interface ProfileData {
   marketValue: number | null;
 }
 
-interface MyTeamData {
-  id: string;
-  name: string;
-  budget: number;
-}
 
 function computeOverall(stats: ProfileData['stats']): number {
   if (!stats || stats.matches_played === 0) return 50;
@@ -193,7 +192,7 @@ export default function ProfileDetail() {
   const [copied, setCopied] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
 
-  const [myTeam, setMyTeam] = useState<MyTeamData | null>(null);
+  const [myTeam, setMyTeam] = useState<MercatoMyTeamPayload | null>(null);
   const [transferModalOpen, setTransferModalOpen] = useState(false);
   const [pendingOfferForPlayer, setPendingOfferForPlayer] = useState<PendingOfferRecap | null>(null);
 
@@ -245,7 +244,7 @@ export default function ProfileDetail() {
   useEffect(() => {
     let cancelled = false;
     api
-      .get<MyTeamData>('/teams/my-team')
+      .get<MercatoMyTeamPayload>('/teams/my-team')
       .then(({ data }) => {
         if (!cancelled) setMyTeam(data);
       })
@@ -254,7 +253,7 @@ export default function ProfileDetail() {
   }, []);
 
   const loadPendingOfferForPlayer = useCallback(async () => {
-    if (!myTeam?.id || !id) {
+    if (!myTeam?.id || !id || !mercatoCanInitiateTransferOffer(authUser, myTeam)) {
       setPendingOfferForPlayer(null);
       return;
     }
@@ -294,7 +293,7 @@ export default function ProfileDetail() {
     } catch {
       setPendingOfferForPlayer(null);
     }
-  }, [myTeam?.id, id]);
+  }, [myTeam?.id, id, authUser, myTeam]);
 
   useEffect(() => {
     void loadPendingOfferForPlayer();
@@ -330,7 +329,7 @@ export default function ProfileDetail() {
     !isInMyTeam &&
     myTeam &&
     data?.team &&
-    (authUser?.role === 'MANAGER' || authUser?.role === 'ADMIN');
+    mercatoCanInitiateTransferOffer(authUser, myTeam);
 
   return (
     <div className="space-y-8">
@@ -462,6 +461,7 @@ export default function ProfileDetail() {
             marketValue: data.marketValue,
           }}
           myTeam={myTeam}
+          canInitiateTransfers={mercatoCanInitiateTransferOffer(authUser, myTeam)}
           pendingOfferFromMyClub={pendingOfferForPlayer}
           onSuccess={() => void loadPendingOfferForPlayer()}
         />

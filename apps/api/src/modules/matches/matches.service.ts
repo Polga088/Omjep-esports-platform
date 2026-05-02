@@ -216,11 +216,19 @@ export class MatchesService {
       select: { team_id: true },
     });
 
-    if (!membership) {
-      throw new NotFoundException("Vous n'appartenez à aucune équipe.");
+    let teamId = membership?.team_id ?? null;
+    if (!teamId) {
+      // Fallback métier: manager désigné sans membership explicite.
+      const managedTeam = await this.prisma.club.findFirst({
+        where: { manager_id: userId },
+        select: { id: true },
+      });
+      teamId = managedTeam?.id ?? null;
     }
 
-    const teamId = membership.team_id;
+    if (!teamId) {
+      throw new NotFoundException("Vous n'appartenez à aucune équipe.");
+    }
 
     const matches = await this.prisma.match.findMany({
       where: {

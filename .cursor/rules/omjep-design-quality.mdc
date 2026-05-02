@@ -1,0 +1,85 @@
+---
+description: OMJEP design quality rules
+globs:
+  - "apps/web/src/**/*"
+alwaysApply: true
+---
+
+# OMJEP Design Quality Rules
+
+Use these references only as inspiration:
+- .cursor/references/design/shadcn-ui
+- .cursor/references/design/magicui
+- .cursor/references/design/shadcnspace
+- .cursor/references/design/shadcn-dashboard-template
+
+Do not copy full files blindly.
+Do not replace the app architecture.
+Do not add heavy dependencies unless explicitly approved.
+
+## OMJEP visual direction
+
+OMJEP is not a generic SaaS dashboard.
+It is an esports platform with:
+- FIFA / FUT inspired player cards
+- premium gaming dashboards
+- club identity
+- mercato economy
+- competitions and schedules
+
+## Design style
+
+Dark mode:
+- navy / slate background, never pure black
+- elevated cards
+- subtle glow
+- readable text
+
+Light mode:
+- soft slate background
+- white elevated cards
+- clear borders
+- no pale low-contrast text
+
+Colors:
+- Mauve = primary action
+- Cobalt = league / sport data
+- Gold = premium / UCL / legendary
+- Green = success
+- Red = errors only
+
+## Components quality
+
+Every UI change must include:
+- empty state
+- loading state
+- error state
+- mobile behavior
+- light/dark readability
+
+## Forbidden
+
+Never modify:
+- backend
+- DB
+- auth
+- proxy
+- deploy
+- global theme
+unless explicitly requested.
+
+Never add:
+- random gradients everywhere
+- unreadable glassmorphism
+- text-black on dark
+- text-white on light
+- giant animations that hurt performance
+
+## Before coding
+
+For visual work, first describe:
+1. visual goal
+2. exact pages
+3. components to touch
+4. references used
+5. expected QA checklist

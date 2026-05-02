@@ -28,6 +28,34 @@ export class ClubsService {
     private readonly proClubsService: ProClubsService,
   ) {}
 
+  /**
+   * Garantit la présence du manager dans `team_members` (idempotent).
+   * Utilisé pour aligner le métier manager_id avec les endpoints basés membership.
+   */
+  private async ensureManagerMembership(
+    tx: Prisma.TransactionClient,
+    teamId: string,
+    managerId: string | null | undefined,
+  ) {
+    if (!managerId) return;
+    await tx.teamMember.upsert({
+      where: {
+        user_id_team_id: {
+          user_id: managerId,
+          team_id: teamId,
+        },
+      },
+      create: {
+        user_id: managerId,
+        team_id: teamId,
+        club_role: ClubRole.MANAGER,
+      },
+      update: {
+        club_role: ClubRole.MANAGER,
+      },
+    });
+  }
+
   /** Liste des clubs visibles côté admin (tableau principal) — uniquement validés. */
   async findAll() {
     return this.prisma.club.findMany({
@@ -274,9 +302,12 @@ export class ClubsService {
           data: {
             team_id: created.id,
             user_id: managerId,
-            club_role: 'FOUNDER',
+            club_role: ClubRole.MANAGER,
           },
         });
+
+        // Double sécurité métier (idempotente) pour les flux internes.
+        await this.ensureManagerMembership(tx, created.id, managerId);
 
         return created;
       });
@@ -442,10 +473,15 @@ export class ClubsService {
 
   async adminValidateClub(clubId: string, dto: AdminValidateClubDto) {
     try {
-      return await this.prisma.club.update({
-        where: { id: clubId },
-        data: { validation_status: dto.validation_status },
+      const club = await this.prisma.$transaction(async (tx) => {
+        const updated = await tx.club.update({
+          where: { id: clubId },
+          data: { validation_status: dto.validation_status },
+        });
+        await this.ensureManagerMembership(tx, updated.id, updated.manager_id);
+        return updated;
       });
+      return club;
     } catch (error) {
       console.error('Erreur Validation Locale:', error);
       return { id: clubId, validation_status: dto.validation_status };

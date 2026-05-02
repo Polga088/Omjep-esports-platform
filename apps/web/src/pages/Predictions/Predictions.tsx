@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Loader2, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Loader2, Clock, CheckCircle2, XCircle, Dices, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -171,14 +172,14 @@ export default function Predictions() {
   if (loading) {
     return (
       <div className="space-y-5">
-        <div className="rounded-3xl border border-white/[0.06] bg-[#0B0D13]/90 p-5 backdrop-blur-md">
-          <div className="flex items-center gap-2 text-sm text-slate-300">
-            <Loader2 className="h-4 w-4 animate-spin text-emerald-400" />
+        <div className="omjep-dash-card p-5">
+          <div className="flex items-center gap-2 text-sm text-omjep-text-secondary">
+            <Loader2 className="h-4 w-4 animate-spin text-omjep-mauve" />
             Chargement des pronostics…
           </div>
           {isLongLoading ? (
-            <p className="mt-2 text-xs text-slate-500">
-              Les données arrivent, l’interface reste synchronisée avec votre session.
+            <p className="mt-2 text-xs text-omjep-text-muted">
+              Les données arrivent, l&apos;interface reste synchronisée avec votre session.
             </p>
           ) : null}
         </div>
@@ -186,7 +187,7 @@ export default function Predictions() {
           {Array.from({ length: 3 }).map((_, idx) => (
             <div
               key={`predictions-stat-loading-${idx}`}
-              className="h-24 animate-pulse rounded-2xl border border-white/10 bg-[#0B0D13]/70"
+              className="h-24 animate-pulse rounded-2xl border border-omjep-border bg-omjep-bg-panel-soft/80"
             />
           ))}
         </div>
@@ -194,7 +195,7 @@ export default function Predictions() {
           {Array.from({ length: 2 }).map((_, idx) => (
             <div
               key={`predictions-card-loading-${idx}`}
-              className="h-44 animate-pulse rounded-2xl border border-white/10 bg-[#0B0D13]/60"
+              className="h-44 animate-pulse rounded-2xl border border-omjep-border bg-omjep-bg-panel-soft/70"
             />
           ))}
         </div>
@@ -204,8 +205,8 @@ export default function Predictions() {
 
   return (
     <div className="space-y-8">
-      <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0B0D13]/90 backdrop-blur-md">
-        <div className="border-b border-white/[0.06] px-6 py-5">
+      <div className="omjep-dash-card overflow-hidden">
+        <div className="border-b border-omjep-border px-6 py-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <DashboardPageHeading
               eyebrow="Predict & Win"
@@ -213,14 +214,14 @@ export default function Predictions() {
               subtitle="Pariez sur les scores et suivez vos performances"
               className="border-b-0 pb-0"
             />
-            <div className="inline-flex rounded-xl border border-white/10 bg-black/30 p-1">
+            <div className="inline-flex rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/80 p-1">
               <button
                 type="button"
                 onClick={() => setTab('paris')}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
                   tab === 'paris'
-                    ? 'bg-emerald-500/20 text-emerald-300'
-                    : 'text-slate-500 hover:text-white'
+                    ? 'bg-omjep-mauve/20 text-omjep-text-primary'
+                    : 'text-omjep-text-muted hover:text-omjep-text-primary'
                 }`}
               >
                 Paris
@@ -230,15 +231,15 @@ export default function Predictions() {
                 onClick={() => setTab('history')}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
                   tab === 'history'
-                    ? 'bg-emerald-500/20 text-emerald-300'
-                    : 'text-slate-500 hover:text-white'
+                    ? 'bg-omjep-mauve/20 text-omjep-text-primary'
+                    : 'text-omjep-text-muted hover:text-omjep-text-primary'
                 }`}
               >
                 Mes Pronos
               </button>
             </div>
           </div>
-          <p className="mt-3 text-sm text-slate-500">
+          <p className="mt-3 text-sm text-omjep-text-secondary">
             Score exact = gain ×3 sur votre mise (Jepy). Une seule prédiction par match.
           </p>
         </div>
@@ -249,8 +250,29 @@ export default function Predictions() {
       {tab === 'paris' && (
         <div className="space-y-6">
           {upcoming.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-[#0B0D13]/60 p-12 text-center backdrop-blur-sm">
-              <p className="text-sm text-slate-500">Aucun match ouvert aux paris pour le moment.</p>
+            <div className="omjep-dash-card p-10 text-center md:p-12">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-omjep-mauve/35 bg-omjep-mauve/10 text-omjep-mauve">
+                <Dices className="h-6 w-6" aria-hidden />
+              </div>
+              <p className="text-sm font-semibold text-omjep-text-primary">Aucun match ouvert aux paris</p>
+              <p className="mx-auto mt-2 max-w-md text-xs text-omjep-text-secondary">
+                Revenez quand le calendrier publiera de nouvelles rencontres. En attendant, consultez le classement ou votre profil.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-2">
+                <Link
+                  to="/dashboard/schedule"
+                  className="inline-flex items-center gap-2 rounded-xl border border-omjep-border bg-omjep-bg-elevated/80 px-4 py-2 text-xs font-semibold text-omjep-text-primary transition-colors hover:border-omjep-mauve/40"
+                >
+                  Calendrier
+                </Link>
+                <Link
+                  to="/dashboard/leaderboard"
+                  className="inline-flex items-center gap-2 rounded-xl border border-omjep-border-gold/40 bg-omjep-gold/10 px-4 py-2 text-xs font-semibold text-omjep-gold transition-colors hover:bg-omjep-gold/15"
+                >
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                  Classement
+                </Link>
+              </div>
             </div>
           ) : (
             upcoming.map((match) => {
@@ -289,8 +311,18 @@ export default function Predictions() {
       {tab === 'history' && (
         <div className="space-y-3">
           {mine.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-[#0B0D13]/60 p-12 text-center backdrop-blur-sm">
-              <p className="text-sm text-slate-500">Aucun pronostic pour l&apos;instant.</p>
+            <div className="omjep-dash-card p-10 text-center md:p-12">
+              <p className="text-sm font-semibold text-omjep-text-primary">Aucun pronostic pour l&apos;instant</p>
+              <p className="mx-auto mt-2 max-w-md text-xs text-omjep-text-secondary">
+                Vos mises apparaîtront ici après votre premier pari sur un match ouvert.
+              </p>
+              <button
+                type="button"
+                onClick={() => setTab('paris')}
+                className="mt-6 inline-flex items-center justify-center rounded-xl border border-omjep-mauve/45 bg-omjep-mauve/12 px-5 py-2.5 text-xs font-semibold text-omjep-text-primary transition-colors hover:bg-omjep-mauve/18"
+              >
+                Voir les paris
+              </button>
             </div>
           ) : (
             mine.map((p) => {
@@ -314,11 +346,11 @@ export default function Predictions() {
                       {p.status === 'WON' && <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />}
                       {p.status === 'LOST' && <XCircle className="h-4 w-4 shrink-0 text-red-400" />}
                       {p.status === 'PENDING' && <Clock className="h-4 w-4 shrink-0 text-amber-400" />}
-                      <span className="truncate text-sm font-semibold text-white">
+                      <span className="truncate text-sm font-semibold text-omjep-text-primary">
                         {m.homeTeam.name ?? '—'} vs {m.awayTeam.name ?? '—'}
                       </span>
                     </div>
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-omjep-text-muted">
                       Votre prono : {p.homeScore} - {p.awayScore} · Mise {formatCurrency(p.betAmount, 'Jepy')}
                       {finalH != null && finalA != null && (
                         <span className="text-slate-400">
@@ -327,7 +359,7 @@ export default function Predictions() {
                         </span>
                       )}
                     </p>
-                    <p className="mt-0.5 text-[10px] text-slate-600">
+                    <p className="mt-0.5 text-[10px] text-omjep-text-muted">
                       {new Date(p.created_at).toLocaleString('fr-FR')}
                     </p>
                   </div>

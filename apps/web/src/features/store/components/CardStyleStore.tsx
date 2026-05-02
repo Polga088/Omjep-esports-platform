@@ -1,258 +1,234 @@
-import { useEffect, useState } from 'react'
-import { Coins, Loader2, Check } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Loader2, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
-import api from '@/lib/api'
+import { formatCurrency } from '@/utils/formatCurrency'
+import type { PlayerCardStoreItem, PlayerCardStoreRarity } from '@/features/store/models/playerCardStore.model'
 import {
-  getEquippedCardStyle,
-  premiumProfileMock,
-} from '@/features/profile/mocks/premiumProfile.mock'
-
-interface StoreItem {
-  id: string
-  type: 'CARD_STYLE'
-  name: string
-  description: string
-  price: number
-  imageUrl: string
-  rarity: 'BRONZE' | 'SILVER' | 'GOLD'
-  metadata: {
-    cssEffect?: string
-  }
-}
-
-const DEFAULT_USER_COINS = 500
-const EQUIPPED_CARD_STYLE_STORAGE_KEY = 'omjep-equipped-card-style-id'
-
-const fallbackCardStyleItems: StoreItem[] = [
-  {
-    id: 'card-style-bronze-ea-fc-26',
-    type: 'CARD_STYLE',
-    name: 'Style Non Rare Bronze EA FC 26',
-    description: 'Palette bronze avec reflet léger pour une carte sobre et élégante.',
-    price: 200,
-    imageUrl: '/assets/card-shell-non-rare.svg',
-    rarity: 'BRONZE',
-    metadata: { cssEffect: 'glimmer-bronze' },
-  },
-  {
-    id: 'card-style-silver-ea-fc-26',
-    type: 'CARD_STYLE',
-    name: 'Style Non Rare Argent EA FC 26',
-    description: 'Finition argent et contour renforcé pour une présence plus premium.',
-    price: 300,
-    imageUrl: '/assets/card-shell-non-rare.svg',
-    rarity: 'SILVER',
-    metadata: { cssEffect: 'shine-silver' },
-  },
-  {
-    id: 'card-style-gold-ea-fc-26',
-    type: 'CARD_STYLE',
-    name: 'Style Non Rare Or EA FC 26',
-    description: 'Cadre or signature avec un rendu rare inspiré des visuels de référence.',
-    price: 450,
-    imageUrl: '/assets/card-shell-non-rare.svg',
-    rarity: 'GOLD',
-    metadata: { cssEffect: 'aura-gold' },
-  },
-]
-
-const rarityStyles: Record<StoreItem['rarity'], string> = {
-  BRONZE: 'border-[#ad6f35]/40 from-[#ad6f35]/20 to-[#120d09]',
-  SILVER: 'border-slate-300/35 from-slate-300/20 to-[#0f1218]',
-  GOLD: 'border-amber-300/45 from-amber-400/30 to-[#171308]',
-}
+  PLAYER_CARD_MOCK_CATALOG,
+  PLAYER_CARD_STORE_CHANGED,
+  activatePlayerCardMock,
+  buyPlayerCardMock,
+  getPlayerCardJpyBalance,
+  isGoldTierRarity,
+  playerCardRarityBadgeClass,
+  playerCardRarityLabel,
+  playerCardStoreTileBg,
+  readPlayerCardStoreState,
+  seedPlayerCardMockIfEmpty,
+} from '@/features/store/models/playerCardStore.model'
 
 interface CardStyleStoreProps {
-  userCoins?: number
-  onWalletChange?: (nextCoins: number) => void
-  onEquippedStyleChange?: (rarity: StoreItem['rarity']) => void
+  /** Solde JPY (mock : décrémenté localement + patch parent). */
+  balanceJpy: number
+  onBalanceJpyChange?: (nextJpy: number) => void
+  onEquippedRarityChange?: (rarity: PlayerCardStoreRarity) => void
 }
 
 const CardStyleStore = ({
-  userCoins: userCoinsProp,
-  onWalletChange,
-  onEquippedStyleChange,
+  balanceJpy,
+  onBalanceJpyChange,
+  onEquippedRarityChange,
 }: CardStyleStoreProps) => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [isBuyingId, setIsBuyingId] = useState<string | null>(null)
-  const [userCoins, setUserCoins] = useState(userCoinsProp ?? DEFAULT_USER_COINS)
-  const [items, setItems] = useState<StoreItem[]>([])
-  const [inventoryIds, setInventoryIds] = useState<string[]>([])
-  const [equippedStyleId, setEquippedStyleId] = useState<string | null>(null)
+  const [ready, setReady] = useState(false)
+  const [tick, setTick] = useState(0)
+  const [busyId, setBusyId] = useState<string | null>(null)
+  const [jpyBalance, setJpyBalance] = useState<number>(balanceJpy)
+
+  const refresh = useCallback(() => setTick((t) => t + 1), [])
 
   useEffect(() => {
-    if (typeof userCoinsProp === 'number' && Number.isFinite(userCoinsProp)) {
-      setUserCoins(userCoinsProp)
-    }
-  }, [userCoinsProp])
+    const state = readPlayerCardStoreState()
+    setJpyBalance(state.jpyBalance)
+    onBalanceJpyChange?.(state.jpyBalance)
+    setReady(true)
+  }, [onBalanceJpyChange])
 
   useEffect(() => {
-    let isCancelled = false
+    const handler = () => refresh()
+    window.addEventListener(PLAYER_CARD_STORE_CHANGED, handler)
+    return () => window.removeEventListener(PLAYER_CARD_STORE_CHANGED, handler)
+  }, [refresh])
 
-    const loadItems = async () => {
-      try {
-        const { data } = await api.get<StoreItem[]>('/store/items', {
-          params: { type: 'CARD_STYLE' },
-        })
-        if (!isCancelled && Array.isArray(data) && data.length > 0) {
-          setItems(data)
-          return
-        }
-      } catch {
-        // Fallback local tant que le backend mock n'est pas branché
-      }
+  const { inventoryIds, activeId } = useMemo(() => {
+    void tick
+    const { inventory, activeId: a } = seedPlayerCardMockIfEmpty()
+    return { inventoryIds: new Set(inventory), activeId: a }
+  }, [tick])
 
-      if (!isCancelled) {
-        setItems(fallbackCardStyleItems)
+  useEffect(() => {
+    if (!ready) return
+    const next = getPlayerCardJpyBalance()
+    setJpyBalance(next)
+    onBalanceJpyChange?.(next)
+  }, [tick, ready, onBalanceJpyChange])
 
-        const initialInventory = premiumProfileMock.cardStylesInventory.map(
-          (cardStyle) => cardStyle.storeItemId,
-        )
-        setInventoryIds(initialInventory)
+  const sortedCatalog = useMemo(
+    () =>
+      [...PLAYER_CARD_MOCK_CATALOG].sort((a, b) => {
+        const order: PlayerCardStoreRarity[] = ['COMMON', 'RARE', 'ELITE', 'EPIC', 'LEGENDARY']
+        return order.indexOf(a.rarity) - order.indexOf(b.rarity)
+      }),
+    [],
+  )
 
-        const localEquippedStyleId = localStorage.getItem(EQUIPPED_CARD_STYLE_STORAGE_KEY)
-        const mockEquippedStyle = getEquippedCardStyle(premiumProfileMock)
-        const resolvedEquippedStyleId = localEquippedStyleId ?? mockEquippedStyle?.storeItemId ?? null
-        setEquippedStyleId(resolvedEquippedStyleId)
-
-        const equippedRarity = fallbackCardStyleItems.find(
-          (item) => item.id === resolvedEquippedStyleId,
-        )?.rarity
-        if (equippedRarity) {
-          onEquippedStyleChange?.(equippedRarity)
-        } else if (mockEquippedStyle?.rarity) {
-          onEquippedStyleChange?.(mockEquippedStyle.rarity)
-        }
-      }
-    }
-
-    void loadItems().finally(() => {
-      if (!isCancelled) {
-        setIsLoading(false)
-      }
-    })
-
-    return () => {
-      isCancelled = true
-    }
-  }, [])
-
-  const equipStyle = (item: StoreItem) => {
-    setEquippedStyleId(item.id)
-    localStorage.setItem(EQUIPPED_CARD_STYLE_STORAGE_KEY, item.id)
-    onEquippedStyleChange?.(item.rarity)
-    toast.success(`${item.name} équipé sur votre profil`)
-  }
-
-  const handleBuy = async (item: StoreItem) => {
-    if (userCoins < item.price) {
-      toast.error('Solde OC insuffisant pour cet achat')
+  const handleBuy = (item: PlayerCardStoreItem) => {
+    if (inventoryIds.has(item.id)) return
+    if (jpyBalance < item.priceJpy) {
+      toast.error('Solde Jepy insuffisant.')
       return
     }
-
-    if (inventoryIds.includes(item.id)) {
-      equipStyle(item)
-      return
-    }
-
-    setIsBuyingId(item.id)
-    await new Promise((resolve) => setTimeout(resolve, 450))
-    const nextCoins = userCoins - item.price
-    setUserCoins(nextCoins)
-    onWalletChange?.(nextCoins)
-    setInventoryIds((previousIds) => [...previousIds, item.id])
-    equipStyle(item)
-    setIsBuyingId(null)
-    toast.success(`${item.name} débloqué et ajouté à l'inventaire`)
+    setBusyId(item.id)
+    window.setTimeout(() => {
+      const ok = buyPlayerCardMock(item.id, item.priceJpy, jpyBalance)
+      if (!ok) {
+        toast.error('Solde Jepy insuffisant.')
+        setBusyId(null)
+        return
+      }
+      const next = getPlayerCardJpyBalance()
+      setJpyBalance(next)
+      onBalanceJpyChange?.(next)
+      toast.success(`Achat confirmé : « ${item.name} » ajoutée à votre inventaire.`)
+      refresh()
+      setBusyId(null)
+    }, 380)
   }
 
-  const ownedCount = inventoryIds.length
+  const handleActivate = (item: PlayerCardStoreItem) => {
+    if (!inventoryIds.has(item.id)) return
+    setBusyId(item.id)
+    window.setTimeout(() => {
+      const ok = activatePlayerCardMock(item.id)
+      if (!ok) {
+        toast.error('Activation impossible pour cette carte.')
+        setBusyId(null)
+        return
+      }
+      onEquippedRarityChange?.(item.rarity)
+      toast.success(`Carte active : ${item.name}`)
+      refresh()
+      setBusyId(null)
+    }, 200)
+  }
 
-  if (isLoading) {
+  if (!ready) {
     return (
-      <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-white/10 bg-[#090b12]">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-400" />
+      <div className="flex min-h-[280px] items-center justify-center rounded-2xl border border-omjep-border bg-omjep-bg-panel/90">
+        <Loader2 className="h-9 w-9 animate-spin text-omjep-mauve" aria-hidden />
       </div>
     )
   }
 
   return (
-    <section className="space-y-5 rounded-2xl border border-white/10 bg-[#080a12] p-5">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-amber-300/80">
-            Store Customisation
+    <section className="space-y-6" aria-labelledby="player-cards-store-heading">
+      <header className="flex flex-col gap-4 border-b border-omjep-border/80 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0 space-y-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-omjep-mauve">Boutique JPY</p>
+          <h2 id="player-cards-store-heading" className="font-display text-2xl font-black text-omjep-text-primary">
+            Cartes joueur
+          </h2>
+          <p className="max-w-xl text-sm leading-relaxed text-omjep-text-secondary">
+            Styles et cadres achetables en <span className="font-semibold text-omjep-mauve">Jepy</span> uniquement.
+            Équipez une carte pour votre profil public et vos exports — phase mock locale, sans persistance serveur.
           </p>
-          <h2 className="text-xl font-black text-white">Styles de cartes premium</h2>
         </div>
-        <div className="inline-flex items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-1.5 text-xs font-semibold text-amber-200">
-            <Coins className="h-4 w-4" />
-            {userCoins} OC
-          </span>
-          <span className="rounded-lg border border-cyan-400/25 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-cyan-200">
-            {ownedCount} débloqué(s)
-          </span>
+        <div className="flex shrink-0 items-center gap-2 rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/80 px-4 py-3">
+          <Sparkles className="h-5 w-5 text-omjep-mauve" aria-hidden />
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-omjep-text-muted">Solde</p>
+            <p className="font-mono text-lg font-black tabular-nums text-omjep-text-primary">
+              {formatCurrency(jpyBalance, 'Jepy')}
+            </p>
+          </div>
         </div>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        {items.map((item) => {
-          const isOwned = inventoryIds.includes(item.id)
-          const isBusy = isBuyingId === item.id
-          const isEquipped = equippedStyleId === item.id
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {sortedCatalog.map((item) => {
+          const owned = inventoryIds.has(item.id)
+          const active = activeId === item.id
+          const busy = busyId === item.id
+          const goldTier = isGoldTierRarity(item.rarity)
+          const tileBg = playerCardStoreTileBg[item.rarity]
 
           return (
             <article
               key={item.id}
-              className={`overflow-hidden rounded-xl border bg-gradient-to-b ${rarityStyles[item.rarity]}`}
+              className={`flex flex-col overflow-hidden rounded-2xl border border-omjep-border bg-gradient-to-b ${tileBg} shadow-[var(--omjep-shadow-sm)] transition hover:border-omjep-mauve/35 hover:shadow-[var(--omjep-shadow-md)]`}
             >
-              <div className="relative aspect-[7/10] border-b border-white/10 bg-[#090b12] p-3">
+              <div
+                className={`relative aspect-[7/10] border-b border-omjep-border/70 bg-omjep-bg-elevated/90 p-4 ${
+                  goldTier ? 'ring-1 ring-omjep-border-gold/30' : ''
+                }`}
+              >
+                <div
+                  className={`pointer-events-none absolute inset-0 opacity-90 ${
+                    goldTier
+                      ? 'bg-[radial-gradient(ellipse_at_50%_0%,color-mix(in_srgb,var(--omjep-gold)_22%,transparent),transparent_58%)]'
+                      : 'bg-[radial-gradient(ellipse_at_50%_0%,color-mix(in_srgb,var(--omjep-mauve)_12%,transparent),transparent_55%)]'
+                  }`}
+                />
                 <img
                   src={item.imageUrl}
-                  alt={item.name}
-                  className="h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.65)]"
+                  alt=""
+                  className="relative z-[1] mx-auto h-full max-h-[min(100%,220px)] w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)]"
                 />
+                <span
+                  className={`absolute right-3 top-3 z-[2] rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${playerCardRarityBadgeClass[item.rarity]}`}
+                >
+                  {playerCardRarityLabel[item.rarity]}
+                </span>
               </div>
-              <div className="space-y-2 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                    {item.rarity}
-                  </p>
-                  {isEquipped ? (
-                    <span className="rounded-md border border-cyan-400/35 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cyan-200">
-                      Équipé
-                    </span>
-                  ) : null}
+
+              <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+                <div className="min-h-0 flex-1 space-y-2">
+                  <h3 className="text-base font-bold leading-snug text-omjep-text-primary">{item.name}</h3>
+                  <p className="line-clamp-3 text-sm text-omjep-text-secondary">{item.description}</p>
                 </div>
-                <h3 className="line-clamp-2 min-h-[3rem] text-base font-bold text-white">
-                  {item.name}
-                </h3>
-                <p className="line-clamp-2 min-h-[2.5rem] text-sm text-slate-300/90">
-                  {item.description}
-                </p>
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-sm font-black text-amber-200">{item.price} OC</span>
-                  <button
-                    type="button"
-                    onClick={() => void handleBuy(item)}
-                    disabled={isOwned || isBusy}
-                    className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-amber-400 to-amber-600 px-3 py-1.5 text-xs font-bold text-[#0b0d14] transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isOwned ? (
-                      <>
-                        <Check className="h-3.5 w-3.5" />
-                        {isEquipped ? 'Équipé' : 'Équiper'}
-                      </>
-                    ) : isBusy ? (
-                      <>
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        Achat...
-                      </>
-                    ) : (
-                      'Acheter'
-                    )}
-                  </button>
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-omjep-border/60 pt-4">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-omjep-text-muted">Prix</p>
+                    <p
+                      className={`font-mono text-lg font-black tabular-nums ${
+                        goldTier ? 'text-omjep-gold' : 'text-omjep-text-primary'
+                      }`}
+                    >
+                      {formatCurrency(item.priceJpy, 'Jepy')}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-stretch gap-2 sm:items-end">
+                    {active ? (
+                      <span className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-omjep-success/45 bg-omjep-success/12 px-4 py-2.5 text-center text-xs font-bold uppercase tracking-wide text-omjep-success">
+                        Actif
+                      </span>
+                    ) : null}
+                    {!owned ? (
+                      <div className="flex flex-col items-stretch gap-2">
+                        <button
+                          type="button"
+                          disabled={busy || jpyBalance < item.priceJpy}
+                          onClick={() => handleBuy(item)}
+                          className="inline-flex min-h-[44px] min-w-[8.5rem] items-center justify-center rounded-xl border border-omjep-mauve/50 bg-omjep-mauve px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                          {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : 'Acheter'}
+                        </button>
+                        {jpyBalance < item.priceJpy ? (
+                          <span className="text-center text-[10px] font-semibold text-omjep-danger">
+                            Solde insuffisant
+                          </span>
+                        ) : null}
+                      </div>
+                    ) : !active ? (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => handleActivate(item)}
+                        className="inline-flex min-h-[44px] min-w-[8.5rem] items-center justify-center rounded-xl border border-omjep-border bg-omjep-bg-panel-soft px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-omjep-text-primary transition hover:border-omjep-mauve/40 hover:bg-omjep-mauve/10 disabled:opacity-50"
+                      >
+                        {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : 'Activer'}
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </article>

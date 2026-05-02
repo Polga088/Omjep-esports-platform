@@ -65,6 +65,7 @@ const MATCH_FORM_STATUSES = [
   'DISPUTED',
   'DISPUTE',
 ] as const;
+type MatchStatus = (typeof MATCH_FORM_STATUSES)[number]
 
 function toMatchBrief(m: Match): MatchBrief {
   return {
@@ -233,6 +234,7 @@ export default function AdminMatches() {
   const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterCompetition, setFilterCompetition] = useState('');
+  const [statusFilter, setStatusFilter] = useState<MatchStatus | ''>('')
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'SCHEDULED' | 'PLAYED'>('SCHEDULED');
   const [viewMode, setViewMode] = useState<'list' | 'bracket'>('list');
@@ -512,6 +514,7 @@ export default function AdminMatches() {
 
   const filtered = matches.filter((m) => {
     if (filterId && matchCompetitionId(m) !== filterId) return false;
+    if (statusFilter && m.status !== statusFilter) return false
     if (activeTab === 'SCHEDULED') return m.status === 'SCHEDULED' || m.status === 'LIVE';
     return m.status !== 'SCHEDULED' && m.status !== 'LIVE';
   });
@@ -757,8 +760,9 @@ export default function AdminMatches() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex h-64 flex-col items-center justify-center gap-3">
         <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+        <p className="text-sm text-slate-500">Chargement des matchs...</p>
       </div>
     );
   }
@@ -772,10 +776,10 @@ export default function AdminMatches() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/10 flex items-center justify-center border border-amber-400/20">
               <Swords className="w-5 h-5 text-amber-400" />
             </div>
-            Gestion des Matchs
+            Matches
           </h1>
           <p className="text-sm text-slate-500 mt-1 ml-[52px]">
-            Consultez et saisissez les résultats des matchs.
+            Consultez, filtrez et gérez les rencontres par compétition et statut.
           </p>
         </div>
 
@@ -827,6 +831,18 @@ export default function AdminMatches() {
               </div>
             )}
           </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter((e.target.value as MatchStatus) || '')}
+            className="rounded-xl border border-amber-400/15 bg-white/[0.03] px-3 py-2.5 text-sm text-slate-300 hover:border-amber-400/30"
+          >
+            <option value="">Tous les statuts</option>
+            {MATCH_FORM_STATUSES.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -1054,23 +1070,25 @@ export default function AdminMatches() {
                         <button
                           type="button"
                           onClick={(e) => openEditModal(match, e)}
-                          title="Modifier"
-                          className="p-2 rounded-lg border border-white/[0.08] text-slate-400 hover:text-amber-400 hover:border-amber-400/30"
+                            title="Modifier"
+                            className="inline-flex items-center gap-1.5 p-2 rounded-lg border border-white/[0.08] text-slate-400 hover:text-amber-400 hover:border-amber-400/30"
                         >
                           <Pencil className="w-3.5 h-3.5" />
+                            <span className="hidden lg:inline text-[11px] font-semibold">Éditer</span>
                         </button>
                         <button
                           type="button"
                           disabled={deletingId === match.id}
                           onClick={(e) => void handleDeleteMatch(match, e)}
-                          title="Supprimer"
-                          className="p-2 rounded-lg border border-red-500/15 text-red-400/70 hover:text-red-400 hover:border-red-500/40 disabled:opacity-40"
+                            title="Supprimer"
+                            className="inline-flex items-center gap-1.5 p-2 rounded-lg border border-red-500/15 text-red-400/70 hover:text-red-400 hover:border-red-500/40 disabled:opacity-40"
                         >
                           {deletingId === match.id ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
                           ) : (
                             <Trash2 className="w-3.5 h-3.5" />
                           )}
+                            <span className="hidden lg:inline text-[11px] font-semibold">Suppr.</span>
                         </button>
                         {isScheduled && (
                           <button
@@ -1497,7 +1515,7 @@ export default function AdminMatches() {
                   className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#020617] text-sm font-bold hover:from-amber-300 hover:to-amber-400 disabled:opacity-40"
                 >
                   {formSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  {formModal === 'create' ? 'Créer' : 'Enregistrer'}
+                  Sauvegarder
                 </button>
               </div>
             </form>

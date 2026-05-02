@@ -29,6 +29,13 @@ interface AdminUserRow {
 
 const ROLES: Role[] = ['ADMIN', 'MODERATOR', 'MANAGER', 'PLAYER'];
 
+const ROLE_BADGE_STYLES: Record<Role, string> = {
+  ADMIN: 'bg-red-500/10 border-red-500/30 text-red-300',
+  MODERATOR: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
+  MANAGER: 'bg-amber-500/10 border-amber-500/30 text-amber-300',
+  PLAYER: 'bg-sky-500/10 border-sky-500/30 text-sky-300',
+}
+
 export default function AdminUsers() {
   const { user: me } = useAuthStore();
   const [users, setUsers] = useState<AdminUserRow[]>([]);
@@ -292,8 +299,9 @@ export default function AdminUsers() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-24">
+      <div className="flex flex-col items-center justify-center gap-3 py-24">
         <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+        <p className="text-sm text-slate-500">Chargement des utilisateurs...</p>
       </div>
     );
   }
@@ -513,7 +521,7 @@ export default function AdminUsers() {
           Utilisateurs
         </h1>
         <p className="text-sm text-slate-500 mt-1 ml-[52px]">
-          Recherche, filtre par rôle, modification unitaire ou en masse (ADMIN uniquement côté API).
+          Gérez les rôles, les profils et les actions de maintenance des comptes.
         </p>
       </div>
 
@@ -617,8 +625,13 @@ export default function AdminUsers() {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-16 text-center text-slate-500">
-                  Aucun utilisateur ne correspond aux critères.
+                <td colSpan={6} className="px-4 py-16 text-center">
+                  <p className="text-sm text-slate-400 font-medium">
+                    Aucun utilisateur ne correspond aux critères
+                  </p>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Modifiez la recherche ou le filtre de rôle.
+                  </p>
                 </td>
               </tr>
             ) : (
@@ -645,19 +658,26 @@ export default function AdminUsers() {
                       {u.ea_persona_name ?? '—'}
                     </td>
                     <td className="px-3 py-3">
-                      <select
-                        value={u.role}
-                        disabled={rowSaving === u.id || isSelf}
-                        onChange={(e) => void patchRole(u.id, e.target.value as Role)}
-                        className="rounded-lg bg-white/[0.04] border border-white/10 px-2 py-1.5 text-xs text-white disabled:opacity-50"
-                        title={isSelf ? 'Modifiez votre rôle via un autre compte admin' : undefined}
-                      >
-                        {roleOptionsForRow(u.role).map((r) => (
-                          <option key={r} value={r}>
-                            {r}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`inline-flex items-center rounded-lg border px-2 py-1 text-[10px] font-semibold ${ROLE_BADGE_STYLES[u.role]}`}
+                        >
+                          {u.role}
+                        </span>
+                        <select
+                          value={u.role}
+                          disabled={rowSaving === u.id || isSelf}
+                          onChange={(e) => void patchRole(u.id, e.target.value as Role)}
+                          className="rounded-lg bg-white/[0.04] border border-white/10 px-2 py-1.5 text-xs text-white disabled:opacity-50"
+                          title={isSelf ? 'Modifiez votre rôle via un autre compte admin' : undefined}
+                        >
+                          {roleOptionsForRow(u.role).map((r) => (
+                            <option key={r} value={r}>
+                              {r}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </td>
                     <td className="px-3 py-3 text-slate-500 tabular-nums text-xs">
                       {u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '—'}

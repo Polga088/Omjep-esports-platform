@@ -5,7 +5,7 @@ import {
   UserPlus, UserMinus, Star, Shield, Swords, Crown, Users, Link2,
   CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
   FileText, TrendingUp, Banknote, Trophy, Repeat, Gem, Info,
-  AlertTriangle,
+  AlertTriangle, Sparkles, Calendar,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -38,18 +38,19 @@ class TeamErrorBoundary extends Component<EBProps, EBState> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-8 text-center space-y-3">
-          <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
-          <h2 className="text-lg font-bold text-white">Une erreur est survenue</h2>
-          <p className="text-sm text-slate-400">
-            L'affichage de la page équipe a rencontré un problème.
+        <div className="rounded-2xl border border-omjep-danger/25 bg-omjep-danger/8 p-8 text-center space-y-3">
+          <AlertTriangle className="mx-auto h-8 w-8 text-omjep-danger" />
+          <h2 className="text-lg font-bold text-omjep-text-primary">Une erreur est survenue</h2>
+          <p className="text-sm text-omjep-text-secondary">
+            L&apos;affichage de la page équipe a rencontré un problème.
           </p>
-          <p className="text-xs text-slate-600 font-mono break-all">
+          <p className="break-all font-mono text-xs text-omjep-text-muted">
             {this.state.error?.message}
           </p>
           <button
+            type="button"
             onClick={() => this.setState({ hasError: false, error: null })}
-            className="mt-2 px-5 py-2 rounded-xl text-sm font-semibold bg-white/10 text-white border border-white/10 hover:bg-white/15 transition-colors"
+            className="mt-2 rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/50 px-5 py-2 text-sm font-semibold text-omjep-text-primary transition-colors hover:border-omjep-mauve/40 hover:bg-omjep-mauve/10"
           >
             Réessayer
           </button>
@@ -148,7 +149,7 @@ const positionColors: Record<Position, string> = {
   MG:  'bg-teal-500/15 text-teal-400 border-teal-500/30',
   MD:  'bg-purple-500/15 text-purple-400 border-purple-500/30',
   BU:  'bg-orange-500/15 text-orange-400 border-orange-500/30',
-  ATT: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
+  ATT: 'border-omjep-mauve/30 bg-omjep-mauve/15 text-omjep-mauve',
 };
 
 const positionLabel: Record<Position, string> = {
@@ -184,19 +185,19 @@ const roleConfig: Record<ClubRole, { label: string; badgeClass: string; icon: Re
 function RatingBar({ value }: { value: number }) {
   const percentage = (value / 10) * 100;
   const color =
-    value >= 8   ? 'from-emerald-500 to-emerald-400' :
-    value >= 6.5 ? 'from-blue-500 to-blue-400' :
-                   'from-amber-500 to-amber-400';
+    value >= 8   ? 'from-omjep-success to-omjep-cobalt' :
+    value >= 6.5 ? 'from-omjep-cobalt to-omjep-mauve' :
+                   'from-omjep-mauve/70 to-omjep-neutral';
 
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+      <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-omjep-bg-elevated">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="w-10 text-right text-sm font-semibold tabular-nums text-gray-300">
+      <span className="w-10 text-right text-sm font-semibold tabular-nums text-omjep-text-secondary">
         {value > 0 ? value.toFixed(1) : 'N/A'}
       </span>
     </div>
@@ -205,10 +206,10 @@ function RatingBar({ value }: { value: number }) {
 
 function SkeletonRow({ cols = 5 }: { cols?: number }) {
   return (
-    <tr className="border-b border-gray-800/30 last:border-b-0">
+    <tr className="border-b border-omjep-border/60 last:border-b-0">
       {[...Array(cols)].map((_, i) => (
         <td key={i} className="px-5 py-4">
-          <div className="h-4 rounded-md bg-white/5 animate-pulse" style={{ width: i === 0 ? '60%' : '40%' }} />
+          <div className="h-4 rounded-md bg-omjep-bg-panel-soft animate-pulse" style={{ width: i === 0 ? '60%' : '40%' }} />
         </td>
       ))}
     </tr>
@@ -222,11 +223,11 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-gray-800 bg-[#0B0D13]/50 backdrop-blur-md">
-      <div className="flex items-center justify-between border-b border-gray-800/80 px-5 py-4">
+    <div className="overflow-hidden rounded-3xl border border-omjep-border bg-omjep-bg-panel/90 backdrop-blur-md shadow-[var(--omjep-shadow-sm)]">
+      <div className="flex items-center justify-between border-b border-omjep-border/80 px-5 py-4">
         <div className="flex items-center gap-2.5">
-          <Gem className="h-5 w-5 shrink-0 text-cyan-200 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)] [filter:drop-shadow(0_0_8px_rgba(34,211,238,0.5))]" />
-          <h3 className="text-sm font-bold tracking-wide text-white">Prestige du Club</h3>
+          <Gem className="h-5 w-5 shrink-0 text-omjep-mauve" />
+          <h3 className="text-sm font-bold tracking-wide text-omjep-text-primary">Prestige du Club</h3>
         </div>
         <div className="relative">
           <button
@@ -234,19 +235,19 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
             onClick={() => setShowTooltip(!showTooltip)}
-            className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-700/80 bg-white/[0.04] text-slate-400 transition-colors hover:border-cyan-500/30 hover:bg-cyan-500/10 hover:text-cyan-300"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-omjep-border bg-omjep-bg-panel-soft/80 text-omjep-text-muted transition-colors hover:border-omjep-mauve/40 hover:bg-omjep-mauve/10 hover:text-omjep-mauve"
             aria-label="Informations prestige"
           >
             <Info className="h-3.5 w-3.5" />
           </button>
           {showTooltip && (
-            <div className="absolute right-0 top-9 z-50 w-64 rounded-xl border border-gray-700 bg-slate-900/95 px-3.5 py-2.5 text-xs leading-relaxed text-slate-300 shadow-xl backdrop-blur-md">
-              <p className="mb-1 font-semibold text-cyan-400">Bonus de Prestige</p>
+            <div className="absolute right-0 top-9 z-50 w-64 rounded-xl border border-omjep-border bg-omjep-bg-panel px-3.5 py-2.5 text-xs leading-relaxed text-omjep-text-secondary shadow-xl backdrop-blur-md">
+              <p className="mb-1 font-semibold text-omjep-mauve">Bonus de Prestige</p>
               <p>
                 Le Prestige augmente à chaque victoire et performance du club. Plus le niveau est élevé, plus les{' '}
-                <span className="font-medium text-white">bonus de sponsoring</span> sont importants.
+                <span className="font-medium text-omjep-text-primary">bonus de sponsoring</span> sont importants.
               </p>
-              <div className="absolute -top-1.5 right-3 h-3 w-3 rotate-45 border-l border-t border-gray-700 bg-slate-900/95" />
+              <div className="absolute -top-1.5 right-3 h-3 w-3 rotate-45 border-l border-t border-omjep-border bg-omjep-bg-panel" />
             </div>
           )}
         </div>
@@ -262,14 +263,14 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
             className="shrink-0"
           >
             <div
-              className="relative flex h-[4.5rem] w-[4.5rem] flex-col items-center justify-center border border-cyan-400/45 bg-cyan-900/40 ring-1 ring-indigo-400/35 backdrop-blur-xl [clip-path:polygon(50%_0%,100%_25%,100%_75%,50%_100%,0%_75%,0%_25%)]"
+              className="relative flex h-[4.5rem] w-[4.5rem] flex-col items-center justify-center border border-omjep-mauve/45 bg-omjep-mauve/15 ring-1 ring-omjep-mauve/30 backdrop-blur-xl [clip-path:polygon(50%_0%,100%_25%,100%_75%,50%_100%,0%_75%,0%_25%)]"
               style={{
                 boxShadow:
-                  '0 0 22px rgba(99,102,241,0.35), 0 0 14px rgba(34,211,238,0.35), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -8px 20px rgba(6,182,212,0.15)',
+                  '0 0 22px color-mix(in srgb, var(--omjep-accent) 35%, transparent), inset 0 1px 0 rgba(255,255,255,0.08)',
               }}
             >
-              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-cyan-200/80">Prstg</span>
-              <span className="text-2xl font-black tabular-nums leading-none text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-omjep-text-muted">Prstg</span>
+              <span className="text-2xl font-black tabular-nums leading-none text-omjep-text-primary">
                 {prestigeLevel}
               </span>
             </div>
@@ -277,21 +278,21 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
 
           <div className="min-w-0 flex-1">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <span className="text-xs font-bold tabular-nums text-gray-300">
+              <span className="text-xs font-bold tabular-nums text-omjep-text-secondary">
                 {progress.current.toLocaleString('fr-FR')} / {progress.needed.toLocaleString('fr-FR')} XP
               </span>
-              <span className="text-xs font-bold text-gray-300">Niv. {progress.nextLevel}</span>
+              <span className="text-xs font-bold text-omjep-text-secondary">Niv. {progress.nextLevel}</span>
             </div>
 
-            <div className="relative h-3.5 overflow-hidden rounded-full border border-white/[0.06] bg-gray-800/50">
+            <div className="relative h-3.5 overflow-hidden rounded-full border border-omjep-border bg-omjep-bg-elevated">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress.percentage}%` }}
                 transition={{ duration: 1.1, ease: 'easeOut' }}
-                className="relative h-full overflow-hidden rounded-full bg-gradient-to-r from-cyan-600 via-cyan-400 to-blue-500 shadow-[0_0_14px_rgba(34,211,238,0.35)]"
+                className="relative h-full overflow-hidden rounded-full bg-gradient-to-r from-omjep-mauve to-omjep-cobalt shadow-[var(--omjep-glow-mauve-soft)]"
               >
                 <motion.div
-                  className="pointer-events-none absolute inset-y-0 left-0 w-[42%] min-w-[1.5rem] bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-75"
+                  className="pointer-events-none absolute inset-y-0 left-0 w-[42%] min-w-[1.5rem] bg-gradient-to-r from-transparent via-omjep-text-primary/25 to-transparent opacity-75"
                   style={{ skewX: '-16deg' }}
                   animate={{ x: ['-100%', '280%'] }}
                   transition={{ repeat: Infinity, duration: 2.2, ease: 'linear' }}
@@ -299,8 +300,8 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
               </motion.div>
             </div>
 
-            <p className="mt-2 text-[10px] text-slate-500">
-              <span className="font-semibold text-cyan-400/90">{xp.toLocaleString('fr-FR')}</span> XP club cumulées
+            <p className="mt-2 text-[10px] text-omjep-text-muted">
+              <span className="font-semibold text-omjep-mauve">{xp.toLocaleString('fr-FR')}</span> XP club cumulées
             </p>
           </div>
         </div>
@@ -314,10 +315,10 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
 const KICK_FEE_OC = 5000;
 
 const txTypeConfig: Record<TransactionType, { label: string; icon: React.ElementType; color: string }> = {
-  MATCH_REWARD: { label: 'Récompense', icon: Trophy, color: 'text-emerald-400' },
-  TRANSFER:     { label: 'Transfert',  icon: Repeat, color: 'text-blue-400' },
-  WAGE:         { label: 'Salaire',    icon: Banknote, color: 'text-amber-400' },
-  KICK_FEE:     { label: 'Licenciement', icon: UserMinus, color: 'text-rose-400' },
+  MATCH_REWARD: { label: 'Récompense', icon: Trophy, color: 'text-omjep-success' },
+  TRANSFER:     { label: 'Transfert',  icon: Repeat, color: 'text-omjep-cobalt' },
+  WAGE:         { label: 'Salaire',    icon: Banknote, color: 'text-omjep-gold' },
+  KICK_FEE:     { label: 'Licenciement', icon: UserMinus, color: 'text-omjep-danger' },
 };
 
 // ─── Page principale ─────────────────────────────────────────────────────────
@@ -348,10 +349,16 @@ export default function MyTeam() {
       .then(({ data }) => {
         if (!cancelled) setTeam(data);
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         if (!cancelled) {
+          const status = (err as { response?: { status?: number } })?.response?.status;
+          if (status === 404) {
+            setTeam(null);
+            setError(null);
+            return;
+          }
           const msg: string =
-            err?.response?.data?.message ??
+            (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
             "Impossible de charger les données de l'équipe.";
           setError(msg);
         }
@@ -415,6 +422,8 @@ export default function MyTeam() {
     currentMember?.club_role === 'MANAGER';
 
   const rosterCols = canManage ? 6 : 5;
+
+  const showTeamShell = Boolean(team || isLoading);
 
   const reloadTeamAndFinance = async () => {
     const { data } = await api.get<MyTeamData>('/teams/my-team');
@@ -539,21 +548,24 @@ export default function MyTeam() {
         action={
           canRecruit ? (
             <button
+              type="button"
               onClick={() => setInviteModalOpen(true)}
-              className="group inline-flex items-center gap-2.5 rounded-none border border-black/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-black transition-all duration-200 whitespace-nowrap dark:border-white/20 dark:text-white"
+              className="group inline-flex items-center gap-2 rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/50 px-4 py-2.5 text-sm font-semibold text-omjep-text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-omjep-mauve/45 hover:bg-omjep-mauve/10 hover:shadow-md active:scale-[0.99]"
             >
-              [ ACTION ]
+              <UserPlus className="h-4 w-4 text-omjep-mauve" aria-hidden />
+              Inviter un joueur
             </button>
           ) : undefined
         }
       />
 
-      {/* Stats Bento — aligné 3 colonnes desktop, 1 colonne mobile */}
+      {/* Stats Bento — visible seulement avec équipe ou chargement */}
+      {showTeamShell ? (
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Total joueurs */}
-        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
+        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/80 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-mauve/35 hover:shadow-lg hover:shadow-black/20 dark:hover:shadow-black/40">
           <svg
-            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-white opacity-[0.05]"
+            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-omjep-text-primary opacity-[0.04]"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -563,16 +575,19 @@ export default function MyTeam() {
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl border border-omjep-border/80 bg-omjep-mauve/12 text-omjep-mauve transition-colors duration-200 group-hover:border-omjep-mauve/40 group-hover:bg-omjep-mauve/18">
+            <Users className="h-5 w-5" aria-hidden />
+          </div>
           <p className="text-xs font-semibold uppercase tracking-widest text-omjep-text-secondary">Total joueurs</p>
-          <p className="mt-2 text-4xl font-black tabular-nums text-white">
+          <p className="mt-2 text-4xl font-black tabular-nums text-omjep-text-primary">
             {isLoading ? '—' : players.length}
           </p>
         </div>
 
         {/* Staff / Managers */}
-        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
+        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/80 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-mauve/35 hover:shadow-lg hover:shadow-black/20 dark:hover:shadow-black/40">
           <svg
-            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-emerald-400 opacity-[0.05]"
+            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-omjep-success opacity-[0.06]"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -583,16 +598,19 @@ export default function MyTeam() {
             <path d="M4 10l2-6 4 3 4-6 4 6 4-3 2 6v10H4V10z" />
             <path d="M4 20h16" />
           </svg>
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl border border-omjep-success/25 bg-omjep-success/10 text-omjep-success transition-colors duration-200 group-hover:border-omjep-success/40 group-hover:bg-omjep-success/15">
+            <Shield className="h-5 w-5" aria-hidden />
+          </div>
           <p className="text-xs font-semibold uppercase tracking-widest text-omjep-text-secondary">Staff / Managers</p>
-          <p className="mt-2 text-4xl font-black tabular-nums text-emerald-400">
+          <p className="mt-2 text-4xl font-black tabular-nums text-omjep-success">
             {isLoading ? '—' : staff.length}
           </p>
         </div>
 
         {/* Note moy. équipe */}
-        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
+        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/80 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-mauve/35 hover:shadow-lg hover:shadow-black/20 dark:hover:shadow-black/40">
           <svg
-            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-yellow-500 opacity-[0.05]"
+            className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-omjep-gold opacity-[0.08]"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -601,12 +619,16 @@ export default function MyTeam() {
           >
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl border border-omjep-border-gold/35 bg-omjep-gold/10 text-omjep-gold transition-colors duration-200 group-hover:border-omjep-border-gold/55 group-hover:bg-omjep-gold/15">
+            <Star className="h-5 w-5" aria-hidden />
+          </div>
           <p className="text-xs font-semibold uppercase tracking-widest text-omjep-text-secondary">Note moy. équipe</p>
-          <p className="mt-2 text-4xl font-black tabular-nums text-yellow-500">
+          <p className="mt-2 text-4xl font-black tabular-nums text-omjep-gold">
             {isLoading ? '—' : avgRating > 0 ? avgRating.toFixed(1) : 'N/A'}
           </p>
         </div>
       </div>
+      ) : null}
 
       {/* Prestige du Club */}
       {team && !isLoading && (
@@ -615,20 +637,55 @@ export default function MyTeam() {
 
       {/* Erreur */}
       {error && !isLoading && (
-        <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-4 text-sm text-red-400">
+        <div className="rounded-xl border border-omjep-danger/25 bg-omjep-danger/8 px-5 py-4 text-sm text-omjep-danger">
           {error}
         </div>
       )}
 
-      {/* Équipe non trouvée */}
+      {/* Onboarding — pas d&apos;équipe (404 API) */}
       {!isLoading && !team && !error && (
-        <p className="py-16 text-center text-sm font-thin text-black/50 dark:text-white/40">
-          Vous n'êtes actuellement membre d'aucune équipe.
-        </p>
+        <div className="rounded-2xl border border-omjep-border bg-omjep-bg-panel/80 p-8 shadow-md md:p-10 md:text-left text-center transition-shadow duration-300 hover:border-omjep-mauve/30 hover:shadow-lg">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-omjep-mauve/35 bg-omjep-mauve/12 text-omjep-mauve md:mx-0">
+            <Sparkles className="h-7 w-7" aria-hidden />
+          </div>
+          <h2 className="text-xl font-bold tracking-tight text-omjep-text-primary md:text-2xl">
+            Rejoignez une équipe pour débloquer le club
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-omjep-text-secondary md:mx-0">
+            Le mercato et les invitations staff vous permettent d&apos;intégrer un roster. Les managers peuvent créer leur structure et recruter depuis le cockpit.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+            <Link
+              to="/dashboard/transfers"
+              className="inline-flex items-center gap-2 rounded-xl border border-omjep-mauve/50 bg-omjep-mauve/15 px-5 py-2.5 text-sm font-semibold text-omjep-text-primary transition-all duration-200 hover:bg-omjep-mauve/25 hover:shadow-md active:scale-[0.99]"
+            >
+              <Repeat className="h-4 w-4 text-omjep-mauve" aria-hidden />
+              Parcourir le mercato
+            </Link>
+            <Link
+              to="/dashboard/schedule"
+              className="inline-flex items-center gap-2 rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/60 px-5 py-2.5 text-sm font-semibold text-omjep-text-primary transition-all duration-200 hover:border-omjep-mauve/35 hover:bg-omjep-bg-elevated/80 active:scale-[0.99]"
+            >
+              <Calendar className="h-4 w-4 text-omjep-text-secondary" aria-hidden />
+              Voir le calendrier
+            </Link>
+            {user?.role === 'MANAGER' ? (
+              <Link
+                to="/dashboard/manager/club"
+                className="inline-flex items-center gap-2 rounded-xl border border-omjep-border-gold/45 bg-omjep-gold/10 px-5 py-2.5 text-sm font-semibold text-omjep-gold transition-all duration-200 hover:bg-omjep-gold/15 active:scale-[0.99]"
+              >
+                <Trophy className="h-4 w-4" aria-hidden />
+                Créer mon club
+              </Link>
+            ) : null}
+          </div>
+        </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/5 w-fit">
+      {/* Tabs + contenu effectif / finance */}
+      {showTeamShell ? (
+      <>
+      <div className="flex w-fit items-center gap-1 rounded-xl border border-omjep-border/80 bg-omjep-bg-panel-soft/40 p-1">
         {([
           { key: 'roster' as const, label: 'Effectif', icon: Users },
           { key: 'finance' as const, label: 'Finance', icon: Wallet },
@@ -638,8 +695,8 @@ export default function MyTeam() {
             onClick={() => setActiveTab(key)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
               activeTab === key
-                ? 'bg-amber-400/15 text-amber-400 border border-amber-400/25 shadow-sm'
-                : 'text-slate-500 hover:text-slate-300 border border-transparent'
+                ? 'border border-omjep-mauve/35 bg-omjep-mauve/15 text-omjep-mauve shadow-sm'
+                : 'border border-transparent text-omjep-text-muted hover:text-omjep-text-primary'
             }`}
           >
             <Icon className="w-4 h-4" />
@@ -650,13 +707,13 @@ export default function MyTeam() {
 
       {/* ══════════ TAB: Effectif (Roster) ══════════ */}
       {activeTab === 'roster' && (
-        <div className="overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/50 backdrop-blur-md">
-          <div className="flex items-center justify-between border-b border-gray-800/50 px-5 py-4">
+        <div className="overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/90 backdrop-blur-md shadow-[var(--omjep-shadow-sm)]">
+          <div className="flex items-center justify-between border-b border-omjep-border/80 px-5 py-4">
             <div className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-amber-400/90" />
-              <h2 className="text-sm font-semibold text-white">Roster actuel</h2>
+              <Star className="h-4 w-4 text-omjep-gold" />
+              <h2 className="text-sm font-semibold text-omjep-text-primary">Roster actuel</h2>
             </div>
-            <span className="rounded-full border border-gray-800/80 bg-white/[0.04] px-2.5 py-1 text-xs text-gray-500">
+            <span className="rounded-full border border-omjep-border bg-omjep-bg-panel-soft/80 px-2.5 py-1 text-xs text-omjep-text-muted">
               Saison 2025
             </span>
           </div>
@@ -664,7 +721,7 @@ export default function MyTeam() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-800/50">
+                <tr className="border-b border-omjep-border/80">
                   {[
                     'Joueur (Pseudo EA)',
                     'Poste',
@@ -675,7 +732,7 @@ export default function MyTeam() {
                   ].map((col) => (
                     <th
                       key={col}
-                      className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                      className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-omjep-text-muted"
                     >
                       {col}
                     </th>
@@ -687,8 +744,35 @@ export default function MyTeam() {
                   [...Array(3)].map((_, i) => <SkeletonRow key={i} cols={rosterCols} />)
                 ) : allMembers.length === 0 ? (
                   <tr>
-                    <td colSpan={rosterCols} className="px-5 py-12 text-center text-sm text-gray-500">
-                      Aucun membre dans cette équipe.
+                    <td colSpan={rosterCols} className="px-5 py-14">
+                      <div className="mx-auto flex max-w-md flex-col items-center gap-4 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-omjep-border/80 bg-omjep-bg-panel-soft/50 text-omjep-mauve">
+                          <Users className="h-6 w-6" aria-hidden />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-omjep-text-primary">Effectif vide</p>
+                          <p className="mt-1 text-xs leading-relaxed text-omjep-text-secondary">
+                            Invitez vos coéquipiers pour constituer le roster et activer la finance club.
+                          </p>
+                        </div>
+                        {canRecruit ? (
+                          <button
+                            type="button"
+                            onClick={() => setInviteModalOpen(true)}
+                            className="inline-flex items-center gap-2 rounded-xl border border-omjep-mauve/45 bg-omjep-mauve/12 px-4 py-2 text-xs font-semibold text-omjep-mauve transition-all hover:bg-omjep-mauve/20"
+                          >
+                            <UserPlus className="h-4 w-4" aria-hidden />
+                            Inviter un joueur
+                          </button>
+                        ) : (
+                          <Link
+                            to="/dashboard/transfers"
+                            className="text-xs font-semibold text-omjep-gold underline-offset-2 hover:underline"
+                          >
+                            Découvrir le mercato
+                          </Link>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ) : (
@@ -698,7 +782,7 @@ export default function MyTeam() {
                     const role = roleConfig[club_role];
                     const RoleIcon = role.icon;
                     const position = rowUser.preferred_position;
-                    const posColor = position ? positionColors[position] : 'bg-slate-500/15 text-slate-400 border-slate-500/30';
+                    const posColor = position ? positionColors[position] : 'border-omjep-border bg-omjep-bg-panel-soft text-omjep-text-muted';
                     const posLabel = position ? positionLabel[position] : '—';
                     const matchesPlayed = rowUser.stats?.matches_played ?? 0;
                     const avgRatingPlayer = rowUser.stats?.average_rating ?? 0;
@@ -717,23 +801,23 @@ export default function MyTeam() {
                     return (
                       <tr
                         key={rowUser.id}
-                        className={`group transition-colors duration-200 hover:bg-white/[0.02] ${
-                          isLast ? '' : 'border-b border-gray-800/30'
+                        className={`group transition-colors duration-200 hover:bg-omjep-mauve/6 ${
+                          isLast ? '' : 'border-b border-omjep-border/60'
                         }`}
                       >
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-800 to-gray-900 text-xs font-bold uppercase text-white shadow-inner">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-omjep-bg-elevated text-xs font-bold uppercase text-omjep-text-primary shadow-inner ring-1 ring-omjep-border">
                               {pseudo.charAt(0)}
                             </div>
                             <div className="min-w-0">
                               <Link
                                 to={`/dashboard/profile/${rowUser.id}`}
-                                className="text-sm font-semibold text-white transition-colors hover:text-amber-400/90 hover:underline decoration-amber-400/30 underline-offset-2"
+                                className="text-sm font-semibold text-omjep-text-primary transition-colors hover:text-omjep-mauve hover:underline decoration-omjep-mauve/40 underline-offset-2"
                               >
                                 {pseudo}
                               </Link>
-                              <p className="text-xs text-gray-600">{rowUser.nationality ?? '—'}</p>
+                              <p className="text-xs text-omjep-text-muted">{rowUser.nationality ?? '—'}</p>
                             </div>
                           </div>
                         </td>
@@ -751,8 +835,8 @@ export default function MyTeam() {
                           </span>
                         </td>
                         <td className="px-5 py-4">
-                          <span className="text-sm font-semibold tabular-nums text-gray-300">{matchesPlayed}</span>
-                          <span className="ml-1 text-xs text-gray-600">matchs</span>
+                          <span className="text-sm font-semibold tabular-nums text-omjep-text-primary">{matchesPlayed}</span>
+                          <span className="ml-1 text-xs text-omjep-text-muted">matchs</span>
                         </td>
                         <td className="min-w-[160px] px-5 py-4">
                           <RatingBar value={avgRatingPlayer} />
@@ -765,7 +849,7 @@ export default function MyTeam() {
                                   type="button"
                                   disabled={roleBusyUserId === memberId}
                                   onClick={() => handlePromoteCoManager(member)}
-                                  className="rounded border border-cyan-400/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-cyan-400 transition hover:bg-cyan-400/10 disabled:opacity-50"
+                                  className="rounded border border-omjep-mauve/30 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-omjep-mauve transition hover:bg-omjep-mauve/10 disabled:opacity-50"
                                 >
                                   {roleBusyUserId === memberId ? '…' : 'Nommer Adjoint'}
                                 </button>
@@ -775,7 +859,7 @@ export default function MyTeam() {
                                   type="button"
                                   disabled={roleBusyUserId === memberId}
                                   onClick={() => handleDemoteCoManager(member)}
-                                  className="rounded border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300 transition hover:bg-amber-500/15 disabled:opacity-50"
+                                  className="rounded border border-omjep-warning/35 bg-omjep-warning/10 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-omjep-warning transition hover:bg-omjep-warning/15 disabled:opacity-50"
                                 >
                                   {roleBusyUserId === memberId ? '…' : 'Destituer'}
                                 </button>
@@ -784,16 +868,16 @@ export default function MyTeam() {
                                 <button
                                   type="button"
                                   onClick={() => handleKickClick(member)}
-                                  className="ml-auto flex items-center gap-2 rounded border border-red-500/20 bg-red-500/10 px-3 py-1.5 font-mono text-[10px] uppercase text-red-400 transition-all hover:bg-red-500/20"
+                                  className="ml-auto flex items-center gap-2 rounded border border-omjep-danger/30 bg-omjep-danger/10 px-3 py-1.5 font-mono text-[10px] uppercase text-omjep-danger transition-all hover:bg-omjep-danger/18"
                                 >
-                                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
+                                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-omjep-danger" />
                                   Licencier (5k OC)
                                 </button>
                               ) : memberId === user?.id ? (
-                                <span className="font-mono text-[10px] text-slate-700">-- MY SELF --</span>
+                                <span className="font-mono text-[10px] text-omjep-text-muted">-- MY SELF --</span>
                               ) : (
                                 !showPromote && !showDemote && (
-                                  <span className="text-xs text-slate-600">—</span>
+                                  <span className="text-xs text-omjep-text-muted">—</span>
                                 )
                               )}
                             </div>
@@ -807,11 +891,11 @@ export default function MyTeam() {
             </table>
           </div>
 
-          <div className="flex items-center justify-between border-t border-gray-800/50 px-5 py-3">
-            <span className="text-xs text-gray-600">
+          <div className="flex items-center justify-between border-t border-omjep-border/80 px-5 py-3">
+            <span className="text-xs text-omjep-text-muted">
               {isLoading ? '…' : `${allMembers.length} membre${allMembers.length > 1 ? 's' : ''} au total`}
             </span>
-            <span className="text-xs text-gray-700">Données live — v1.0</span>
+            <span className="text-xs text-omjep-text-muted">Données live — v1.0</span>
           </div>
         </div>
       )}
@@ -822,34 +906,34 @@ export default function MyTeam() {
           {/* Budget overview cards */}
           {finance && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="rounded-xl bg-[#0D1221] border border-emerald-500/15 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                    <Wallet className="w-4 h-4 text-emerald-400" />
+              <div className="rounded-xl border border-omjep-success/20 bg-omjep-bg-panel/95 p-5">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-omjep-success/25 bg-omjep-success/10">
+                    <Wallet className="h-4 w-4 text-omjep-success" />
                   </div>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Budget</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">Budget</span>
                 </div>
-                <span className="text-2xl font-black tabular-nums text-emerald-400">{formatCurrency(finance?.budget ?? 0, 'OC')}</span>
+                <span className="text-2xl font-black tabular-nums text-omjep-success">{formatCurrency(finance?.budget ?? 0, 'OC')}</span>
               </div>
-              <div className="rounded-xl bg-[#0D1221] border border-blue-500/15 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-blue-400" />
+              <div className="rounded-xl border border-omjep-cobalt/25 bg-omjep-bg-panel/95 p-5">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-omjep-cobalt/25 bg-omjep-cobalt/10">
+                    <FileText className="h-4 w-4 text-omjep-cobalt" />
                   </div>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Contrats</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">Contrats</span>
                 </div>
-                <span className="text-2xl font-black tabular-nums text-blue-400">{finance?.contracts?.length ?? 0}</span>
+                <span className="text-2xl font-black tabular-nums text-omjep-cobalt">{finance?.contracts?.length ?? 0}</span>
               </div>
-              <div className="rounded-xl bg-[#0D1221] border border-amber-500/15 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
-                    <Banknote className="w-4 h-4 text-amber-400" />
+              <div className="rounded-xl border border-omjep-gold/25 bg-omjep-bg-panel/95 p-5">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-omjep-gold/30 bg-omjep-gold/10">
+                    <Banknote className="h-4 w-4 text-omjep-gold" />
                   </div>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">Masse salariale</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">Masse salariale</span>
                 </div>
-                <span className="text-2xl font-black tabular-nums text-amber-400">
+                <span className="text-2xl font-black tabular-nums text-omjep-gold">
                   {formatCurrency((finance?.contracts ?? []).reduce((s, c) => s + (c.salary ?? 0), 0), 'OC')}
-                  <span className="text-xs font-semibold text-slate-500 ml-1">/sem</span>
+                  <span className="ml-1 text-xs font-semibold text-omjep-text-muted">/sem</span>
                 </span>
               </div>
             </div>
@@ -857,22 +941,35 @@ export default function MyTeam() {
 
           {financeLoading && (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-6 h-6 text-amber-400 animate-spin" />
+              <Loader2 className="h-6 w-6 animate-spin text-omjep-mauve" />
             </div>
           )}
 
           {finance && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Transactions list */}
-              <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-amber-400" />
-                  <h2 className="text-sm font-semibold text-white">Dernières transactions</h2>
+              <div className="overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/95">
+                <div className="flex items-center gap-2 border-b border-omjep-border/80 px-6 py-4">
+                  <TrendingUp className="h-4 w-4 text-omjep-gold" />
+                  <h2 className="text-sm font-semibold text-omjep-text-primary">Dernières transactions</h2>
                 </div>
-                <div className="divide-y divide-white/5 max-h-[420px] overflow-y-auto">
+                <div className="max-h-[420px] divide-y divide-omjep-border/60 overflow-y-auto">
                   {(finance?.transactions ?? []).length === 0 ? (
-                    <div className="px-6 py-12 text-center text-sm text-slate-600">
-                      Aucune transaction enregistrée.
+                    <div className="flex flex-col items-center gap-4 px-6 py-14 text-center">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/80 text-omjep-gold">
+                        <TrendingUp className="h-5 w-5" aria-hidden />
+                      </div>
+                      <p className="text-sm font-medium text-omjep-text-primary">Aucune transaction enregistrée</p>
+                      <p className="max-w-xs text-xs text-omjep-text-secondary">
+                        Les primes de match et transferts apparaîtront ici dès que l&apos;activité économique du club démarre.
+                      </p>
+                      <Link
+                        to="/dashboard/transfers"
+                        className="inline-flex items-center gap-2 rounded-lg border border-omjep-mauve/30 bg-omjep-mauve/10 px-4 py-2 text-xs font-semibold text-omjep-mauve transition-colors hover:bg-omjep-mauve/15"
+                      >
+                        <Repeat className="h-3.5 w-3.5" aria-hidden />
+                        Ouvrir le mercato
+                      </Link>
                     </div>
                   ) : (
                     (finance?.transactions ?? []).map((tx) => {
@@ -880,22 +977,22 @@ export default function MyTeam() {
                         txTypeConfig[tx.type as TransactionType] ?? {
                           label: String(tx.type),
                           icon: FileText,
-                          color: 'text-slate-400',
+                          color: 'text-omjep-text-muted',
                         };
                       const TxIcon = cfg.icon;
                       const isPositive = tx.amount >= 0;
                       return (
-                        <div key={tx.id} className="px-6 py-3.5 flex items-center gap-4 hover:bg-white/[0.02] transition-colors">
-                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                            isPositive ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-red-500/10 border border-red-500/20'
+                        <div key={tx.id} className="flex items-center gap-4 px-6 py-3.5 transition-colors hover:bg-omjep-mauve/6">
+                          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${
+                            isPositive ? 'border-omjep-success/25 bg-omjep-success/10' : 'border-omjep-warning/30 bg-omjep-warning/10'
                           }`}>
-                            <TxIcon className={`w-4 h-4 ${isPositive ? 'text-emerald-400' : 'text-red-400'}`} />
+                            <TxIcon className={`h-4 w-4 ${isPositive ? 'text-omjep-success' : 'text-omjep-warning'}`} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-white truncate">
+                            <p className="truncate text-sm font-medium text-omjep-text-primary">
                               {tx.description ?? cfg.label}
                             </p>
-                            <p className="text-xs text-slate-600">
+                            <p className="text-xs text-omjep-text-muted">
                               {new Date(tx.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                               {' · '}
                               <span className={cfg.color}>{cfg.label}</span>
@@ -903,11 +1000,11 @@ export default function MyTeam() {
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
                             {isPositive ? (
-                              <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
+                              <ArrowUpRight className="h-3.5 w-3.5 text-omjep-success" />
                             ) : (
-                              <ArrowDownRight className="w-3.5 h-3.5 text-red-400" />
+                              <ArrowDownRight className="h-3.5 w-3.5 text-omjep-warning" />
                             )}
-                            <span className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                            <span className={`text-sm font-bold tabular-nums ${isPositive ? 'text-omjep-success' : 'text-omjep-warning'}`}>
                               {isPositive ? '+' : ''}{formatCurrency(tx.amount, 'OC')}
                             </span>
                           </div>
@@ -919,50 +1016,62 @@ export default function MyTeam() {
               </div>
 
               {/* Contracts table */}
-              <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-amber-400" />
-                  <h2 className="text-sm font-semibold text-white">Contrats joueurs</h2>
+              <div className="overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/95">
+                <div className="flex items-center gap-2 border-b border-omjep-border/80 px-6 py-4">
+                  <FileText className="h-4 w-4 text-omjep-gold" />
+                  <h2 className="text-sm font-semibold text-omjep-text-primary">Contrats joueurs</h2>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-white/5">
+                      <tr className="border-b border-omjep-border/80">
                         {['Joueur', 'Salaire /sem', 'Clause', 'Expiration'].map((col) => (
-                          <th key={col} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-600">
+                          <th key={col} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">
                             {col}
                           </th>
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-omjep-border/60">
                       {(finance?.contracts ?? []).length === 0 ? (
                         <tr>
-                          <td colSpan={4} className="px-5 py-12 text-center text-sm text-slate-600">
-                            Aucun contrat actif.
+                          <td colSpan={4} className="px-5 py-14">
+                            <div className="mx-auto flex max-w-sm flex-col items-center gap-3 text-center">
+                              <FileText className="h-8 w-8 text-omjep-text-muted" aria-hidden />
+                              <p className="text-sm font-medium text-omjep-text-primary">Aucun contrat actif</p>
+                              <p className="text-xs text-omjep-text-secondary">
+                                Les salaires et clauses libératoires s&apos;affichent ici après signature via le mercato.
+                              </p>
+                              <Link
+                                to="/dashboard/transfers"
+                                className="text-xs font-semibold text-omjep-mauve hover:underline"
+                              >
+                                Aller au mercato
+                              </Link>
+                            </div>
                           </td>
                         </tr>
                       ) : (
                         (finance?.contracts ?? []).map((c) => {
                           const expired = new Date(c.end_date) < new Date();
                           return (
-                            <tr key={c.id} className="hover:bg-white/[0.02] transition-colors">
+                            <tr key={c.id} className="transition-colors hover:bg-omjep-mauve/6">
                               <td className="px-5 py-3.5">
                                 <Link
                                   to={`/dashboard/profile/${c.user_id}`}
-                                  className="text-sm font-semibold text-white hover:text-amber-400 transition-colors"
+                                  className="text-sm font-semibold text-omjep-text-primary transition-colors hover:text-omjep-mauve"
                                 >
                                   {c.user.ea_persona_name ?? `#${c.user_id.slice(0, 6)}`}
                                 </Link>
                               </td>
                               <td className="px-5 py-3.5">
-                                <span className="text-sm font-bold text-amber-400 tabular-nums">{formatCurrency(c.salary ?? 0, 'OC')}</span>
+                                <span className="text-sm font-bold tabular-nums text-omjep-gold">{formatCurrency(c.salary ?? 0, 'OC')}</span>
                               </td>
                               <td className="px-5 py-3.5">
-                                <span className="text-sm font-bold text-blue-400 tabular-nums">{formatCurrency(c.release_clause ?? 0, 'OC')}</span>
+                                <span className="text-sm font-bold tabular-nums text-omjep-cobalt">{formatCurrency(c.release_clause ?? 0, 'OC')}</span>
                               </td>
                               <td className="px-5 py-3.5">
-                                <span className={`text-xs font-semibold ${expired ? 'text-red-400' : 'text-slate-400'}`}>
+                                <span className={`text-xs font-semibold ${expired ? 'text-omjep-warning' : 'text-omjep-text-muted'}`}>
                                   {new Date(c.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </span>
                               </td>
@@ -978,46 +1087,48 @@ export default function MyTeam() {
           )}
         </>
       )}
+      </>
+      ) : null}
 
       {/* Section Liaison EA Sports — visible pour Manager / Fondateur */}
       {isManager && team && (
-        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-          <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+        <div className="overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/95">
+          <div className="flex items-center justify-between border-b border-omjep-border/80 px-6 py-4">
             <div className="flex items-center gap-2">
-              <Link2 className="w-4 h-4 text-amber-400" />
-              <h2 className="text-sm font-semibold text-white">Liaison EA Sports</h2>
+              <Link2 className="h-4 w-4 text-omjep-gold" />
+              <h2 className="text-sm font-semibold text-omjep-text-primary">Liaison EA Sports</h2>
             </div>
             <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
                 isSynced
-                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                  : 'bg-white/5 border-white/10 text-slate-500'
+                  ? 'border-omjep-success/30 bg-omjep-success/10 text-omjep-success'
+                  : 'border-omjep-border bg-omjep-bg-panel-soft text-omjep-text-muted'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${isSynced ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+              <span className={`h-2 w-2 rounded-full ${isSynced ? 'bg-omjep-success' : 'bg-omjep-text-muted'}`} />
               {isSynced ? 'Synchronisé' : 'Non lié'}
             </span>
           </div>
-          <div className="px-6 py-6 space-y-4">
-            <p className="text-sm text-slate-400">
+          <div className="space-y-4 px-6 py-6">
+            <p className="text-sm text-omjep-text-secondary">
               Liez votre club EA Sports FC Pro Clubs pour synchroniser automatiquement les résultats et statistiques de matchs.
             </p>
 
             {linkSuccess && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs animate-[fadeIn_0.3s_ease-out]">
+              <div className="flex animate-[fadeIn_0.3s_ease-out] items-center gap-2 rounded-xl border border-omjep-success/25 bg-omjep-success/10 px-3 py-2 text-xs text-omjep-success">
                 <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                 {linkSuccess}
               </div>
             )}
             {linkError && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs animate-[fadeIn_0.3s_ease-out]">
+              <div className="flex animate-[fadeIn_0.3s_ease-out] items-center gap-2 rounded-xl border border-omjep-danger/25 bg-omjep-danger/10 px-3 py-2 text-xs text-omjep-danger">
                 {linkError}
               </div>
             )}
 
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
-                <label className="block text-xs font-semibold uppercase tracking-widest text-slate-600 mb-2">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">
                   URL ProClubs.io
                 </label>
                 <input
@@ -1025,7 +1136,7 @@ export default function MyTeam() {
                   value={externalIdInput}
                   onChange={(e) => setExternalIdInput(e.target.value)}
                   placeholder="ex: https://proclubs.io/club/ps5/mon-club/12345/overview"
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-amber-400/10 text-white text-sm placeholder:text-slate-700 focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200 tabular-nums"
+                  className="w-full rounded-xl border border-omjep-border bg-omjep-bg-panel-soft px-4 py-3 text-sm text-omjep-text-primary tabular-nums placeholder:text-omjep-text-muted transition-all duration-200 focus:border-omjep-mauve/40 focus:outline-none focus:ring-1 focus:ring-omjep-mauve/25"
                 />
               </div>
               <div className="flex items-end">
@@ -1033,7 +1144,7 @@ export default function MyTeam() {
                   type="button"
                   onClick={handleLinkClub}
                   disabled={linkingClub || !externalIdInput.trim()}
-                  className="inline-flex min-h-[3rem] max-w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 px-5 py-3 text-sm font-semibold text-[#0A0E1A] shadow-lg shadow-amber-400/20 transition-all hover:brightness-110 hover:shadow-amber-400/40 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:min-w-[12rem]"
+                  className="inline-flex min-h-[3rem] max-w-full items-center justify-center gap-2 rounded-xl border border-omjep-mauve/40 bg-omjep-mauve px-5 py-3 text-sm font-semibold text-white shadow-[var(--omjep-glow-mauve-soft)] transition-all hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:min-w-[12rem]"
                 >
                   {linkingClub ? (
                     <span className="flex flex-col items-center gap-1.5 px-1 sm:flex-row sm:gap-2">
@@ -1054,12 +1165,12 @@ export default function MyTeam() {
 
             {isSynced && (
               <div className="flex items-center gap-2 pt-1">
-                <span className="text-xs text-slate-600">URL actuelle :</span>
+                <span className="text-xs text-omjep-text-muted">URL actuelle :</span>
                 <a
                   href={team.proclubs_url!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/15 text-amber-400 text-xs font-mono hover:bg-amber-400/20 transition-colors truncate max-w-xs"
+                  className="max-w-xs truncate rounded-md border border-omjep-border bg-omjep-bg-panel-soft px-2 py-0.5 font-mono text-xs text-omjep-mauve transition-colors hover:border-omjep-mauve/35 hover:bg-omjep-mauve/8"
                 >
                   {team.proclubs_url}
                 </a>
@@ -1071,18 +1182,18 @@ export default function MyTeam() {
 
       {/* Section Recrutement — visible uniquement pour Fondateur / Manager / Co-Manager */}
       {canRecruit && team && (
-        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-          <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-            <UserPlus className="w-4 h-4 text-amber-400" />
-            <h2 className="text-sm font-semibold text-white">Recrutement</h2>
+        <div className="overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/95">
+          <div className="flex items-center gap-2 border-b border-omjep-border/80 px-6 py-4">
+            <UserPlus className="h-4 w-4 text-omjep-gold" />
+            <h2 className="text-sm font-semibold text-omjep-text-primary">Recrutement</h2>
           </div>
           <div className="px-6 py-6">
-            <p className="text-sm text-slate-400 mb-4">
-              En tant que <span className="text-white font-medium">{roleConfig[currentMember!.club_role].label}</span>, vous pouvez inviter de nouveaux joueurs à rejoindre <span className="text-amber-400 font-medium">{team.name}</span>.
+            <p className="mb-4 text-sm text-omjep-text-secondary">
+              En tant que <span className="font-medium text-omjep-text-primary">{roleConfig[currentMember!.club_role].label}</span>, vous pouvez inviter de nouveaux joueurs à rejoindre <span className="font-medium text-omjep-gold">{team.name}</span>.
             </p>
             <button
               onClick={() => setInviteModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-400 to-amber-600 text-[#0A0E1A] shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:brightness-110 active:scale-95 transition-all"
+              className="inline-flex items-center gap-2 rounded-xl border border-omjep-mauve/40 bg-omjep-mauve px-5 py-2.5 text-sm font-semibold text-white shadow-[var(--omjep-glow-mauve-soft)] transition-all hover:brightness-110 active:scale-95"
             >
               <UserPlus className="w-4 h-4" />
               Inviter un Joueur
@@ -1094,31 +1205,31 @@ export default function MyTeam() {
       {/* Confirmation licenciement */}
       {kickTarget && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[color-mix(in_srgb,var(--omjep-bg)_78%,black)] p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-labelledby="kick-modal-title"
         >
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0c1018] p-6 shadow-2xl">
+          <div className="tactical-modal-panel w-full max-w-md rounded-2xl border border-omjep-border p-6 shadow-[var(--omjep-shadow-lg)]">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/10">
-                <UserMinus className="h-5 w-5 text-rose-400" aria-hidden />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-omjep-danger/30 bg-omjep-danger/10">
+                <UserMinus className="h-5 w-5 text-omjep-danger" aria-hidden />
               </div>
               <div className="min-w-0 flex-1">
-                <h2 id="kick-modal-title" className="text-lg font-bold text-white">
+                <h2 id="kick-modal-title" className="text-lg font-bold text-omjep-text-primary">
                   Licencier ce joueur ?
                 </h2>
-                <p className="mt-2 text-sm text-slate-400">
-                  <span className="font-semibold text-white">
+                <p className="mt-2 text-sm text-omjep-text-secondary">
+                  <span className="font-semibold text-omjep-text-primary">
                     {kickTarget.user.ea_persona_name ?? `Joueur #${kickTarget.user_id.slice(0, 6)}`}
                   </span>{' '}
                   sera retiré de l&apos;effectif. Le budget du club sera débité de{' '}
-                  <span className="font-mono font-semibold tabular-nums text-amber-400">
+                  <span className="font-mono font-semibold tabular-nums text-omjep-gold">
                     {KICK_FEE_OC.toLocaleString('fr-FR')} OC
                   </span>{' '}
                   (frais administratifs).
                 </p>
-                <p className="mt-3 text-xs text-slate-500">
+                <p className="mt-3 text-xs text-omjep-text-muted">
                   Cette action est immédiate. Le joueur recevra une notification.
                 </p>
               </div>
@@ -1128,7 +1239,7 @@ export default function MyTeam() {
                 type="button"
                 disabled={kickLoading}
                 onClick={() => setKickTarget(null)}
-                className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 disabled:opacity-50"
+                className="rounded-xl border border-omjep-border px-4 py-2.5 text-sm font-medium text-omjep-text-secondary transition hover:bg-omjep-bg-panel-soft disabled:opacity-50"
               >
                 Annuler
               </button>
@@ -1136,7 +1247,7 @@ export default function MyTeam() {
                 type="button"
                 disabled={kickLoading}
                 onClick={() => void confirmKickMember()}
-                className="inline-flex items-center gap-2 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-2.5 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/25 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-omjep-danger/40 bg-omjep-danger/12 px-4 py-2.5 text-sm font-semibold text-omjep-danger transition hover:bg-omjep-danger/18 disabled:opacity-50"
               >
                 {kickLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserMinus className="h-4 w-4" />}
                 Confirmer ({KICK_FEE_OC.toLocaleString('fr-FR')} OC)

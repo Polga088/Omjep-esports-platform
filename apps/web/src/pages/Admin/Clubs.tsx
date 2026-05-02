@@ -40,6 +40,8 @@ export default function AdminClubs() {
   const [teams, setTeams] = useState<TeamRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [platformFilter, setPlatformFilter] = useState<EditClubForm['platform'] | ''>('')
+  const [validationFilter, setValidationFilter] = useState<EditClubForm['validation_status'] | ''>('')
   const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingClub, setEditingClub] = useState<TeamRow | null>(null)
@@ -175,14 +177,25 @@ export default function AdminClubs() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return teams;
-    return teams.filter((t) => t.name.toLowerCase().includes(q));
-  }, [teams, search]);
+    return teams.filter((t) => {
+      if (platformFilter && t.platform !== platformFilter) return false
+      if (validationFilter && t.validation_status !== validationFilter) return false
+      if (!q) return true
+      return t.name.toLowerCase().includes(q)
+    })
+  }, [teams, search, platformFilter, validationFilter]);
+
+  const getValidationBadge = (status?: TeamRow['validation_status']) => {
+    if (status === 'APPROVED') return 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+    if (status === 'REJECTED') return 'bg-red-500/10 border-red-500/20 text-red-400'
+    return 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+  }
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-24">
+      <div className="flex flex-col items-center justify-center gap-3 py-24">
         <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+        <p className="text-sm text-slate-500">Chargement des clubs...</p>
       </div>
     );
   }
@@ -197,8 +210,7 @@ export default function AdminClubs() {
           Clubs
         </h1>
         <p className="text-sm text-slate-500 mt-1 ml-[52px]">
-          Liste des équipes inscrites, effectifs (lecture). La gestion détaillée des membres se fait
-          depuis les fiches équipe.
+          Gérez les clubs, leur validation et leurs informations principales.
         </p>
       </div>
 
@@ -209,15 +221,43 @@ export default function AdminClubs() {
         </div>
       )}
 
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 pointer-events-none" />
-        <input
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rechercher un club…"
-          className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400/30"
-        />
+      <div className="flex flex-col md:flex-row gap-3 md:items-center">
+        <div className="relative max-w-md w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 pointer-events-none" />
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Rechercher un club…"
+            className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400/30"
+          />
+        </div>
+        <select
+          value={platformFilter}
+          onChange={(e) => setPlatformFilter((e.target.value as EditClubForm['platform']) || '')}
+          className="rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-sm text-white min-w-[160px]"
+        >
+          <option value="">Toutes plateformes</option>
+          {PLATFORM_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <select
+          value={validationFilter}
+          onChange={(e) =>
+            setValidationFilter((e.target.value as EditClubForm['validation_status']) || '')
+          }
+          className="rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-sm text-white min-w-[170px]"
+        >
+          <option value="">Tous statuts</option>
+          {VALIDATION_OPTIONS.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="rounded-xl border border-white/[0.06] overflow-x-auto">
@@ -234,6 +274,9 @@ export default function AdminClubs() {
                 Membres
               </th>
               <th className="text-left px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                Validation
+              </th>
+              <th className="text-left px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Créé le
               </th>
               <th className="text-right px-3 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 w-24">
@@ -244,8 +287,11 @@ export default function AdminClubs() {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-16 text-center text-slate-500">
-                  Aucun club trouvé.
+                <td colSpan={6} className="px-4 py-16 text-center">
+                  <p className="text-sm text-slate-400 font-medium">Aucun club trouvé</p>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Ajustez la recherche ou les filtres pour afficher des résultats.
+                  </p>
                 </td>
               </tr>
             ) : (
@@ -266,6 +312,15 @@ export default function AdminClubs() {
                   <td className="px-3 py-3 text-slate-400 text-xs">{t.platform ?? '—'}</td>
                   <td className="px-3 py-3 text-right text-slate-300 tabular-nums">
                     {t._count?.members ?? '—'}
+                  </td>
+                  <td className="px-3 py-3">
+                    <span
+                      className={`inline-flex items-center rounded-lg border px-2 py-1 text-[10px] font-semibold ${getValidationBadge(
+                        t.validation_status,
+                      )}`}
+                    >
+                      {t.validation_status ?? 'PENDING'}
+                    </span>
                   </td>
                   <td className="px-3 py-3 text-slate-500 text-xs tabular-nums">
                     {t.created_at ? new Date(t.created_at).toLocaleDateString('fr-FR') : '—'}

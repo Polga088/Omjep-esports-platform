@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronLeft, ChevronUp, Loader2, Minus, Users } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronUp, Loader2, Minus, Users, Medal, Dices, Gamepad2 } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { PlayerIdentity, type PlayerIdentityRarity } from '@/components/PlayerIdentity';
@@ -47,12 +47,12 @@ export const LEADERBOARD_ROW_GRID_CLASS =
 
 function RankTrendIcon({ delta }: { delta: number | undefined }) {
   if (delta === undefined || delta === 0) {
-    return <Minus className="h-2 w-2 shrink-0 text-slate-400 dark:text-white/20" strokeWidth={2.5} aria-hidden />;
+    return <Minus className="h-2 w-2 shrink-0 text-omjep-text-muted" strokeWidth={2.5} aria-hidden />;
   }
   if (delta > 0) {
-    return <ChevronUp className="h-2 w-2 shrink-0 text-emerald-400" strokeWidth={2.5} aria-hidden />;
+    return <ChevronUp className="h-2 w-2 shrink-0 text-omjep-success" strokeWidth={2.5} aria-hidden />;
   }
-  return <ChevronDown className="h-2 w-2 shrink-0 text-red-400/90" strokeWidth={2.5} aria-hidden />;
+  return <ChevronDown className="h-2 w-2 shrink-0 text-omjep-warning" strokeWidth={2.5} aria-hidden />;
 }
 
 export function LeaderboardRow({
@@ -69,19 +69,19 @@ export function LeaderboardRow({
   return (
     <Link
       to={`/dashboard/profile/${entry.id}`}
-      className={`leaderboard-row group block transition-colors duration-150 hover:bg-white/[0.05] ${
-        isMe ? 'border-l-2 border-cyan-500 bg-violet-500/5 dark:border-cyan-400 dark:bg-white/[0.04]' : 'border-l-2 border-transparent'
-      } ${!isLast ? 'border-b border-black/10 dark:border-white/20' : ''}`}
+      className={`leaderboard-row group block transition-colors duration-150 hover:bg-omjep-mauve/8 ${
+        isMe ? 'border-l-2 border-omjep-mauve bg-omjep-mauve/10' : 'border-l-2 border-transparent'
+      } ${!isLast ? 'border-b border-omjep-border' : ''}`}
     >
       <div className={LEADERBOARD_ROW_GRID_CLASS}>
-        <div className="text-center font-mono text-xs font-semibold tabular-nums text-slate-700 dark:text-white/80">
+        <div className="text-center font-mono text-xs font-semibold tabular-nums text-omjep-text-secondary">
           {entry.rank}
         </div>
         <div className="flex justify-center" aria-hidden>
           <RankTrendIcon delta={rankDelta} />
         </div>
         <div className="flex min-w-0 items-center gap-2">
-          <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full bg-[#0c0e12] ring-1 ring-white/10">
+          <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full bg-omjep-bg-elevated ring-1 ring-omjep-border">
             <PlayerIdentity
               initial={entry.name.charAt(0) || '?'}
               avatarUrl={entry.avatarUrl}
@@ -100,27 +100,27 @@ export function LeaderboardRow({
           <div className="min-w-0 flex-1">
             <p
               className={`truncate text-sm font-semibold leading-tight ${
-                isMe ? 'text-cyan-700 dark:text-cyan-200' : 'text-slate-900 group-hover:text-slate-950 dark:text-white dark:group-hover:text-white'
+                isMe ? 'text-omjep-mauve' : 'text-omjep-text-primary group-hover:text-omjep-text-primary'
               }`}
             >
               {entry.name}
               {isMe ? (
-                <span className="ml-1.5 text-[9px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400/80">
+                <span className="ml-1.5 text-[9px] font-bold uppercase tracking-wider text-omjep-mauve/90">
                   (vous)
                 </span>
               ) : null}
             </p>
-            <p className="truncate text-[10px] text-slate-500 dark:text-white/35">
+            <p className="truncate text-[10px] text-omjep-text-muted">
               {entry.team?.name ? entry.team.name : '—'}
               {entry.position ? ` · ${entry.position}` : ''}
             </p>
           </div>
         </div>
-        <div className="text-right font-mono text-xs font-bold tabular-nums text-slate-800 dark:text-white/90">{entry.level}</div>
-        <div className="text-right font-mono text-xs font-semibold tabular-nums text-slate-800 dark:text-white/90">
+        <div className="text-right font-mono text-xs font-bold tabular-nums text-omjep-text-primary">{entry.level}</div>
+        <div className="text-right font-mono text-xs font-semibold tabular-nums text-omjep-text-primary">
           {entry.xp.toLocaleString('fr-FR')}
         </div>
-        <div className="text-right font-mono text-xs font-semibold tabular-nums text-slate-800 dark:text-white/90">
+        <div className="text-right font-mono text-xs font-semibold tabular-nums text-omjep-text-primary">
           {entry.matchesPlayed}
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function Leaderboard() {
       <div className="flex flex-wrap items-center gap-4">
         <Link
           to="/dashboard/gamification"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-slate-700 dark:text-white/40 dark:hover:text-white/70"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-omjep-text-muted transition-colors hover:text-omjep-text-primary"
         >
           <ChevronLeft className="h-4 w-4" />
           Mon Parcours
@@ -181,13 +181,13 @@ export default function Leaderboard() {
       />
 
       {loading ? (
-        <div className="rounded-[12px] border border-violet-200/70 bg-white/80 p-5 dark:border-white/20 dark:bg-[#08090c]">
-          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-white/70">
-            <Loader2 className="h-4 w-4 animate-spin text-slate-500 dark:text-white/60" />
+        <div className="omjep-dash-card p-5">
+          <div className="flex items-center gap-2 text-sm text-omjep-text-secondary">
+            <Loader2 className="h-4 w-4 animate-spin text-omjep-mauve" />
             Chargement du classement…
           </div>
           {isLongLoading ? (
-            <p className="mt-2 text-xs text-slate-500 dark:text-white/45">
+            <p className="mt-2 text-xs text-omjep-text-muted">
               Le classement met plus de temps à répondre. Affichage en attente.
             </p>
           ) : null}
@@ -195,7 +195,7 @@ export default function Leaderboard() {
             {Array.from({ length: 5 }).map((_, idx) => (
               <div
                 key={`leaderboard-loading-${idx}`}
-                className="h-12 animate-pulse rounded-lg border border-slate-200/80 bg-white/75 dark:border-white/10 dark:bg-white/[0.04]"
+                className="h-12 animate-pulse rounded-lg border border-omjep-border bg-omjep-bg-panel-soft/80"
               />
             ))}
           </div>
@@ -210,17 +210,17 @@ export default function Leaderboard() {
       ) : null}
 
       {!loading && !error ? (
-        <div className="overflow-hidden rounded-[12px] border border-violet-200/70 bg-white/85 dark:border-white/20 dark:bg-[#08090c]">
-          <div className="flex items-center gap-2 border-b border-black/10 px-3 py-3 sm:px-4 dark:border-white/20">
-            <Users className="h-3.5 w-3.5 text-slate-400 dark:text-white/30" />
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-white/40">Classement XP</h2>
-            <span className="ml-auto font-mono text-[10px] tabular-nums text-slate-400 dark:text-white/30">
+        <div className="omjep-dash-card overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-omjep-border px-3 py-3 sm:px-4">
+            <Users className="h-3.5 w-3.5 text-omjep-text-muted" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-omjep-text-muted">Classement XP</h2>
+            <span className="ml-auto font-mono text-[10px] tabular-nums text-omjep-text-muted">
               {leaderboard.length} joueurs
             </span>
           </div>
 
           <div
-            className={`hidden sm:grid ${LEADERBOARD_ROW_GRID_CLASS} border-b border-black/10 py-2.5 text-[12px] font-semibold uppercase tracking-widest text-slate-400 dark:text-white/30 dark:border-white/20`}
+            className={`hidden sm:grid ${LEADERBOARD_ROW_GRID_CLASS} border-b border-omjep-border py-2.5 text-[12px] font-semibold uppercase tracking-widest text-omjep-text-muted`}
           >
             <span className="text-center">#</span>
             <span className="text-center" aria-hidden>
@@ -245,7 +245,37 @@ export default function Leaderboard() {
               />
             ))}
             {leaderboard.length === 0 && (
-              <p className="py-12 text-center text-sm text-slate-500 dark:text-white/35">Aucun joueur dans le classement</p>
+              <div className="border-t border-omjep-border px-6 py-14 text-center">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-omjep-mauve/35 bg-omjep-mauve/10 text-omjep-mauve">
+                  <Medal className="h-7 w-7" aria-hidden />
+                </div>
+                <h3 className="text-base font-bold text-omjep-text-primary">Le classement XP est vide</h3>
+                <p className="mx-auto mt-2 max-w-md text-sm text-omjep-text-secondary">
+                  Dès que les joueurs accumulent de l&apos;expérience en compétition, le top apparaîtra ici. Lancez-vous sur le parcours ou les prédictions pour monter en visibilité.
+                </p>
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                  <Link
+                    to="/dashboard/gamification"
+                    className="inline-flex items-center gap-2 rounded-xl border border-omjep-mauve/45 bg-omjep-mauve/12 px-4 py-2.5 text-sm font-semibold text-omjep-text-primary transition-colors hover:bg-omjep-mauve/18"
+                  >
+                    <Gamepad2 className="h-4 w-4 text-omjep-mauve" aria-hidden />
+                    Mon parcours
+                  </Link>
+                  <Link
+                    to="/dashboard/predictions"
+                    className="inline-flex items-center gap-2 rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-4 py-2.5 text-sm font-semibold text-omjep-text-primary transition-colors hover:border-omjep-mauve/35"
+                  >
+                    <Dices className="h-4 w-4 text-omjep-text-secondary" aria-hidden />
+                    Predict &amp; Win
+                  </Link>
+                  <Link
+                    to="/dashboard/profile"
+                    className="inline-flex items-center gap-2 rounded-xl border border-omjep-border-gold/45 bg-omjep-gold/10 px-4 py-2.5 text-sm font-semibold text-omjep-gold transition-colors hover:bg-omjep-gold/15"
+                  >
+                    Mon profil
+                  </Link>
+                </div>
+              </div>
             )}
           </div>
         </div>

@@ -139,11 +139,20 @@ export class TeamsService {
       },
     });
 
-    if (!membership) {
-      throw new NotFoundException("Vous n'appartenez à aucune équipe.");
+    if (membership) {
+      return membership.team;
     }
 
-    return membership.team;
+    // Fallback métier: un manager peut gérer un club sans ligne team_members.
+    const managedTeam = await this.prisma.club.findFirst({
+      where: { manager_id: userId },
+      include: TEAM_WITH_ROSTER,
+    });
+    if (managedTeam) {
+      return managedTeam;
+    }
+
+    throw new NotFoundException("Vous n'appartenez à aucune équipe.");
   }
 
   /**

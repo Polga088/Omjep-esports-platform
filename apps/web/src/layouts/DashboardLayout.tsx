@@ -211,7 +211,7 @@ export default function DashboardLayout() {
     <div className={`dashboard-layout-shell flex min-h-[100dvh] bg-omjep-bg text-omjep-text-primary`}>
       <GoldConfetti active={showConfetti} />
       <aside
-        className={`fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-omjep-border px-4 py-5 lg:flex lg:flex-col ${isDark ? 'bg-omjep-bg-panel/82 backdrop-blur-2xl' : 'bg-white/92 backdrop-blur-2xl'}`}
+        className={`fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-omjep-border px-4 py-5 lg:flex lg:flex-col ${isDark ? 'bg-omjep-bg-panel/90 backdrop-blur-2xl' : 'bg-omjep-bg-panel/95 backdrop-blur-2xl shadow-[var(--omjep-shadow-sm)]'}`}
       >
         <Link to="/dashboard" className="mb-6 flex items-center gap-2 px-2" aria-label="Cockpit OMJEP">
           <span className="font-heading text-xs font-semibold uppercase tracking-[0.28em] text-omjep-gold">OMJEP</span>
@@ -225,14 +225,22 @@ export default function DashboardLayout() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`group flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-all ${
+                className={`group flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-all duration-200 ease-out ${
                   active
-                    ? 'border-omjep-mauve/65 bg-omjep-mauve/15 text-omjep-mauve shadow-[0_0_24px_-8px_rgba(110,89,217,0.7)]'
-                    : 'border-transparent text-omjep-text-secondary hover:border-omjep-mauve/35 hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-text-primary hover:shadow-[0_0_20px_-10px_rgba(110,89,217,0.75)]'
+                    ? 'border-omjep-mauve/70 bg-omjep-mauve/18 text-omjep-mauve shadow-[0_0_28px_-6px_rgba(110,89,217,0.55)] scale-[1.01]'
+                    : 'border-transparent text-omjep-text-secondary hover:-translate-y-0.5 hover:border-omjep-mauve/40 hover:bg-omjep-bg-panel-soft/55 hover:text-omjep-text-primary hover:shadow-[0_8px_24px_-12px_rgba(110,89,217,0.45)] active:scale-[0.99]'
                 }`}
                 aria-current={active ? 'page' : undefined}
               >
-                <Icon className={`h-[18px] w-[18px] ${active ? 'text-omjep-mauve' : ''}`} aria-hidden />
+                <span
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-200 ${
+                    active
+                      ? 'border-omjep-mauve/50 bg-omjep-mauve/20 text-omjep-mauve'
+                      : 'border-omjep-border/50 bg-omjep-bg-panel-soft/30 text-omjep-text-muted group-hover:border-omjep-mauve/35 group-hover:text-omjep-text-primary'
+                  }`}
+                >
+                  <Icon className="h-[18px] w-[18px]" aria-hidden />
+                </span>
                 <span className="text-sm font-semibold tracking-wide">{item.label}</span>
                 {active ? <ChevronRight className="ml-auto h-4 w-4 text-omjep-mauve/80" aria-hidden /> : null}
               </Link>
@@ -250,12 +258,12 @@ export default function DashboardLayout() {
       </aside>
 
       <section className="flex min-h-[100dvh] w-full flex-col lg:pl-72">
-        <header className={`dashboard-cockpit-topbar sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-omjep-border px-5 ${isDark ? 'bg-omjep-bg/88 backdrop-blur-xl' : 'bg-white/92 backdrop-blur-xl'}`}>
+        <header className={`dashboard-cockpit-topbar sticky top-0 z-20 flex min-h-16 items-center justify-between gap-3 border-b border-omjep-border px-4 py-2.5 sm:px-5 ${isDark ? 'bg-omjep-bg/92 backdrop-blur-xl shadow-[0_1px_0_rgba(148,163,184,0.08)]' : 'bg-omjep-bg-panel/95 backdrop-blur-xl shadow-[var(--omjep-shadow-sm)]'}`}>
           <div className="min-w-0">
             <h1 className="truncate text-xl font-extrabold text-omjep-text-primary">{currentPageTitle}</h1>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-omjep-text-muted">Dashboard operation shell</p>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-omjep-text-muted">Cockpit joueur</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="hidden items-center gap-2 sm:flex">
               <PlayerIdentity
                 size="sm"
@@ -269,9 +277,16 @@ export default function DashboardLayout() {
               />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-omjep-text-primary">{user?.ea_persona_name ?? 'Joueur'}</p>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">
-                  {user?.role === 'MANAGER' ? 'Manager' : user?.role === 'ADMIN' ? 'Admin' : 'Joueur'}
-                </p>
+                <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                  <span className="inline-flex max-w-full items-center rounded-md border border-omjep-border bg-omjep-bg-panel-soft/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-omjep-text-secondary">
+                    {user?.role === 'MANAGER' ? 'Manager' : user?.role === 'ADMIN' ? 'Admin' : user?.role === 'MODERATOR' ? 'Modo' : 'Joueur'}
+                  </span>
+                  {typeof user?.level === 'number' && user.level > 0 ? (
+                    <span className="inline-flex items-center rounded-md border border-omjep-border-gold/50 bg-omjep-gold/10 px-2 py-0.5 text-[10px] font-bold tabular-nums uppercase tracking-wide text-omjep-gold">
+                      Niv. {user.level}
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </div>
             <SystemStatusIndicator />
@@ -286,7 +301,7 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <div className={`border-b border-omjep-border/60 ${isDark ? 'bg-omjep-bg-panel/70' : 'bg-white/90'}`}>
+        <div className={`border-b border-omjep-border/60 ${isDark ? 'bg-omjep-bg-panel/75' : 'bg-omjep-bg-panel/90'}`}>
           <LiveTicker />
           {mercatoLiveBadge ? (
             <div className="container-dashboard pt-0">
@@ -297,7 +312,7 @@ export default function DashboardLayout() {
           ) : null}
         </div>
 
-        <main className="dashboard-layout-scroll flex-1 overflow-y-auto py-6">
+        <main className="dashboard-layout-scroll flex-1 overflow-y-auto py-5 sm:py-7">
           <div className="container-dashboard">
             <Outlet />
           </div>

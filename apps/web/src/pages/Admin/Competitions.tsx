@@ -103,6 +103,9 @@ export default function AdminCompetitions() {
   const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<Competition['status'] | ''>('')
+  const [typeFilter, setTypeFilter] = useState<CompetitionType | ''>('')
+  const [search, setSearch] = useState('')
   const [showForm, setShowForm] = useState(false);
   const [generating, setGenerating] = useState<string | null>(null);
   const [generatingBracketId, setGeneratingBracketId] = useState<string | null>(null);
@@ -534,11 +537,19 @@ export default function AdminCompetitions() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex h-64 flex-col items-center justify-center gap-3">
         <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+        <p className="text-sm text-slate-500">Chargement des compétitions...</p>
       </div>
     );
   }
+
+  const visibleCompetitions = competitions.filter((comp) => {
+    if (statusFilter && comp.status !== statusFilter) return false
+    if (typeFilter && comp.type !== typeFilter) return false
+    if (!search.trim()) return true
+    return comp.name.toLowerCase().includes(search.trim().toLowerCase())
+  })
 
   return (
     <div className="space-y-6">
@@ -562,6 +573,39 @@ export default function AdminCompetitions() {
           <Plus className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" />
           Nouvelle Compétition
         </button>
+      </div>
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative w-full sm:max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Rechercher une compétition..."
+            className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-slate-600 focus:border-amber-400/30 focus:outline-none"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter((e.target.value as Competition['status']) || '')}
+          className="min-w-[150px] rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white"
+        >
+          <option value="">Tous statuts</option>
+          <option value="DRAFT">DRAFT</option>
+          <option value="ONGOING">ONGOING</option>
+          <option value="FINISHED">FINISHED</option>
+        </select>
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter((e.target.value as CompetitionType) || '')}
+          className="min-w-[160px] rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white"
+        >
+          <option value="">Tous types</option>
+          <option value="LEAGUE">LEAGUE</option>
+          <option value="CUP">CUP</option>
+          <option value="CHAMPIONS">CHAMPIONS</option>
+        </select>
       </div>
 
       {/* ── Alerts ── */}
@@ -628,17 +672,17 @@ export default function AdminCompetitions() {
       )}
 
       {/* ── Competition cards ── */}
-      {competitions.length === 0 ? (
+      {visibleCompetitions.length === 0 ? (
         <div className="text-center py-20 border border-dashed border-amber-400/10 rounded-2xl bg-gradient-to-b from-white/[0.01] to-transparent">
           <div className="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center mx-auto mb-4">
             <Trophy className="w-8 h-8 text-slate-700" />
           </div>
-          <p className="text-slate-500 text-sm font-medium">Aucune compétition pour le moment.</p>
-          <p className="text-slate-600 text-xs mt-1">Cliquez sur "Nouvelle Compétition" pour commencer.</p>
+          <p className="text-slate-400 text-sm font-medium">Aucune compétition trouvée.</p>
+          <p className="text-slate-600 text-xs mt-1">Ajustez les filtres ou créez une nouvelle compétition.</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {competitions.map((comp) => {
+          {visibleCompetitions.map((comp) => {
             const statusCfg = STATUS_CONFIG[comp.status] ?? STATUS_CONFIG.DRAFT;
             const isDraft = comp.status === 'DRAFT';
             const isGenerating = generating === comp.id;
@@ -1054,7 +1098,7 @@ export default function AdminCompetitions() {
                   className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#020617] text-sm font-bold hover:from-amber-300 hover:to-amber-400 disabled:opacity-40 disabled:hover:from-amber-400 disabled:hover:to-amber-500 transition-all duration-300 shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  Créer la Compétition
+                  Sauvegarder
                 </button>
               </div>
             </form>
@@ -1259,7 +1303,7 @@ export default function AdminCompetitions() {
                   className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#020617] text-sm font-bold hover:from-amber-300 hover:to-amber-400 disabled:opacity-40"
                 >
                   {editSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  Enregistrer
+                  Sauvegarder
                 </button>
               </div>
             </form>

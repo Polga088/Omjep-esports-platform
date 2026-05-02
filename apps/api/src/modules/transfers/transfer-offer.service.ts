@@ -64,6 +64,61 @@ export class TransferOfferService {
     return Math.abs(Number(reserved ?? 0) - totalCost) <= TransferOfferService.RESERVE_ALIGN_EPS
   }
 
+  /** Contrat actif joueur (une équipe), s’il existe. */
+  private async findPlayerActiveContract(playerId: string) {
+    return this.prisma.contract.findFirst({
+      where: {
+        user_id: playerId,
+        status: 'ACTIVE',
+        end_date: { gt: new Date() },
+      },
+    })
+  }
+
+  /**
+   * Agent libre : NEGOTIATED_FEE + `to_team_id` null.
+   * Sous contrat : RELEASE_CLAUSE_BUYOUT + vendeur = club du contrat + `transfer_fee` ≥ clause.
+   */
+  private validateMercatoOfferAgainstContractState(
+    activeContract: { team_id: string; release_clause: number } | null,
+    transferMode: string,
+    toTeamId: string | null,
+    fromTeamId: string,
+    transferFee: number,
+  ): void {
+    if (!activeContract) {
+      if (transferMode === 'RELEASE_CLAUSE_BUYOUT') {
+        throw new BadRequestException(
+          "Ce joueur est libre : la clause libératoire n'est pas applicable.",
+        )
+      }
+      if (toTeamId != null) {
+        throw new BadRequestException(
+          "Ce joueur est libre : l'offre ne doit pas inclure de club vendeur.",
+        )
+      }
+      return
+    }
+    if (transferMode !== 'RELEASE_CLAUSE_BUYOUT') {
+      throw new BadRequestException(
+        'Ce joueur est sous contrat : seule la clause libératoire peut être activée.',
+      )
+    }
+    if (toTeamId !== activeContract.team_id) {
+      throw new BadRequestException(
+        'Le club vendeur ne correspond pas au club actuel du joueur.',
+      )
+    }
+    if (fromTeamId === toTeamId) {
+      throw new BadRequestException('Impossible de transférer vers le même club.')
+    }
+    if (!Number.isFinite(transferFee) || transferFee < activeContract.release_clause) {
+      throw new BadRequestException(
+        'Le montant proposé est inférieur à la clause libératoire.',
+      )
+    }
+  }
+
   private async tryMarkOfferExpiredIfStale(offerId: string): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       const fresh = await tx.transferOffer.findFirst({
@@ -208,26 +263,15 @@ export class TransferOfferService {
         : dto.to_team_id;
 
     const transferMode = dto.transfer_mode ?? 'NEGOTIATED_FEE'
-    if (transferMode === 'RELEASE_CLAUSE_BUYOUT' && toTeamId == null) {
-      throw new BadRequestException(
-        'Le mode clause libératoire exige un club vendeur (to_team_id).',
-      )
-    }
 
-    // to_team_id absent / null = signature libre (recrutement direct) — pas de contrôle d’historique club
-    if (toTeamId != null) {
-      const playerMembership = await this.prisma.teamMember.findUnique({
-        where: {
-          user_id_team_id: { user_id: dto.player_id, team_id: toTeamId },
-        },
-      });
-      if (!playerMembership) {
-        throw new BadRequestException("Ce joueur n'appartient pas au club indiqué.");
-      }
-      if (dto.from_team_id === toTeamId) {
-        throw new BadRequestException('Impossible de transférer vers le même club.');
-      }
-    }
+    const activeContractForPlayer = await this.findPlayerActiveContract(dto.player_id)
+    this.validateMercatoOfferAgainstContractState(
+      activeContractForPlayer,
+      transferMode,
+      toTeamId,
+      dto.from_team_id,
+      dto.transfer_fee,
+    )
 
     const salaryAnnual =
       dto.salaryPropose != null && dto.salaryPropose > 0
@@ -456,6 +500,15 @@ export class TransferOfferService {
       const oldReserved = Number(offer.reserved_amount ?? 0)
       const nextExpires = new Date(Date.now() + TransferOfferService.OFFER_TTL_MS)
 
+      const contractAtCounter = await this.findPlayerActiveContract(offer.player_id)
+      this.validateMercatoOfferAgainstContractState(
+        contractAtCounter,
+        offer.transfer_mode,
+        offer.to_team_id,
+        offer.from_team_id,
+        nextFee,
+      )
+
       const updated = await this.prisma.$transaction(
         async (tx) => {
           await this.adjustOfferReservationInTx(
@@ -570,6 +623,15 @@ export class TransferOfferService {
       const newRequired = totalSigningCost(nextFee, nextSalary)
       const oldReserved = Number(offer.reserved_amount ?? 0)
       const nextExpires = new Date(Date.now() + TransferOfferService.OFFER_TTL_MS)
+
+      const contractAtRevise = await this.findPlayerActiveContract(offer.player_id)
+      this.validateMercatoOfferAgainstContractState(
+        contractAtRevise,
+        offer.transfer_mode,
+        offer.to_team_id,
+        offer.from_team_id,
+        nextFee,
+      )
 
       return this.prisma.$transaction(
         async (tx) => {
@@ -784,16 +846,14 @@ export class TransferOfferService {
 
     await this.assertTransferMarketOpen(offer.from_team_id, offer.to_team_id)
 
-    const currentContract = await this.prisma.contract.findFirst({
-      where: {
-        user_id: offer.player_id,
-        ...(offer.to_team_id != null
-          ? { team_id: offer.to_team_id }
-          : {}),
-        status: 'ACTIVE',
-        end_date: { gt: new Date() },
-      },
-    })
+    const currentContract = await this.findPlayerActiveContract(offer.player_id)
+    this.validateMercatoOfferAgainstContractState(
+      currentContract,
+      offer.transfer_mode,
+      offer.to_team_id,
+      offer.from_team_id,
+      offer.transfer_fee,
+    )
 
     const releaseClauseMet =
       currentContract != null &&
