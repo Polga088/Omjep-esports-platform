@@ -24,6 +24,16 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Club = $Result.DefaultSelection<Prisma.$ClubPayload>
 /**
+ * Model ClubWallet
+ * 
+ */
+export type ClubWallet = $Result.DefaultSelection<Prisma.$ClubWalletPayload>
+/**
+ * Model Season
+ * 
+ */
+export type Season = $Result.DefaultSelection<Prisma.$SeasonPayload>
+/**
  * Model TeamMember
  * 
  */
@@ -98,6 +108,11 @@ export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
  * 
  */
 export type TransferOffer = $Result.DefaultSelection<Prisma.$TransferOfferPayload>
+/**
+ * Model TransferSellerSettlement
+ * Dette / engagement indemnité vendeur — transfert classique réglé en fin de saison (Phase D).
+ */
+export type TransferSellerSettlement = $Result.DefaultSelection<Prisma.$TransferSellerSettlementPayload>
 /**
  * Model Notification
  * 
@@ -285,10 +300,36 @@ export const TransferOfferStatus: {
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   COUNTER_OFFER: 'COUNTER_OFFER',
+  EXPIRED: 'EXPIRED',
   CANCELLED: 'CANCELLED'
 };
 
 export type TransferOfferStatus = (typeof TransferOfferStatus)[keyof typeof TransferOfferStatus]
+
+
+export const TransferMode: {
+  NEGOTIATED_FEE: 'NEGOTIATED_FEE',
+  RELEASE_CLAUSE_BUYOUT: 'RELEASE_CLAUSE_BUYOUT'
+};
+
+export type TransferMode = (typeof TransferMode)[keyof typeof TransferMode]
+
+
+export const TransferSettlementStatus: {
+  PENDING_SEASON_END: 'PENDING_SEASON_END',
+  SETTLED: 'SETTLED'
+};
+
+export type TransferSettlementStatus = (typeof TransferSettlementStatus)[keyof typeof TransferSettlementStatus]
+
+
+export const SeasonStatus: {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED'
+};
+
+export type SeasonStatus = (typeof SeasonStatus)[keyof typeof SeasonStatus]
 
 
 export const NegotiationTurn: {
@@ -336,10 +377,15 @@ export type EventType = (typeof EventType)[keyof typeof EventType]
 export const TransactionType: {
   MATCH_REWARD: 'MATCH_REWARD',
   TRANSFER: 'TRANSFER',
+  TRANSFER_RESERVE: 'TRANSFER_RESERVE',
+  TRANSFER_RELEASE: 'TRANSFER_RELEASE',
+  TRANSFER_SETTLEMENT: 'TRANSFER_SETTLEMENT',
+  SEASON_BUDGET_CREDIT: 'SEASON_BUDGET_CREDIT',
   WAGE: 'WAGE',
   EXCHANGE: 'EXCHANGE',
   ADMIN_GRANT: 'ADMIN_GRANT',
-  KICK_FEE: 'KICK_FEE'
+  KICK_FEE: 'KICK_FEE',
+  SIGNING_BONUS: 'SIGNING_BONUS'
 };
 
 export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
@@ -461,6 +507,18 @@ export const TransferStatus: typeof $Enums.TransferStatus
 export type TransferOfferStatus = $Enums.TransferOfferStatus
 
 export const TransferOfferStatus: typeof $Enums.TransferOfferStatus
+
+export type TransferMode = $Enums.TransferMode
+
+export const TransferMode: typeof $Enums.TransferMode
+
+export type TransferSettlementStatus = $Enums.TransferSettlementStatus
+
+export const TransferSettlementStatus: typeof $Enums.TransferSettlementStatus
+
+export type SeasonStatus = $Enums.SeasonStatus
+
+export const SeasonStatus: typeof $Enums.SeasonStatus
 
 export type NegotiationTurn = $Enums.NegotiationTurn
 
@@ -653,6 +711,26 @@ export class PrismaClient<
   get club(): Prisma.ClubDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.clubWallet`: Exposes CRUD operations for the **ClubWallet** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClubWallets
+    * const clubWallets = await prisma.clubWallet.findMany()
+    * ```
+    */
+  get clubWallet(): Prisma.ClubWalletDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.season`: Exposes CRUD operations for the **Season** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Seasons
+    * const seasons = await prisma.season.findMany()
+    * ```
+    */
+  get season(): Prisma.SeasonDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.teamMember`: Exposes CRUD operations for the **TeamMember** model.
     * Example usage:
     * ```ts
@@ -801,6 +879,16 @@ export class PrismaClient<
     * ```
     */
   get transferOffer(): Prisma.TransferOfferDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transferSellerSettlement`: Exposes CRUD operations for the **TransferSellerSettlement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TransferSellerSettlements
+    * const transferSellerSettlements = await prisma.transferSellerSettlement.findMany()
+    * ```
+    */
+  get transferSellerSettlement(): Prisma.TransferSellerSettlementDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
@@ -1344,6 +1432,8 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Club: 'Club',
+    ClubWallet: 'ClubWallet',
+    Season: 'Season',
     TeamMember: 'TeamMember',
     PlayerStats: 'PlayerStats',
     EaExternalStats: 'EaExternalStats',
@@ -1359,6 +1449,7 @@ export namespace Prisma {
     Contract: 'Contract',
     Transaction: 'Transaction',
     TransferOffer: 'TransferOffer',
+    TransferSellerSettlement: 'TransferSellerSettlement',
     Notification: 'Notification',
     StoreItem: 'StoreItem',
     UserInventory: 'UserInventory',
@@ -1387,7 +1478,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "club" | "teamMember" | "playerStats" | "eaExternalStats" | "eaClubStats" | "competition" | "competitionTeam" | "match" | "leagueTable" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription" | "message" | "newsEvent" | "ticket" | "ticketReply"
+      modelProps: "user" | "club" | "clubWallet" | "season" | "teamMember" | "playerStats" | "eaExternalStats" | "eaClubStats" | "competition" | "competitionTeam" | "match" | "leagueTable" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "transferSellerSettlement" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription" | "message" | "newsEvent" | "ticket" | "ticketReply"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1536,6 +1627,154 @@ export namespace Prisma {
           count: {
             args: Prisma.ClubCountArgs<ExtArgs>
             result: $Utils.Optional<ClubCountAggregateOutputType> | number
+          }
+        }
+      }
+      ClubWallet: {
+        payload: Prisma.$ClubWalletPayload<ExtArgs>
+        fields: Prisma.ClubWalletFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClubWalletFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClubWalletFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>
+          }
+          findFirst: {
+            args: Prisma.ClubWalletFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClubWalletFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>
+          }
+          findMany: {
+            args: Prisma.ClubWalletFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>[]
+          }
+          create: {
+            args: Prisma.ClubWalletCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>
+          }
+          createMany: {
+            args: Prisma.ClubWalletCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClubWalletCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>[]
+          }
+          delete: {
+            args: Prisma.ClubWalletDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>
+          }
+          update: {
+            args: Prisma.ClubWalletUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClubWalletDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClubWalletUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClubWalletUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClubWalletUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubWalletPayload>
+          }
+          aggregate: {
+            args: Prisma.ClubWalletAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClubWallet>
+          }
+          groupBy: {
+            args: Prisma.ClubWalletGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClubWalletGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClubWalletCountArgs<ExtArgs>
+            result: $Utils.Optional<ClubWalletCountAggregateOutputType> | number
+          }
+        }
+      }
+      Season: {
+        payload: Prisma.$SeasonPayload<ExtArgs>
+        fields: Prisma.SeasonFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SeasonFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SeasonFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          findFirst: {
+            args: Prisma.SeasonFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SeasonFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          findMany: {
+            args: Prisma.SeasonFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>[]
+          }
+          create: {
+            args: Prisma.SeasonCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          createMany: {
+            args: Prisma.SeasonCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SeasonCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>[]
+          }
+          delete: {
+            args: Prisma.SeasonDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          update: {
+            args: Prisma.SeasonUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          deleteMany: {
+            args: Prisma.SeasonDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SeasonUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SeasonUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>[]
+          }
+          upsert: {
+            args: Prisma.SeasonUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          aggregate: {
+            args: Prisma.SeasonAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSeason>
+          }
+          groupBy: {
+            args: Prisma.SeasonGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SeasonGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SeasonCountArgs<ExtArgs>
+            result: $Utils.Optional<SeasonCountAggregateOutputType> | number
           }
         }
       }
@@ -2649,6 +2888,80 @@ export namespace Prisma {
           }
         }
       }
+      TransferSellerSettlement: {
+        payload: Prisma.$TransferSellerSettlementPayload<ExtArgs>
+        fields: Prisma.TransferSellerSettlementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransferSellerSettlementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransferSellerSettlementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>
+          }
+          findFirst: {
+            args: Prisma.TransferSellerSettlementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransferSellerSettlementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>
+          }
+          findMany: {
+            args: Prisma.TransferSellerSettlementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>[]
+          }
+          create: {
+            args: Prisma.TransferSellerSettlementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>
+          }
+          createMany: {
+            args: Prisma.TransferSellerSettlementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransferSellerSettlementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>[]
+          }
+          delete: {
+            args: Prisma.TransferSellerSettlementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>
+          }
+          update: {
+            args: Prisma.TransferSellerSettlementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransferSellerSettlementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransferSellerSettlementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransferSellerSettlementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransferSellerSettlementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferSellerSettlementPayload>
+          }
+          aggregate: {
+            args: Prisma.TransferSellerSettlementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransferSellerSettlement>
+          }
+          groupBy: {
+            args: Prisma.TransferSellerSettlementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransferSellerSettlementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransferSellerSettlementCountArgs<ExtArgs>
+            result: $Utils.Optional<TransferSellerSettlementCountAggregateOutputType> | number
+          }
+        }
+      }
       Notification: {
         payload: Prisma.$NotificationPayload<ExtArgs>
         fields: Prisma.NotificationFieldRefs
@@ -3487,6 +3800,8 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     club?: ClubOmit
+    clubWallet?: ClubWalletOmit
+    season?: SeasonOmit
     teamMember?: TeamMemberOmit
     playerStats?: PlayerStatsOmit
     eaExternalStats?: EaExternalStatsOmit
@@ -3502,6 +3817,7 @@ export namespace Prisma {
     contract?: ContractOmit
     transaction?: TransactionOmit
     transferOffer?: TransferOfferOmit
+    transferSellerSettlement?: TransferSellerSettlementOmit
     notification?: NotificationOmit
     storeItem?: StoreItemOmit
     userInventory?: UserInventoryOmit
@@ -3791,6 +4107,7 @@ export namespace Prisma {
     transferRequests: number
     messages: number
     leagueTableEntries: number
+    transferSellerSettlementsAsSeller: number
   }
 
   export type ClubCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3809,6 +4126,7 @@ export namespace Prisma {
     transferRequests?: boolean | ClubCountOutputTypeCountTransferRequestsArgs
     messages?: boolean | ClubCountOutputTypeCountMessagesArgs
     leagueTableEntries?: boolean | ClubCountOutputTypeCountLeagueTableEntriesArgs
+    transferSellerSettlementsAsSeller?: boolean | ClubCountOutputTypeCountTransferSellerSettlementsAsSellerArgs
   }
 
   // Custom InputTypes
@@ -3925,6 +4243,71 @@ export namespace Prisma {
    */
   export type ClubCountOutputTypeCountLeagueTableEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LeagueTableWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountTransferSellerSettlementsAsSellerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferSellerSettlementWhereInput
+  }
+
+
+  /**
+   * Count Type SeasonCountOutputType
+   */
+
+  export type SeasonCountOutputType = {
+    contractsAsStart: number
+    contractsAsEnd: number
+    offersAsContractStart: number
+    transferSellerSettlements: number
+  }
+
+  export type SeasonCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contractsAsStart?: boolean | SeasonCountOutputTypeCountContractsAsStartArgs
+    contractsAsEnd?: boolean | SeasonCountOutputTypeCountContractsAsEndArgs
+    offersAsContractStart?: boolean | SeasonCountOutputTypeCountOffersAsContractStartArgs
+    transferSellerSettlements?: boolean | SeasonCountOutputTypeCountTransferSellerSettlementsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SeasonCountOutputType without action
+   */
+  export type SeasonCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeasonCountOutputType
+     */
+    select?: SeasonCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SeasonCountOutputType without action
+   */
+  export type SeasonCountOutputTypeCountContractsAsStartArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+  }
+
+  /**
+   * SeasonCountOutputType without action
+   */
+  export type SeasonCountOutputTypeCountContractsAsEndArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+  }
+
+  /**
+   * SeasonCountOutputType without action
+   */
+  export type SeasonCountOutputTypeCountOffersAsContractStartArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferOfferWhereInput
+  }
+
+  /**
+   * SeasonCountOutputType without action
+   */
+  export type SeasonCountOutputTypeCountTransferSellerSettlementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferSellerSettlementWhereInput
   }
 
 
@@ -6341,6 +6724,8 @@ export namespace Prisma {
     messages?: boolean | Club$messagesArgs<ExtArgs>
     eaClubStats?: boolean | Club$eaClubStatsArgs<ExtArgs>
     leagueTableEntries?: boolean | Club$leagueTableEntriesArgs<ExtArgs>
+    wallet?: boolean | Club$walletArgs<ExtArgs>
+    transferSellerSettlementsAsSeller?: boolean | Club$transferSellerSettlementsAsSellerArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -6422,6 +6807,8 @@ export namespace Prisma {
     messages?: boolean | Club$messagesArgs<ExtArgs>
     eaClubStats?: boolean | Club$eaClubStatsArgs<ExtArgs>
     leagueTableEntries?: boolean | Club$leagueTableEntriesArgs<ExtArgs>
+    wallet?: boolean | Club$walletArgs<ExtArgs>
+    transferSellerSettlementsAsSeller?: boolean | Club$transferSellerSettlementsAsSellerArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClubIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6451,6 +6838,8 @@ export namespace Prisma {
       messages: Prisma.$MessagePayload<ExtArgs>[]
       eaClubStats: Prisma.$EaClubStatsPayload<ExtArgs> | null
       leagueTableEntries: Prisma.$LeagueTablePayload<ExtArgs>[]
+      wallet: Prisma.$ClubWalletPayload<ExtArgs> | null
+      transferSellerSettlementsAsSeller: Prisma.$TransferSellerSettlementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6880,6 +7269,8 @@ export namespace Prisma {
     messages<T extends Club$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Club$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     eaClubStats<T extends Club$eaClubStatsArgs<ExtArgs> = {}>(args?: Subset<T, Club$eaClubStatsArgs<ExtArgs>>): Prisma__EaClubStatsClient<$Result.GetResult<Prisma.$EaClubStatsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     leagueTableEntries<T extends Club$leagueTableEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Club$leagueTableEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeagueTablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    wallet<T extends Club$walletArgs<ExtArgs> = {}>(args?: Subset<T, Club$walletArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    transferSellerSettlementsAsSeller<T extends Club$transferSellerSettlementsAsSellerArgs<ExtArgs> = {}>(args?: Subset<T, Club$transferSellerSettlementsAsSellerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7719,6 +8110,49 @@ export namespace Prisma {
   }
 
   /**
+   * Club.wallet
+   */
+  export type Club$walletArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    where?: ClubWalletWhereInput
+  }
+
+  /**
+   * Club.transferSellerSettlementsAsSeller
+   */
+  export type Club$transferSellerSettlementsAsSellerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    where?: TransferSellerSettlementWhereInput
+    orderBy?: TransferSellerSettlementOrderByWithRelationInput | TransferSellerSettlementOrderByWithRelationInput[]
+    cursor?: TransferSellerSettlementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferSellerSettlementScalarFieldEnum | TransferSellerSettlementScalarFieldEnum[]
+  }
+
+  /**
    * Club without action
    */
   export type ClubDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7734,6 +8168,2325 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ClubInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClubWallet
+   */
+
+  export type AggregateClubWallet = {
+    _count: ClubWalletCountAggregateOutputType | null
+    _avg: ClubWalletAvgAggregateOutputType | null
+    _sum: ClubWalletSumAggregateOutputType | null
+    _min: ClubWalletMinAggregateOutputType | null
+    _max: ClubWalletMaxAggregateOutputType | null
+  }
+
+  export type ClubWalletAvgAggregateOutputType = {
+    omjep_coins_balance: number | null
+    season_transfer_budget: number | null
+    reserved_amount: number | null
+  }
+
+  export type ClubWalletSumAggregateOutputType = {
+    omjep_coins_balance: number | null
+    season_transfer_budget: number | null
+    reserved_amount: number | null
+  }
+
+  export type ClubWalletMinAggregateOutputType = {
+    id: string | null
+    team_id: string | null
+    omjep_coins_balance: number | null
+    season_transfer_budget: number | null
+    reserved_amount: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ClubWalletMaxAggregateOutputType = {
+    id: string | null
+    team_id: string | null
+    omjep_coins_balance: number | null
+    season_transfer_budget: number | null
+    reserved_amount: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ClubWalletCountAggregateOutputType = {
+    id: number
+    team_id: number
+    omjep_coins_balance: number
+    season_transfer_budget: number
+    reserved_amount: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type ClubWalletAvgAggregateInputType = {
+    omjep_coins_balance?: true
+    season_transfer_budget?: true
+    reserved_amount?: true
+  }
+
+  export type ClubWalletSumAggregateInputType = {
+    omjep_coins_balance?: true
+    season_transfer_budget?: true
+    reserved_amount?: true
+  }
+
+  export type ClubWalletMinAggregateInputType = {
+    id?: true
+    team_id?: true
+    omjep_coins_balance?: true
+    season_transfer_budget?: true
+    reserved_amount?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ClubWalletMaxAggregateInputType = {
+    id?: true
+    team_id?: true
+    omjep_coins_balance?: true
+    season_transfer_budget?: true
+    reserved_amount?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ClubWalletCountAggregateInputType = {
+    id?: true
+    team_id?: true
+    omjep_coins_balance?: true
+    season_transfer_budget?: true
+    reserved_amount?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type ClubWalletAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubWallet to aggregate.
+     */
+    where?: ClubWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubWallets to fetch.
+     */
+    orderBy?: ClubWalletOrderByWithRelationInput | ClubWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClubWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubWallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ClubWallets
+    **/
+    _count?: true | ClubWalletCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ClubWalletAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClubWalletSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClubWalletMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClubWalletMaxAggregateInputType
+  }
+
+  export type GetClubWalletAggregateType<T extends ClubWalletAggregateArgs> = {
+        [P in keyof T & keyof AggregateClubWallet]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClubWallet[P]>
+      : GetScalarType<T[P], AggregateClubWallet[P]>
+  }
+
+
+
+
+  export type ClubWalletGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClubWalletWhereInput
+    orderBy?: ClubWalletOrderByWithAggregationInput | ClubWalletOrderByWithAggregationInput[]
+    by: ClubWalletScalarFieldEnum[] | ClubWalletScalarFieldEnum
+    having?: ClubWalletScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClubWalletCountAggregateInputType | true
+    _avg?: ClubWalletAvgAggregateInputType
+    _sum?: ClubWalletSumAggregateInputType
+    _min?: ClubWalletMinAggregateInputType
+    _max?: ClubWalletMaxAggregateInputType
+  }
+
+  export type ClubWalletGroupByOutputType = {
+    id: string
+    team_id: string
+    omjep_coins_balance: number
+    season_transfer_budget: number
+    reserved_amount: number
+    created_at: Date
+    updated_at: Date
+    _count: ClubWalletCountAggregateOutputType | null
+    _avg: ClubWalletAvgAggregateOutputType | null
+    _sum: ClubWalletSumAggregateOutputType | null
+    _min: ClubWalletMinAggregateOutputType | null
+    _max: ClubWalletMaxAggregateOutputType | null
+  }
+
+  type GetClubWalletGroupByPayload<T extends ClubWalletGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClubWalletGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClubWalletGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClubWalletGroupByOutputType[P]>
+            : GetScalarType<T[P], ClubWalletGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClubWalletSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    omjep_coins_balance?: boolean
+    season_transfer_budget?: boolean
+    reserved_amount?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubWallet"]>
+
+  export type ClubWalletSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    omjep_coins_balance?: boolean
+    season_transfer_budget?: boolean
+    reserved_amount?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubWallet"]>
+
+  export type ClubWalletSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    team_id?: boolean
+    omjep_coins_balance?: boolean
+    season_transfer_budget?: boolean
+    reserved_amount?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubWallet"]>
+
+  export type ClubWalletSelectScalar = {
+    id?: boolean
+    team_id?: boolean
+    omjep_coins_balance?: boolean
+    season_transfer_budget?: boolean
+    reserved_amount?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type ClubWalletOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "omjep_coins_balance" | "season_transfer_budget" | "reserved_amount" | "created_at" | "updated_at", ExtArgs["result"]["clubWallet"]>
+  export type ClubWalletInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type ClubWalletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type ClubWalletIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $ClubWalletPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClubWallet"
+    objects: {
+      team: Prisma.$ClubPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      team_id: string
+      omjep_coins_balance: number
+      season_transfer_budget: number
+      reserved_amount: number
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["clubWallet"]>
+    composites: {}
+  }
+
+  type ClubWalletGetPayload<S extends boolean | null | undefined | ClubWalletDefaultArgs> = $Result.GetResult<Prisma.$ClubWalletPayload, S>
+
+  type ClubWalletCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClubWalletFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClubWalletCountAggregateInputType | true
+    }
+
+  export interface ClubWalletDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClubWallet'], meta: { name: 'ClubWallet' } }
+    /**
+     * Find zero or one ClubWallet that matches the filter.
+     * @param {ClubWalletFindUniqueArgs} args - Arguments to find a ClubWallet
+     * @example
+     * // Get one ClubWallet
+     * const clubWallet = await prisma.clubWallet.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClubWalletFindUniqueArgs>(args: SelectSubset<T, ClubWalletFindUniqueArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClubWallet that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClubWalletFindUniqueOrThrowArgs} args - Arguments to find a ClubWallet
+     * @example
+     * // Get one ClubWallet
+     * const clubWallet = await prisma.clubWallet.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClubWalletFindUniqueOrThrowArgs>(args: SelectSubset<T, ClubWalletFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubWallet that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubWalletFindFirstArgs} args - Arguments to find a ClubWallet
+     * @example
+     * // Get one ClubWallet
+     * const clubWallet = await prisma.clubWallet.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClubWalletFindFirstArgs>(args?: SelectSubset<T, ClubWalletFindFirstArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubWallet that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubWalletFindFirstOrThrowArgs} args - Arguments to find a ClubWallet
+     * @example
+     * // Get one ClubWallet
+     * const clubWallet = await prisma.clubWallet.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClubWalletFindFirstOrThrowArgs>(args?: SelectSubset<T, ClubWalletFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClubWallets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubWalletFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClubWallets
+     * const clubWallets = await prisma.clubWallet.findMany()
+     * 
+     * // Get first 10 ClubWallets
+     * const clubWallets = await prisma.clubWallet.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const clubWalletWithIdOnly = await prisma.clubWallet.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClubWalletFindManyArgs>(args?: SelectSubset<T, ClubWalletFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClubWallet.
+     * @param {ClubWalletCreateArgs} args - Arguments to create a ClubWallet.
+     * @example
+     * // Create one ClubWallet
+     * const ClubWallet = await prisma.clubWallet.create({
+     *   data: {
+     *     // ... data to create a ClubWallet
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClubWalletCreateArgs>(args: SelectSubset<T, ClubWalletCreateArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClubWallets.
+     * @param {ClubWalletCreateManyArgs} args - Arguments to create many ClubWallets.
+     * @example
+     * // Create many ClubWallets
+     * const clubWallet = await prisma.clubWallet.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClubWalletCreateManyArgs>(args?: SelectSubset<T, ClubWalletCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClubWallets and returns the data saved in the database.
+     * @param {ClubWalletCreateManyAndReturnArgs} args - Arguments to create many ClubWallets.
+     * @example
+     * // Create many ClubWallets
+     * const clubWallet = await prisma.clubWallet.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ClubWallets and only return the `id`
+     * const clubWalletWithIdOnly = await prisma.clubWallet.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClubWalletCreateManyAndReturnArgs>(args?: SelectSubset<T, ClubWalletCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClubWallet.
+     * @param {ClubWalletDeleteArgs} args - Arguments to delete one ClubWallet.
+     * @example
+     * // Delete one ClubWallet
+     * const ClubWallet = await prisma.clubWallet.delete({
+     *   where: {
+     *     // ... filter to delete one ClubWallet
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClubWalletDeleteArgs>(args: SelectSubset<T, ClubWalletDeleteArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClubWallet.
+     * @param {ClubWalletUpdateArgs} args - Arguments to update one ClubWallet.
+     * @example
+     * // Update one ClubWallet
+     * const clubWallet = await prisma.clubWallet.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClubWalletUpdateArgs>(args: SelectSubset<T, ClubWalletUpdateArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClubWallets.
+     * @param {ClubWalletDeleteManyArgs} args - Arguments to filter ClubWallets to delete.
+     * @example
+     * // Delete a few ClubWallets
+     * const { count } = await prisma.clubWallet.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClubWalletDeleteManyArgs>(args?: SelectSubset<T, ClubWalletDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubWallets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubWalletUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClubWallets
+     * const clubWallet = await prisma.clubWallet.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClubWalletUpdateManyArgs>(args: SelectSubset<T, ClubWalletUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubWallets and returns the data updated in the database.
+     * @param {ClubWalletUpdateManyAndReturnArgs} args - Arguments to update many ClubWallets.
+     * @example
+     * // Update many ClubWallets
+     * const clubWallet = await prisma.clubWallet.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ClubWallets and only return the `id`
+     * const clubWalletWithIdOnly = await prisma.clubWallet.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClubWalletUpdateManyAndReturnArgs>(args: SelectSubset<T, ClubWalletUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClubWallet.
+     * @param {ClubWalletUpsertArgs} args - Arguments to update or create a ClubWallet.
+     * @example
+     * // Update or create a ClubWallet
+     * const clubWallet = await prisma.clubWallet.upsert({
+     *   create: {
+     *     // ... data to create a ClubWallet
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClubWallet we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClubWalletUpsertArgs>(args: SelectSubset<T, ClubWalletUpsertArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClubWallets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubWalletCountArgs} args - Arguments to filter ClubWallets to count.
+     * @example
+     * // Count the number of ClubWallets
+     * const count = await prisma.clubWallet.count({
+     *   where: {
+     *     // ... the filter for the ClubWallets we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClubWalletCountArgs>(
+      args?: Subset<T, ClubWalletCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClubWalletCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClubWallet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubWalletAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClubWalletAggregateArgs>(args: Subset<T, ClubWalletAggregateArgs>): Prisma.PrismaPromise<GetClubWalletAggregateType<T>>
+
+    /**
+     * Group by ClubWallet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubWalletGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClubWalletGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClubWalletGroupByArgs['orderBy'] }
+        : { orderBy?: ClubWalletGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClubWalletGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClubWalletGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClubWallet model
+   */
+  readonly fields: ClubWalletFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClubWallet.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClubWalletClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClubWallet model
+   */
+  interface ClubWalletFieldRefs {
+    readonly id: FieldRef<"ClubWallet", 'String'>
+    readonly team_id: FieldRef<"ClubWallet", 'String'>
+    readonly omjep_coins_balance: FieldRef<"ClubWallet", 'Float'>
+    readonly season_transfer_budget: FieldRef<"ClubWallet", 'Float'>
+    readonly reserved_amount: FieldRef<"ClubWallet", 'Float'>
+    readonly created_at: FieldRef<"ClubWallet", 'DateTime'>
+    readonly updated_at: FieldRef<"ClubWallet", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ClubWallet findUnique
+   */
+  export type ClubWalletFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubWallet to fetch.
+     */
+    where: ClubWalletWhereUniqueInput
+  }
+
+  /**
+   * ClubWallet findUniqueOrThrow
+   */
+  export type ClubWalletFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubWallet to fetch.
+     */
+    where: ClubWalletWhereUniqueInput
+  }
+
+  /**
+   * ClubWallet findFirst
+   */
+  export type ClubWalletFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubWallet to fetch.
+     */
+    where?: ClubWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubWallets to fetch.
+     */
+    orderBy?: ClubWalletOrderByWithRelationInput | ClubWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubWallets.
+     */
+    cursor?: ClubWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubWallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubWallets.
+     */
+    distinct?: ClubWalletScalarFieldEnum | ClubWalletScalarFieldEnum[]
+  }
+
+  /**
+   * ClubWallet findFirstOrThrow
+   */
+  export type ClubWalletFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubWallet to fetch.
+     */
+    where?: ClubWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubWallets to fetch.
+     */
+    orderBy?: ClubWalletOrderByWithRelationInput | ClubWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubWallets.
+     */
+    cursor?: ClubWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubWallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubWallets.
+     */
+    distinct?: ClubWalletScalarFieldEnum | ClubWalletScalarFieldEnum[]
+  }
+
+  /**
+   * ClubWallet findMany
+   */
+  export type ClubWalletFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubWallets to fetch.
+     */
+    where?: ClubWalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubWallets to fetch.
+     */
+    orderBy?: ClubWalletOrderByWithRelationInput | ClubWalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ClubWallets.
+     */
+    cursor?: ClubWalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubWallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubWallets.
+     */
+    skip?: number
+    distinct?: ClubWalletScalarFieldEnum | ClubWalletScalarFieldEnum[]
+  }
+
+  /**
+   * ClubWallet create
+   */
+  export type ClubWalletCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClubWallet.
+     */
+    data: XOR<ClubWalletCreateInput, ClubWalletUncheckedCreateInput>
+  }
+
+  /**
+   * ClubWallet createMany
+   */
+  export type ClubWalletCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClubWallets.
+     */
+    data: ClubWalletCreateManyInput | ClubWalletCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClubWallet createManyAndReturn
+   */
+  export type ClubWalletCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClubWallets.
+     */
+    data: ClubWalletCreateManyInput | ClubWalletCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubWallet update
+   */
+  export type ClubWalletUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClubWallet.
+     */
+    data: XOR<ClubWalletUpdateInput, ClubWalletUncheckedUpdateInput>
+    /**
+     * Choose, which ClubWallet to update.
+     */
+    where: ClubWalletWhereUniqueInput
+  }
+
+  /**
+   * ClubWallet updateMany
+   */
+  export type ClubWalletUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClubWallets.
+     */
+    data: XOR<ClubWalletUpdateManyMutationInput, ClubWalletUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubWallets to update
+     */
+    where?: ClubWalletWhereInput
+    /**
+     * Limit how many ClubWallets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubWallet updateManyAndReturn
+   */
+  export type ClubWalletUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * The data used to update ClubWallets.
+     */
+    data: XOR<ClubWalletUpdateManyMutationInput, ClubWalletUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubWallets to update
+     */
+    where?: ClubWalletWhereInput
+    /**
+     * Limit how many ClubWallets to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubWallet upsert
+   */
+  export type ClubWalletUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClubWallet to update in case it exists.
+     */
+    where: ClubWalletWhereUniqueInput
+    /**
+     * In case the ClubWallet found by the `where` argument doesn't exist, create a new ClubWallet with this data.
+     */
+    create: XOR<ClubWalletCreateInput, ClubWalletUncheckedCreateInput>
+    /**
+     * In case the ClubWallet was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClubWalletUpdateInput, ClubWalletUncheckedUpdateInput>
+  }
+
+  /**
+   * ClubWallet delete
+   */
+  export type ClubWalletDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+    /**
+     * Filter which ClubWallet to delete.
+     */
+    where: ClubWalletWhereUniqueInput
+  }
+
+  /**
+   * ClubWallet deleteMany
+   */
+  export type ClubWalletDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubWallets to delete
+     */
+    where?: ClubWalletWhereInput
+    /**
+     * Limit how many ClubWallets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubWallet without action
+   */
+  export type ClubWalletDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubWallet
+     */
+    select?: ClubWalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubWallet
+     */
+    omit?: ClubWalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubWalletInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Season
+   */
+
+  export type AggregateSeason = {
+    _count: SeasonCountAggregateOutputType | null
+    _min: SeasonMinAggregateOutputType | null
+    _max: SeasonMaxAggregateOutputType | null
+  }
+
+  export type SeasonMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    start_date: Date | null
+    end_date: Date | null
+    status: $Enums.SeasonStatus | null
+    is_current: boolean | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type SeasonMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    start_date: Date | null
+    end_date: Date | null
+    status: $Enums.SeasonStatus | null
+    is_current: boolean | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type SeasonCountAggregateOutputType = {
+    id: number
+    name: number
+    start_date: number
+    end_date: number
+    status: number
+    is_current: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type SeasonMinAggregateInputType = {
+    id?: true
+    name?: true
+    start_date?: true
+    end_date?: true
+    status?: true
+    is_current?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type SeasonMaxAggregateInputType = {
+    id?: true
+    name?: true
+    start_date?: true
+    end_date?: true
+    status?: true
+    is_current?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type SeasonCountAggregateInputType = {
+    id?: true
+    name?: true
+    start_date?: true
+    end_date?: true
+    status?: true
+    is_current?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type SeasonAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Season to aggregate.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Seasons
+    **/
+    _count?: true | SeasonCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SeasonMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SeasonMaxAggregateInputType
+  }
+
+  export type GetSeasonAggregateType<T extends SeasonAggregateArgs> = {
+        [P in keyof T & keyof AggregateSeason]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSeason[P]>
+      : GetScalarType<T[P], AggregateSeason[P]>
+  }
+
+
+
+
+  export type SeasonGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SeasonWhereInput
+    orderBy?: SeasonOrderByWithAggregationInput | SeasonOrderByWithAggregationInput[]
+    by: SeasonScalarFieldEnum[] | SeasonScalarFieldEnum
+    having?: SeasonScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SeasonCountAggregateInputType | true
+    _min?: SeasonMinAggregateInputType
+    _max?: SeasonMaxAggregateInputType
+  }
+
+  export type SeasonGroupByOutputType = {
+    id: string
+    name: string
+    start_date: Date
+    end_date: Date
+    status: $Enums.SeasonStatus
+    is_current: boolean
+    created_at: Date
+    updated_at: Date
+    _count: SeasonCountAggregateOutputType | null
+    _min: SeasonMinAggregateOutputType | null
+    _max: SeasonMaxAggregateOutputType | null
+  }
+
+  type GetSeasonGroupByPayload<T extends SeasonGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SeasonGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SeasonGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SeasonGroupByOutputType[P]>
+            : GetScalarType<T[P], SeasonGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SeasonSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
+    is_current?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    contractsAsStart?: boolean | Season$contractsAsStartArgs<ExtArgs>
+    contractsAsEnd?: boolean | Season$contractsAsEndArgs<ExtArgs>
+    offersAsContractStart?: boolean | Season$offersAsContractStartArgs<ExtArgs>
+    transferSellerSettlements?: boolean | Season$transferSellerSettlementsArgs<ExtArgs>
+    _count?: boolean | SeasonCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["season"]>
+
+  export type SeasonSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
+    is_current?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["season"]>
+
+  export type SeasonSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
+    is_current?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["season"]>
+
+  export type SeasonSelectScalar = {
+    id?: boolean
+    name?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    status?: boolean
+    is_current?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type SeasonOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "start_date" | "end_date" | "status" | "is_current" | "created_at" | "updated_at", ExtArgs["result"]["season"]>
+  export type SeasonInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contractsAsStart?: boolean | Season$contractsAsStartArgs<ExtArgs>
+    contractsAsEnd?: boolean | Season$contractsAsEndArgs<ExtArgs>
+    offersAsContractStart?: boolean | Season$offersAsContractStartArgs<ExtArgs>
+    transferSellerSettlements?: boolean | Season$transferSellerSettlementsArgs<ExtArgs>
+    _count?: boolean | SeasonCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SeasonIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SeasonIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SeasonPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Season"
+    objects: {
+      contractsAsStart: Prisma.$ContractPayload<ExtArgs>[]
+      contractsAsEnd: Prisma.$ContractPayload<ExtArgs>[]
+      offersAsContractStart: Prisma.$TransferOfferPayload<ExtArgs>[]
+      transferSellerSettlements: Prisma.$TransferSellerSettlementPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      start_date: Date
+      end_date: Date
+      status: $Enums.SeasonStatus
+      is_current: boolean
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["season"]>
+    composites: {}
+  }
+
+  type SeasonGetPayload<S extends boolean | null | undefined | SeasonDefaultArgs> = $Result.GetResult<Prisma.$SeasonPayload, S>
+
+  type SeasonCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SeasonFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SeasonCountAggregateInputType | true
+    }
+
+  export interface SeasonDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Season'], meta: { name: 'Season' } }
+    /**
+     * Find zero or one Season that matches the filter.
+     * @param {SeasonFindUniqueArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SeasonFindUniqueArgs>(args: SelectSubset<T, SeasonFindUniqueArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Season that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SeasonFindUniqueOrThrowArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SeasonFindUniqueOrThrowArgs>(args: SelectSubset<T, SeasonFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Season that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonFindFirstArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SeasonFindFirstArgs>(args?: SelectSubset<T, SeasonFindFirstArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Season that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonFindFirstOrThrowArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SeasonFindFirstOrThrowArgs>(args?: SelectSubset<T, SeasonFindFirstOrThrowArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Seasons that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Seasons
+     * const seasons = await prisma.season.findMany()
+     * 
+     * // Get first 10 Seasons
+     * const seasons = await prisma.season.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const seasonWithIdOnly = await prisma.season.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SeasonFindManyArgs>(args?: SelectSubset<T, SeasonFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Season.
+     * @param {SeasonCreateArgs} args - Arguments to create a Season.
+     * @example
+     * // Create one Season
+     * const Season = await prisma.season.create({
+     *   data: {
+     *     // ... data to create a Season
+     *   }
+     * })
+     * 
+     */
+    create<T extends SeasonCreateArgs>(args: SelectSubset<T, SeasonCreateArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Seasons.
+     * @param {SeasonCreateManyArgs} args - Arguments to create many Seasons.
+     * @example
+     * // Create many Seasons
+     * const season = await prisma.season.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SeasonCreateManyArgs>(args?: SelectSubset<T, SeasonCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Seasons and returns the data saved in the database.
+     * @param {SeasonCreateManyAndReturnArgs} args - Arguments to create many Seasons.
+     * @example
+     * // Create many Seasons
+     * const season = await prisma.season.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Seasons and only return the `id`
+     * const seasonWithIdOnly = await prisma.season.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SeasonCreateManyAndReturnArgs>(args?: SelectSubset<T, SeasonCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Season.
+     * @param {SeasonDeleteArgs} args - Arguments to delete one Season.
+     * @example
+     * // Delete one Season
+     * const Season = await prisma.season.delete({
+     *   where: {
+     *     // ... filter to delete one Season
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SeasonDeleteArgs>(args: SelectSubset<T, SeasonDeleteArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Season.
+     * @param {SeasonUpdateArgs} args - Arguments to update one Season.
+     * @example
+     * // Update one Season
+     * const season = await prisma.season.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SeasonUpdateArgs>(args: SelectSubset<T, SeasonUpdateArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Seasons.
+     * @param {SeasonDeleteManyArgs} args - Arguments to filter Seasons to delete.
+     * @example
+     * // Delete a few Seasons
+     * const { count } = await prisma.season.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SeasonDeleteManyArgs>(args?: SelectSubset<T, SeasonDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Seasons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Seasons
+     * const season = await prisma.season.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SeasonUpdateManyArgs>(args: SelectSubset<T, SeasonUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Seasons and returns the data updated in the database.
+     * @param {SeasonUpdateManyAndReturnArgs} args - Arguments to update many Seasons.
+     * @example
+     * // Update many Seasons
+     * const season = await prisma.season.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Seasons and only return the `id`
+     * const seasonWithIdOnly = await prisma.season.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SeasonUpdateManyAndReturnArgs>(args: SelectSubset<T, SeasonUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Season.
+     * @param {SeasonUpsertArgs} args - Arguments to update or create a Season.
+     * @example
+     * // Update or create a Season
+     * const season = await prisma.season.upsert({
+     *   create: {
+     *     // ... data to create a Season
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Season we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SeasonUpsertArgs>(args: SelectSubset<T, SeasonUpsertArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Seasons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonCountArgs} args - Arguments to filter Seasons to count.
+     * @example
+     * // Count the number of Seasons
+     * const count = await prisma.season.count({
+     *   where: {
+     *     // ... the filter for the Seasons we want to count
+     *   }
+     * })
+    **/
+    count<T extends SeasonCountArgs>(
+      args?: Subset<T, SeasonCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SeasonCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Season.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SeasonAggregateArgs>(args: Subset<T, SeasonAggregateArgs>): Prisma.PrismaPromise<GetSeasonAggregateType<T>>
+
+    /**
+     * Group by Season.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SeasonGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SeasonGroupByArgs['orderBy'] }
+        : { orderBy?: SeasonGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SeasonGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSeasonGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Season model
+   */
+  readonly fields: SeasonFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Season.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SeasonClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contractsAsStart<T extends Season$contractsAsStartArgs<ExtArgs> = {}>(args?: Subset<T, Season$contractsAsStartArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    contractsAsEnd<T extends Season$contractsAsEndArgs<ExtArgs> = {}>(args?: Subset<T, Season$contractsAsEndArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    offersAsContractStart<T extends Season$offersAsContractStartArgs<ExtArgs> = {}>(args?: Subset<T, Season$offersAsContractStartArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transferSellerSettlements<T extends Season$transferSellerSettlementsArgs<ExtArgs> = {}>(args?: Subset<T, Season$transferSellerSettlementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Season model
+   */
+  interface SeasonFieldRefs {
+    readonly id: FieldRef<"Season", 'String'>
+    readonly name: FieldRef<"Season", 'String'>
+    readonly start_date: FieldRef<"Season", 'DateTime'>
+    readonly end_date: FieldRef<"Season", 'DateTime'>
+    readonly status: FieldRef<"Season", 'SeasonStatus'>
+    readonly is_current: FieldRef<"Season", 'Boolean'>
+    readonly created_at: FieldRef<"Season", 'DateTime'>
+    readonly updated_at: FieldRef<"Season", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Season findUnique
+   */
+  export type SeasonFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season findUniqueOrThrow
+   */
+  export type SeasonFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season findFirst
+   */
+  export type SeasonFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Seasons.
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Seasons.
+     */
+    distinct?: SeasonScalarFieldEnum | SeasonScalarFieldEnum[]
+  }
+
+  /**
+   * Season findFirstOrThrow
+   */
+  export type SeasonFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Seasons.
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Seasons.
+     */
+    distinct?: SeasonScalarFieldEnum | SeasonScalarFieldEnum[]
+  }
+
+  /**
+   * Season findMany
+   */
+  export type SeasonFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Seasons to fetch.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Seasons.
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    distinct?: SeasonScalarFieldEnum | SeasonScalarFieldEnum[]
+  }
+
+  /**
+   * Season create
+   */
+  export type SeasonCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Season.
+     */
+    data: XOR<SeasonCreateInput, SeasonUncheckedCreateInput>
+  }
+
+  /**
+   * Season createMany
+   */
+  export type SeasonCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Seasons.
+     */
+    data: SeasonCreateManyInput | SeasonCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Season createManyAndReturn
+   */
+  export type SeasonCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * The data used to create many Seasons.
+     */
+    data: SeasonCreateManyInput | SeasonCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Season update
+   */
+  export type SeasonUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Season.
+     */
+    data: XOR<SeasonUpdateInput, SeasonUncheckedUpdateInput>
+    /**
+     * Choose, which Season to update.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season updateMany
+   */
+  export type SeasonUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Seasons.
+     */
+    data: XOR<SeasonUpdateManyMutationInput, SeasonUncheckedUpdateManyInput>
+    /**
+     * Filter which Seasons to update
+     */
+    where?: SeasonWhereInput
+    /**
+     * Limit how many Seasons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Season updateManyAndReturn
+   */
+  export type SeasonUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * The data used to update Seasons.
+     */
+    data: XOR<SeasonUpdateManyMutationInput, SeasonUncheckedUpdateManyInput>
+    /**
+     * Filter which Seasons to update
+     */
+    where?: SeasonWhereInput
+    /**
+     * Limit how many Seasons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Season upsert
+   */
+  export type SeasonUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Season to update in case it exists.
+     */
+    where: SeasonWhereUniqueInput
+    /**
+     * In case the Season found by the `where` argument doesn't exist, create a new Season with this data.
+     */
+    create: XOR<SeasonCreateInput, SeasonUncheckedCreateInput>
+    /**
+     * In case the Season was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SeasonUpdateInput, SeasonUncheckedUpdateInput>
+  }
+
+  /**
+   * Season delete
+   */
+  export type SeasonDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter which Season to delete.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season deleteMany
+   */
+  export type SeasonDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Seasons to delete
+     */
+    where?: SeasonWhereInput
+    /**
+     * Limit how many Seasons to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Season.contractsAsStart
+   */
+  export type Season$contractsAsStartArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    cursor?: ContractWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Season.contractsAsEnd
+   */
+  export type Season$contractsAsEndArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    cursor?: ContractWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Season.offersAsContractStart
+   */
+  export type Season$offersAsContractStartArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferOffer
+     */
+    select?: TransferOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferOffer
+     */
+    omit?: TransferOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferOfferInclude<ExtArgs> | null
+    where?: TransferOfferWhereInput
+    orderBy?: TransferOfferOrderByWithRelationInput | TransferOfferOrderByWithRelationInput[]
+    cursor?: TransferOfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferOfferScalarFieldEnum | TransferOfferScalarFieldEnum[]
+  }
+
+  /**
+   * Season.transferSellerSettlements
+   */
+  export type Season$transferSellerSettlementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    where?: TransferSellerSettlementWhereInput
+    orderBy?: TransferSellerSettlementOrderByWithRelationInput | TransferSellerSettlementOrderByWithRelationInput[]
+    cursor?: TransferSellerSettlementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferSellerSettlementScalarFieldEnum | TransferSellerSettlementScalarFieldEnum[]
+  }
+
+  /**
+   * Season without action
+   */
+  export type SeasonDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
   }
 
 
@@ -21595,11 +24348,13 @@ export namespace Prisma {
   export type ContractAvgAggregateOutputType = {
     salary: number | null
     release_clause: number | null
+    seasons_count: number | null
   }
 
   export type ContractSumAggregateOutputType = {
     salary: number | null
     release_clause: number | null
+    seasons_count: number | null
   }
 
   export type ContractMinAggregateOutputType = {
@@ -21608,6 +24363,9 @@ export namespace Prisma {
     user_id: string | null
     salary: number | null
     release_clause: number | null
+    seasons_count: number | null
+    start_season_id: string | null
+    end_season_id: string | null
     start_date: Date | null
     end_date: Date | null
     status: $Enums.ContractStatus | null
@@ -21619,6 +24377,9 @@ export namespace Prisma {
     user_id: string | null
     salary: number | null
     release_clause: number | null
+    seasons_count: number | null
+    start_season_id: string | null
+    end_season_id: string | null
     start_date: Date | null
     end_date: Date | null
     status: $Enums.ContractStatus | null
@@ -21630,6 +24391,9 @@ export namespace Prisma {
     user_id: number
     salary: number
     release_clause: number
+    seasons_count: number
+    start_season_id: number
+    end_season_id: number
     start_date: number
     end_date: number
     status: number
@@ -21640,11 +24404,13 @@ export namespace Prisma {
   export type ContractAvgAggregateInputType = {
     salary?: true
     release_clause?: true
+    seasons_count?: true
   }
 
   export type ContractSumAggregateInputType = {
     salary?: true
     release_clause?: true
+    seasons_count?: true
   }
 
   export type ContractMinAggregateInputType = {
@@ -21653,6 +24419,9 @@ export namespace Prisma {
     user_id?: true
     salary?: true
     release_clause?: true
+    seasons_count?: true
+    start_season_id?: true
+    end_season_id?: true
     start_date?: true
     end_date?: true
     status?: true
@@ -21664,6 +24433,9 @@ export namespace Prisma {
     user_id?: true
     salary?: true
     release_clause?: true
+    seasons_count?: true
+    start_season_id?: true
+    end_season_id?: true
     start_date?: true
     end_date?: true
     status?: true
@@ -21675,6 +24447,9 @@ export namespace Prisma {
     user_id?: true
     salary?: true
     release_clause?: true
+    seasons_count?: true
+    start_season_id?: true
+    end_season_id?: true
     start_date?: true
     end_date?: true
     status?: true
@@ -21773,6 +24548,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
+    seasons_count: number | null
+    start_season_id: string | null
+    end_season_id: string | null
     start_date: Date
     end_date: Date
     status: $Enums.ContractStatus
@@ -21803,9 +24581,14 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
+    seasons_count?: boolean
+    start_season_id?: boolean
+    end_season_id?: boolean
     start_date?: boolean
     end_date?: boolean
     status?: boolean
+    startSeason?: boolean | Contract$startSeasonArgs<ExtArgs>
+    endSeason?: boolean | Contract$endSeasonArgs<ExtArgs>
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
@@ -21816,9 +24599,14 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
+    seasons_count?: boolean
+    start_season_id?: boolean
+    end_season_id?: boolean
     start_date?: boolean
     end_date?: boolean
     status?: boolean
+    startSeason?: boolean | Contract$startSeasonArgs<ExtArgs>
+    endSeason?: boolean | Contract$endSeasonArgs<ExtArgs>
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
@@ -21829,9 +24617,14 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
+    seasons_count?: boolean
+    start_season_id?: boolean
+    end_season_id?: boolean
     start_date?: boolean
     end_date?: boolean
     status?: boolean
+    startSeason?: boolean | Contract$startSeasonArgs<ExtArgs>
+    endSeason?: boolean | Contract$endSeasonArgs<ExtArgs>
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
@@ -21842,21 +24635,30 @@ export namespace Prisma {
     user_id?: boolean
     salary?: boolean
     release_clause?: boolean
+    seasons_count?: boolean
+    start_season_id?: boolean
+    end_season_id?: boolean
     start_date?: boolean
     end_date?: boolean
     status?: boolean
   }
 
-  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "user_id" | "salary" | "release_clause" | "start_date" | "end_date" | "status", ExtArgs["result"]["contract"]>
+  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team_id" | "user_id" | "salary" | "release_clause" | "seasons_count" | "start_season_id" | "end_season_id" | "start_date" | "end_date" | "status", ExtArgs["result"]["contract"]>
   export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    startSeason?: boolean | Contract$startSeasonArgs<ExtArgs>
+    endSeason?: boolean | Contract$endSeasonArgs<ExtArgs>
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ContractIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    startSeason?: boolean | Contract$startSeasonArgs<ExtArgs>
+    endSeason?: boolean | Contract$endSeasonArgs<ExtArgs>
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ContractIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    startSeason?: boolean | Contract$startSeasonArgs<ExtArgs>
+    endSeason?: boolean | Contract$endSeasonArgs<ExtArgs>
     team?: boolean | ClubDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -21864,6 +24666,8 @@ export namespace Prisma {
   export type $ContractPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Contract"
     objects: {
+      startSeason: Prisma.$SeasonPayload<ExtArgs> | null
+      endSeason: Prisma.$SeasonPayload<ExtArgs> | null
       team: Prisma.$ClubPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
     }
@@ -21873,6 +24677,18 @@ export namespace Prisma {
       user_id: string
       salary: number
       release_clause: number
+      /**
+       * Durée contractuelle métier en saisons (V2)
+       */
+      seasons_count: number | null
+      /**
+       * Saison de début du contrat (V2)
+       */
+      start_season_id: string | null
+      /**
+       * Saison de fin du contrat (V2)
+       */
+      end_season_id: string | null
       start_date: Date
       end_date: Date
       status: $Enums.ContractStatus
@@ -22270,6 +25086,8 @@ export namespace Prisma {
    */
   export interface Prisma__ContractClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    startSeason<T extends Contract$startSeasonArgs<ExtArgs> = {}>(args?: Subset<T, Contract$startSeasonArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    endSeason<T extends Contract$endSeasonArgs<ExtArgs> = {}>(args?: Subset<T, Contract$endSeasonArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     team<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -22306,6 +25124,9 @@ export namespace Prisma {
     readonly user_id: FieldRef<"Contract", 'String'>
     readonly salary: FieldRef<"Contract", 'Float'>
     readonly release_clause: FieldRef<"Contract", 'Float'>
+    readonly seasons_count: FieldRef<"Contract", 'Int'>
+    readonly start_season_id: FieldRef<"Contract", 'String'>
+    readonly end_season_id: FieldRef<"Contract", 'String'>
     readonly start_date: FieldRef<"Contract", 'DateTime'>
     readonly end_date: FieldRef<"Contract", 'DateTime'>
     readonly status: FieldRef<"Contract", 'ContractStatus'>
@@ -22702,6 +25523,44 @@ export namespace Prisma {
      * Limit how many Contracts to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Contract.startSeason
+   */
+  export type Contract$startSeasonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    where?: SeasonWhereInput
+  }
+
+  /**
+   * Contract.endSeason
+   */
+  export type Contract$endSeasonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    where?: SeasonWhereInput
   }
 
   /**
@@ -23909,6 +26768,8 @@ export namespace Prisma {
     offered_salary: number | null
     offered_clause: number | null
     transfer_fee: number | null
+    seasons_count: number | null
+    reserved_amount: number | null
     duration_months: number | null
   }
 
@@ -23916,6 +26777,8 @@ export namespace Prisma {
     offered_salary: number | null
     offered_clause: number | null
     transfer_fee: number | null
+    seasons_count: number | null
+    reserved_amount: number | null
     duration_months: number | null
   }
 
@@ -23927,6 +26790,11 @@ export namespace Prisma {
     offered_salary: number | null
     offered_clause: number | null
     transfer_fee: number | null
+    transfer_mode: $Enums.TransferMode | null
+    seasons_count: number | null
+    reserved_amount: number | null
+    expires_at: Date | null
+    contract_start_season_id: string | null
     duration_months: number | null
     status: $Enums.TransferOfferStatus | null
     negotiation_turn: $Enums.NegotiationTurn | null
@@ -23942,6 +26810,11 @@ export namespace Prisma {
     offered_salary: number | null
     offered_clause: number | null
     transfer_fee: number | null
+    transfer_mode: $Enums.TransferMode | null
+    seasons_count: number | null
+    reserved_amount: number | null
+    expires_at: Date | null
+    contract_start_season_id: string | null
     duration_months: number | null
     status: $Enums.TransferOfferStatus | null
     negotiation_turn: $Enums.NegotiationTurn | null
@@ -23957,6 +26830,11 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode: number
+    seasons_count: number
+    reserved_amount: number
+    expires_at: number
+    contract_start_season_id: number
     duration_months: number
     status: number
     negotiation_turn: number
@@ -23970,6 +26848,8 @@ export namespace Prisma {
     offered_salary?: true
     offered_clause?: true
     transfer_fee?: true
+    seasons_count?: true
+    reserved_amount?: true
     duration_months?: true
   }
 
@@ -23977,6 +26857,8 @@ export namespace Prisma {
     offered_salary?: true
     offered_clause?: true
     transfer_fee?: true
+    seasons_count?: true
+    reserved_amount?: true
     duration_months?: true
   }
 
@@ -23988,6 +26870,11 @@ export namespace Prisma {
     offered_salary?: true
     offered_clause?: true
     transfer_fee?: true
+    transfer_mode?: true
+    seasons_count?: true
+    reserved_amount?: true
+    expires_at?: true
+    contract_start_season_id?: true
     duration_months?: true
     status?: true
     negotiation_turn?: true
@@ -24003,6 +26890,11 @@ export namespace Prisma {
     offered_salary?: true
     offered_clause?: true
     transfer_fee?: true
+    transfer_mode?: true
+    seasons_count?: true
+    reserved_amount?: true
+    expires_at?: true
+    contract_start_season_id?: true
     duration_months?: true
     status?: true
     negotiation_turn?: true
@@ -24018,6 +26910,11 @@ export namespace Prisma {
     offered_salary?: true
     offered_clause?: true
     transfer_fee?: true
+    transfer_mode?: true
+    seasons_count?: true
+    reserved_amount?: true
+    expires_at?: true
+    contract_start_season_id?: true
     duration_months?: true
     status?: true
     negotiation_turn?: true
@@ -24120,6 +27017,11 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode: $Enums.TransferMode
+    seasons_count: number | null
+    reserved_amount: number | null
+    expires_at: Date | null
+    contract_start_season_id: string | null
     duration_months: number
     status: $Enums.TransferOfferStatus
     negotiation_turn: $Enums.NegotiationTurn
@@ -24154,14 +27056,21 @@ export namespace Prisma {
     offered_salary?: boolean
     offered_clause?: boolean
     transfer_fee?: boolean
+    transfer_mode?: boolean
+    seasons_count?: boolean
+    reserved_amount?: boolean
+    expires_at?: boolean
+    contract_start_season_id?: boolean
     duration_months?: boolean
     status?: boolean
     negotiation_turn?: boolean
     created_at?: boolean
     responded_at?: boolean
+    contractStartSeason?: boolean | TransferOffer$contractStartSeasonArgs<ExtArgs>
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
     toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
+    sellerSettlement?: boolean | TransferOffer$sellerSettlementArgs<ExtArgs>
   }, ExtArgs["result"]["transferOffer"]>
 
   export type TransferOfferSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24172,11 +27081,17 @@ export namespace Prisma {
     offered_salary?: boolean
     offered_clause?: boolean
     transfer_fee?: boolean
+    transfer_mode?: boolean
+    seasons_count?: boolean
+    reserved_amount?: boolean
+    expires_at?: boolean
+    contract_start_season_id?: boolean
     duration_months?: boolean
     status?: boolean
     negotiation_turn?: boolean
     created_at?: boolean
     responded_at?: boolean
+    contractStartSeason?: boolean | TransferOffer$contractStartSeasonArgs<ExtArgs>
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
     toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
@@ -24190,11 +27105,17 @@ export namespace Prisma {
     offered_salary?: boolean
     offered_clause?: boolean
     transfer_fee?: boolean
+    transfer_mode?: boolean
+    seasons_count?: boolean
+    reserved_amount?: boolean
+    expires_at?: boolean
+    contract_start_season_id?: boolean
     duration_months?: boolean
     status?: boolean
     negotiation_turn?: boolean
     created_at?: boolean
     responded_at?: boolean
+    contractStartSeason?: boolean | TransferOffer$contractStartSeasonArgs<ExtArgs>
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
     toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
@@ -24208,6 +27129,11 @@ export namespace Prisma {
     offered_salary?: boolean
     offered_clause?: boolean
     transfer_fee?: boolean
+    transfer_mode?: boolean
+    seasons_count?: boolean
+    reserved_amount?: boolean
+    expires_at?: boolean
+    contract_start_season_id?: boolean
     duration_months?: boolean
     status?: boolean
     negotiation_turn?: boolean
@@ -24215,18 +27141,22 @@ export namespace Prisma {
     responded_at?: boolean
   }
 
-  export type TransferOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "player_id" | "from_team_id" | "to_team_id" | "offered_salary" | "offered_clause" | "transfer_fee" | "duration_months" | "status" | "negotiation_turn" | "created_at" | "responded_at", ExtArgs["result"]["transferOffer"]>
+  export type TransferOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "player_id" | "from_team_id" | "to_team_id" | "offered_salary" | "offered_clause" | "transfer_fee" | "transfer_mode" | "seasons_count" | "reserved_amount" | "expires_at" | "contract_start_season_id" | "duration_months" | "status" | "negotiation_turn" | "created_at" | "responded_at", ExtArgs["result"]["transferOffer"]>
   export type TransferOfferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contractStartSeason?: boolean | TransferOffer$contractStartSeasonArgs<ExtArgs>
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
     toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
+    sellerSettlement?: boolean | TransferOffer$sellerSettlementArgs<ExtArgs>
   }
   export type TransferOfferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contractStartSeason?: boolean | TransferOffer$contractStartSeasonArgs<ExtArgs>
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
     toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
   }
   export type TransferOfferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contractStartSeason?: boolean | TransferOffer$contractStartSeasonArgs<ExtArgs>
     fromTeam?: boolean | ClubDefaultArgs<ExtArgs>
     player?: boolean | UserDefaultArgs<ExtArgs>
     toTeam?: boolean | TransferOffer$toTeamArgs<ExtArgs>
@@ -24235,9 +27165,11 @@ export namespace Prisma {
   export type $TransferOfferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TransferOffer"
     objects: {
+      contractStartSeason: Prisma.$SeasonPayload<ExtArgs> | null
       fromTeam: Prisma.$ClubPayload<ExtArgs>
       player: Prisma.$UserPayload<ExtArgs>
       toTeam: Prisma.$ClubPayload<ExtArgs> | null
+      sellerSettlement: Prisma.$TransferSellerSettlementPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24259,6 +27191,26 @@ export namespace Prisma {
        * Indemnité versée au club vendeur
        */
       transfer_fee: number
+      /**
+       * Mercato V2 Phase D : négocié classique vs paiement clause au vendeur (`transfer_fee` = montant clause si RELEASE_CLAUSE_BUYOUT).
+       */
+      transfer_mode: $Enums.TransferMode
+      /**
+       * Durée de contrat cible en saisons (V2)
+       */
+      seasons_count: number | null
+      /**
+       * Montant réservé côté wallet club tant que l'offre est active (V2)
+       */
+      reserved_amount: number | null
+      /**
+       * Expiration technique de l'offre (V2)
+       */
+      expires_at: Date | null
+      /**
+       * Saison de début du contrat proposé (V2)
+       */
+      contract_start_season_id: string | null
       duration_months: number
       status: $Enums.TransferOfferStatus
       /**
@@ -24661,9 +27613,11 @@ export namespace Prisma {
    */
   export interface Prisma__TransferOfferClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    contractStartSeason<T extends TransferOffer$contractStartSeasonArgs<ExtArgs> = {}>(args?: Subset<T, TransferOffer$contractStartSeasonArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     fromTeam<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     player<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     toTeam<T extends TransferOffer$toTeamArgs<ExtArgs> = {}>(args?: Subset<T, TransferOffer$toTeamArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    sellerSettlement<T extends TransferOffer$sellerSettlementArgs<ExtArgs> = {}>(args?: Subset<T, TransferOffer$sellerSettlementArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -24700,6 +27654,11 @@ export namespace Prisma {
     readonly offered_salary: FieldRef<"TransferOffer", 'Float'>
     readonly offered_clause: FieldRef<"TransferOffer", 'Float'>
     readonly transfer_fee: FieldRef<"TransferOffer", 'Float'>
+    readonly transfer_mode: FieldRef<"TransferOffer", 'TransferMode'>
+    readonly seasons_count: FieldRef<"TransferOffer", 'Int'>
+    readonly reserved_amount: FieldRef<"TransferOffer", 'Float'>
+    readonly expires_at: FieldRef<"TransferOffer", 'DateTime'>
+    readonly contract_start_season_id: FieldRef<"TransferOffer", 'String'>
     readonly duration_months: FieldRef<"TransferOffer", 'Int'>
     readonly status: FieldRef<"TransferOffer", 'TransferOfferStatus'>
     readonly negotiation_turn: FieldRef<"TransferOffer", 'NegotiationTurn'>
@@ -25101,6 +28060,25 @@ export namespace Prisma {
   }
 
   /**
+   * TransferOffer.contractStartSeason
+   */
+  export type TransferOffer$contractStartSeasonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    where?: SeasonWhereInput
+  }
+
+  /**
    * TransferOffer.toTeam
    */
   export type TransferOffer$toTeamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25120,6 +28098,25 @@ export namespace Prisma {
   }
 
   /**
+   * TransferOffer.sellerSettlement
+   */
+  export type TransferOffer$sellerSettlementArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    where?: TransferSellerSettlementWhereInput
+  }
+
+  /**
    * TransferOffer without action
    */
   export type TransferOfferDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25135,6 +28132,1172 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TransferOfferInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TransferSellerSettlement
+   */
+
+  export type AggregateTransferSellerSettlement = {
+    _count: TransferSellerSettlementCountAggregateOutputType | null
+    _avg: TransferSellerSettlementAvgAggregateOutputType | null
+    _sum: TransferSellerSettlementSumAggregateOutputType | null
+    _min: TransferSellerSettlementMinAggregateOutputType | null
+    _max: TransferSellerSettlementMaxAggregateOutputType | null
+  }
+
+  export type TransferSellerSettlementAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransferSellerSettlementSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransferSellerSettlementMinAggregateOutputType = {
+    id: string | null
+    transfer_offer_id: string | null
+    seller_team_id: string | null
+    amount: number | null
+    status: $Enums.TransferSettlementStatus | null
+    season_id: string | null
+    created_at: Date | null
+    settled_at: Date | null
+  }
+
+  export type TransferSellerSettlementMaxAggregateOutputType = {
+    id: string | null
+    transfer_offer_id: string | null
+    seller_team_id: string | null
+    amount: number | null
+    status: $Enums.TransferSettlementStatus | null
+    season_id: string | null
+    created_at: Date | null
+    settled_at: Date | null
+  }
+
+  export type TransferSellerSettlementCountAggregateOutputType = {
+    id: number
+    transfer_offer_id: number
+    seller_team_id: number
+    amount: number
+    status: number
+    season_id: number
+    created_at: number
+    settled_at: number
+    _all: number
+  }
+
+
+  export type TransferSellerSettlementAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransferSellerSettlementSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransferSellerSettlementMinAggregateInputType = {
+    id?: true
+    transfer_offer_id?: true
+    seller_team_id?: true
+    amount?: true
+    status?: true
+    season_id?: true
+    created_at?: true
+    settled_at?: true
+  }
+
+  export type TransferSellerSettlementMaxAggregateInputType = {
+    id?: true
+    transfer_offer_id?: true
+    seller_team_id?: true
+    amount?: true
+    status?: true
+    season_id?: true
+    created_at?: true
+    settled_at?: true
+  }
+
+  export type TransferSellerSettlementCountAggregateInputType = {
+    id?: true
+    transfer_offer_id?: true
+    seller_team_id?: true
+    amount?: true
+    status?: true
+    season_id?: true
+    created_at?: true
+    settled_at?: true
+    _all?: true
+  }
+
+  export type TransferSellerSettlementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransferSellerSettlement to aggregate.
+     */
+    where?: TransferSellerSettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferSellerSettlements to fetch.
+     */
+    orderBy?: TransferSellerSettlementOrderByWithRelationInput | TransferSellerSettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransferSellerSettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferSellerSettlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferSellerSettlements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TransferSellerSettlements
+    **/
+    _count?: true | TransferSellerSettlementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransferSellerSettlementAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransferSellerSettlementSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransferSellerSettlementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransferSellerSettlementMaxAggregateInputType
+  }
+
+  export type GetTransferSellerSettlementAggregateType<T extends TransferSellerSettlementAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransferSellerSettlement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransferSellerSettlement[P]>
+      : GetScalarType<T[P], AggregateTransferSellerSettlement[P]>
+  }
+
+
+
+
+  export type TransferSellerSettlementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferSellerSettlementWhereInput
+    orderBy?: TransferSellerSettlementOrderByWithAggregationInput | TransferSellerSettlementOrderByWithAggregationInput[]
+    by: TransferSellerSettlementScalarFieldEnum[] | TransferSellerSettlementScalarFieldEnum
+    having?: TransferSellerSettlementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransferSellerSettlementCountAggregateInputType | true
+    _avg?: TransferSellerSettlementAvgAggregateInputType
+    _sum?: TransferSellerSettlementSumAggregateInputType
+    _min?: TransferSellerSettlementMinAggregateInputType
+    _max?: TransferSellerSettlementMaxAggregateInputType
+  }
+
+  export type TransferSellerSettlementGroupByOutputType = {
+    id: string
+    transfer_offer_id: string
+    seller_team_id: string
+    amount: number
+    status: $Enums.TransferSettlementStatus
+    season_id: string | null
+    created_at: Date
+    settled_at: Date | null
+    _count: TransferSellerSettlementCountAggregateOutputType | null
+    _avg: TransferSellerSettlementAvgAggregateOutputType | null
+    _sum: TransferSellerSettlementSumAggregateOutputType | null
+    _min: TransferSellerSettlementMinAggregateOutputType | null
+    _max: TransferSellerSettlementMaxAggregateOutputType | null
+  }
+
+  type GetTransferSellerSettlementGroupByPayload<T extends TransferSellerSettlementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransferSellerSettlementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransferSellerSettlementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransferSellerSettlementGroupByOutputType[P]>
+            : GetScalarType<T[P], TransferSellerSettlementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransferSellerSettlementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transfer_offer_id?: boolean
+    seller_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    season_id?: boolean
+    created_at?: boolean
+    settled_at?: boolean
+    transferOffer?: boolean | TransferOfferDefaultArgs<ExtArgs>
+    sellerClub?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | TransferSellerSettlement$seasonArgs<ExtArgs>
+  }, ExtArgs["result"]["transferSellerSettlement"]>
+
+  export type TransferSellerSettlementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transfer_offer_id?: boolean
+    seller_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    season_id?: boolean
+    created_at?: boolean
+    settled_at?: boolean
+    transferOffer?: boolean | TransferOfferDefaultArgs<ExtArgs>
+    sellerClub?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | TransferSellerSettlement$seasonArgs<ExtArgs>
+  }, ExtArgs["result"]["transferSellerSettlement"]>
+
+  export type TransferSellerSettlementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transfer_offer_id?: boolean
+    seller_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    season_id?: boolean
+    created_at?: boolean
+    settled_at?: boolean
+    transferOffer?: boolean | TransferOfferDefaultArgs<ExtArgs>
+    sellerClub?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | TransferSellerSettlement$seasonArgs<ExtArgs>
+  }, ExtArgs["result"]["transferSellerSettlement"]>
+
+  export type TransferSellerSettlementSelectScalar = {
+    id?: boolean
+    transfer_offer_id?: boolean
+    seller_team_id?: boolean
+    amount?: boolean
+    status?: boolean
+    season_id?: boolean
+    created_at?: boolean
+    settled_at?: boolean
+  }
+
+  export type TransferSellerSettlementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transfer_offer_id" | "seller_team_id" | "amount" | "status" | "season_id" | "created_at" | "settled_at", ExtArgs["result"]["transferSellerSettlement"]>
+  export type TransferSellerSettlementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transferOffer?: boolean | TransferOfferDefaultArgs<ExtArgs>
+    sellerClub?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | TransferSellerSettlement$seasonArgs<ExtArgs>
+  }
+  export type TransferSellerSettlementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transferOffer?: boolean | TransferOfferDefaultArgs<ExtArgs>
+    sellerClub?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | TransferSellerSettlement$seasonArgs<ExtArgs>
+  }
+  export type TransferSellerSettlementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transferOffer?: boolean | TransferOfferDefaultArgs<ExtArgs>
+    sellerClub?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | TransferSellerSettlement$seasonArgs<ExtArgs>
+  }
+
+  export type $TransferSellerSettlementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TransferSellerSettlement"
+    objects: {
+      transferOffer: Prisma.$TransferOfferPayload<ExtArgs>
+      sellerClub: Prisma.$ClubPayload<ExtArgs>
+      season: Prisma.$SeasonPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      transfer_offer_id: string
+      seller_team_id: string
+      amount: number
+      status: $Enums.TransferSettlementStatus
+      season_id: string | null
+      created_at: Date
+      settled_at: Date | null
+    }, ExtArgs["result"]["transferSellerSettlement"]>
+    composites: {}
+  }
+
+  type TransferSellerSettlementGetPayload<S extends boolean | null | undefined | TransferSellerSettlementDefaultArgs> = $Result.GetResult<Prisma.$TransferSellerSettlementPayload, S>
+
+  type TransferSellerSettlementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransferSellerSettlementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransferSellerSettlementCountAggregateInputType | true
+    }
+
+  export interface TransferSellerSettlementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TransferSellerSettlement'], meta: { name: 'TransferSellerSettlement' } }
+    /**
+     * Find zero or one TransferSellerSettlement that matches the filter.
+     * @param {TransferSellerSettlementFindUniqueArgs} args - Arguments to find a TransferSellerSettlement
+     * @example
+     * // Get one TransferSellerSettlement
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransferSellerSettlementFindUniqueArgs>(args: SelectSubset<T, TransferSellerSettlementFindUniqueArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TransferSellerSettlement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransferSellerSettlementFindUniqueOrThrowArgs} args - Arguments to find a TransferSellerSettlement
+     * @example
+     * // Get one TransferSellerSettlement
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransferSellerSettlementFindUniqueOrThrowArgs>(args: SelectSubset<T, TransferSellerSettlementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransferSellerSettlement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferSellerSettlementFindFirstArgs} args - Arguments to find a TransferSellerSettlement
+     * @example
+     * // Get one TransferSellerSettlement
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransferSellerSettlementFindFirstArgs>(args?: SelectSubset<T, TransferSellerSettlementFindFirstArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransferSellerSettlement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferSellerSettlementFindFirstOrThrowArgs} args - Arguments to find a TransferSellerSettlement
+     * @example
+     * // Get one TransferSellerSettlement
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransferSellerSettlementFindFirstOrThrowArgs>(args?: SelectSubset<T, TransferSellerSettlementFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TransferSellerSettlements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferSellerSettlementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TransferSellerSettlements
+     * const transferSellerSettlements = await prisma.transferSellerSettlement.findMany()
+     * 
+     * // Get first 10 TransferSellerSettlements
+     * const transferSellerSettlements = await prisma.transferSellerSettlement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transferSellerSettlementWithIdOnly = await prisma.transferSellerSettlement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransferSellerSettlementFindManyArgs>(args?: SelectSubset<T, TransferSellerSettlementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TransferSellerSettlement.
+     * @param {TransferSellerSettlementCreateArgs} args - Arguments to create a TransferSellerSettlement.
+     * @example
+     * // Create one TransferSellerSettlement
+     * const TransferSellerSettlement = await prisma.transferSellerSettlement.create({
+     *   data: {
+     *     // ... data to create a TransferSellerSettlement
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransferSellerSettlementCreateArgs>(args: SelectSubset<T, TransferSellerSettlementCreateArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TransferSellerSettlements.
+     * @param {TransferSellerSettlementCreateManyArgs} args - Arguments to create many TransferSellerSettlements.
+     * @example
+     * // Create many TransferSellerSettlements
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransferSellerSettlementCreateManyArgs>(args?: SelectSubset<T, TransferSellerSettlementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TransferSellerSettlements and returns the data saved in the database.
+     * @param {TransferSellerSettlementCreateManyAndReturnArgs} args - Arguments to create many TransferSellerSettlements.
+     * @example
+     * // Create many TransferSellerSettlements
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TransferSellerSettlements and only return the `id`
+     * const transferSellerSettlementWithIdOnly = await prisma.transferSellerSettlement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransferSellerSettlementCreateManyAndReturnArgs>(args?: SelectSubset<T, TransferSellerSettlementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TransferSellerSettlement.
+     * @param {TransferSellerSettlementDeleteArgs} args - Arguments to delete one TransferSellerSettlement.
+     * @example
+     * // Delete one TransferSellerSettlement
+     * const TransferSellerSettlement = await prisma.transferSellerSettlement.delete({
+     *   where: {
+     *     // ... filter to delete one TransferSellerSettlement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransferSellerSettlementDeleteArgs>(args: SelectSubset<T, TransferSellerSettlementDeleteArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TransferSellerSettlement.
+     * @param {TransferSellerSettlementUpdateArgs} args - Arguments to update one TransferSellerSettlement.
+     * @example
+     * // Update one TransferSellerSettlement
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransferSellerSettlementUpdateArgs>(args: SelectSubset<T, TransferSellerSettlementUpdateArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TransferSellerSettlements.
+     * @param {TransferSellerSettlementDeleteManyArgs} args - Arguments to filter TransferSellerSettlements to delete.
+     * @example
+     * // Delete a few TransferSellerSettlements
+     * const { count } = await prisma.transferSellerSettlement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransferSellerSettlementDeleteManyArgs>(args?: SelectSubset<T, TransferSellerSettlementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransferSellerSettlements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferSellerSettlementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TransferSellerSettlements
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransferSellerSettlementUpdateManyArgs>(args: SelectSubset<T, TransferSellerSettlementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransferSellerSettlements and returns the data updated in the database.
+     * @param {TransferSellerSettlementUpdateManyAndReturnArgs} args - Arguments to update many TransferSellerSettlements.
+     * @example
+     * // Update many TransferSellerSettlements
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TransferSellerSettlements and only return the `id`
+     * const transferSellerSettlementWithIdOnly = await prisma.transferSellerSettlement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransferSellerSettlementUpdateManyAndReturnArgs>(args: SelectSubset<T, TransferSellerSettlementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TransferSellerSettlement.
+     * @param {TransferSellerSettlementUpsertArgs} args - Arguments to update or create a TransferSellerSettlement.
+     * @example
+     * // Update or create a TransferSellerSettlement
+     * const transferSellerSettlement = await prisma.transferSellerSettlement.upsert({
+     *   create: {
+     *     // ... data to create a TransferSellerSettlement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TransferSellerSettlement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransferSellerSettlementUpsertArgs>(args: SelectSubset<T, TransferSellerSettlementUpsertArgs<ExtArgs>>): Prisma__TransferSellerSettlementClient<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TransferSellerSettlements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferSellerSettlementCountArgs} args - Arguments to filter TransferSellerSettlements to count.
+     * @example
+     * // Count the number of TransferSellerSettlements
+     * const count = await prisma.transferSellerSettlement.count({
+     *   where: {
+     *     // ... the filter for the TransferSellerSettlements we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransferSellerSettlementCountArgs>(
+      args?: Subset<T, TransferSellerSettlementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransferSellerSettlementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TransferSellerSettlement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferSellerSettlementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransferSellerSettlementAggregateArgs>(args: Subset<T, TransferSellerSettlementAggregateArgs>): Prisma.PrismaPromise<GetTransferSellerSettlementAggregateType<T>>
+
+    /**
+     * Group by TransferSellerSettlement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferSellerSettlementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransferSellerSettlementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransferSellerSettlementGroupByArgs['orderBy'] }
+        : { orderBy?: TransferSellerSettlementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransferSellerSettlementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransferSellerSettlementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TransferSellerSettlement model
+   */
+  readonly fields: TransferSellerSettlementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TransferSellerSettlement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransferSellerSettlementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    transferOffer<T extends TransferOfferDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TransferOfferDefaultArgs<ExtArgs>>): Prisma__TransferOfferClient<$Result.GetResult<Prisma.$TransferOfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sellerClub<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    season<T extends TransferSellerSettlement$seasonArgs<ExtArgs> = {}>(args?: Subset<T, TransferSellerSettlement$seasonArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TransferSellerSettlement model
+   */
+  interface TransferSellerSettlementFieldRefs {
+    readonly id: FieldRef<"TransferSellerSettlement", 'String'>
+    readonly transfer_offer_id: FieldRef<"TransferSellerSettlement", 'String'>
+    readonly seller_team_id: FieldRef<"TransferSellerSettlement", 'String'>
+    readonly amount: FieldRef<"TransferSellerSettlement", 'Float'>
+    readonly status: FieldRef<"TransferSellerSettlement", 'TransferSettlementStatus'>
+    readonly season_id: FieldRef<"TransferSellerSettlement", 'String'>
+    readonly created_at: FieldRef<"TransferSellerSettlement", 'DateTime'>
+    readonly settled_at: FieldRef<"TransferSellerSettlement", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TransferSellerSettlement findUnique
+   */
+  export type TransferSellerSettlementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferSellerSettlement to fetch.
+     */
+    where: TransferSellerSettlementWhereUniqueInput
+  }
+
+  /**
+   * TransferSellerSettlement findUniqueOrThrow
+   */
+  export type TransferSellerSettlementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferSellerSettlement to fetch.
+     */
+    where: TransferSellerSettlementWhereUniqueInput
+  }
+
+  /**
+   * TransferSellerSettlement findFirst
+   */
+  export type TransferSellerSettlementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferSellerSettlement to fetch.
+     */
+    where?: TransferSellerSettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferSellerSettlements to fetch.
+     */
+    orderBy?: TransferSellerSettlementOrderByWithRelationInput | TransferSellerSettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransferSellerSettlements.
+     */
+    cursor?: TransferSellerSettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferSellerSettlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferSellerSettlements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransferSellerSettlements.
+     */
+    distinct?: TransferSellerSettlementScalarFieldEnum | TransferSellerSettlementScalarFieldEnum[]
+  }
+
+  /**
+   * TransferSellerSettlement findFirstOrThrow
+   */
+  export type TransferSellerSettlementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferSellerSettlement to fetch.
+     */
+    where?: TransferSellerSettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferSellerSettlements to fetch.
+     */
+    orderBy?: TransferSellerSettlementOrderByWithRelationInput | TransferSellerSettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransferSellerSettlements.
+     */
+    cursor?: TransferSellerSettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferSellerSettlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferSellerSettlements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransferSellerSettlements.
+     */
+    distinct?: TransferSellerSettlementScalarFieldEnum | TransferSellerSettlementScalarFieldEnum[]
+  }
+
+  /**
+   * TransferSellerSettlement findMany
+   */
+  export type TransferSellerSettlementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferSellerSettlements to fetch.
+     */
+    where?: TransferSellerSettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferSellerSettlements to fetch.
+     */
+    orderBy?: TransferSellerSettlementOrderByWithRelationInput | TransferSellerSettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TransferSellerSettlements.
+     */
+    cursor?: TransferSellerSettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferSellerSettlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferSellerSettlements.
+     */
+    skip?: number
+    distinct?: TransferSellerSettlementScalarFieldEnum | TransferSellerSettlementScalarFieldEnum[]
+  }
+
+  /**
+   * TransferSellerSettlement create
+   */
+  export type TransferSellerSettlementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TransferSellerSettlement.
+     */
+    data: XOR<TransferSellerSettlementCreateInput, TransferSellerSettlementUncheckedCreateInput>
+  }
+
+  /**
+   * TransferSellerSettlement createMany
+   */
+  export type TransferSellerSettlementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TransferSellerSettlements.
+     */
+    data: TransferSellerSettlementCreateManyInput | TransferSellerSettlementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TransferSellerSettlement createManyAndReturn
+   */
+  export type TransferSellerSettlementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * The data used to create many TransferSellerSettlements.
+     */
+    data: TransferSellerSettlementCreateManyInput | TransferSellerSettlementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TransferSellerSettlement update
+   */
+  export type TransferSellerSettlementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TransferSellerSettlement.
+     */
+    data: XOR<TransferSellerSettlementUpdateInput, TransferSellerSettlementUncheckedUpdateInput>
+    /**
+     * Choose, which TransferSellerSettlement to update.
+     */
+    where: TransferSellerSettlementWhereUniqueInput
+  }
+
+  /**
+   * TransferSellerSettlement updateMany
+   */
+  export type TransferSellerSettlementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TransferSellerSettlements.
+     */
+    data: XOR<TransferSellerSettlementUpdateManyMutationInput, TransferSellerSettlementUncheckedUpdateManyInput>
+    /**
+     * Filter which TransferSellerSettlements to update
+     */
+    where?: TransferSellerSettlementWhereInput
+    /**
+     * Limit how many TransferSellerSettlements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransferSellerSettlement updateManyAndReturn
+   */
+  export type TransferSellerSettlementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * The data used to update TransferSellerSettlements.
+     */
+    data: XOR<TransferSellerSettlementUpdateManyMutationInput, TransferSellerSettlementUncheckedUpdateManyInput>
+    /**
+     * Filter which TransferSellerSettlements to update
+     */
+    where?: TransferSellerSettlementWhereInput
+    /**
+     * Limit how many TransferSellerSettlements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TransferSellerSettlement upsert
+   */
+  export type TransferSellerSettlementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TransferSellerSettlement to update in case it exists.
+     */
+    where: TransferSellerSettlementWhereUniqueInput
+    /**
+     * In case the TransferSellerSettlement found by the `where` argument doesn't exist, create a new TransferSellerSettlement with this data.
+     */
+    create: XOR<TransferSellerSettlementCreateInput, TransferSellerSettlementUncheckedCreateInput>
+    /**
+     * In case the TransferSellerSettlement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransferSellerSettlementUpdateInput, TransferSellerSettlementUncheckedUpdateInput>
+  }
+
+  /**
+   * TransferSellerSettlement delete
+   */
+  export type TransferSellerSettlementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
+    /**
+     * Filter which TransferSellerSettlement to delete.
+     */
+    where: TransferSellerSettlementWhereUniqueInput
+  }
+
+  /**
+   * TransferSellerSettlement deleteMany
+   */
+  export type TransferSellerSettlementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransferSellerSettlements to delete
+     */
+    where?: TransferSellerSettlementWhereInput
+    /**
+     * Limit how many TransferSellerSettlements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransferSellerSettlement.season
+   */
+  export type TransferSellerSettlement$seasonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    where?: SeasonWhereInput
+  }
+
+  /**
+   * TransferSellerSettlement without action
+   */
+  export type TransferSellerSettlementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferSellerSettlement
+     */
+    select?: TransferSellerSettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferSellerSettlement
+     */
+    omit?: TransferSellerSettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferSellerSettlementInclude<ExtArgs> | null
   }
 
 
@@ -36249,6 +40412,33 @@ export namespace Prisma {
   export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
 
 
+  export const ClubWalletScalarFieldEnum: {
+    id: 'id',
+    team_id: 'team_id',
+    omjep_coins_balance: 'omjep_coins_balance',
+    season_transfer_budget: 'season_transfer_budget',
+    reserved_amount: 'reserved_amount',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type ClubWalletScalarFieldEnum = (typeof ClubWalletScalarFieldEnum)[keyof typeof ClubWalletScalarFieldEnum]
+
+
+  export const SeasonScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    start_date: 'start_date',
+    end_date: 'end_date',
+    status: 'status',
+    is_current: 'is_current',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type SeasonScalarFieldEnum = (typeof SeasonScalarFieldEnum)[keyof typeof SeasonScalarFieldEnum]
+
+
   export const TeamMemberScalarFieldEnum: {
     user_id: 'user_id',
     team_id: 'team_id',
@@ -36423,6 +40613,9 @@ export namespace Prisma {
     user_id: 'user_id',
     salary: 'salary',
     release_clause: 'release_clause',
+    seasons_count: 'seasons_count',
+    start_season_id: 'start_season_id',
+    end_season_id: 'end_season_id',
     start_date: 'start_date',
     end_date: 'end_date',
     status: 'status'
@@ -36452,6 +40645,11 @@ export namespace Prisma {
     offered_salary: 'offered_salary',
     offered_clause: 'offered_clause',
     transfer_fee: 'transfer_fee',
+    transfer_mode: 'transfer_mode',
+    seasons_count: 'seasons_count',
+    reserved_amount: 'reserved_amount',
+    expires_at: 'expires_at',
+    contract_start_season_id: 'contract_start_season_id',
     duration_months: 'duration_months',
     status: 'status',
     negotiation_turn: 'negotiation_turn',
@@ -36460,6 +40658,20 @@ export namespace Prisma {
   };
 
   export type TransferOfferScalarFieldEnum = (typeof TransferOfferScalarFieldEnum)[keyof typeof TransferOfferScalarFieldEnum]
+
+
+  export const TransferSellerSettlementScalarFieldEnum: {
+    id: 'id',
+    transfer_offer_id: 'transfer_offer_id',
+    seller_team_id: 'seller_team_id',
+    amount: 'amount',
+    status: 'status',
+    season_id: 'season_id',
+    created_at: 'created_at',
+    settled_at: 'settled_at'
+  };
+
+  export type TransferSellerSettlementScalarFieldEnum = (typeof TransferSellerSettlementScalarFieldEnum)[keyof typeof TransferSellerSettlementScalarFieldEnum]
 
 
   export const NotificationScalarFieldEnum: {
@@ -36776,6 +40988,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'SeasonStatus'
+   */
+  export type EnumSeasonStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeasonStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SeasonStatus[]'
+   */
+  export type ListEnumSeasonStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeasonStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ClubRole'
    */
   export type EnumClubRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClubRole'>
@@ -36930,6 +41156,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TransferMode'
+   */
+  export type EnumTransferModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransferMode[]'
+   */
+  export type ListEnumTransferModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferMode[]'>
+    
+
+
+  /**
    * Reference to a field of type 'TransferOfferStatus'
    */
   export type EnumTransferOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferOfferStatus'>
@@ -36954,6 +41194,20 @@ export namespace Prisma {
    * Reference to a field of type 'NegotiationTurn[]'
    */
   export type ListEnumNegotiationTurnFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NegotiationTurn[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransferSettlementStatus'
+   */
+  export type EnumTransferSettlementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferSettlementStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransferSettlementStatus[]'
+   */
+  export type ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferSettlementStatus[]'>
     
 
 
@@ -37320,6 +41574,8 @@ export namespace Prisma {
     messages?: MessageListRelationFilter
     eaClubStats?: XOR<EaClubStatsNullableScalarRelationFilter, EaClubStatsWhereInput> | null
     leagueTableEntries?: LeagueTableListRelationFilter
+    wallet?: XOR<ClubWalletNullableScalarRelationFilter, ClubWalletWhereInput> | null
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementListRelationFilter
   }
 
   export type ClubOrderByWithRelationInput = {
@@ -37356,6 +41612,8 @@ export namespace Prisma {
     messages?: MessageOrderByRelationAggregateInput
     eaClubStats?: EaClubStatsOrderByWithRelationInput
     leagueTableEntries?: LeagueTableOrderByRelationAggregateInput
+    wallet?: ClubWalletOrderByWithRelationInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementOrderByRelationAggregateInput
   }
 
   export type ClubWhereUniqueInput = Prisma.AtLeast<{
@@ -37395,6 +41653,8 @@ export namespace Prisma {
     messages?: MessageListRelationFilter
     eaClubStats?: XOR<EaClubStatsNullableScalarRelationFilter, EaClubStatsWhereInput> | null
     leagueTableEntries?: LeagueTableListRelationFilter
+    wallet?: XOR<ClubWalletNullableScalarRelationFilter, ClubWalletWhereInput> | null
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementListRelationFilter
   }, "id" | "name" | "ea_club_id" | "proclubs_url">
 
   export type ClubOrderByWithAggregationInput = {
@@ -37441,6 +41701,152 @@ export namespace Prisma {
     presidentPremium?: BoolWithAggregatesFilter<"Club"> | boolean
     primaryColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
     secondaryColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+  }
+
+  export type ClubWalletWhereInput = {
+    AND?: ClubWalletWhereInput | ClubWalletWhereInput[]
+    OR?: ClubWalletWhereInput[]
+    NOT?: ClubWalletWhereInput | ClubWalletWhereInput[]
+    id?: UuidFilter<"ClubWallet"> | string
+    team_id?: UuidFilter<"ClubWallet"> | string
+    omjep_coins_balance?: FloatFilter<"ClubWallet"> | number
+    season_transfer_budget?: FloatFilter<"ClubWallet"> | number
+    reserved_amount?: FloatFilter<"ClubWallet"> | number
+    created_at?: DateTimeFilter<"ClubWallet"> | Date | string
+    updated_at?: DateTimeFilter<"ClubWallet"> | Date | string
+    team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }
+
+  export type ClubWalletOrderByWithRelationInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    omjep_coins_balance?: SortOrder
+    season_transfer_budget?: SortOrder
+    reserved_amount?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    team?: ClubOrderByWithRelationInput
+  }
+
+  export type ClubWalletWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    team_id?: string
+    AND?: ClubWalletWhereInput | ClubWalletWhereInput[]
+    OR?: ClubWalletWhereInput[]
+    NOT?: ClubWalletWhereInput | ClubWalletWhereInput[]
+    omjep_coins_balance?: FloatFilter<"ClubWallet"> | number
+    season_transfer_budget?: FloatFilter<"ClubWallet"> | number
+    reserved_amount?: FloatFilter<"ClubWallet"> | number
+    created_at?: DateTimeFilter<"ClubWallet"> | Date | string
+    updated_at?: DateTimeFilter<"ClubWallet"> | Date | string
+    team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }, "id" | "team_id">
+
+  export type ClubWalletOrderByWithAggregationInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    omjep_coins_balance?: SortOrder
+    season_transfer_budget?: SortOrder
+    reserved_amount?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: ClubWalletCountOrderByAggregateInput
+    _avg?: ClubWalletAvgOrderByAggregateInput
+    _max?: ClubWalletMaxOrderByAggregateInput
+    _min?: ClubWalletMinOrderByAggregateInput
+    _sum?: ClubWalletSumOrderByAggregateInput
+  }
+
+  export type ClubWalletScalarWhereWithAggregatesInput = {
+    AND?: ClubWalletScalarWhereWithAggregatesInput | ClubWalletScalarWhereWithAggregatesInput[]
+    OR?: ClubWalletScalarWhereWithAggregatesInput[]
+    NOT?: ClubWalletScalarWhereWithAggregatesInput | ClubWalletScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"ClubWallet"> | string
+    team_id?: UuidWithAggregatesFilter<"ClubWallet"> | string
+    omjep_coins_balance?: FloatWithAggregatesFilter<"ClubWallet"> | number
+    season_transfer_budget?: FloatWithAggregatesFilter<"ClubWallet"> | number
+    reserved_amount?: FloatWithAggregatesFilter<"ClubWallet"> | number
+    created_at?: DateTimeWithAggregatesFilter<"ClubWallet"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"ClubWallet"> | Date | string
+  }
+
+  export type SeasonWhereInput = {
+    AND?: SeasonWhereInput | SeasonWhereInput[]
+    OR?: SeasonWhereInput[]
+    NOT?: SeasonWhereInput | SeasonWhereInput[]
+    id?: UuidFilter<"Season"> | string
+    name?: StringFilter<"Season"> | string
+    start_date?: DateTimeFilter<"Season"> | Date | string
+    end_date?: DateTimeFilter<"Season"> | Date | string
+    status?: EnumSeasonStatusFilter<"Season"> | $Enums.SeasonStatus
+    is_current?: BoolFilter<"Season"> | boolean
+    created_at?: DateTimeFilter<"Season"> | Date | string
+    updated_at?: DateTimeFilter<"Season"> | Date | string
+    contractsAsStart?: ContractListRelationFilter
+    contractsAsEnd?: ContractListRelationFilter
+    offersAsContractStart?: TransferOfferListRelationFilter
+    transferSellerSettlements?: TransferSellerSettlementListRelationFilter
+  }
+
+  export type SeasonOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
+    is_current?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    contractsAsStart?: ContractOrderByRelationAggregateInput
+    contractsAsEnd?: ContractOrderByRelationAggregateInput
+    offersAsContractStart?: TransferOfferOrderByRelationAggregateInput
+    transferSellerSettlements?: TransferSellerSettlementOrderByRelationAggregateInput
+  }
+
+  export type SeasonWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: SeasonWhereInput | SeasonWhereInput[]
+    OR?: SeasonWhereInput[]
+    NOT?: SeasonWhereInput | SeasonWhereInput[]
+    start_date?: DateTimeFilter<"Season"> | Date | string
+    end_date?: DateTimeFilter<"Season"> | Date | string
+    status?: EnumSeasonStatusFilter<"Season"> | $Enums.SeasonStatus
+    is_current?: BoolFilter<"Season"> | boolean
+    created_at?: DateTimeFilter<"Season"> | Date | string
+    updated_at?: DateTimeFilter<"Season"> | Date | string
+    contractsAsStart?: ContractListRelationFilter
+    contractsAsEnd?: ContractListRelationFilter
+    offersAsContractStart?: TransferOfferListRelationFilter
+    transferSellerSettlements?: TransferSellerSettlementListRelationFilter
+  }, "id" | "name">
+
+  export type SeasonOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
+    is_current?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: SeasonCountOrderByAggregateInput
+    _max?: SeasonMaxOrderByAggregateInput
+    _min?: SeasonMinOrderByAggregateInput
+  }
+
+  export type SeasonScalarWhereWithAggregatesInput = {
+    AND?: SeasonScalarWhereWithAggregatesInput | SeasonScalarWhereWithAggregatesInput[]
+    OR?: SeasonScalarWhereWithAggregatesInput[]
+    NOT?: SeasonScalarWhereWithAggregatesInput | SeasonScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Season"> | string
+    name?: StringWithAggregatesFilter<"Season"> | string
+    start_date?: DateTimeWithAggregatesFilter<"Season"> | Date | string
+    end_date?: DateTimeWithAggregatesFilter<"Season"> | Date | string
+    status?: EnumSeasonStatusWithAggregatesFilter<"Season"> | $Enums.SeasonStatus
+    is_current?: BoolWithAggregatesFilter<"Season"> | boolean
+    created_at?: DateTimeWithAggregatesFilter<"Season"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Season"> | Date | string
   }
 
   export type TeamMemberWhereInput = {
@@ -38367,9 +42773,14 @@ export namespace Prisma {
     user_id?: UuidFilter<"Contract"> | string
     salary?: FloatFilter<"Contract"> | number
     release_clause?: FloatFilter<"Contract"> | number
+    seasons_count?: IntNullableFilter<"Contract"> | number | null
+    start_season_id?: UuidNullableFilter<"Contract"> | string | null
+    end_season_id?: UuidNullableFilter<"Contract"> | string | null
     start_date?: DateTimeFilter<"Contract"> | Date | string
     end_date?: DateTimeFilter<"Contract"> | Date | string
     status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    startSeason?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
+    endSeason?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
     team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -38380,9 +42791,14 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
+    seasons_count?: SortOrderInput | SortOrder
+    start_season_id?: SortOrderInput | SortOrder
+    end_season_id?: SortOrderInput | SortOrder
     start_date?: SortOrder
     end_date?: SortOrder
     status?: SortOrder
+    startSeason?: SeasonOrderByWithRelationInput
+    endSeason?: SeasonOrderByWithRelationInput
     team?: ClubOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
@@ -38396,9 +42812,14 @@ export namespace Prisma {
     user_id?: UuidFilter<"Contract"> | string
     salary?: FloatFilter<"Contract"> | number
     release_clause?: FloatFilter<"Contract"> | number
+    seasons_count?: IntNullableFilter<"Contract"> | number | null
+    start_season_id?: UuidNullableFilter<"Contract"> | string | null
+    end_season_id?: UuidNullableFilter<"Contract"> | string | null
     start_date?: DateTimeFilter<"Contract"> | Date | string
     end_date?: DateTimeFilter<"Contract"> | Date | string
     status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    startSeason?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
+    endSeason?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
     team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -38409,6 +42830,9 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
+    seasons_count?: SortOrderInput | SortOrder
+    start_season_id?: SortOrderInput | SortOrder
+    end_season_id?: SortOrderInput | SortOrder
     start_date?: SortOrder
     end_date?: SortOrder
     status?: SortOrder
@@ -38428,6 +42852,9 @@ export namespace Prisma {
     user_id?: UuidWithAggregatesFilter<"Contract"> | string
     salary?: FloatWithAggregatesFilter<"Contract"> | number
     release_clause?: FloatWithAggregatesFilter<"Contract"> | number
+    seasons_count?: IntNullableWithAggregatesFilter<"Contract"> | number | null
+    start_season_id?: UuidNullableWithAggregatesFilter<"Contract"> | string | null
+    end_season_id?: UuidNullableWithAggregatesFilter<"Contract"> | string | null
     start_date?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
     end_date?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
     status?: EnumContractStatusWithAggregatesFilter<"Contract"> | $Enums.ContractStatus
@@ -38514,14 +42941,21 @@ export namespace Prisma {
     offered_salary?: FloatFilter<"TransferOffer"> | number
     offered_clause?: FloatFilter<"TransferOffer"> | number
     transfer_fee?: FloatFilter<"TransferOffer"> | number
+    transfer_mode?: EnumTransferModeFilter<"TransferOffer"> | $Enums.TransferMode
+    seasons_count?: IntNullableFilter<"TransferOffer"> | number | null
+    reserved_amount?: FloatNullableFilter<"TransferOffer"> | number | null
+    expires_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+    contract_start_season_id?: UuidNullableFilter<"TransferOffer"> | string | null
     duration_months?: IntFilter<"TransferOffer"> | number
     status?: EnumTransferOfferStatusFilter<"TransferOffer"> | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFilter<"TransferOffer"> | $Enums.NegotiationTurn
     created_at?: DateTimeFilter<"TransferOffer"> | Date | string
     responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+    contractStartSeason?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
     fromTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     player?: XOR<UserScalarRelationFilter, UserWhereInput>
     toTeam?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+    sellerSettlement?: XOR<TransferSellerSettlementNullableScalarRelationFilter, TransferSellerSettlementWhereInput> | null
   }
 
   export type TransferOfferOrderByWithRelationInput = {
@@ -38532,14 +42966,21 @@ export namespace Prisma {
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
+    transfer_mode?: SortOrder
+    seasons_count?: SortOrderInput | SortOrder
+    reserved_amount?: SortOrderInput | SortOrder
+    expires_at?: SortOrderInput | SortOrder
+    contract_start_season_id?: SortOrderInput | SortOrder
     duration_months?: SortOrder
     status?: SortOrder
     negotiation_turn?: SortOrder
     created_at?: SortOrder
     responded_at?: SortOrderInput | SortOrder
+    contractStartSeason?: SeasonOrderByWithRelationInput
     fromTeam?: ClubOrderByWithRelationInput
     player?: UserOrderByWithRelationInput
     toTeam?: ClubOrderByWithRelationInput
+    sellerSettlement?: TransferSellerSettlementOrderByWithRelationInput
   }
 
   export type TransferOfferWhereUniqueInput = Prisma.AtLeast<{
@@ -38553,14 +42994,21 @@ export namespace Prisma {
     offered_salary?: FloatFilter<"TransferOffer"> | number
     offered_clause?: FloatFilter<"TransferOffer"> | number
     transfer_fee?: FloatFilter<"TransferOffer"> | number
+    transfer_mode?: EnumTransferModeFilter<"TransferOffer"> | $Enums.TransferMode
+    seasons_count?: IntNullableFilter<"TransferOffer"> | number | null
+    reserved_amount?: FloatNullableFilter<"TransferOffer"> | number | null
+    expires_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+    contract_start_season_id?: UuidNullableFilter<"TransferOffer"> | string | null
     duration_months?: IntFilter<"TransferOffer"> | number
     status?: EnumTransferOfferStatusFilter<"TransferOffer"> | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFilter<"TransferOffer"> | $Enums.NegotiationTurn
     created_at?: DateTimeFilter<"TransferOffer"> | Date | string
     responded_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+    contractStartSeason?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
     fromTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     player?: XOR<UserScalarRelationFilter, UserWhereInput>
     toTeam?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+    sellerSettlement?: XOR<TransferSellerSettlementNullableScalarRelationFilter, TransferSellerSettlementWhereInput> | null
   }, "id">
 
   export type TransferOfferOrderByWithAggregationInput = {
@@ -38571,6 +43019,11 @@ export namespace Prisma {
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
+    transfer_mode?: SortOrder
+    seasons_count?: SortOrderInput | SortOrder
+    reserved_amount?: SortOrderInput | SortOrder
+    expires_at?: SortOrderInput | SortOrder
+    contract_start_season_id?: SortOrderInput | SortOrder
     duration_months?: SortOrder
     status?: SortOrder
     negotiation_turn?: SortOrder
@@ -38594,11 +43047,94 @@ export namespace Prisma {
     offered_salary?: FloatWithAggregatesFilter<"TransferOffer"> | number
     offered_clause?: FloatWithAggregatesFilter<"TransferOffer"> | number
     transfer_fee?: FloatWithAggregatesFilter<"TransferOffer"> | number
+    transfer_mode?: EnumTransferModeWithAggregatesFilter<"TransferOffer"> | $Enums.TransferMode
+    seasons_count?: IntNullableWithAggregatesFilter<"TransferOffer"> | number | null
+    reserved_amount?: FloatNullableWithAggregatesFilter<"TransferOffer"> | number | null
+    expires_at?: DateTimeNullableWithAggregatesFilter<"TransferOffer"> | Date | string | null
+    contract_start_season_id?: UuidNullableWithAggregatesFilter<"TransferOffer"> | string | null
     duration_months?: IntWithAggregatesFilter<"TransferOffer"> | number
     status?: EnumTransferOfferStatusWithAggregatesFilter<"TransferOffer"> | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnWithAggregatesFilter<"TransferOffer"> | $Enums.NegotiationTurn
     created_at?: DateTimeWithAggregatesFilter<"TransferOffer"> | Date | string
     responded_at?: DateTimeNullableWithAggregatesFilter<"TransferOffer"> | Date | string | null
+  }
+
+  export type TransferSellerSettlementWhereInput = {
+    AND?: TransferSellerSettlementWhereInput | TransferSellerSettlementWhereInput[]
+    OR?: TransferSellerSettlementWhereInput[]
+    NOT?: TransferSellerSettlementWhereInput | TransferSellerSettlementWhereInput[]
+    id?: UuidFilter<"TransferSellerSettlement"> | string
+    transfer_offer_id?: UuidFilter<"TransferSellerSettlement"> | string
+    seller_team_id?: UuidFilter<"TransferSellerSettlement"> | string
+    amount?: FloatFilter<"TransferSellerSettlement"> | number
+    status?: EnumTransferSettlementStatusFilter<"TransferSellerSettlement"> | $Enums.TransferSettlementStatus
+    season_id?: UuidNullableFilter<"TransferSellerSettlement"> | string | null
+    created_at?: DateTimeFilter<"TransferSellerSettlement"> | Date | string
+    settled_at?: DateTimeNullableFilter<"TransferSellerSettlement"> | Date | string | null
+    transferOffer?: XOR<TransferOfferScalarRelationFilter, TransferOfferWhereInput>
+    sellerClub?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    season?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
+  }
+
+  export type TransferSellerSettlementOrderByWithRelationInput = {
+    id?: SortOrder
+    transfer_offer_id?: SortOrder
+    seller_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    season_id?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    settled_at?: SortOrderInput | SortOrder
+    transferOffer?: TransferOfferOrderByWithRelationInput
+    sellerClub?: ClubOrderByWithRelationInput
+    season?: SeasonOrderByWithRelationInput
+  }
+
+  export type TransferSellerSettlementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    transfer_offer_id?: string
+    AND?: TransferSellerSettlementWhereInput | TransferSellerSettlementWhereInput[]
+    OR?: TransferSellerSettlementWhereInput[]
+    NOT?: TransferSellerSettlementWhereInput | TransferSellerSettlementWhereInput[]
+    seller_team_id?: UuidFilter<"TransferSellerSettlement"> | string
+    amount?: FloatFilter<"TransferSellerSettlement"> | number
+    status?: EnumTransferSettlementStatusFilter<"TransferSellerSettlement"> | $Enums.TransferSettlementStatus
+    season_id?: UuidNullableFilter<"TransferSellerSettlement"> | string | null
+    created_at?: DateTimeFilter<"TransferSellerSettlement"> | Date | string
+    settled_at?: DateTimeNullableFilter<"TransferSellerSettlement"> | Date | string | null
+    transferOffer?: XOR<TransferOfferScalarRelationFilter, TransferOfferWhereInput>
+    sellerClub?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    season?: XOR<SeasonNullableScalarRelationFilter, SeasonWhereInput> | null
+  }, "id" | "transfer_offer_id">
+
+  export type TransferSellerSettlementOrderByWithAggregationInput = {
+    id?: SortOrder
+    transfer_offer_id?: SortOrder
+    seller_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    season_id?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    settled_at?: SortOrderInput | SortOrder
+    _count?: TransferSellerSettlementCountOrderByAggregateInput
+    _avg?: TransferSellerSettlementAvgOrderByAggregateInput
+    _max?: TransferSellerSettlementMaxOrderByAggregateInput
+    _min?: TransferSellerSettlementMinOrderByAggregateInput
+    _sum?: TransferSellerSettlementSumOrderByAggregateInput
+  }
+
+  export type TransferSellerSettlementScalarWhereWithAggregatesInput = {
+    AND?: TransferSellerSettlementScalarWhereWithAggregatesInput | TransferSellerSettlementScalarWhereWithAggregatesInput[]
+    OR?: TransferSellerSettlementScalarWhereWithAggregatesInput[]
+    NOT?: TransferSellerSettlementScalarWhereWithAggregatesInput | TransferSellerSettlementScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"TransferSellerSettlement"> | string
+    transfer_offer_id?: UuidWithAggregatesFilter<"TransferSellerSettlement"> | string
+    seller_team_id?: UuidWithAggregatesFilter<"TransferSellerSettlement"> | string
+    amount?: FloatWithAggregatesFilter<"TransferSellerSettlement"> | number
+    status?: EnumTransferSettlementStatusWithAggregatesFilter<"TransferSellerSettlement"> | $Enums.TransferSettlementStatus
+    season_id?: UuidNullableWithAggregatesFilter<"TransferSellerSettlement"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"TransferSellerSettlement"> | Date | string
+    settled_at?: DateTimeNullableWithAggregatesFilter<"TransferSellerSettlement"> | Date | string | null
   }
 
   export type NotificationWhereInput = {
@@ -39548,6 +44084,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateInput = {
@@ -39583,6 +44121,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUpdateInput = {
@@ -39618,6 +44158,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateInput = {
@@ -39653,6 +44195,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubCreateManyInput = {
@@ -39709,6 +44253,168 @@ export namespace Prisma {
     presidentPremium?: BoolFieldUpdateOperationsInput | boolean
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ClubWalletCreateInput = {
+    id?: string
+    omjep_coins_balance?: number
+    season_transfer_budget?: number
+    reserved_amount?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    team: ClubCreateNestedOneWithoutWalletInput
+  }
+
+  export type ClubWalletUncheckedCreateInput = {
+    id?: string
+    team_id: string
+    omjep_coins_balance?: number
+    season_transfer_budget?: number
+    reserved_amount?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ClubWalletUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omjep_coins_balance?: FloatFieldUpdateOperationsInput | number
+    season_transfer_budget?: FloatFieldUpdateOperationsInput | number
+    reserved_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: ClubUpdateOneRequiredWithoutWalletNestedInput
+  }
+
+  export type ClubWalletUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    omjep_coins_balance?: FloatFieldUpdateOperationsInput | number
+    season_transfer_budget?: FloatFieldUpdateOperationsInput | number
+    reserved_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubWalletCreateManyInput = {
+    id?: string
+    team_id: string
+    omjep_coins_balance?: number
+    season_transfer_budget?: number
+    reserved_amount?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ClubWalletUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omjep_coins_balance?: FloatFieldUpdateOperationsInput | number
+    season_transfer_budget?: FloatFieldUpdateOperationsInput | number
+    reserved_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubWalletUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    omjep_coins_balance?: FloatFieldUpdateOperationsInput | number
+    season_transfer_budget?: FloatFieldUpdateOperationsInput | number
+    reserved_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SeasonCreateInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractCreateNestedManyWithoutStartSeasonInput
+    contractsAsEnd?: ContractCreateNestedManyWithoutEndSeasonInput
+    offersAsContractStart?: TransferOfferCreateNestedManyWithoutContractStartSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonUncheckedCreateInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractUncheckedCreateNestedManyWithoutStartSeasonInput
+    contractsAsEnd?: ContractUncheckedCreateNestedManyWithoutEndSeasonInput
+    offersAsContractStart?: TransferOfferUncheckedCreateNestedManyWithoutContractStartSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUpdateManyWithoutStartSeasonNestedInput
+    contractsAsEnd?: ContractUpdateManyWithoutEndSeasonNestedInput
+    offersAsContractStart?: TransferOfferUpdateManyWithoutContractStartSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUncheckedUpdateManyWithoutStartSeasonNestedInput
+    contractsAsEnd?: ContractUncheckedUpdateManyWithoutEndSeasonNestedInput
+    offersAsContractStart?: TransferOfferUncheckedUpdateManyWithoutContractStartSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonCreateManyInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SeasonUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SeasonUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TeamMemberCreateInput = {
@@ -40643,9 +45349,12 @@ export namespace Prisma {
     id?: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
+    startSeason?: SeasonCreateNestedOneWithoutContractsAsStartInput
+    endSeason?: SeasonCreateNestedOneWithoutContractsAsEndInput
     team: ClubCreateNestedOneWithoutContractsInput
     user: UserCreateNestedOneWithoutContractsInput
   }
@@ -40656,6 +45365,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    end_season_id?: string | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
@@ -40665,9 +45377,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    startSeason?: SeasonUpdateOneWithoutContractsAsStartNestedInput
+    endSeason?: SeasonUpdateOneWithoutContractsAsEndNestedInput
     team?: ClubUpdateOneRequiredWithoutContractsNestedInput
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
   }
@@ -40678,6 +45393,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
@@ -40689,6 +45407,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    end_season_id?: string | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
@@ -40698,6 +45419,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
@@ -40709,6 +45431,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
@@ -40787,14 +45512,20 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    contractStartSeason?: SeasonCreateNestedOneWithoutOffersAsContractStartInput
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
     player: UserCreateNestedOneWithoutTransferOffersInput
     toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
+    sellerSettlement?: TransferSellerSettlementCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferUncheckedCreateInput = {
@@ -40805,11 +45536,17 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferUpdateInput = {
@@ -40817,14 +45554,20 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractStartSeason?: SeasonUpdateOneWithoutOffersAsContractStartNestedInput
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
     player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
     toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
+    sellerSettlement?: TransferSellerSettlementUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferUncheckedUpdateInput = {
@@ -40835,11 +45578,17 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferCreateManyInput = {
@@ -40850,6 +45599,11 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
@@ -40862,6 +45616,10 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
@@ -40877,11 +45635,90 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferSellerSettlementCreateInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    created_at?: Date | string
+    settled_at?: Date | string | null
+    transferOffer: TransferOfferCreateNestedOneWithoutSellerSettlementInput
+    sellerClub: ClubCreateNestedOneWithoutTransferSellerSettlementsAsSellerInput
+    season?: SeasonCreateNestedOneWithoutTransferSellerSettlementsInput
+  }
+
+  export type TransferSellerSettlementUncheckedCreateInput = {
+    id?: string
+    transfer_offer_id: string
+    seller_team_id: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    season_id?: string | null
+    created_at?: Date | string
+    settled_at?: Date | string | null
+  }
+
+  export type TransferSellerSettlementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferOffer?: TransferOfferUpdateOneRequiredWithoutSellerSettlementNestedInput
+    sellerClub?: ClubUpdateOneRequiredWithoutTransferSellerSettlementsAsSellerNestedInput
+    season?: SeasonUpdateOneWithoutTransferSellerSettlementsNestedInput
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transfer_offer_id?: StringFieldUpdateOperationsInput | string
+    seller_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferSellerSettlementCreateManyInput = {
+    id?: string
+    transfer_offer_id: string
+    seller_team_id: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    season_id?: string | null
+    created_at?: Date | string
+    settled_at?: Date | string | null
+  }
+
+  export type TransferSellerSettlementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transfer_offer_id?: StringFieldUpdateOperationsInput | string
+    seller_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type NotificationCreateInput = {
@@ -42126,6 +46963,17 @@ export namespace Prisma {
     none?: LeagueTableWhereInput
   }
 
+  export type ClubWalletNullableScalarRelationFilter = {
+    is?: ClubWalletWhereInput | null
+    isNot?: ClubWalletWhereInput | null
+  }
+
+  export type TransferSellerSettlementListRelationFilter = {
+    every?: TransferSellerSettlementWhereInput
+    some?: TransferSellerSettlementWhereInput
+    none?: TransferSellerSettlementWhereInput
+  }
+
   export type StoreItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -42139,6 +46987,10 @@ export namespace Prisma {
   }
 
   export type LeagueTableOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransferSellerSettlementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -42247,16 +47099,108 @@ export namespace Prisma {
     _max?: NestedEnumValidationStatusFilter<$PrismaModel>
   }
 
+  export type ClubScalarRelationFilter = {
+    is?: ClubWhereInput
+    isNot?: ClubWhereInput
+  }
+
+  export type ClubWalletCountOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    omjep_coins_balance?: SortOrder
+    season_transfer_budget?: SortOrder
+    reserved_amount?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ClubWalletAvgOrderByAggregateInput = {
+    omjep_coins_balance?: SortOrder
+    season_transfer_budget?: SortOrder
+    reserved_amount?: SortOrder
+  }
+
+  export type ClubWalletMaxOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    omjep_coins_balance?: SortOrder
+    season_transfer_budget?: SortOrder
+    reserved_amount?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ClubWalletMinOrderByAggregateInput = {
+    id?: SortOrder
+    team_id?: SortOrder
+    omjep_coins_balance?: SortOrder
+    season_transfer_budget?: SortOrder
+    reserved_amount?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ClubWalletSumOrderByAggregateInput = {
+    omjep_coins_balance?: SortOrder
+    season_transfer_budget?: SortOrder
+    reserved_amount?: SortOrder
+  }
+
+  export type EnumSeasonStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SeasonStatus | EnumSeasonStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeasonStatusFilter<$PrismaModel> | $Enums.SeasonStatus
+  }
+
+  export type SeasonCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
+    is_current?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SeasonMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
+    is_current?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SeasonMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    status?: SortOrder
+    is_current?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type EnumSeasonStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SeasonStatus | EnumSeasonStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeasonStatusWithAggregatesFilter<$PrismaModel> | $Enums.SeasonStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSeasonStatusFilter<$PrismaModel>
+    _max?: NestedEnumSeasonStatusFilter<$PrismaModel>
+  }
+
   export type EnumClubRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.ClubRole | EnumClubRoleFieldRefInput<$PrismaModel>
     in?: $Enums.ClubRole[] | ListEnumClubRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.ClubRole[] | ListEnumClubRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumClubRoleFilter<$PrismaModel> | $Enums.ClubRole
-  }
-
-  export type ClubScalarRelationFilter = {
-    is?: ClubWhereInput
-    isNot?: ClubWhereInput
   }
 
   export type UserScalarRelationFilter = {
@@ -43001,12 +47945,20 @@ export namespace Prisma {
     not?: NestedEnumContractStatusFilter<$PrismaModel> | $Enums.ContractStatus
   }
 
+  export type SeasonNullableScalarRelationFilter = {
+    is?: SeasonWhereInput | null
+    isNot?: SeasonWhereInput | null
+  }
+
   export type ContractCountOrderByAggregateInput = {
     id?: SortOrder
     team_id?: SortOrder
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
+    seasons_count?: SortOrder
+    start_season_id?: SortOrder
+    end_season_id?: SortOrder
     start_date?: SortOrder
     end_date?: SortOrder
     status?: SortOrder
@@ -43015,6 +47967,7 @@ export namespace Prisma {
   export type ContractAvgOrderByAggregateInput = {
     salary?: SortOrder
     release_clause?: SortOrder
+    seasons_count?: SortOrder
   }
 
   export type ContractMaxOrderByAggregateInput = {
@@ -43023,6 +47976,9 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
+    seasons_count?: SortOrder
+    start_season_id?: SortOrder
+    end_season_id?: SortOrder
     start_date?: SortOrder
     end_date?: SortOrder
     status?: SortOrder
@@ -43034,6 +47990,9 @@ export namespace Prisma {
     user_id?: SortOrder
     salary?: SortOrder
     release_clause?: SortOrder
+    seasons_count?: SortOrder
+    start_season_id?: SortOrder
+    end_season_id?: SortOrder
     start_date?: SortOrder
     end_date?: SortOrder
     status?: SortOrder
@@ -43042,6 +48001,7 @@ export namespace Prisma {
   export type ContractSumOrderByAggregateInput = {
     salary?: SortOrder
     release_clause?: SortOrder
+    seasons_count?: SortOrder
   }
 
   export type EnumContractStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -43114,6 +48074,24 @@ export namespace Prisma {
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
   }
 
+  export type EnumTransferModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferMode | EnumTransferModeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferModeFilter<$PrismaModel> | $Enums.TransferMode
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type EnumTransferOfferStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
@@ -43128,6 +48106,11 @@ export namespace Prisma {
     not?: NestedEnumNegotiationTurnFilter<$PrismaModel> | $Enums.NegotiationTurn
   }
 
+  export type TransferSellerSettlementNullableScalarRelationFilter = {
+    is?: TransferSellerSettlementWhereInput | null
+    isNot?: TransferSellerSettlementWhereInput | null
+  }
+
   export type TransferOfferCountOrderByAggregateInput = {
     id?: SortOrder
     player_id?: SortOrder
@@ -43136,6 +48119,11 @@ export namespace Prisma {
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
+    transfer_mode?: SortOrder
+    seasons_count?: SortOrder
+    reserved_amount?: SortOrder
+    expires_at?: SortOrder
+    contract_start_season_id?: SortOrder
     duration_months?: SortOrder
     status?: SortOrder
     negotiation_turn?: SortOrder
@@ -43147,6 +48135,8 @@ export namespace Prisma {
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
+    seasons_count?: SortOrder
+    reserved_amount?: SortOrder
     duration_months?: SortOrder
   }
 
@@ -43158,6 +48148,11 @@ export namespace Prisma {
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
+    transfer_mode?: SortOrder
+    seasons_count?: SortOrder
+    reserved_amount?: SortOrder
+    expires_at?: SortOrder
+    contract_start_season_id?: SortOrder
     duration_months?: SortOrder
     status?: SortOrder
     negotiation_turn?: SortOrder
@@ -43173,6 +48168,11 @@ export namespace Prisma {
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
+    transfer_mode?: SortOrder
+    seasons_count?: SortOrder
+    reserved_amount?: SortOrder
+    expires_at?: SortOrder
+    contract_start_season_id?: SortOrder
     duration_months?: SortOrder
     status?: SortOrder
     negotiation_turn?: SortOrder
@@ -43184,7 +48184,35 @@ export namespace Prisma {
     offered_salary?: SortOrder
     offered_clause?: SortOrder
     transfer_fee?: SortOrder
+    seasons_count?: SortOrder
+    reserved_amount?: SortOrder
     duration_months?: SortOrder
+  }
+
+  export type EnumTransferModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferMode | EnumTransferModeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferModeWithAggregatesFilter<$PrismaModel> | $Enums.TransferMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferModeFilter<$PrismaModel>
+    _max?: NestedEnumTransferModeFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type EnumTransferOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -43205,6 +48233,69 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNegotiationTurnFilter<$PrismaModel>
     _max?: NestedEnumNegotiationTurnFilter<$PrismaModel>
+  }
+
+  export type EnumTransferSettlementStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferSettlementStatus | EnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferSettlementStatusFilter<$PrismaModel> | $Enums.TransferSettlementStatus
+  }
+
+  export type TransferOfferScalarRelationFilter = {
+    is?: TransferOfferWhereInput
+    isNot?: TransferOfferWhereInput
+  }
+
+  export type TransferSellerSettlementCountOrderByAggregateInput = {
+    id?: SortOrder
+    transfer_offer_id?: SortOrder
+    seller_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    season_id?: SortOrder
+    created_at?: SortOrder
+    settled_at?: SortOrder
+  }
+
+  export type TransferSellerSettlementAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type TransferSellerSettlementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    transfer_offer_id?: SortOrder
+    seller_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    season_id?: SortOrder
+    created_at?: SortOrder
+    settled_at?: SortOrder
+  }
+
+  export type TransferSellerSettlementMinOrderByAggregateInput = {
+    id?: SortOrder
+    transfer_offer_id?: SortOrder
+    seller_team_id?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    season_id?: SortOrder
+    created_at?: SortOrder
+    settled_at?: SortOrder
+  }
+
+  export type TransferSellerSettlementSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumTransferSettlementStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferSettlementStatus | EnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferSettlementStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransferSettlementStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferSettlementStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransferSettlementStatusFilter<$PrismaModel>
   }
 
   export type EnumNotificationTypeFilter<$PrismaModel = never> = {
@@ -44780,6 +49871,19 @@ export namespace Prisma {
     connect?: LeagueTableWhereUniqueInput | LeagueTableWhereUniqueInput[]
   }
 
+  export type ClubWalletCreateNestedOneWithoutTeamInput = {
+    create?: XOR<ClubWalletCreateWithoutTeamInput, ClubWalletUncheckedCreateWithoutTeamInput>
+    connectOrCreate?: ClubWalletCreateOrConnectWithoutTeamInput
+    connect?: ClubWalletWhereUniqueInput
+  }
+
+  export type TransferSellerSettlementCreateNestedManyWithoutSellerClubInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSellerClubInput, TransferSellerSettlementUncheckedCreateWithoutSellerClubInput> | TransferSellerSettlementCreateWithoutSellerClubInput[] | TransferSellerSettlementUncheckedCreateWithoutSellerClubInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSellerClubInput | TransferSellerSettlementCreateOrConnectWithoutSellerClubInput[]
+    createMany?: TransferSellerSettlementCreateManySellerClubInputEnvelope
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+  }
+
   export type StoreItemUncheckedCreateNestedManyWithoutClubInput = {
     create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
     connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
@@ -44889,6 +49993,19 @@ export namespace Prisma {
     connectOrCreate?: LeagueTableCreateOrConnectWithoutTeamInput | LeagueTableCreateOrConnectWithoutTeamInput[]
     createMany?: LeagueTableCreateManyTeamInputEnvelope
     connect?: LeagueTableWhereUniqueInput | LeagueTableWhereUniqueInput[]
+  }
+
+  export type ClubWalletUncheckedCreateNestedOneWithoutTeamInput = {
+    create?: XOR<ClubWalletCreateWithoutTeamInput, ClubWalletUncheckedCreateWithoutTeamInput>
+    connectOrCreate?: ClubWalletCreateOrConnectWithoutTeamInput
+    connect?: ClubWalletWhereUniqueInput
+  }
+
+  export type TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSellerClubInput, TransferSellerSettlementUncheckedCreateWithoutSellerClubInput> | TransferSellerSettlementCreateWithoutSellerClubInput[] | TransferSellerSettlementUncheckedCreateWithoutSellerClubInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSellerClubInput | TransferSellerSettlementCreateOrConnectWithoutSellerClubInput[]
+    createMany?: TransferSellerSettlementCreateManySellerClubInputEnvelope
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
   }
 
   export type EnumPlatformFieldUpdateOperationsInput = {
@@ -45137,6 +50254,30 @@ export namespace Prisma {
     deleteMany?: LeagueTableScalarWhereInput | LeagueTableScalarWhereInput[]
   }
 
+  export type ClubWalletUpdateOneWithoutTeamNestedInput = {
+    create?: XOR<ClubWalletCreateWithoutTeamInput, ClubWalletUncheckedCreateWithoutTeamInput>
+    connectOrCreate?: ClubWalletCreateOrConnectWithoutTeamInput
+    upsert?: ClubWalletUpsertWithoutTeamInput
+    disconnect?: ClubWalletWhereInput | boolean
+    delete?: ClubWalletWhereInput | boolean
+    connect?: ClubWalletWhereUniqueInput
+    update?: XOR<XOR<ClubWalletUpdateToOneWithWhereWithoutTeamInput, ClubWalletUpdateWithoutTeamInput>, ClubWalletUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSellerClubInput, TransferSellerSettlementUncheckedCreateWithoutSellerClubInput> | TransferSellerSettlementCreateWithoutSellerClubInput[] | TransferSellerSettlementUncheckedCreateWithoutSellerClubInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSellerClubInput | TransferSellerSettlementCreateOrConnectWithoutSellerClubInput[]
+    upsert?: TransferSellerSettlementUpsertWithWhereUniqueWithoutSellerClubInput | TransferSellerSettlementUpsertWithWhereUniqueWithoutSellerClubInput[]
+    createMany?: TransferSellerSettlementCreateManySellerClubInputEnvelope
+    set?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    disconnect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    delete?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    update?: TransferSellerSettlementUpdateWithWhereUniqueWithoutSellerClubInput | TransferSellerSettlementUpdateWithWhereUniqueWithoutSellerClubInput[]
+    updateMany?: TransferSellerSettlementUpdateManyWithWhereWithoutSellerClubInput | TransferSellerSettlementUpdateManyWithWhereWithoutSellerClubInput[]
+    deleteMany?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
+  }
+
   export type StoreItemUncheckedUpdateManyWithoutClubNestedInput = {
     create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
     connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
@@ -45355,6 +50496,216 @@ export namespace Prisma {
     update?: LeagueTableUpdateWithWhereUniqueWithoutTeamInput | LeagueTableUpdateWithWhereUniqueWithoutTeamInput[]
     updateMany?: LeagueTableUpdateManyWithWhereWithoutTeamInput | LeagueTableUpdateManyWithWhereWithoutTeamInput[]
     deleteMany?: LeagueTableScalarWhereInput | LeagueTableScalarWhereInput[]
+  }
+
+  export type ClubWalletUncheckedUpdateOneWithoutTeamNestedInput = {
+    create?: XOR<ClubWalletCreateWithoutTeamInput, ClubWalletUncheckedCreateWithoutTeamInput>
+    connectOrCreate?: ClubWalletCreateOrConnectWithoutTeamInput
+    upsert?: ClubWalletUpsertWithoutTeamInput
+    disconnect?: ClubWalletWhereInput | boolean
+    delete?: ClubWalletWhereInput | boolean
+    connect?: ClubWalletWhereUniqueInput
+    update?: XOR<XOR<ClubWalletUpdateToOneWithWhereWithoutTeamInput, ClubWalletUpdateWithoutTeamInput>, ClubWalletUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSellerClubInput, TransferSellerSettlementUncheckedCreateWithoutSellerClubInput> | TransferSellerSettlementCreateWithoutSellerClubInput[] | TransferSellerSettlementUncheckedCreateWithoutSellerClubInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSellerClubInput | TransferSellerSettlementCreateOrConnectWithoutSellerClubInput[]
+    upsert?: TransferSellerSettlementUpsertWithWhereUniqueWithoutSellerClubInput | TransferSellerSettlementUpsertWithWhereUniqueWithoutSellerClubInput[]
+    createMany?: TransferSellerSettlementCreateManySellerClubInputEnvelope
+    set?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    disconnect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    delete?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    update?: TransferSellerSettlementUpdateWithWhereUniqueWithoutSellerClubInput | TransferSellerSettlementUpdateWithWhereUniqueWithoutSellerClubInput[]
+    updateMany?: TransferSellerSettlementUpdateManyWithWhereWithoutSellerClubInput | TransferSellerSettlementUpdateManyWithWhereWithoutSellerClubInput[]
+    deleteMany?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
+  }
+
+  export type ClubCreateNestedOneWithoutWalletInput = {
+    create?: XOR<ClubCreateWithoutWalletInput, ClubUncheckedCreateWithoutWalletInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutWalletInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type ClubUpdateOneRequiredWithoutWalletNestedInput = {
+    create?: XOR<ClubCreateWithoutWalletInput, ClubUncheckedCreateWithoutWalletInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutWalletInput
+    upsert?: ClubUpsertWithoutWalletInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutWalletInput, ClubUpdateWithoutWalletInput>, ClubUncheckedUpdateWithoutWalletInput>
+  }
+
+  export type ContractCreateNestedManyWithoutStartSeasonInput = {
+    create?: XOR<ContractCreateWithoutStartSeasonInput, ContractUncheckedCreateWithoutStartSeasonInput> | ContractCreateWithoutStartSeasonInput[] | ContractUncheckedCreateWithoutStartSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutStartSeasonInput | ContractCreateOrConnectWithoutStartSeasonInput[]
+    createMany?: ContractCreateManyStartSeasonInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type ContractCreateNestedManyWithoutEndSeasonInput = {
+    create?: XOR<ContractCreateWithoutEndSeasonInput, ContractUncheckedCreateWithoutEndSeasonInput> | ContractCreateWithoutEndSeasonInput[] | ContractUncheckedCreateWithoutEndSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutEndSeasonInput | ContractCreateOrConnectWithoutEndSeasonInput[]
+    createMany?: ContractCreateManyEndSeasonInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type TransferOfferCreateNestedManyWithoutContractStartSeasonInput = {
+    create?: XOR<TransferOfferCreateWithoutContractStartSeasonInput, TransferOfferUncheckedCreateWithoutContractStartSeasonInput> | TransferOfferCreateWithoutContractStartSeasonInput[] | TransferOfferUncheckedCreateWithoutContractStartSeasonInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutContractStartSeasonInput | TransferOfferCreateOrConnectWithoutContractStartSeasonInput[]
+    createMany?: TransferOfferCreateManyContractStartSeasonInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+  }
+
+  export type TransferSellerSettlementCreateNestedManyWithoutSeasonInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSeasonInput, TransferSellerSettlementUncheckedCreateWithoutSeasonInput> | TransferSellerSettlementCreateWithoutSeasonInput[] | TransferSellerSettlementUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSeasonInput | TransferSellerSettlementCreateOrConnectWithoutSeasonInput[]
+    createMany?: TransferSellerSettlementCreateManySeasonInputEnvelope
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedManyWithoutStartSeasonInput = {
+    create?: XOR<ContractCreateWithoutStartSeasonInput, ContractUncheckedCreateWithoutStartSeasonInput> | ContractCreateWithoutStartSeasonInput[] | ContractUncheckedCreateWithoutStartSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutStartSeasonInput | ContractCreateOrConnectWithoutStartSeasonInput[]
+    createMany?: ContractCreateManyStartSeasonInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedManyWithoutEndSeasonInput = {
+    create?: XOR<ContractCreateWithoutEndSeasonInput, ContractUncheckedCreateWithoutEndSeasonInput> | ContractCreateWithoutEndSeasonInput[] | ContractUncheckedCreateWithoutEndSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutEndSeasonInput | ContractCreateOrConnectWithoutEndSeasonInput[]
+    createMany?: ContractCreateManyEndSeasonInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type TransferOfferUncheckedCreateNestedManyWithoutContractStartSeasonInput = {
+    create?: XOR<TransferOfferCreateWithoutContractStartSeasonInput, TransferOfferUncheckedCreateWithoutContractStartSeasonInput> | TransferOfferCreateWithoutContractStartSeasonInput[] | TransferOfferUncheckedCreateWithoutContractStartSeasonInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutContractStartSeasonInput | TransferOfferCreateOrConnectWithoutContractStartSeasonInput[]
+    createMany?: TransferOfferCreateManyContractStartSeasonInputEnvelope
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+  }
+
+  export type TransferSellerSettlementUncheckedCreateNestedManyWithoutSeasonInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSeasonInput, TransferSellerSettlementUncheckedCreateWithoutSeasonInput> | TransferSellerSettlementCreateWithoutSeasonInput[] | TransferSellerSettlementUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSeasonInput | TransferSellerSettlementCreateOrConnectWithoutSeasonInput[]
+    createMany?: TransferSellerSettlementCreateManySeasonInputEnvelope
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+  }
+
+  export type EnumSeasonStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SeasonStatus
+  }
+
+  export type ContractUpdateManyWithoutStartSeasonNestedInput = {
+    create?: XOR<ContractCreateWithoutStartSeasonInput, ContractUncheckedCreateWithoutStartSeasonInput> | ContractCreateWithoutStartSeasonInput[] | ContractUncheckedCreateWithoutStartSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutStartSeasonInput | ContractCreateOrConnectWithoutStartSeasonInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutStartSeasonInput | ContractUpsertWithWhereUniqueWithoutStartSeasonInput[]
+    createMany?: ContractCreateManyStartSeasonInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutStartSeasonInput | ContractUpdateWithWhereUniqueWithoutStartSeasonInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutStartSeasonInput | ContractUpdateManyWithWhereWithoutStartSeasonInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type ContractUpdateManyWithoutEndSeasonNestedInput = {
+    create?: XOR<ContractCreateWithoutEndSeasonInput, ContractUncheckedCreateWithoutEndSeasonInput> | ContractCreateWithoutEndSeasonInput[] | ContractUncheckedCreateWithoutEndSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutEndSeasonInput | ContractCreateOrConnectWithoutEndSeasonInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutEndSeasonInput | ContractUpsertWithWhereUniqueWithoutEndSeasonInput[]
+    createMany?: ContractCreateManyEndSeasonInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutEndSeasonInput | ContractUpdateWithWhereUniqueWithoutEndSeasonInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutEndSeasonInput | ContractUpdateManyWithWhereWithoutEndSeasonInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type TransferOfferUpdateManyWithoutContractStartSeasonNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutContractStartSeasonInput, TransferOfferUncheckedCreateWithoutContractStartSeasonInput> | TransferOfferCreateWithoutContractStartSeasonInput[] | TransferOfferUncheckedCreateWithoutContractStartSeasonInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutContractStartSeasonInput | TransferOfferCreateOrConnectWithoutContractStartSeasonInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutContractStartSeasonInput | TransferOfferUpsertWithWhereUniqueWithoutContractStartSeasonInput[]
+    createMany?: TransferOfferCreateManyContractStartSeasonInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutContractStartSeasonInput | TransferOfferUpdateWithWhereUniqueWithoutContractStartSeasonInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutContractStartSeasonInput | TransferOfferUpdateManyWithWhereWithoutContractStartSeasonInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+  }
+
+  export type TransferSellerSettlementUpdateManyWithoutSeasonNestedInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSeasonInput, TransferSellerSettlementUncheckedCreateWithoutSeasonInput> | TransferSellerSettlementCreateWithoutSeasonInput[] | TransferSellerSettlementUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSeasonInput | TransferSellerSettlementCreateOrConnectWithoutSeasonInput[]
+    upsert?: TransferSellerSettlementUpsertWithWhereUniqueWithoutSeasonInput | TransferSellerSettlementUpsertWithWhereUniqueWithoutSeasonInput[]
+    createMany?: TransferSellerSettlementCreateManySeasonInputEnvelope
+    set?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    disconnect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    delete?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    update?: TransferSellerSettlementUpdateWithWhereUniqueWithoutSeasonInput | TransferSellerSettlementUpdateWithWhereUniqueWithoutSeasonInput[]
+    updateMany?: TransferSellerSettlementUpdateManyWithWhereWithoutSeasonInput | TransferSellerSettlementUpdateManyWithWhereWithoutSeasonInput[]
+    deleteMany?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
+  }
+
+  export type ContractUncheckedUpdateManyWithoutStartSeasonNestedInput = {
+    create?: XOR<ContractCreateWithoutStartSeasonInput, ContractUncheckedCreateWithoutStartSeasonInput> | ContractCreateWithoutStartSeasonInput[] | ContractUncheckedCreateWithoutStartSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutStartSeasonInput | ContractCreateOrConnectWithoutStartSeasonInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutStartSeasonInput | ContractUpsertWithWhereUniqueWithoutStartSeasonInput[]
+    createMany?: ContractCreateManyStartSeasonInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutStartSeasonInput | ContractUpdateWithWhereUniqueWithoutStartSeasonInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutStartSeasonInput | ContractUpdateManyWithWhereWithoutStartSeasonInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type ContractUncheckedUpdateManyWithoutEndSeasonNestedInput = {
+    create?: XOR<ContractCreateWithoutEndSeasonInput, ContractUncheckedCreateWithoutEndSeasonInput> | ContractCreateWithoutEndSeasonInput[] | ContractUncheckedCreateWithoutEndSeasonInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutEndSeasonInput | ContractCreateOrConnectWithoutEndSeasonInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutEndSeasonInput | ContractUpsertWithWhereUniqueWithoutEndSeasonInput[]
+    createMany?: ContractCreateManyEndSeasonInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutEndSeasonInput | ContractUpdateWithWhereUniqueWithoutEndSeasonInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutEndSeasonInput | ContractUpdateManyWithWhereWithoutEndSeasonInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type TransferOfferUncheckedUpdateManyWithoutContractStartSeasonNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutContractStartSeasonInput, TransferOfferUncheckedCreateWithoutContractStartSeasonInput> | TransferOfferCreateWithoutContractStartSeasonInput[] | TransferOfferUncheckedCreateWithoutContractStartSeasonInput[]
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutContractStartSeasonInput | TransferOfferCreateOrConnectWithoutContractStartSeasonInput[]
+    upsert?: TransferOfferUpsertWithWhereUniqueWithoutContractStartSeasonInput | TransferOfferUpsertWithWhereUniqueWithoutContractStartSeasonInput[]
+    createMany?: TransferOfferCreateManyContractStartSeasonInputEnvelope
+    set?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    disconnect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    delete?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    connect?: TransferOfferWhereUniqueInput | TransferOfferWhereUniqueInput[]
+    update?: TransferOfferUpdateWithWhereUniqueWithoutContractStartSeasonInput | TransferOfferUpdateWithWhereUniqueWithoutContractStartSeasonInput[]
+    updateMany?: TransferOfferUpdateManyWithWhereWithoutContractStartSeasonInput | TransferOfferUpdateManyWithWhereWithoutContractStartSeasonInput[]
+    deleteMany?: TransferOfferScalarWhereInput | TransferOfferScalarWhereInput[]
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateManyWithoutSeasonNestedInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutSeasonInput, TransferSellerSettlementUncheckedCreateWithoutSeasonInput> | TransferSellerSettlementCreateWithoutSeasonInput[] | TransferSellerSettlementUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSeasonInput | TransferSellerSettlementCreateOrConnectWithoutSeasonInput[]
+    upsert?: TransferSellerSettlementUpsertWithWhereUniqueWithoutSeasonInput | TransferSellerSettlementUpsertWithWhereUniqueWithoutSeasonInput[]
+    createMany?: TransferSellerSettlementCreateManySeasonInputEnvelope
+    set?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    disconnect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    delete?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+    update?: TransferSellerSettlementUpdateWithWhereUniqueWithoutSeasonInput | TransferSellerSettlementUpdateWithWhereUniqueWithoutSeasonInput[]
+    updateMany?: TransferSellerSettlementUpdateManyWithWhereWithoutSeasonInput | TransferSellerSettlementUpdateManyWithWhereWithoutSeasonInput[]
+    deleteMany?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
   }
 
   export type ClubCreateNestedOneWithoutMembersInput = {
@@ -46041,6 +51392,18 @@ export namespace Prisma {
     update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutInvitationsInput, ClubUpdateWithoutInvitationsInput>, ClubUncheckedUpdateWithoutInvitationsInput>
   }
 
+  export type SeasonCreateNestedOneWithoutContractsAsStartInput = {
+    create?: XOR<SeasonCreateWithoutContractsAsStartInput, SeasonUncheckedCreateWithoutContractsAsStartInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutContractsAsStartInput
+    connect?: SeasonWhereUniqueInput
+  }
+
+  export type SeasonCreateNestedOneWithoutContractsAsEndInput = {
+    create?: XOR<SeasonCreateWithoutContractsAsEndInput, SeasonUncheckedCreateWithoutContractsAsEndInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutContractsAsEndInput
+    connect?: SeasonWhereUniqueInput
+  }
+
   export type ClubCreateNestedOneWithoutContractsInput = {
     create?: XOR<ClubCreateWithoutContractsInput, ClubUncheckedCreateWithoutContractsInput>
     connectOrCreate?: ClubCreateOrConnectWithoutContractsInput
@@ -46055,6 +51418,26 @@ export namespace Prisma {
 
   export type EnumContractStatusFieldUpdateOperationsInput = {
     set?: $Enums.ContractStatus
+  }
+
+  export type SeasonUpdateOneWithoutContractsAsStartNestedInput = {
+    create?: XOR<SeasonCreateWithoutContractsAsStartInput, SeasonUncheckedCreateWithoutContractsAsStartInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutContractsAsStartInput
+    upsert?: SeasonUpsertWithoutContractsAsStartInput
+    disconnect?: SeasonWhereInput | boolean
+    delete?: SeasonWhereInput | boolean
+    connect?: SeasonWhereUniqueInput
+    update?: XOR<XOR<SeasonUpdateToOneWithWhereWithoutContractsAsStartInput, SeasonUpdateWithoutContractsAsStartInput>, SeasonUncheckedUpdateWithoutContractsAsStartInput>
+  }
+
+  export type SeasonUpdateOneWithoutContractsAsEndNestedInput = {
+    create?: XOR<SeasonCreateWithoutContractsAsEndInput, SeasonUncheckedCreateWithoutContractsAsEndInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutContractsAsEndInput
+    upsert?: SeasonUpsertWithoutContractsAsEndInput
+    disconnect?: SeasonWhereInput | boolean
+    delete?: SeasonWhereInput | boolean
+    connect?: SeasonWhereUniqueInput
+    update?: XOR<XOR<SeasonUpdateToOneWithWhereWithoutContractsAsEndInput, SeasonUpdateWithoutContractsAsEndInput>, SeasonUncheckedUpdateWithoutContractsAsEndInput>
   }
 
   export type ClubUpdateOneRequiredWithoutContractsNestedInput = {
@@ -46109,6 +51492,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWalletTransactionsInput, UserUpdateWithoutWalletTransactionsInput>, UserUncheckedUpdateWithoutWalletTransactionsInput>
   }
 
+  export type SeasonCreateNestedOneWithoutOffersAsContractStartInput = {
+    create?: XOR<SeasonCreateWithoutOffersAsContractStartInput, SeasonUncheckedCreateWithoutOffersAsContractStartInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutOffersAsContractStartInput
+    connect?: SeasonWhereUniqueInput
+  }
+
   export type ClubCreateNestedOneWithoutSentOffersInput = {
     create?: XOR<ClubCreateWithoutSentOffersInput, ClubUncheckedCreateWithoutSentOffersInput>
     connectOrCreate?: ClubCreateOrConnectWithoutSentOffersInput
@@ -46127,12 +51516,46 @@ export namespace Prisma {
     connect?: ClubWhereUniqueInput
   }
 
+  export type TransferSellerSettlementCreateNestedOneWithoutTransferOfferInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutTransferOfferInput, TransferSellerSettlementUncheckedCreateWithoutTransferOfferInput>
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutTransferOfferInput
+    connect?: TransferSellerSettlementWhereUniqueInput
+  }
+
+  export type TransferSellerSettlementUncheckedCreateNestedOneWithoutTransferOfferInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutTransferOfferInput, TransferSellerSettlementUncheckedCreateWithoutTransferOfferInput>
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutTransferOfferInput
+    connect?: TransferSellerSettlementWhereUniqueInput
+  }
+
+  export type EnumTransferModeFieldUpdateOperationsInput = {
+    set?: $Enums.TransferMode
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type EnumTransferOfferStatusFieldUpdateOperationsInput = {
     set?: $Enums.TransferOfferStatus
   }
 
   export type EnumNegotiationTurnFieldUpdateOperationsInput = {
     set?: $Enums.NegotiationTurn
+  }
+
+  export type SeasonUpdateOneWithoutOffersAsContractStartNestedInput = {
+    create?: XOR<SeasonCreateWithoutOffersAsContractStartInput, SeasonUncheckedCreateWithoutOffersAsContractStartInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutOffersAsContractStartInput
+    upsert?: SeasonUpsertWithoutOffersAsContractStartInput
+    disconnect?: SeasonWhereInput | boolean
+    delete?: SeasonWhereInput | boolean
+    connect?: SeasonWhereUniqueInput
+    update?: XOR<XOR<SeasonUpdateToOneWithWhereWithoutOffersAsContractStartInput, SeasonUpdateWithoutOffersAsContractStartInput>, SeasonUncheckedUpdateWithoutOffersAsContractStartInput>
   }
 
   export type ClubUpdateOneRequiredWithoutSentOffersNestedInput = {
@@ -46159,6 +51582,74 @@ export namespace Prisma {
     delete?: ClubWhereInput | boolean
     connect?: ClubWhereUniqueInput
     update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutReceivedOffersInput, ClubUpdateWithoutReceivedOffersInput>, ClubUncheckedUpdateWithoutReceivedOffersInput>
+  }
+
+  export type TransferSellerSettlementUpdateOneWithoutTransferOfferNestedInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutTransferOfferInput, TransferSellerSettlementUncheckedCreateWithoutTransferOfferInput>
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutTransferOfferInput
+    upsert?: TransferSellerSettlementUpsertWithoutTransferOfferInput
+    disconnect?: TransferSellerSettlementWhereInput | boolean
+    delete?: TransferSellerSettlementWhereInput | boolean
+    connect?: TransferSellerSettlementWhereUniqueInput
+    update?: XOR<XOR<TransferSellerSettlementUpdateToOneWithWhereWithoutTransferOfferInput, TransferSellerSettlementUpdateWithoutTransferOfferInput>, TransferSellerSettlementUncheckedUpdateWithoutTransferOfferInput>
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateOneWithoutTransferOfferNestedInput = {
+    create?: XOR<TransferSellerSettlementCreateWithoutTransferOfferInput, TransferSellerSettlementUncheckedCreateWithoutTransferOfferInput>
+    connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutTransferOfferInput
+    upsert?: TransferSellerSettlementUpsertWithoutTransferOfferInput
+    disconnect?: TransferSellerSettlementWhereInput | boolean
+    delete?: TransferSellerSettlementWhereInput | boolean
+    connect?: TransferSellerSettlementWhereUniqueInput
+    update?: XOR<XOR<TransferSellerSettlementUpdateToOneWithWhereWithoutTransferOfferInput, TransferSellerSettlementUpdateWithoutTransferOfferInput>, TransferSellerSettlementUncheckedUpdateWithoutTransferOfferInput>
+  }
+
+  export type TransferOfferCreateNestedOneWithoutSellerSettlementInput = {
+    create?: XOR<TransferOfferCreateWithoutSellerSettlementInput, TransferOfferUncheckedCreateWithoutSellerSettlementInput>
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutSellerSettlementInput
+    connect?: TransferOfferWhereUniqueInput
+  }
+
+  export type ClubCreateNestedOneWithoutTransferSellerSettlementsAsSellerInput = {
+    create?: XOR<ClubCreateWithoutTransferSellerSettlementsAsSellerInput, ClubUncheckedCreateWithoutTransferSellerSettlementsAsSellerInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutTransferSellerSettlementsAsSellerInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type SeasonCreateNestedOneWithoutTransferSellerSettlementsInput = {
+    create?: XOR<SeasonCreateWithoutTransferSellerSettlementsInput, SeasonUncheckedCreateWithoutTransferSellerSettlementsInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutTransferSellerSettlementsInput
+    connect?: SeasonWhereUniqueInput
+  }
+
+  export type EnumTransferSettlementStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TransferSettlementStatus
+  }
+
+  export type TransferOfferUpdateOneRequiredWithoutSellerSettlementNestedInput = {
+    create?: XOR<TransferOfferCreateWithoutSellerSettlementInput, TransferOfferUncheckedCreateWithoutSellerSettlementInput>
+    connectOrCreate?: TransferOfferCreateOrConnectWithoutSellerSettlementInput
+    upsert?: TransferOfferUpsertWithoutSellerSettlementInput
+    connect?: TransferOfferWhereUniqueInput
+    update?: XOR<XOR<TransferOfferUpdateToOneWithWhereWithoutSellerSettlementInput, TransferOfferUpdateWithoutSellerSettlementInput>, TransferOfferUncheckedUpdateWithoutSellerSettlementInput>
+  }
+
+  export type ClubUpdateOneRequiredWithoutTransferSellerSettlementsAsSellerNestedInput = {
+    create?: XOR<ClubCreateWithoutTransferSellerSettlementsAsSellerInput, ClubUncheckedCreateWithoutTransferSellerSettlementsAsSellerInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutTransferSellerSettlementsAsSellerInput
+    upsert?: ClubUpsertWithoutTransferSellerSettlementsAsSellerInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutTransferSellerSettlementsAsSellerInput, ClubUpdateWithoutTransferSellerSettlementsAsSellerInput>, ClubUncheckedUpdateWithoutTransferSellerSettlementsAsSellerInput>
+  }
+
+  export type SeasonUpdateOneWithoutTransferSellerSettlementsNestedInput = {
+    create?: XOR<SeasonCreateWithoutTransferSellerSettlementsInput, SeasonUncheckedCreateWithoutTransferSellerSettlementsInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutTransferSellerSettlementsInput
+    upsert?: SeasonUpsertWithoutTransferSellerSettlementsInput
+    disconnect?: SeasonWhereInput | boolean
+    delete?: SeasonWhereInput | boolean
+    connect?: SeasonWhereUniqueInput
+    update?: XOR<XOR<SeasonUpdateToOneWithWhereWithoutTransferSellerSettlementsInput, SeasonUpdateWithoutTransferSellerSettlementsInput>, SeasonUncheckedUpdateWithoutTransferSellerSettlementsInput>
   }
 
   export type UserCreateNestedOneWithoutNotificationsInput = {
@@ -46863,6 +52354,23 @@ export namespace Prisma {
     _max?: NestedEnumValidationStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumSeasonStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SeasonStatus | EnumSeasonStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeasonStatusFilter<$PrismaModel> | $Enums.SeasonStatus
+  }
+
+  export type NestedEnumSeasonStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SeasonStatus | EnumSeasonStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SeasonStatus[] | ListEnumSeasonStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeasonStatusWithAggregatesFilter<$PrismaModel> | $Enums.SeasonStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSeasonStatusFilter<$PrismaModel>
+    _max?: NestedEnumSeasonStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumClubRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.ClubRole | EnumClubRoleFieldRefInput<$PrismaModel>
     in?: $Enums.ClubRole[] | ListEnumClubRoleFieldRefInput<$PrismaModel>
@@ -47102,6 +52610,13 @@ export namespace Prisma {
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumTransferModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferMode | EnumTransferModeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferModeFilter<$PrismaModel> | $Enums.TransferMode
+  }
+
   export type NestedEnumTransferOfferStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
@@ -47114,6 +52629,32 @@ export namespace Prisma {
     in?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
     notIn?: $Enums.NegotiationTurn[] | ListEnumNegotiationTurnFieldRefInput<$PrismaModel>
     not?: NestedEnumNegotiationTurnFilter<$PrismaModel> | $Enums.NegotiationTurn
+  }
+
+  export type NestedEnumTransferModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferMode | EnumTransferModeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferMode[] | ListEnumTransferModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferModeWithAggregatesFilter<$PrismaModel> | $Enums.TransferMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferModeFilter<$PrismaModel>
+    _max?: NestedEnumTransferModeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumTransferOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -47134,6 +52675,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNegotiationTurnFilter<$PrismaModel>
     _max?: NestedEnumNegotiationTurnFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTransferSettlementStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferSettlementStatus | EnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferSettlementStatusFilter<$PrismaModel> | $Enums.TransferSettlementStatus
+  }
+
+  export type NestedEnumTransferSettlementStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferSettlementStatus | EnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferSettlementStatus[] | ListEnumTransferSettlementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferSettlementStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransferSettlementStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferSettlementStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransferSettlementStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumNotificationTypeFilter<$PrismaModel = never> = {
@@ -47351,9 +52909,12 @@ export namespace Prisma {
     id?: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
+    startSeason?: SeasonCreateNestedOneWithoutContractsAsStartInput
+    endSeason?: SeasonCreateNestedOneWithoutContractsAsEndInput
     team: ClubCreateNestedOneWithoutContractsInput
   }
 
@@ -47362,6 +52923,9 @@ export namespace Prisma {
     team_id: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    end_season_id?: string | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
@@ -47629,6 +53193,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutManagerInput = {
@@ -47663,6 +53229,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutManagerInput = {
@@ -47680,13 +53248,19 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    contractStartSeason?: SeasonCreateNestedOneWithoutOffersAsContractStartInput
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
     toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
+    sellerSettlement?: TransferSellerSettlementCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferUncheckedCreateWithoutPlayerInput = {
@@ -47696,11 +53270,17 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferCreateOrConnectWithoutPlayerInput = {
@@ -48015,6 +53595,9 @@ export namespace Prisma {
     user_id?: UuidFilter<"Contract"> | string
     salary?: FloatFilter<"Contract"> | number
     release_clause?: FloatFilter<"Contract"> | number
+    seasons_count?: IntNullableFilter<"Contract"> | number | null
+    start_season_id?: UuidNullableFilter<"Contract"> | string | null
+    end_season_id?: UuidNullableFilter<"Contract"> | string | null
     start_date?: DateTimeFilter<"Contract"> | Date | string
     end_date?: DateTimeFilter<"Contract"> | Date | string
     status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
@@ -48311,6 +53894,11 @@ export namespace Prisma {
     offered_salary?: FloatFilter<"TransferOffer"> | number
     offered_clause?: FloatFilter<"TransferOffer"> | number
     transfer_fee?: FloatFilter<"TransferOffer"> | number
+    transfer_mode?: EnumTransferModeFilter<"TransferOffer"> | $Enums.TransferMode
+    seasons_count?: IntNullableFilter<"TransferOffer"> | number | null
+    reserved_amount?: FloatNullableFilter<"TransferOffer"> | number | null
+    expires_at?: DateTimeNullableFilter<"TransferOffer"> | Date | string | null
+    contract_start_season_id?: UuidNullableFilter<"TransferOffer"> | string | null
     duration_months?: IntFilter<"TransferOffer"> | number
     status?: EnumTransferOfferStatusFilter<"TransferOffer"> | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFilter<"TransferOffer"> | $Enums.NegotiationTurn
@@ -48618,9 +54206,12 @@ export namespace Prisma {
     id?: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
+    startSeason?: SeasonCreateNestedOneWithoutContractsAsStartInput
+    endSeason?: SeasonCreateNestedOneWithoutContractsAsEndInput
     user: UserCreateNestedOneWithoutContractsInput
   }
 
@@ -48629,6 +54220,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    end_season_id?: string | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
@@ -48986,13 +54580,19 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    contractStartSeason?: SeasonCreateNestedOneWithoutOffersAsContractStartInput
     player: UserCreateNestedOneWithoutTransferOffersInput
     toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
+    sellerSettlement?: TransferSellerSettlementCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferUncheckedCreateWithoutFromTeamInput = {
@@ -49002,11 +54602,17 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferCreateOrConnectWithoutFromTeamInput = {
@@ -49024,13 +54630,19 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    contractStartSeason?: SeasonCreateNestedOneWithoutOffersAsContractStartInput
     fromTeam: ClubCreateNestedOneWithoutSentOffersInput
     player: UserCreateNestedOneWithoutTransferOffersInput
+    sellerSettlement?: TransferSellerSettlementCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferUncheckedCreateWithoutToTeamInput = {
@@ -49040,11 +54652,17 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
     created_at?: Date | string
     responded_at?: Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedCreateNestedOneWithoutTransferOfferInput
   }
 
   export type TransferOfferCreateOrConnectWithoutToTeamInput = {
@@ -49167,6 +54785,59 @@ export namespace Prisma {
 
   export type LeagueTableCreateManyTeamInputEnvelope = {
     data: LeagueTableCreateManyTeamInput | LeagueTableCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubWalletCreateWithoutTeamInput = {
+    id?: string
+    omjep_coins_balance?: number
+    season_transfer_budget?: number
+    reserved_amount?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ClubWalletUncheckedCreateWithoutTeamInput = {
+    id?: string
+    omjep_coins_balance?: number
+    season_transfer_budget?: number
+    reserved_amount?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ClubWalletCreateOrConnectWithoutTeamInput = {
+    where: ClubWalletWhereUniqueInput
+    create: XOR<ClubWalletCreateWithoutTeamInput, ClubWalletUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TransferSellerSettlementCreateWithoutSellerClubInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    created_at?: Date | string
+    settled_at?: Date | string | null
+    transferOffer: TransferOfferCreateNestedOneWithoutSellerSettlementInput
+    season?: SeasonCreateNestedOneWithoutTransferSellerSettlementsInput
+  }
+
+  export type TransferSellerSettlementUncheckedCreateWithoutSellerClubInput = {
+    id?: string
+    transfer_offer_id: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    season_id?: string | null
+    created_at?: Date | string
+    settled_at?: Date | string | null
+  }
+
+  export type TransferSellerSettlementCreateOrConnectWithoutSellerClubInput = {
+    where: TransferSellerSettlementWhereUniqueInput
+    create: XOR<TransferSellerSettlementCreateWithoutSellerClubInput, TransferSellerSettlementUncheckedCreateWithoutSellerClubInput>
+  }
+
+  export type TransferSellerSettlementCreateManySellerClubInputEnvelope = {
+    data: TransferSellerSettlementCreateManySellerClubInput | TransferSellerSettlementCreateManySellerClubInput[]
     skipDuplicates?: boolean
   }
 
@@ -49600,6 +55271,441 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"LeagueTable"> | Date | string
   }
 
+  export type ClubWalletUpsertWithoutTeamInput = {
+    update: XOR<ClubWalletUpdateWithoutTeamInput, ClubWalletUncheckedUpdateWithoutTeamInput>
+    create: XOR<ClubWalletCreateWithoutTeamInput, ClubWalletUncheckedCreateWithoutTeamInput>
+    where?: ClubWalletWhereInput
+  }
+
+  export type ClubWalletUpdateToOneWithWhereWithoutTeamInput = {
+    where?: ClubWalletWhereInput
+    data: XOR<ClubWalletUpdateWithoutTeamInput, ClubWalletUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type ClubWalletUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omjep_coins_balance?: FloatFieldUpdateOperationsInput | number
+    season_transfer_budget?: FloatFieldUpdateOperationsInput | number
+    reserved_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubWalletUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omjep_coins_balance?: FloatFieldUpdateOperationsInput | number
+    season_transfer_budget?: FloatFieldUpdateOperationsInput | number
+    reserved_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferSellerSettlementUpsertWithWhereUniqueWithoutSellerClubInput = {
+    where: TransferSellerSettlementWhereUniqueInput
+    update: XOR<TransferSellerSettlementUpdateWithoutSellerClubInput, TransferSellerSettlementUncheckedUpdateWithoutSellerClubInput>
+    create: XOR<TransferSellerSettlementCreateWithoutSellerClubInput, TransferSellerSettlementUncheckedCreateWithoutSellerClubInput>
+  }
+
+  export type TransferSellerSettlementUpdateWithWhereUniqueWithoutSellerClubInput = {
+    where: TransferSellerSettlementWhereUniqueInput
+    data: XOR<TransferSellerSettlementUpdateWithoutSellerClubInput, TransferSellerSettlementUncheckedUpdateWithoutSellerClubInput>
+  }
+
+  export type TransferSellerSettlementUpdateManyWithWhereWithoutSellerClubInput = {
+    where: TransferSellerSettlementScalarWhereInput
+    data: XOR<TransferSellerSettlementUpdateManyMutationInput, TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubInput>
+  }
+
+  export type TransferSellerSettlementScalarWhereInput = {
+    AND?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
+    OR?: TransferSellerSettlementScalarWhereInput[]
+    NOT?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
+    id?: UuidFilter<"TransferSellerSettlement"> | string
+    transfer_offer_id?: UuidFilter<"TransferSellerSettlement"> | string
+    seller_team_id?: UuidFilter<"TransferSellerSettlement"> | string
+    amount?: FloatFilter<"TransferSellerSettlement"> | number
+    status?: EnumTransferSettlementStatusFilter<"TransferSellerSettlement"> | $Enums.TransferSettlementStatus
+    season_id?: UuidNullableFilter<"TransferSellerSettlement"> | string | null
+    created_at?: DateTimeFilter<"TransferSellerSettlement"> | Date | string
+    settled_at?: DateTimeNullableFilter<"TransferSellerSettlement"> | Date | string | null
+  }
+
+  export type ClubCreateWithoutWalletInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    manager?: UserCreateNestedOneWithoutManagedClubsInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
+    eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
+    leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutWalletInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    manager_id?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
+    eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
+    leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutWalletInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutWalletInput, ClubUncheckedCreateWithoutWalletInput>
+  }
+
+  export type ClubUpsertWithoutWalletInput = {
+    update: XOR<ClubUpdateWithoutWalletInput, ClubUncheckedUpdateWithoutWalletInput>
+    create: XOR<ClubCreateWithoutWalletInput, ClubUncheckedCreateWithoutWalletInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutWalletInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutWalletInput, ClubUncheckedUpdateWithoutWalletInput>
+  }
+
+  export type ClubUpdateWithoutWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    manager?: UserUpdateOneWithoutManagedClubsNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
+    eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
+    leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    manager_id?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
+    eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
+    leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+  }
+
+  export type ContractCreateWithoutStartSeasonInput = {
+    id?: string
+    salary: number
+    release_clause: number
+    seasons_count?: number | null
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
+    endSeason?: SeasonCreateNestedOneWithoutContractsAsEndInput
+    team: ClubCreateNestedOneWithoutContractsInput
+    user: UserCreateNestedOneWithoutContractsInput
+  }
+
+  export type ContractUncheckedCreateWithoutStartSeasonInput = {
+    id?: string
+    team_id: string
+    user_id: string
+    salary: number
+    release_clause: number
+    seasons_count?: number | null
+    end_season_id?: string | null
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
+  }
+
+  export type ContractCreateOrConnectWithoutStartSeasonInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutStartSeasonInput, ContractUncheckedCreateWithoutStartSeasonInput>
+  }
+
+  export type ContractCreateManyStartSeasonInputEnvelope = {
+    data: ContractCreateManyStartSeasonInput | ContractCreateManyStartSeasonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContractCreateWithoutEndSeasonInput = {
+    id?: string
+    salary: number
+    release_clause: number
+    seasons_count?: number | null
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
+    startSeason?: SeasonCreateNestedOneWithoutContractsAsStartInput
+    team: ClubCreateNestedOneWithoutContractsInput
+    user: UserCreateNestedOneWithoutContractsInput
+  }
+
+  export type ContractUncheckedCreateWithoutEndSeasonInput = {
+    id?: string
+    team_id: string
+    user_id: string
+    salary: number
+    release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
+  }
+
+  export type ContractCreateOrConnectWithoutEndSeasonInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutEndSeasonInput, ContractUncheckedCreateWithoutEndSeasonInput>
+  }
+
+  export type ContractCreateManyEndSeasonInputEnvelope = {
+    data: ContractCreateManyEndSeasonInput | ContractCreateManyEndSeasonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferOfferCreateWithoutContractStartSeasonInput = {
+    id?: string
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
+    created_at?: Date | string
+    responded_at?: Date | string | null
+    fromTeam: ClubCreateNestedOneWithoutSentOffersInput
+    player: UserCreateNestedOneWithoutTransferOffersInput
+    toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
+    sellerSettlement?: TransferSellerSettlementCreateNestedOneWithoutTransferOfferInput
+  }
+
+  export type TransferOfferUncheckedCreateWithoutContractStartSeasonInput = {
+    id?: string
+    player_id: string
+    from_team_id: string
+    to_team_id?: string | null
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
+    created_at?: Date | string
+    responded_at?: Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedCreateNestedOneWithoutTransferOfferInput
+  }
+
+  export type TransferOfferCreateOrConnectWithoutContractStartSeasonInput = {
+    where: TransferOfferWhereUniqueInput
+    create: XOR<TransferOfferCreateWithoutContractStartSeasonInput, TransferOfferUncheckedCreateWithoutContractStartSeasonInput>
+  }
+
+  export type TransferOfferCreateManyContractStartSeasonInputEnvelope = {
+    data: TransferOfferCreateManyContractStartSeasonInput | TransferOfferCreateManyContractStartSeasonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferSellerSettlementCreateWithoutSeasonInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    created_at?: Date | string
+    settled_at?: Date | string | null
+    transferOffer: TransferOfferCreateNestedOneWithoutSellerSettlementInput
+    sellerClub: ClubCreateNestedOneWithoutTransferSellerSettlementsAsSellerInput
+  }
+
+  export type TransferSellerSettlementUncheckedCreateWithoutSeasonInput = {
+    id?: string
+    transfer_offer_id: string
+    seller_team_id: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    created_at?: Date | string
+    settled_at?: Date | string | null
+  }
+
+  export type TransferSellerSettlementCreateOrConnectWithoutSeasonInput = {
+    where: TransferSellerSettlementWhereUniqueInput
+    create: XOR<TransferSellerSettlementCreateWithoutSeasonInput, TransferSellerSettlementUncheckedCreateWithoutSeasonInput>
+  }
+
+  export type TransferSellerSettlementCreateManySeasonInputEnvelope = {
+    data: TransferSellerSettlementCreateManySeasonInput | TransferSellerSettlementCreateManySeasonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContractUpsertWithWhereUniqueWithoutStartSeasonInput = {
+    where: ContractWhereUniqueInput
+    update: XOR<ContractUpdateWithoutStartSeasonInput, ContractUncheckedUpdateWithoutStartSeasonInput>
+    create: XOR<ContractCreateWithoutStartSeasonInput, ContractUncheckedCreateWithoutStartSeasonInput>
+  }
+
+  export type ContractUpdateWithWhereUniqueWithoutStartSeasonInput = {
+    where: ContractWhereUniqueInput
+    data: XOR<ContractUpdateWithoutStartSeasonInput, ContractUncheckedUpdateWithoutStartSeasonInput>
+  }
+
+  export type ContractUpdateManyWithWhereWithoutStartSeasonInput = {
+    where: ContractScalarWhereInput
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutStartSeasonInput>
+  }
+
+  export type ContractUpsertWithWhereUniqueWithoutEndSeasonInput = {
+    where: ContractWhereUniqueInput
+    update: XOR<ContractUpdateWithoutEndSeasonInput, ContractUncheckedUpdateWithoutEndSeasonInput>
+    create: XOR<ContractCreateWithoutEndSeasonInput, ContractUncheckedCreateWithoutEndSeasonInput>
+  }
+
+  export type ContractUpdateWithWhereUniqueWithoutEndSeasonInput = {
+    where: ContractWhereUniqueInput
+    data: XOR<ContractUpdateWithoutEndSeasonInput, ContractUncheckedUpdateWithoutEndSeasonInput>
+  }
+
+  export type ContractUpdateManyWithWhereWithoutEndSeasonInput = {
+    where: ContractScalarWhereInput
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutEndSeasonInput>
+  }
+
+  export type TransferOfferUpsertWithWhereUniqueWithoutContractStartSeasonInput = {
+    where: TransferOfferWhereUniqueInput
+    update: XOR<TransferOfferUpdateWithoutContractStartSeasonInput, TransferOfferUncheckedUpdateWithoutContractStartSeasonInput>
+    create: XOR<TransferOfferCreateWithoutContractStartSeasonInput, TransferOfferUncheckedCreateWithoutContractStartSeasonInput>
+  }
+
+  export type TransferOfferUpdateWithWhereUniqueWithoutContractStartSeasonInput = {
+    where: TransferOfferWhereUniqueInput
+    data: XOR<TransferOfferUpdateWithoutContractStartSeasonInput, TransferOfferUncheckedUpdateWithoutContractStartSeasonInput>
+  }
+
+  export type TransferOfferUpdateManyWithWhereWithoutContractStartSeasonInput = {
+    where: TransferOfferScalarWhereInput
+    data: XOR<TransferOfferUpdateManyMutationInput, TransferOfferUncheckedUpdateManyWithoutContractStartSeasonInput>
+  }
+
+  export type TransferSellerSettlementUpsertWithWhereUniqueWithoutSeasonInput = {
+    where: TransferSellerSettlementWhereUniqueInput
+    update: XOR<TransferSellerSettlementUpdateWithoutSeasonInput, TransferSellerSettlementUncheckedUpdateWithoutSeasonInput>
+    create: XOR<TransferSellerSettlementCreateWithoutSeasonInput, TransferSellerSettlementUncheckedCreateWithoutSeasonInput>
+  }
+
+  export type TransferSellerSettlementUpdateWithWhereUniqueWithoutSeasonInput = {
+    where: TransferSellerSettlementWhereUniqueInput
+    data: XOR<TransferSellerSettlementUpdateWithoutSeasonInput, TransferSellerSettlementUncheckedUpdateWithoutSeasonInput>
+  }
+
+  export type TransferSellerSettlementUpdateManyWithWhereWithoutSeasonInput = {
+    where: TransferSellerSettlementScalarWhereInput
+    data: XOR<TransferSellerSettlementUpdateManyMutationInput, TransferSellerSettlementUncheckedUpdateManyWithoutSeasonInput>
+  }
+
   export type ClubCreateWithoutMembersInput = {
     id?: string
     name: string
@@ -49632,6 +55738,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutMembersInput = {
@@ -49666,6 +55774,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutMembersInput = {
@@ -49807,6 +55917,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMembersInput = {
@@ -49841,6 +55953,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserUpsertWithoutTeamMembershipsInput = {
@@ -50348,6 +56462,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     messages?: MessageCreateNestedManyWithoutTeamInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutEaClubStatsInput = {
@@ -50382,6 +56498,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutEaClubStatsInput = {
@@ -50432,6 +56550,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     messages?: MessageUpdateManyWithoutTeamNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutEaClubStatsInput = {
@@ -50466,6 +56586,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type CompetitionTeamCreateWithoutCompetitionInput = {
@@ -50695,6 +56817,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutCompetitionsInput = {
@@ -50729,6 +56853,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutCompetitionsInput = {
@@ -50818,6 +56944,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutCompetitionsInput = {
@@ -50852,6 +56980,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type MatchCreateWithoutFed_byInput = {
@@ -51049,6 +57179,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutAwayMatchesInput = {
@@ -51083,6 +57215,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutAwayMatchesInput = {
@@ -51155,6 +57289,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutHomeMatchesInput = {
@@ -51189,6 +57325,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutHomeMatchesInput = {
@@ -51374,6 +57512,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAwayMatchesInput = {
@@ -51408,6 +57548,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type CompetitionUpsertWithoutMatchesInput = {
@@ -51492,6 +57634,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutHomeMatchesInput = {
@@ -51526,6 +57670,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type PredictionUpsertWithWhereUniqueWithoutMatchInput = {
@@ -51609,6 +57755,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutLeagueTableEntriesInput = {
@@ -51643,6 +57791,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutLeagueTableEntriesInput = {
@@ -51732,6 +57882,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutLeagueTableEntriesInput = {
@@ -51766,6 +57918,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type MatchCreateWithoutScoreReportsInput = {
@@ -51851,6 +58005,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutMatchScoreReportsInput = {
@@ -51885,6 +58041,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutMatchScoreReportsInput = {
@@ -52083,6 +58241,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMatchScoreReportsInput = {
@@ -52117,6 +58277,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserUpsertWithoutMatchScoreReportsInput = {
@@ -52390,6 +58552,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutMatchEventsInput = {
@@ -52424,6 +58588,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutMatchEventsInput = {
@@ -52628,6 +58794,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMatchEventsInput = {
@@ -52662,6 +58830,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserCreateWithoutTransferRequestsInput = {
@@ -52787,6 +58957,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutTransferRequestsInput = {
@@ -52821,6 +58993,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutTransferRequestsInput = {
@@ -52968,6 +59142,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTransferRequestsInput = {
@@ -53002,6 +59178,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserCreateWithoutReceivedInvitationsInput = {
@@ -53218,6 +59396,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutInvitationsInput = {
@@ -53252,6 +59432,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutInvitationsInput = {
@@ -53496,6 +59678,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutInvitationsInput = {
@@ -53530,6 +59714,74 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+  }
+
+  export type SeasonCreateWithoutContractsAsStartInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsEnd?: ContractCreateNestedManyWithoutEndSeasonInput
+    offersAsContractStart?: TransferOfferCreateNestedManyWithoutContractStartSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonUncheckedCreateWithoutContractsAsStartInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsEnd?: ContractUncheckedCreateNestedManyWithoutEndSeasonInput
+    offersAsContractStart?: TransferOfferUncheckedCreateNestedManyWithoutContractStartSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonCreateOrConnectWithoutContractsAsStartInput = {
+    where: SeasonWhereUniqueInput
+    create: XOR<SeasonCreateWithoutContractsAsStartInput, SeasonUncheckedCreateWithoutContractsAsStartInput>
+  }
+
+  export type SeasonCreateWithoutContractsAsEndInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractCreateNestedManyWithoutStartSeasonInput
+    offersAsContractStart?: TransferOfferCreateNestedManyWithoutContractStartSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonUncheckedCreateWithoutContractsAsEndInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractUncheckedCreateNestedManyWithoutStartSeasonInput
+    offersAsContractStart?: TransferOfferUncheckedCreateNestedManyWithoutContractStartSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonCreateOrConnectWithoutContractsAsEndInput = {
+    where: SeasonWhereUniqueInput
+    create: XOR<SeasonCreateWithoutContractsAsEndInput, SeasonUncheckedCreateWithoutContractsAsEndInput>
   }
 
   export type ClubCreateWithoutContractsInput = {
@@ -53564,6 +59816,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutContractsInput = {
@@ -53598,6 +59852,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutContractsInput = {
@@ -53696,6 +59952,84 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutContractsInput, UserUncheckedCreateWithoutContractsInput>
   }
 
+  export type SeasonUpsertWithoutContractsAsStartInput = {
+    update: XOR<SeasonUpdateWithoutContractsAsStartInput, SeasonUncheckedUpdateWithoutContractsAsStartInput>
+    create: XOR<SeasonCreateWithoutContractsAsStartInput, SeasonUncheckedCreateWithoutContractsAsStartInput>
+    where?: SeasonWhereInput
+  }
+
+  export type SeasonUpdateToOneWithWhereWithoutContractsAsStartInput = {
+    where?: SeasonWhereInput
+    data: XOR<SeasonUpdateWithoutContractsAsStartInput, SeasonUncheckedUpdateWithoutContractsAsStartInput>
+  }
+
+  export type SeasonUpdateWithoutContractsAsStartInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsEnd?: ContractUpdateManyWithoutEndSeasonNestedInput
+    offersAsContractStart?: TransferOfferUpdateManyWithoutContractStartSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonUncheckedUpdateWithoutContractsAsStartInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsEnd?: ContractUncheckedUpdateManyWithoutEndSeasonNestedInput
+    offersAsContractStart?: TransferOfferUncheckedUpdateManyWithoutContractStartSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonUpsertWithoutContractsAsEndInput = {
+    update: XOR<SeasonUpdateWithoutContractsAsEndInput, SeasonUncheckedUpdateWithoutContractsAsEndInput>
+    create: XOR<SeasonCreateWithoutContractsAsEndInput, SeasonUncheckedCreateWithoutContractsAsEndInput>
+    where?: SeasonWhereInput
+  }
+
+  export type SeasonUpdateToOneWithWhereWithoutContractsAsEndInput = {
+    where?: SeasonWhereInput
+    data: XOR<SeasonUpdateWithoutContractsAsEndInput, SeasonUncheckedUpdateWithoutContractsAsEndInput>
+  }
+
+  export type SeasonUpdateWithoutContractsAsEndInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUpdateManyWithoutStartSeasonNestedInput
+    offersAsContractStart?: TransferOfferUpdateManyWithoutContractStartSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonUncheckedUpdateWithoutContractsAsEndInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUncheckedUpdateManyWithoutStartSeasonNestedInput
+    offersAsContractStart?: TransferOfferUncheckedUpdateManyWithoutContractStartSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedUpdateManyWithoutSeasonNestedInput
+  }
+
   export type ClubUpsertWithoutContractsInput = {
     update: XOR<ClubUpdateWithoutContractsInput, ClubUncheckedUpdateWithoutContractsInput>
     create: XOR<ClubCreateWithoutContractsInput, ClubUncheckedCreateWithoutContractsInput>
@@ -53739,6 +60073,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutContractsInput = {
@@ -53773,6 +60109,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserUpsertWithoutContractsInput = {
@@ -53904,6 +60242,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutTransactionsInput = {
@@ -53938,6 +60278,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutTransactionsInput = {
@@ -54079,6 +60421,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTransactionsInput = {
@@ -54113,6 +60457,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserUpsertWithoutWalletTransactionsInput = {
@@ -54212,6 +60558,39 @@ export namespace Prisma {
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
+  export type SeasonCreateWithoutOffersAsContractStartInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractCreateNestedManyWithoutStartSeasonInput
+    contractsAsEnd?: ContractCreateNestedManyWithoutEndSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonUncheckedCreateWithoutOffersAsContractStartInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractUncheckedCreateNestedManyWithoutStartSeasonInput
+    contractsAsEnd?: ContractUncheckedCreateNestedManyWithoutEndSeasonInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonCreateOrConnectWithoutOffersAsContractStartInput = {
+    where: SeasonWhereUniqueInput
+    create: XOR<SeasonCreateWithoutOffersAsContractStartInput, SeasonUncheckedCreateWithoutOffersAsContractStartInput>
+  }
+
   export type ClubCreateWithoutSentOffersInput = {
     id?: string
     name: string
@@ -54244,6 +60623,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutSentOffersInput = {
@@ -54278,6 +60659,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutSentOffersInput = {
@@ -54408,6 +60791,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutReceivedOffersInput = {
@@ -54442,11 +60827,77 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutReceivedOffersInput = {
     where: ClubWhereUniqueInput
     create: XOR<ClubCreateWithoutReceivedOffersInput, ClubUncheckedCreateWithoutReceivedOffersInput>
+  }
+
+  export type TransferSellerSettlementCreateWithoutTransferOfferInput = {
+    id?: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    created_at?: Date | string
+    settled_at?: Date | string | null
+    sellerClub: ClubCreateNestedOneWithoutTransferSellerSettlementsAsSellerInput
+    season?: SeasonCreateNestedOneWithoutTransferSellerSettlementsInput
+  }
+
+  export type TransferSellerSettlementUncheckedCreateWithoutTransferOfferInput = {
+    id?: string
+    seller_team_id: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    season_id?: string | null
+    created_at?: Date | string
+    settled_at?: Date | string | null
+  }
+
+  export type TransferSellerSettlementCreateOrConnectWithoutTransferOfferInput = {
+    where: TransferSellerSettlementWhereUniqueInput
+    create: XOR<TransferSellerSettlementCreateWithoutTransferOfferInput, TransferSellerSettlementUncheckedCreateWithoutTransferOfferInput>
+  }
+
+  export type SeasonUpsertWithoutOffersAsContractStartInput = {
+    update: XOR<SeasonUpdateWithoutOffersAsContractStartInput, SeasonUncheckedUpdateWithoutOffersAsContractStartInput>
+    create: XOR<SeasonCreateWithoutOffersAsContractStartInput, SeasonUncheckedCreateWithoutOffersAsContractStartInput>
+    where?: SeasonWhereInput
+  }
+
+  export type SeasonUpdateToOneWithWhereWithoutOffersAsContractStartInput = {
+    where?: SeasonWhereInput
+    data: XOR<SeasonUpdateWithoutOffersAsContractStartInput, SeasonUncheckedUpdateWithoutOffersAsContractStartInput>
+  }
+
+  export type SeasonUpdateWithoutOffersAsContractStartInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUpdateManyWithoutStartSeasonNestedInput
+    contractsAsEnd?: ContractUpdateManyWithoutEndSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonUncheckedUpdateWithoutOffersAsContractStartInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUncheckedUpdateManyWithoutStartSeasonNestedInput
+    contractsAsEnd?: ContractUncheckedUpdateManyWithoutEndSeasonNestedInput
+    transferSellerSettlements?: TransferSellerSettlementUncheckedUpdateManyWithoutSeasonNestedInput
   }
 
   export type ClubUpsertWithoutSentOffersInput = {
@@ -54492,6 +60943,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutSentOffersInput = {
@@ -54526,6 +60979,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserUpsertWithoutTransferOffersInput = {
@@ -54668,6 +61123,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutReceivedOffersInput = {
@@ -54702,6 +61159,367 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+  }
+
+  export type TransferSellerSettlementUpsertWithoutTransferOfferInput = {
+    update: XOR<TransferSellerSettlementUpdateWithoutTransferOfferInput, TransferSellerSettlementUncheckedUpdateWithoutTransferOfferInput>
+    create: XOR<TransferSellerSettlementCreateWithoutTransferOfferInput, TransferSellerSettlementUncheckedCreateWithoutTransferOfferInput>
+    where?: TransferSellerSettlementWhereInput
+  }
+
+  export type TransferSellerSettlementUpdateToOneWithWhereWithoutTransferOfferInput = {
+    where?: TransferSellerSettlementWhereInput
+    data: XOR<TransferSellerSettlementUpdateWithoutTransferOfferInput, TransferSellerSettlementUncheckedUpdateWithoutTransferOfferInput>
+  }
+
+  export type TransferSellerSettlementUpdateWithoutTransferOfferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerClub?: ClubUpdateOneRequiredWithoutTransferSellerSettlementsAsSellerNestedInput
+    season?: SeasonUpdateOneWithoutTransferSellerSettlementsNestedInput
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateWithoutTransferOfferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    seller_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferOfferCreateWithoutSellerSettlementInput = {
+    id?: string
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
+    created_at?: Date | string
+    responded_at?: Date | string | null
+    contractStartSeason?: SeasonCreateNestedOneWithoutOffersAsContractStartInput
+    fromTeam: ClubCreateNestedOneWithoutSentOffersInput
+    player: UserCreateNestedOneWithoutTransferOffersInput
+    toTeam?: ClubCreateNestedOneWithoutReceivedOffersInput
+  }
+
+  export type TransferOfferUncheckedCreateWithoutSellerSettlementInput = {
+    id?: string
+    player_id: string
+    from_team_id: string
+    to_team_id?: string | null
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferOfferCreateOrConnectWithoutSellerSettlementInput = {
+    where: TransferOfferWhereUniqueInput
+    create: XOR<TransferOfferCreateWithoutSellerSettlementInput, TransferOfferUncheckedCreateWithoutSellerSettlementInput>
+  }
+
+  export type ClubCreateWithoutTransferSellerSettlementsAsSellerInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    manager?: UserCreateNestedOneWithoutManagedClubsInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
+    eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
+    leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+  }
+
+  export type ClubUncheckedCreateWithoutTransferSellerSettlementsAsSellerInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    manager_id?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
+    eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
+    leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+  }
+
+  export type ClubCreateOrConnectWithoutTransferSellerSettlementsAsSellerInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutTransferSellerSettlementsAsSellerInput, ClubUncheckedCreateWithoutTransferSellerSettlementsAsSellerInput>
+  }
+
+  export type SeasonCreateWithoutTransferSellerSettlementsInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractCreateNestedManyWithoutStartSeasonInput
+    contractsAsEnd?: ContractCreateNestedManyWithoutEndSeasonInput
+    offersAsContractStart?: TransferOfferCreateNestedManyWithoutContractStartSeasonInput
+  }
+
+  export type SeasonUncheckedCreateWithoutTransferSellerSettlementsInput = {
+    id?: string
+    name: string
+    start_date: Date | string
+    end_date: Date | string
+    status?: $Enums.SeasonStatus
+    is_current?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    contractsAsStart?: ContractUncheckedCreateNestedManyWithoutStartSeasonInput
+    contractsAsEnd?: ContractUncheckedCreateNestedManyWithoutEndSeasonInput
+    offersAsContractStart?: TransferOfferUncheckedCreateNestedManyWithoutContractStartSeasonInput
+  }
+
+  export type SeasonCreateOrConnectWithoutTransferSellerSettlementsInput = {
+    where: SeasonWhereUniqueInput
+    create: XOR<SeasonCreateWithoutTransferSellerSettlementsInput, SeasonUncheckedCreateWithoutTransferSellerSettlementsInput>
+  }
+
+  export type TransferOfferUpsertWithoutSellerSettlementInput = {
+    update: XOR<TransferOfferUpdateWithoutSellerSettlementInput, TransferOfferUncheckedUpdateWithoutSellerSettlementInput>
+    create: XOR<TransferOfferCreateWithoutSellerSettlementInput, TransferOfferUncheckedCreateWithoutSellerSettlementInput>
+    where?: TransferOfferWhereInput
+  }
+
+  export type TransferOfferUpdateToOneWithWhereWithoutSellerSettlementInput = {
+    where?: TransferOfferWhereInput
+    data: XOR<TransferOfferUpdateWithoutSellerSettlementInput, TransferOfferUncheckedUpdateWithoutSellerSettlementInput>
+  }
+
+  export type TransferOfferUpdateWithoutSellerSettlementInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractStartSeason?: SeasonUpdateOneWithoutOffersAsContractStartNestedInput
+    fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
+    player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
+    toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
+  }
+
+  export type TransferOfferUncheckedUpdateWithoutSellerSettlementInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ClubUpsertWithoutTransferSellerSettlementsAsSellerInput = {
+    update: XOR<ClubUpdateWithoutTransferSellerSettlementsAsSellerInput, ClubUncheckedUpdateWithoutTransferSellerSettlementsAsSellerInput>
+    create: XOR<ClubCreateWithoutTransferSellerSettlementsAsSellerInput, ClubUncheckedCreateWithoutTransferSellerSettlementsAsSellerInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutTransferSellerSettlementsAsSellerInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutTransferSellerSettlementsAsSellerInput, ClubUncheckedUpdateWithoutTransferSellerSettlementsAsSellerInput>
+  }
+
+  export type ClubUpdateWithoutTransferSellerSettlementsAsSellerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    manager?: UserUpdateOneWithoutManagedClubsNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
+    eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
+    leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutTransferSellerSettlementsAsSellerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    manager_id?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
+    eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
+    leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+  }
+
+  export type SeasonUpsertWithoutTransferSellerSettlementsInput = {
+    update: XOR<SeasonUpdateWithoutTransferSellerSettlementsInput, SeasonUncheckedUpdateWithoutTransferSellerSettlementsInput>
+    create: XOR<SeasonCreateWithoutTransferSellerSettlementsInput, SeasonUncheckedCreateWithoutTransferSellerSettlementsInput>
+    where?: SeasonWhereInput
+  }
+
+  export type SeasonUpdateToOneWithWhereWithoutTransferSellerSettlementsInput = {
+    where?: SeasonWhereInput
+    data: XOR<SeasonUpdateWithoutTransferSellerSettlementsInput, SeasonUncheckedUpdateWithoutTransferSellerSettlementsInput>
+  }
+
+  export type SeasonUpdateWithoutTransferSellerSettlementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUpdateManyWithoutStartSeasonNestedInput
+    contractsAsEnd?: ContractUpdateManyWithoutEndSeasonNestedInput
+    offersAsContractStart?: TransferOfferUpdateManyWithoutContractStartSeasonNestedInput
+  }
+
+  export type SeasonUncheckedUpdateWithoutTransferSellerSettlementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSeasonStatusFieldUpdateOperationsInput | $Enums.SeasonStatus
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    contractsAsStart?: ContractUncheckedUpdateManyWithoutStartSeasonNestedInput
+    contractsAsEnd?: ContractUncheckedUpdateManyWithoutEndSeasonNestedInput
+    offersAsContractStart?: TransferOfferUncheckedUpdateManyWithoutContractStartSeasonNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -54924,6 +61742,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutStoreItemsInput = {
@@ -54958,6 +61778,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutStoreItemsInput = {
@@ -55126,6 +61948,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutStoreItemsInput = {
@@ -55160,6 +61984,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserInventoryUpsertWithWhereUniqueWithoutItemInput = {
@@ -56265,6 +63091,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubUncheckedCreateWithoutMessagesInput = {
@@ -56299,6 +63127,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
   }
 
   export type ClubCreateOrConnectWithoutMessagesInput = {
@@ -56543,6 +63373,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMessagesInput = {
@@ -56577,6 +63409,8 @@ export namespace Prisma {
     transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type UserCreateWithoutSupportTicketsInput = {
@@ -57058,6 +63892,9 @@ export namespace Prisma {
     team_id: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    end_season_id?: string | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
@@ -57141,6 +63978,11 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
@@ -57227,9 +64069,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    startSeason?: SeasonUpdateOneWithoutContractsAsStartNestedInput
+    endSeason?: SeasonUpdateOneWithoutContractsAsEndNestedInput
     team?: ClubUpdateOneRequiredWithoutContractsNestedInput
   }
 
@@ -57238,6 +64083,9 @@ export namespace Prisma {
     team_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
@@ -57248,6 +64096,9 @@ export namespace Prisma {
     team_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
@@ -57444,6 +64295,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutManagerInput = {
@@ -57478,6 +64331,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
   }
 
   export type ClubUncheckedUpdateManyWithoutManagerInput = {
@@ -57503,13 +64358,19 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractStartSeason?: SeasonUpdateOneWithoutOffersAsContractStartNestedInput
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
     toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
+    sellerSettlement?: TransferSellerSettlementUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferUncheckedUpdateWithoutPlayerInput = {
@@ -57519,11 +64380,17 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferUncheckedUpdateManyWithoutPlayerInput = {
@@ -57533,6 +64400,11 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
@@ -57787,6 +64659,9 @@ export namespace Prisma {
     user_id: string
     salary: number
     release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    end_season_id?: string | null
     start_date?: Date | string
     end_date: Date | string
     status?: $Enums.ContractStatus
@@ -57879,6 +64754,11 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
@@ -57893,6 +64773,11 @@ export namespace Prisma {
     offered_salary: number
     offered_clause: number
     transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    contract_start_season_id?: string | null
     duration_months?: number
     status?: $Enums.TransferOfferStatus
     negotiation_turn?: $Enums.NegotiationTurn
@@ -57928,6 +64813,16 @@ export namespace Prisma {
     goal_difference?: number
     points?: number
     updated_at?: Date | string
+  }
+
+  export type TransferSellerSettlementCreateManySellerClubInput = {
+    id?: string
+    transfer_offer_id: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    season_id?: string | null
+    created_at?: Date | string
+    settled_at?: Date | string | null
   }
 
   export type StoreItemUpdateWithoutClubInput = {
@@ -57983,9 +64878,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    startSeason?: SeasonUpdateOneWithoutContractsAsStartNestedInput
+    endSeason?: SeasonUpdateOneWithoutContractsAsEndNestedInput
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
   }
 
@@ -57994,6 +64892,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
@@ -58004,6 +64905,9 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     salary?: FloatFieldUpdateOperationsInput | number
     release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
     end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
@@ -58270,13 +65174,19 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractStartSeason?: SeasonUpdateOneWithoutOffersAsContractStartNestedInput
     player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
     toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
+    sellerSettlement?: TransferSellerSettlementUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferUncheckedUpdateWithoutFromTeamInput = {
@@ -58286,11 +65196,17 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferUncheckedUpdateManyWithoutFromTeamInput = {
@@ -58300,6 +65216,11 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
@@ -58312,13 +65233,19 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractStartSeason?: SeasonUpdateOneWithoutOffersAsContractStartNestedInput
     fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
     player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
+    sellerSettlement?: TransferSellerSettlementUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferUncheckedUpdateWithoutToTeamInput = {
@@ -58328,11 +65255,17 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedUpdateOneWithoutTransferOfferNestedInput
   }
 
   export type TransferOfferUncheckedUpdateManyWithoutToTeamInput = {
@@ -58342,6 +65275,11 @@ export namespace Prisma {
     offered_salary?: FloatFieldUpdateOperationsInput | number
     offered_clause?: FloatFieldUpdateOperationsInput | number
     transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract_start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
     duration_months?: IntFieldUpdateOperationsInput | number
     status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
     negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
@@ -58437,6 +65375,258 @@ export namespace Prisma {
     goal_difference?: IntFieldUpdateOperationsInput | number
     points?: IntFieldUpdateOperationsInput | number
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferSellerSettlementUpdateWithoutSellerClubInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferOffer?: TransferOfferUpdateOneRequiredWithoutSellerSettlementNestedInput
+    season?: SeasonUpdateOneWithoutTransferSellerSettlementsNestedInput
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateWithoutSellerClubInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transfer_offer_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transfer_offer_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ContractCreateManyStartSeasonInput = {
+    id?: string
+    team_id: string
+    user_id: string
+    salary: number
+    release_clause: number
+    seasons_count?: number | null
+    end_season_id?: string | null
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
+  }
+
+  export type ContractCreateManyEndSeasonInput = {
+    id?: string
+    team_id: string
+    user_id: string
+    salary: number
+    release_clause: number
+    seasons_count?: number | null
+    start_season_id?: string | null
+    start_date?: Date | string
+    end_date: Date | string
+    status?: $Enums.ContractStatus
+  }
+
+  export type TransferOfferCreateManyContractStartSeasonInput = {
+    id?: string
+    player_id: string
+    from_team_id: string
+    to_team_id?: string | null
+    offered_salary: number
+    offered_clause: number
+    transfer_fee: number
+    transfer_mode?: $Enums.TransferMode
+    seasons_count?: number | null
+    reserved_amount?: number | null
+    expires_at?: Date | string | null
+    duration_months?: number
+    status?: $Enums.TransferOfferStatus
+    negotiation_turn?: $Enums.NegotiationTurn
+    created_at?: Date | string
+    responded_at?: Date | string | null
+  }
+
+  export type TransferSellerSettlementCreateManySeasonInput = {
+    id?: string
+    transfer_offer_id: string
+    seller_team_id: string
+    amount: number
+    status?: $Enums.TransferSettlementStatus
+    created_at?: Date | string
+    settled_at?: Date | string | null
+  }
+
+  export type ContractUpdateWithoutStartSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    endSeason?: SeasonUpdateOneWithoutContractsAsEndNestedInput
+    team?: ClubUpdateOneRequiredWithoutContractsNestedInput
+    user?: UserUpdateOneRequiredWithoutContractsNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutStartSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+  }
+
+  export type ContractUncheckedUpdateManyWithoutStartSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    end_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+  }
+
+  export type ContractUpdateWithoutEndSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    startSeason?: SeasonUpdateOneWithoutContractsAsStartNestedInput
+    team?: ClubUpdateOneRequiredWithoutContractsNestedInput
+    user?: UserUpdateOneRequiredWithoutContractsNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutEndSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+  }
+
+  export type ContractUncheckedUpdateManyWithoutEndSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    salary?: FloatFieldUpdateOperationsInput | number
+    release_clause?: FloatFieldUpdateOperationsInput | number
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    start_season_id?: NullableStringFieldUpdateOperationsInput | string | null
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+  }
+
+  export type TransferOfferUpdateWithoutContractStartSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fromTeam?: ClubUpdateOneRequiredWithoutSentOffersNestedInput
+    player?: UserUpdateOneRequiredWithoutTransferOffersNestedInput
+    toTeam?: ClubUpdateOneWithoutReceivedOffersNestedInput
+    sellerSettlement?: TransferSellerSettlementUpdateOneWithoutTransferOfferNestedInput
+  }
+
+  export type TransferOfferUncheckedUpdateWithoutContractStartSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sellerSettlement?: TransferSellerSettlementUncheckedUpdateOneWithoutTransferOfferNestedInput
+  }
+
+  export type TransferOfferUncheckedUpdateManyWithoutContractStartSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    player_id?: StringFieldUpdateOperationsInput | string
+    from_team_id?: StringFieldUpdateOperationsInput | string
+    to_team_id?: NullableStringFieldUpdateOperationsInput | string | null
+    offered_salary?: FloatFieldUpdateOperationsInput | number
+    offered_clause?: FloatFieldUpdateOperationsInput | number
+    transfer_fee?: FloatFieldUpdateOperationsInput | number
+    transfer_mode?: EnumTransferModeFieldUpdateOperationsInput | $Enums.TransferMode
+    seasons_count?: NullableIntFieldUpdateOperationsInput | number | null
+    reserved_amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_months?: IntFieldUpdateOperationsInput | number
+    status?: EnumTransferOfferStatusFieldUpdateOperationsInput | $Enums.TransferOfferStatus
+    negotiation_turn?: EnumNegotiationTurnFieldUpdateOperationsInput | $Enums.NegotiationTurn
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    responded_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferSellerSettlementUpdateWithoutSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferOffer?: TransferOfferUpdateOneRequiredWithoutSellerSettlementNestedInput
+    sellerClub?: ClubUpdateOneRequiredWithoutTransferSellerSettlementsAsSellerNestedInput
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateWithoutSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transfer_offer_id?: StringFieldUpdateOperationsInput | string
+    seller_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransferSellerSettlementUncheckedUpdateManyWithoutSeasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transfer_offer_id?: StringFieldUpdateOperationsInput | string
+    seller_team_id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTransferSettlementStatusFieldUpdateOperationsInput | $Enums.TransferSettlementStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CompetitionTeamCreateManyCompetitionInput = {

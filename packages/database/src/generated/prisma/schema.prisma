@@ -59,41 +59,74 @@ model User {
 
 /// Club Pro Clubs (table SQL `teams`).
 model Club {
-  id                 String             @id @default(uuid()) @db.Uuid
-  name               String             @unique
-  logo_url           String?
-  created_at         DateTime           @default(now())
-  ea_club_id         String?            @unique
-  platform           Platform           @default(CROSSPLAY)
-  proclubs_url       String?            @unique
-  budget             Float              @default(10000000)
-  prestige_level     Int                @default(1)
-  xp                 Int                @default(0)
-  description        String?
-  manager_id         String?            @db.Uuid
-  validation_status  ValidationStatus   @default(PENDING)
-  presidentPremium   Boolean            @default(false) @map("president_premium")
-  primaryColor       String?            @map("primary_color")
-  secondaryColor     String?            @map("secondary_color")
-  storeItems         StoreItem[]
-  competitions       CompetitionTeam[]
-  contracts          Contract[]
-  invitations        Invitation[]
-  matchEvents        MatchEvent[]
-  matchScoreReports  MatchScoreReport[]
-  awayMatches        Match[]            @relation("AwayTeam")
-  homeMatches        Match[]            @relation("HomeTeam")
-  members            TeamMember[]
-  manager            User?              @relation("ClubManager", fields: [manager_id], references: [id])
-  transactions       Transaction[]
-  sentOffers         TransferOffer[]    @relation("OfferFromTeam")
-  receivedOffers     TransferOffer[]    @relation("OfferToTeam")
-  transferRequests   TransferRequest[]
-  messages           Message[]
-  eaClubStats        EaClubStats?
-  leagueTableEntries LeagueTable[]
+  id                                String                     @id @default(uuid()) @db.Uuid
+  name                              String                     @unique
+  logo_url                          String?
+  created_at                        DateTime                   @default(now())
+  ea_club_id                        String?                    @unique
+  platform                          Platform                   @default(CROSSPLAY)
+  proclubs_url                      String?                    @unique
+  budget                            Float                      @default(10000000)
+  prestige_level                    Int                        @default(1)
+  xp                                Int                        @default(0)
+  description                       String?
+  manager_id                        String?                    @db.Uuid
+  validation_status                 ValidationStatus           @default(PENDING)
+  presidentPremium                  Boolean                    @default(false) @map("president_premium")
+  primaryColor                      String?                    @map("primary_color")
+  secondaryColor                    String?                    @map("secondary_color")
+  storeItems                        StoreItem[]
+  competitions                      CompetitionTeam[]
+  contracts                         Contract[]
+  invitations                       Invitation[]
+  matchEvents                       MatchEvent[]
+  matchScoreReports                 MatchScoreReport[]
+  awayMatches                       Match[]                    @relation("AwayTeam")
+  homeMatches                       Match[]                    @relation("HomeTeam")
+  members                           TeamMember[]
+  manager                           User?                      @relation("ClubManager", fields: [manager_id], references: [id])
+  transactions                      Transaction[]
+  sentOffers                        TransferOffer[]            @relation("OfferFromTeam")
+  receivedOffers                    TransferOffer[]            @relation("OfferToTeam")
+  transferRequests                  TransferRequest[]
+  messages                          Message[]
+  eaClubStats                       EaClubStats?
+  leagueTableEntries                LeagueTable[]
+  wallet                            ClubWallet?
+  transferSellerSettlementsAsSeller TransferSellerSettlement[] @relation("TransferSettlementSellerClub")
 
   @@map("teams")
+}
+
+model ClubWallet {
+  id                     String   @id @default(uuid()) @db.Uuid
+  team_id                String   @unique @db.Uuid
+  omjep_coins_balance    Float    @default(0)
+  season_transfer_budget Float    @default(10000000)
+  reserved_amount        Float    @default(0)
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+  team                   Club     @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@map("club_wallets")
+}
+
+model Season {
+  id                        String                     @id @default(uuid()) @db.Uuid
+  name                      String                     @unique
+  start_date                DateTime
+  end_date                  DateTime
+  status                    SeasonStatus               @default(DRAFT)
+  is_current                Boolean                    @default(false)
+  created_at                DateTime                   @default(now())
+  updated_at                DateTime                   @updatedAt
+  contractsAsStart          Contract[]                 @relation("ContractStartSeason")
+  contractsAsEnd            Contract[]                 @relation("ContractEndSeason")
+  offersAsContractStart     TransferOffer[]            @relation("OfferContractStartSeason")
+  transferSellerSettlements TransferSellerSettlement[] @relation("TransferSettlementSeason")
+
+  @@index([is_current])
+  @@map("seasons")
 }
 
 model TeamMember {
@@ -297,17 +330,27 @@ model Invitation {
 }
 
 model Contract {
-  id             String         @id @default(uuid()) @db.Uuid
-  team_id        String         @db.Uuid
-  user_id        String         @db.Uuid
-  salary         Float
-  release_clause Float
-  start_date     DateTime       @default(now())
-  end_date       DateTime
-  status         ContractStatus @default(ACTIVE)
-  team           Club           @relation(fields: [team_id], references: [id], onDelete: Cascade)
-  user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id              String         @id @default(uuid()) @db.Uuid
+  team_id         String         @db.Uuid
+  user_id         String         @db.Uuid
+  salary          Float
+  release_clause  Float
+  /// Durée contractuelle métier en saisons (V2)
+  seasons_count   Int?
+  /// Saison de début du contrat (V2)
+  start_season_id String?        @db.Uuid
+  /// Saison de fin du contrat (V2)
+  end_season_id   String?        @db.Uuid
+  start_date      DateTime       @default(now())
+  end_date        DateTime
+  status          ContractStatus @default(ACTIVE)
+  startSeason     Season?        @relation("ContractStartSeason", fields: [start_season_id], references: [id], onDelete: SetNull)
+  endSeason       Season?        @relation("ContractEndSeason", fields: [end_season_id], references: [id], onDelete: SetNull)
+  team            Club           @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  user            User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([start_season_id])
+  @@index([end_season_id])
   @@map("contracts")
 }
 
@@ -328,28 +371,62 @@ model Transaction {
 }
 
 model TransferOffer {
-  id               String              @id @default(uuid()) @db.Uuid
-  player_id        String              @db.Uuid
-  from_team_id     String              @db.Uuid
+  id                       String                    @id @default(uuid()) @db.Uuid
+  player_id                String                    @db.Uuid
+  from_team_id             String                    @db.Uuid
   /// Club vendeur ; null = agent libre sans club (recrutement direct)
-  to_team_id       String?             @db.Uuid
+  to_team_id               String?                   @db.Uuid
   /// Salaire annuel proposé (OMJEP Coins)
-  offered_salary   Float
+  offered_salary           Float
   /// Clause libératoire du nouveau contrat proposée
-  offered_clause   Float
+  offered_clause           Float
   /// Indemnité versée au club vendeur
-  transfer_fee     Float
-  duration_months  Int                 @default(12)
-  status           TransferOfferStatus @default(PENDING)
+  transfer_fee             Float
+  /// Mercato V2 Phase D : négocié classique vs paiement clause au vendeur (`transfer_fee` = montant clause si RELEASE_CLAUSE_BUYOUT).
+  transfer_mode            TransferMode              @default(NEGOTIATED_FEE)
+  /// Durée de contrat cible en saisons (V2)
+  seasons_count            Int?
+  /// Montant réservé côté wallet club tant que l'offre est active (V2)
+  reserved_amount          Float?                    @default(0)
+  /// Expiration technique de l'offre (V2)
+  expires_at               DateTime?
+  /// Saison de début du contrat proposé (V2)
+  contract_start_season_id String?                   @db.Uuid
+  duration_months          Int                       @default(12)
+  status                   TransferOfferStatus       @default(PENDING)
   /// À qui de répondre : joueur ou club acheteur (contre-proposition)
-  negotiation_turn NegotiationTurn     @default(PLAYER)
-  created_at       DateTime            @default(now())
-  responded_at     DateTime?
-  fromTeam         Club                @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
-  player           User                @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
-  toTeam           Club?               @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
+  negotiation_turn         NegotiationTurn           @default(PLAYER)
+  created_at               DateTime                  @default(now())
+  responded_at             DateTime?
+  contractStartSeason      Season?                   @relation("OfferContractStartSeason", fields: [contract_start_season_id], references: [id], onDelete: SetNull)
+  fromTeam                 Club                      @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
+  player                   User                      @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
+  toTeam                   Club?                     @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
+  sellerSettlement         TransferSellerSettlement?
 
+  @@index([contract_start_season_id])
+  @@index([expires_at])
   @@map("transfer_offers")
+}
+
+/// Dette / engagement indemnité vendeur — transfert classique réglé en fin de saison (Phase D).
+model TransferSellerSettlement {
+  id                String                   @id @default(uuid()) @db.Uuid
+  transfer_offer_id String                   @unique @db.Uuid
+  seller_team_id    String                   @db.Uuid
+  amount            Float
+  status            TransferSettlementStatus @default(PENDING_SEASON_END)
+  season_id         String?                  @db.Uuid
+  created_at        DateTime                 @default(now())
+  settled_at        DateTime?
+
+  transferOffer TransferOffer @relation(fields: [transfer_offer_id], references: [id], onDelete: Cascade)
+  sellerClub    Club          @relation("TransferSettlementSellerClub", fields: [seller_team_id], references: [id], onDelete: Cascade)
+  season        Season?       @relation("TransferSettlementSeason", fields: [season_id], references: [id], onDelete: SetNull)
+
+  @@index([seller_team_id])
+  @@index([status])
+  @@map("transfer_seller_settlements")
 }
 
 model Notification {
@@ -510,7 +587,26 @@ enum TransferOfferStatus {
   ACCEPTED
   REJECTED
   COUNTER_OFFER
+  EXPIRED
   CANCELLED
+}
+
+/// Mode financier d’une offre mercato (Phase D).
+enum TransferMode {
+  NEGOTIATED_FEE
+  RELEASE_CLAUSE_BUYOUT
+}
+
+/// Statut du règlement différé de l’indemnité au club vendeur.
+enum TransferSettlementStatus {
+  PENDING_SEASON_END
+  SETTLED
+}
+
+enum SeasonStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
 }
 
 enum NegotiationTurn {
@@ -543,6 +639,14 @@ enum EventType {
 enum TransactionType {
   MATCH_REWARD
   TRANSFER
+  /// Réservation de fonds mercato côté wallet club.
+  TRANSFER_RESERVE
+  /// Libération de fonds réservés (refus/expiration/annulation).
+  TRANSFER_RELEASE
+  /// Consommation des fonds réservés + débit du solde club (acceptation / exécution).
+  TRANSFER_SETTLEMENT
+  /// Crédit de budget de début de saison côté wallet club.
+  SEASON_BUDGET_CREDIT
   WAGE
   /// Échange OMJEP Coins → Jepy (portefeuille utilisateur).
   EXCHANGE
@@ -550,6 +654,8 @@ enum TransactionType {
   ADMIN_GRANT
   /// Amende / frais de licenciement d’un joueur (débit budget club).
   KICK_FEE
+  /// Prime / salaire de signature crédité au portefeuille joueur (Phase D).
+  SIGNING_BONUS
 }
 
 enum StoreItemCategory {

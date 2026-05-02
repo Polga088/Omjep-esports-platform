@@ -164,6 +164,27 @@ exports.Prisma.ClubScalarFieldEnum = {
   secondaryColor: 'secondaryColor'
 };
 
+exports.Prisma.ClubWalletScalarFieldEnum = {
+  id: 'id',
+  team_id: 'team_id',
+  omjep_coins_balance: 'omjep_coins_balance',
+  season_transfer_budget: 'season_transfer_budget',
+  reserved_amount: 'reserved_amount',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SeasonScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  status: 'status',
+  is_current: 'is_current',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.TeamMemberScalarFieldEnum = {
   user_id: 'user_id',
   team_id: 'team_id',
@@ -302,6 +323,9 @@ exports.Prisma.ContractScalarFieldEnum = {
   user_id: 'user_id',
   salary: 'salary',
   release_clause: 'release_clause',
+  seasons_count: 'seasons_count',
+  start_season_id: 'start_season_id',
+  end_season_id: 'end_season_id',
   start_date: 'start_date',
   end_date: 'end_date',
   status: 'status'
@@ -325,11 +349,27 @@ exports.Prisma.TransferOfferScalarFieldEnum = {
   offered_salary: 'offered_salary',
   offered_clause: 'offered_clause',
   transfer_fee: 'transfer_fee',
+  transfer_mode: 'transfer_mode',
+  seasons_count: 'seasons_count',
+  reserved_amount: 'reserved_amount',
+  expires_at: 'expires_at',
+  contract_start_season_id: 'contract_start_season_id',
   duration_months: 'duration_months',
   status: 'status',
   negotiation_turn: 'negotiation_turn',
   created_at: 'created_at',
   responded_at: 'responded_at'
+};
+
+exports.Prisma.TransferSellerSettlementScalarFieldEnum = {
+  id: 'id',
+  transfer_offer_id: 'transfer_offer_id',
+  seller_team_id: 'seller_team_id',
+  amount: 'amount',
+  status: 'status',
+  season_id: 'season_id',
+  created_at: 'created_at',
+  settled_at: 'settled_at'
 };
 
 exports.Prisma.NotificationScalarFieldEnum = {
@@ -497,6 +537,12 @@ exports.ValidationStatus = exports.$Enums.ValidationStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.SeasonStatus = exports.$Enums.SeasonStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED'
+};
+
 exports.ClubRole = exports.$Enums.ClubRole = {
   FOUNDER: 'FOUNDER',
   MANAGER: 'MANAGER',
@@ -566,10 +612,20 @@ exports.ContractStatus = exports.$Enums.ContractStatus = {
 exports.TransactionType = exports.$Enums.TransactionType = {
   MATCH_REWARD: 'MATCH_REWARD',
   TRANSFER: 'TRANSFER',
+  TRANSFER_RESERVE: 'TRANSFER_RESERVE',
+  TRANSFER_RELEASE: 'TRANSFER_RELEASE',
+  TRANSFER_SETTLEMENT: 'TRANSFER_SETTLEMENT',
+  SEASON_BUDGET_CREDIT: 'SEASON_BUDGET_CREDIT',
   WAGE: 'WAGE',
   EXCHANGE: 'EXCHANGE',
   ADMIN_GRANT: 'ADMIN_GRANT',
-  KICK_FEE: 'KICK_FEE'
+  KICK_FEE: 'KICK_FEE',
+  SIGNING_BONUS: 'SIGNING_BONUS'
+};
+
+exports.TransferMode = exports.$Enums.TransferMode = {
+  NEGOTIATED_FEE: 'NEGOTIATED_FEE',
+  RELEASE_CLAUSE_BUYOUT: 'RELEASE_CLAUSE_BUYOUT'
 };
 
 exports.TransferOfferStatus = exports.$Enums.TransferOfferStatus = {
@@ -577,12 +633,18 @@ exports.TransferOfferStatus = exports.$Enums.TransferOfferStatus = {
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   COUNTER_OFFER: 'COUNTER_OFFER',
+  EXPIRED: 'EXPIRED',
   CANCELLED: 'CANCELLED'
 };
 
 exports.NegotiationTurn = exports.$Enums.NegotiationTurn = {
   PLAYER: 'PLAYER',
   BUYING_CLUB: 'BUYING_CLUB'
+};
+
+exports.TransferSettlementStatus = exports.$Enums.TransferSettlementStatus = {
+  PENDING_SEASON_END: 'PENDING_SEASON_END',
+  SETTLED: 'SETTLED'
 };
 
 exports.NotificationType = exports.$Enums.NotificationType = {
@@ -638,6 +700,8 @@ exports.TicketStatus = exports.$Enums.TicketStatus = {
 exports.Prisma.ModelName = {
   User: 'User',
   Club: 'Club',
+  ClubWallet: 'ClubWallet',
+  Season: 'Season',
   TeamMember: 'TeamMember',
   PlayerStats: 'PlayerStats',
   EaExternalStats: 'EaExternalStats',
@@ -653,6 +717,7 @@ exports.Prisma.ModelName = {
   Contract: 'Contract',
   Transaction: 'Transaction',
   TransferOffer: 'TransferOffer',
+  TransferSellerSettlement: 'TransferSellerSettlement',
   Notification: 'Notification',
   StoreItem: 'StoreItem',
   UserInventory: 'UserInventory',

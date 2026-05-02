@@ -93,6 +93,7 @@ model Club {
   eaClubStats       EaClubStats?
   leagueTableEntries LeagueTable[]
   wallet            ClubWallet?
+  transferSellerSettlementsAsSeller TransferSellerSettlement[] @relation("TransferSettlementSellerClub")
 
   @@map("teams")
 }
@@ -122,6 +123,7 @@ model Season {
   contractsAsStart Contract[]     @relation("ContractStartSeason")
   contractsAsEnd   Contract[]     @relation("ContractEndSeason")
   offersAsContractStart TransferOffer[] @relation("OfferContractStartSeason")
+  transferSellerSettlements TransferSellerSettlement[] @relation("TransferSettlementSeason")
 
   @@index([is_current])
   @@map("seasons")
@@ -380,6 +382,8 @@ model TransferOffer {
   offered_clause    Float
   /// Indemnité versée au club vendeur
   transfer_fee      Float
+  /// Mercato V2 Phase D : négocié classique vs paiement clause au vendeur (`transfer_fee` = montant clause si RELEASE_CLAUSE_BUYOUT).
+  transfer_mode       TransferMode        @default(NEGOTIATED_FEE)
   /// Durée de contrat cible en saisons (V2)
   seasons_count     Int?
   /// Montant réservé côté wallet club tant que l'offre est active (V2)
@@ -398,10 +402,31 @@ model TransferOffer {
   fromTeam          Club                @relation("OfferFromTeam", fields: [from_team_id], references: [id], onDelete: Cascade)
   player            User                @relation("TransferOfferPlayer", fields: [player_id], references: [id], onDelete: Cascade)
   toTeam            Club?               @relation("OfferToTeam", fields: [to_team_id], references: [id], onDelete: Cascade)
+  sellerSettlement  TransferSellerSettlement?
 
   @@index([contract_start_season_id])
   @@index([expires_at])
   @@map("transfer_offers")
+}
+
+/// Dette / engagement indemnité vendeur — transfert classique réglé en fin de saison (Phase D).
+model TransferSellerSettlement {
+  id                String                   @id @default(uuid()) @db.Uuid
+  transfer_offer_id String                   @unique @db.Uuid
+  seller_team_id    String                   @db.Uuid
+  amount            Float
+  status            TransferSettlementStatus @default(PENDING_SEASON_END)
+  season_id         String?                  @db.Uuid
+  created_at        DateTime                 @default(now())
+  settled_at        DateTime?
+
+  transferOffer TransferOffer @relation(fields: [transfer_offer_id], references: [id], onDelete: Cascade)
+  sellerClub    Club          @relation("TransferSettlementSellerClub", fields: [seller_team_id], references: [id], onDelete: Cascade)
+  season        Season?       @relation("TransferSettlementSeason", fields: [season_id], references: [id], onDelete: SetNull)
+
+  @@index([seller_team_id])
+  @@index([status])
+  @@map("transfer_seller_settlements")
 }
 
 model Notification {
@@ -566,6 +591,18 @@ enum TransferOfferStatus {
   CANCELLED
 }
 
+/// Mode financier d’une offre mercato (Phase D).
+enum TransferMode {
+  NEGOTIATED_FEE
+  RELEASE_CLAUSE_BUYOUT
+}
+
+/// Statut du règlement différé de l’indemnité au club vendeur.
+enum TransferSettlementStatus {
+  PENDING_SEASON_END
+  SETTLED
+}
+
 enum SeasonStatus {
   DRAFT
   ACTIVE
@@ -617,6 +654,8 @@ enum TransactionType {
   ADMIN_GRANT
   /// Amende / frais de licenciement d’un joueur (débit budget club).
   KICK_FEE
+  /// Prime / salaire de signature crédité au portefeuille joueur (Phase D).
+  SIGNING_BONUS
 }
 
 enum StoreItemCategory {
