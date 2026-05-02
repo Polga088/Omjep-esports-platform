@@ -14,8 +14,13 @@ import TransferOfferModal, { type PendingOfferRecap } from '@/components/Transfe
 import {
   OfferTermsGrid,
   PlayerOfferActions,
+  mercatoOfferStatusLabel,
   type TransferOfferRow,
 } from '@/components/TransferOfferRow';
+import {
+  mercatoCanInitiateTransferOffer,
+  type MercatoMyTeamPayload,
+} from '@/utils/mercatoInitiatorPermission';
 
 type TransferOfferModalPlayer = ComponentProps<typeof TransferOfferModal>['player'];
 
@@ -73,12 +78,17 @@ const statusConfig = {
     className: 'bg-transparent text-black/70 dark:text-white/70 border-neutral-200 dark:border-neutral-800',
     icon: X,
   },
+  EXPIRED: {
+    label: 'Expirée',
+    className: 'bg-transparent text-black/60 dark:text-white/60 border-neutral-200 dark:border-neutral-800',
+    icon: Clock,
+  },
 } as const;
 
 export default function TransferMarket() {
   const { user, patchUser } = useAuthStore();
   const [transferMarketOpen, setTransferMarketOpen] = useState(true);
-  const [myTeam, setMyTeam] = useState<{ id: string; name: string; budget: number } | null>(null);
+  const [myTeam, setMyTeam] = useState<MercatoMyTeamPayload | null>(null);
   const [offers, setOffers] = useState<TransferOfferRow[]>([]);
   const [playerOffers, setPlayerOffers] = useState<TransferOfferRow[]>([]);
   const [freeAgents, setFreeAgents] = useState<FreeAgent[]>([]);
@@ -101,21 +111,30 @@ export default function TransferMarket() {
     } catch {
       setTransferMarketOpen(true);
     }
+    const authUser = useAuthStore.getState().user
     try {
-      const teamRes = await api.get<{ id: string; name: string; budget: number }>('/teams/my-team');
+      const teamRes = await api.get<MercatoMyTeamPayload>('/teams/my-team');
       setMyTeam(teamRes.data);
-      const [offersRes, asPlayerRes, freeAgentsRes] = await Promise.all([
-        api.get<TransferOfferRow[]>('/transfers/offers', {
-          params: { team_id: teamRes.data.id },
-        }),
-        api.get<TransferOfferRow[]>('/transfers/offers/as-player'),
-        api.get<FreeAgent[]>('/transfers/free-agents', {
-          params: { team_id: teamRes.data.id },
-        }),
-      ]);
-      setOffers(offersRes.data);
+      const canInitiate = mercatoCanInitiateTransferOffer(authUser, teamRes.data);
+
+      const asPlayerRes = await api.get<TransferOfferRow[]>('/transfers/offers/as-player');
       setPlayerOffers(asPlayerRes.data);
-      setFreeAgents(freeAgentsRes.data);
+
+      if (canInitiate) {
+        const [offersRes, freeAgentsRes] = await Promise.all([
+          api.get<TransferOfferRow[]>('/transfers/offers', {
+            params: { team_id: teamRes.data.id },
+          }),
+          api.get<FreeAgent[]>('/transfers/free-agents', {
+            params: { team_id: teamRes.data.id },
+          }),
+        ]);
+        setOffers(offersRes.data);
+        setFreeAgents(freeAgentsRes.data);
+      } else {
+        setOffers([]);
+        setFreeAgents([]);
+      }
     } catch {
       setMyTeam(null);
       setOffers([]);
@@ -151,6 +170,50 @@ export default function TransferMarket() {
   const pendingReceivedCount = receivedOffers.filter((o) => o.status === 'PENDING' || o.status === 'COUNTER_OFFER').length;
   const pendingPlayerCount = playerOffers.length;
 
+  const canInitiateTransferOffers = useMemo(
+    () => mercatoCanInitiateTransferOffer(user, myTeam),
+    [user, myTeam],
+  );
+
+  useEffect(() => {
+    if (!loading && !canInitiateTransferOffers && (mainTab === 'club' || mainTab === 'freeAgents')) {
+      setMainTab('player');
+    }
+  }, [loading, canInitiateTransferOffers, mainTab]);
+
+  const mainTabsForUi = useMemo(() => {
+    const playerTab = {
+      key: 'player' as const,
+      label: 'Mes offres (joueur)',
+      icon: User,
+      count: pendingPlayerCount,
+    };
+    if (!canInitiateTransferOffers) {
+      return [playerTab];
+    }
+    return [
+      {
+        key: 'club' as const,
+        label: 'Mon club',
+        icon: Inbox,
+        count: pendingSentCount + pendingReceivedCount,
+      },
+      playerTab,
+      {
+        key: 'freeAgents' as const,
+        label: 'Agents libres',
+        icon: Users,
+        count: freeAgents.length,
+      },
+    ];
+  }, [
+    canInitiateTransferOffers,
+    pendingPlayerCount,
+    pendingSentCount,
+    pendingReceivedCount,
+    freeAgents.length,
+  ]);
+
   const signaturesBlocked = !transferMarketOpen;
 
   const pendingRecapForModal = useMemo((): PendingOfferRecap | null => {
@@ -167,10 +230,31 @@ export default function TransferMarket() {
       offered_salary: pending.offered_salary,
       offered_clause: pending.offered_clause,
       duration_months: pending.duration_months,
+      seasons_count: pending.seasons_count,
+      transfer_mode: pending.transfer_mode,
+      to_team_id: pending.to_team_id,
       status: pending.status as PendingOfferRecap['status'],
       negotiation_turn: pending.negotiation_turn,
     };
   }, [selectedPlayer, sentOffers]);
+
+  const clubMercatoReservedOtherOc = useMemo(() => {
+    if (!myTeam) return 0
+    return sentOffers
+      .filter(
+        (o) =>
+          (o.status === 'PENDING' || o.status === 'COUNTER_OFFER') &&
+          o.player_id !== selectedPlayer?.id,
+      )
+      .reduce((s, o) => s + Number(o.reserved_amount ?? 0), 0)
+  }, [myTeam, sentOffers, selectedPlayer?.id])
+
+  const clubMercatoReservedTotalOc = useMemo(() => {
+    if (!myTeam) return 0
+    return sentOffers
+      .filter((o) => o.status === 'PENDING' || o.status === 'COUNTER_OFFER')
+      .reduce((s, o) => s + Number(o.reserved_amount ?? 0), 0)
+  }, [myTeam, sentOffers])
 
   const playerRespond = async (offerId: string, body: Record<string, unknown>) => {
     setRespondingId(offerId);
@@ -246,6 +330,10 @@ export default function TransferMarket() {
   };
 
   const handleOpenOfferModal = (agent: FreeAgent) => {
+    if (!canInitiateTransferOffers) {
+      toast.error('Seuls les dirigeants du club peuvent initier des négociations.');
+      return;
+    }
     if (signaturesBlocked) {
       toast.error('Marché des transferts clos.');
       return;
@@ -272,6 +360,7 @@ export default function TransferMarket() {
   };
 
   const renderBuyerActions = (offer: TransferOfferRow) => {
+    if (!canInitiateTransferOffers) return null;
     const isBuyer = myTeam && offer.from_team_id === myTeam.id;
     const busy = respondingId === offer.id;
     if (!isBuyer || offer.status !== 'COUNTER_OFFER' || offer.negotiation_turn !== 'BUYING_CLUB') {
@@ -312,6 +401,11 @@ export default function TransferMarket() {
         </div>
         <div className="rounded-none border border-neutral-200 p-3 space-y-2 dark:border-neutral-800">
           <p className="text-[10px] font-bold uppercase text-black/60 dark:text-white/60">Nouvelle proposition</p>
+          <div className="grid grid-cols-3 gap-1 text-[9px] uppercase text-black/50 dark:text-white/50">
+            <span>{offer.transfer_mode === 'RELEASE_CLAUSE_BUYOUT' ? 'Clause' : 'Frais'}</span>
+            <span>Prime</span>
+            <span>N. clause</span>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             <input
               className="w-full rounded-none border border-neutral-200 bg-transparent px-2 py-1.5 font-mono text-xs text-black dark:border-neutral-800 dark:text-white"
@@ -393,19 +487,36 @@ export default function TransferMarket() {
         </div>
       )}
 
+      {!loading && !canInitiateTransferOffers && user && (
+        <div
+          className="omjep-premium-panel rounded-none border border-amber-500/25 bg-amber-500/[0.06] px-5 py-4 text-sm text-amber-100 dark:border-amber-500/30"
+          role="status"
+        >
+          Seuls les dirigeants du club peuvent initier des négociations. Vous pouvez consulter et répondre
+          aux offres reçues dans l’onglet « Mes offres (joueur) ».
+        </div>
+      )}
+
       {myTeam && (
-        <div className="omjep-premium-panel omjep-gold-accent flex items-center gap-4 rounded-none border-neutral-200 px-5 py-4 dark:border-neutral-800">
-          <div className="hidden" />
-          <div className="flex-1">
-            <p className="text-[12px] uppercase tracking-widest opacity-50">Budget club — {myTeam.name ?? '—'}</p>
+        <div className="omjep-premium-panel omjep-gold-accent flex flex-col gap-3 rounded-none border-neutral-200 px-5 py-4 dark:border-neutral-800 sm:flex-row sm:items-center">
+          <div className="flex-1 space-y-1">
+            <p className="text-[12px] uppercase tracking-widest opacity-50">Trésorerie club — {myTeam.name ?? '—'}</p>
             <p className="font-mono text-lg font-black text-black tabular-nums dark:text-white">
               {formatCurrency(myTeam.budget ?? 0, 'OC')}
             </p>
+            {canInitiateTransferOffers && (
+              <p className="text-xs text-black/70 dark:text-white/70">
+                Réservé mercato (offres envoyées en cours) :{' '}
+                <span className="font-mono font-semibold text-black dark:text-white">
+                  {formatCurrency(clubMercatoReservedTotalOc, 'OC')}
+                </span>
+              </p>
+            )}
           </div>
           <button
             type="button"
             onClick={() => fetchData()}
-            className="text-xs text-black hover:underline dark:text-white"
+            className="shrink-0 text-xs text-black hover:underline dark:text-white"
           >
             &gt; [ ACTUALISER ] &lt;
           </button>
@@ -413,13 +524,10 @@ export default function TransferMarket() {
       )}
 
       <div className="omjep-premium-panel flex w-fit flex-wrap items-center gap-1 rounded-none border-neutral-200 p-1 dark:border-neutral-800">
-        {([
-          { key: 'club' as const, label: 'Mon club', icon: Inbox, count: pendingSentCount + pendingReceivedCount },
-          { key: 'player' as const, label: 'Mes offres (joueur)', icon: User, count: pendingPlayerCount },
-          { key: 'freeAgents' as const, label: 'Agents libres', icon: Users, count: freeAgents.length },
-        ]).map(({ key, label, icon: Icon, count }) => (
+        {mainTabsForUi.map(({ key, label, icon: Icon, count }) => (
           <button
             key={key}
+            type="button"
             onClick={() => setMainTab(key)}
             className={`flex items-center gap-2 rounded-none px-4 py-2.5 text-sm font-semibold transition-all ${
               mainTab === key
@@ -478,8 +586,10 @@ export default function TransferMarket() {
               </div>
             ) : (
               currentClubList.map((offer) => {
-                const cfg = statusConfig[offer.status];
+                const cfg =
+                  statusConfig[offer.status as keyof typeof statusConfig] ?? statusConfig.PENDING;
                 const StatusIcon = cfg.icon;
+                const statusLabel = mercatoOfferStatusLabel(offer);
                 const otherTeam = activeTab === 'sent' ? offer.toTeam : offer.fromTeam;
                 const otherLabel =
                   otherTeam?.name ??
@@ -513,15 +623,9 @@ export default function TransferMarket() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className={`inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${cfg.className}`}>
                             <StatusIcon className="w-2.5 h-2.5" />
-                            {cfg.label}
+                            {statusLabel}
                           </span>
                           <span className="text-[10px] text-slate-600">{timeAgo(offer.created_at)}</span>
-                          {offer.negotiation_turn === 'PLAYER' && offer.status === 'PENDING' && (
-                            <span className="text-[10px] text-sky-400">Tour : joueur</span>
-                          )}
-                          {offer.negotiation_turn === 'BUYING_CLUB' && (
-                          <span className="text-[10px] text-black/70 dark:text-white/70">Tour : club acheteur</span>
-                          )}
                         </div>
                         <p className="mt-2 text-sm text-white">
                           <span className="font-semibold text-black dark:text-white">{offer.fromTeam.name ?? '—'}</span>
@@ -558,8 +662,10 @@ export default function TransferMarket() {
             </div>
           ) : (
             playerOffers.map((offer) => {
-              const cfg = statusConfig[offer.status];
+              const cfg =
+                statusConfig[offer.status as keyof typeof statusConfig] ?? statusConfig.PENDING;
               const StatusIcon = cfg.icon;
+              const statusLabel = mercatoOfferStatusLabel(offer);
               return (
                 <div
                   key={offer.id}
@@ -568,7 +674,7 @@ export default function TransferMarket() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className={`inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-[10px] font-bold uppercase border ${cfg.className}`}>
                       <StatusIcon className="w-2.5 h-2.5" />
-                      {cfg.label}
+                      {statusLabel}
                     </span>
                     <span className="text-[10px] text-slate-600">{timeAgo(offer.created_at)}</span>
                   </div>
@@ -604,6 +710,11 @@ export default function TransferMarket() {
 
       {!loading && mainTab === 'freeAgents' && (
         <div className="space-y-4">
+          <p className="text-sm text-black/75 dark:text-white/75 max-w-2xl">
+            Joueurs sans contrat actif : proposition de contrat (prime de signature, pas de frais vendeur).
+            Pour un joueur encore sous contrat dans un autre club, ouvrez sa fiche profil et utilisez « Activer la
+            clause ».
+          </p>
           <div className="flex items-center gap-4 flex-wrap border-b border-black/10 pb-4 dark:border-white/20">
             <label className="text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">Filtrer par position</label>
             <select
@@ -680,15 +791,15 @@ export default function TransferMarket() {
 
                     <div className="mt-4 pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <p className="text-[10px] text-slate-500">
-                        Recrutement gratuit · Aucun frais de transfert
+                        Contrat joueur libre — réserve = prime de signature uniquement
                       </p>
                       <button
                         type="button"
-                        disabled={!myTeam || signaturesBlocked}
+                        disabled={!myTeam || signaturesBlocked || !canInitiateTransferOffers}
                         onClick={() => handleOpenOfferModal(agent)}
                         className="inline-flex items-center justify-center gap-2 rounded-none border border-neutral-200 bg-transparent px-4 py-2.5 text-xs font-bold text-black transition disabled:pointer-events-none disabled:opacity-40 dark:border-neutral-800 dark:text-white"
                       >
-                        &gt; [ ENCHÉRIR ] &lt;
+                        &gt; [ PROPOSER CONTRAT ] &lt;
                       </button>
                     </div>
                   </div>
@@ -705,6 +816,8 @@ export default function TransferMarket() {
           player={selectedPlayer}
           myTeam={myTeam}
           transferMarketClosed={signaturesBlocked}
+          canInitiateTransfers={canInitiateTransferOffers}
+          clubMercatoReservedOtherOc={clubMercatoReservedOtherOc}
           onSuccess={() => {
             void refreshEconomyFromApi(patchUser, user?.xp);
             void fetchData();

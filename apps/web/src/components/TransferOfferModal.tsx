@@ -16,12 +16,15 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 import { formatCurrency } from '@/utils/formatCurrency'
 import { useModalOpenSound } from '@/hooks/useModalOpenSound'
+import {
+  mercatoTransferModeLabel,
+  seasonsCountFromOffer,
+} from '@/components/TransferOfferRow'
 
-/** Semaines → mois (aligné 52 sem. = 12 mois), borné 1–60 pour l’API. */
-function weeksToDurationMonths(weeks: number): number {
-  if (!Number.isFinite(weeks) || weeks <= 0) return 12;
-  const m = Math.round((weeks * 12) / 52);
-  return Math.min(60, Math.max(1, m));
+/** Mercato V2 : nombre de saisons → `duration_months` (legacy API). */
+function seasonsToDurationMonths(seasons: number): number {
+  if (!Number.isFinite(seasons) || seasons < 1) return 12
+  return Math.min(60, Math.max(12, Math.round(seasons) * 12))
 }
 
 /** Offre déjà envoyée par le club acheteur pour ce joueur (formulaire remplacé par le récap). */
@@ -31,6 +34,9 @@ export type PendingOfferRecap = {
   offered_salary: number;
   offered_clause: number;
   duration_months: number;
+  seasons_count?: number | null;
+  transfer_mode?: string | null;
+  to_team_id?: string | null;
   status: 'PENDING' | 'COUNTER_OFFER';
   negotiation_turn: 'PLAYER' | 'BUYING_CLUB';
 };
@@ -44,23 +50,32 @@ interface Props {
     id: string;
     name: string;
     position: string | null;
+    /** Club vendeur (joueur sous contrat) — ignoré pour l’API si agent libre. */
     teamId: string;
     teamName: string;
     marketValue: number | null;
-    /** Agent libre sans club : frais 0, API envoie `to_team_id: null` */
+    /** Agent libre : `NEGOTIATED_FEE`, `to_team_id` null. */
     isFreeAgent?: boolean;
+    /** Clause actuelle (OC) — min. recommandée pour `RELEASE_CLAUSE_BUYOUT`. */
+    currentReleaseClause?: number | null;
   };
   myTeam: {
     id: string;
     name: string;
     budget: number;
   };
+  /** Réserves OC des autres offres envoyées (PENDING / COUNTER) — hors brouillon courant. */
+  clubMercatoReservedOtherOc?: number;
   onSuccess?: () => void;
   /** Si défini : pas de nouveau formulaire, affichage du récapitulatif en attente */
   pendingOfferFromMyClub?: PendingOfferRecap | null;
   /** Marché fermé : pas d’envoi d’offre */
   transferMarketClosed?: boolean;
+  /** False si l’utilisateur n’est pas dirigeant club : garde-fou UI (POST doit aussi renvoyer 403). */
+  canInitiateTransfers?: boolean;
 }
+
+const SEASON_PRESETS = [1, 2, 3] as const
 
 export default function TransferOfferModal({
   open: openProp,
@@ -71,28 +86,41 @@ export default function TransferOfferModal({
   onSuccess,
   pendingOfferFromMyClub,
   transferMarketClosed,
+  canInitiateTransfers = true,
+  clubMercatoReservedOtherOc = 0,
 }: Props) {
   const open = Boolean(isOpen ?? openProp);
+  const isFreeAgentFlow = player.isFreeAgent === true
+  const isClauseBuyoutFlow = !isFreeAgentFlow
   const [transferFee, setTransferFee] = useState('');
-  const [weeklySalary, setWeeklySalary] = useState('');
+  const [seasonPrimeOc, setSeasonPrimeOc] = useState('');
   const [releaseClause, setReleaseClause] = useState('');
-  const [durationWeeks, setDurationWeeks] = useState(52);
+  const [seasonsCount, setSeasonsCount] = useState(2);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const minClauseAmount =
+    player.currentReleaseClause != null && player.currentReleaseClause > 0
+      ? player.currentReleaseClause
+      : Math.max(1, Math.round((player.marketValue ?? 5_000_000) * 0.5))
+
   useEffect(() => {
     if (open) {
       const hint = player.marketValue ?? 5_000_000;
-      setTransferFee(player.isFreeAgent ? '0' : String(hint));
-      const annualSalary = Math.max(100_000, Math.round(hint * 0.08));
-      setWeeklySalary(String(Math.max(1, Math.round(annualSalary / 52))));
+      if (isFreeAgentFlow) {
+        setTransferFee('0')
+      } else {
+        setTransferFee(String(Math.max(minClauseAmount, Math.round(hint * 0.6))))
+      }
+      const defaultPrime = Math.max(1000, Math.round(hint * 0.08));
+      setSeasonPrimeOc(String(defaultPrime));
       setReleaseClause(String(Math.round(hint * 1.2)));
-      setDurationWeeks(52);
+      setSeasonsCount(2);
       setError('');
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [open, player.marketValue, player.isFreeAgent]);
+  }, [open, player.marketValue, player.isFreeAgent, isFreeAgentFlow, minClauseAmount]);
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
@@ -112,6 +140,9 @@ export default function TransferOfferModal({
       p.status === 'COUNTER_OFFER' && p.negotiation_turn === 'BUYING_CLUB'
         ? 'Le joueur a fait une contre-proposition. Répondez depuis Mercato Live (Mon club → Offres envoyées).'
         : 'Offre envoyée. En attente de la réponse du joueur…';
+    const recapSeasons = seasonsCountFromOffer(p)
+    const recapMode = p.transfer_mode ?? (p.to_team_id == null ? 'NEGOTIATED_FEE' : 'RELEASE_CLAUSE_BUYOUT')
+    const recapFree = recapMode === 'NEGOTIATED_FEE' || p.to_team_id == null
 
     return (
       <div className="tactical-modal-backdrop z-50">
@@ -162,28 +193,36 @@ export default function TransferOfferModal({
             <p className="text-[10px] font-bold uppercase tracking-wider text-[#a89f7a]">
               Récapitulatif de votre proposition
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
-                <span className="text-xs uppercase text-slate-500 block">Indemnité de transfert</span>
-                <div className="text-lg font-bold text-[#FFD700] tabular-nums mt-1">
-                  {formatCurrency(p.transfer_fee, 'OC')}
-                </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5 sm:col-span-3">
+                <span className="text-xs uppercase text-slate-500 block">Mode</span>
+                <div className="text-sm font-bold text-slate-200 mt-1">{mercatoTransferModeLabel(recapMode)}</div>
               </div>
+              {!recapFree && (
+                <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
+                  <span className="text-xs uppercase text-slate-500 block">Montant clause</span>
+                  <div className="text-lg font-bold text-[#FFD700] tabular-nums mt-1">
+                    {formatCurrency(p.transfer_fee, 'OC')}
+                  </div>
+                </div>
+              )}
               <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
-                <span className="text-xs uppercase text-slate-500 block">Salaire /an</span>
+                <span className="text-xs uppercase text-slate-500 block">Prime de signature</span>
                 <div className="text-lg font-bold text-emerald-400/90 tabular-nums mt-1">
                   {formatCurrency(p.offered_salary, 'OC')}
                 </div>
               </div>
               <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
-                <span className="text-xs uppercase text-slate-500 block">Clause Libératoire</span>
+                <span className="text-xs uppercase text-slate-500 block">Nouvelle clause (contrat)</span>
                 <div className="text-lg font-bold text-sky-400/90 tabular-nums mt-1">
                   {formatCurrency(p.offered_clause, 'OC')}
                 </div>
               </div>
               <div className="rounded-lg bg-white/5 px-3 py-2.5 border border-white/5">
                 <span className="text-xs uppercase text-slate-500 block">Durée</span>
-                <div className="text-lg font-bold text-slate-200 mt-1">{p.duration_months} mois</div>
+                <div className="text-lg font-bold text-slate-200 mt-1">
+                  {recapSeasons} {recapSeasons <= 1 ? 'saison' : 'saisons'}
+                </div>
               </div>
             </div>
             <button
@@ -200,21 +239,26 @@ export default function TransferOfferModal({
   }
 
   const numFee = Number(transferFee) || 0;
-  const numWeekly = Number(weeklySalary) || 0;
-  const annualCost = numWeekly * 52;
+  const numOfferedSalary = Number(seasonPrimeOc) || 0;
   const numClause = Number(releaseClause) || 0;
-  const totalCommitment = numFee + annualCost;
-  const remainingBalance = myTeam.budget - totalCommitment;
-  const overBudget = totalCommitment > myTeam.budget;
-  const feeValid = player.isFreeAgent ? numFee >= 0 : numFee > 0;
-  const invalid = !feeValid || numWeekly <= 0 || numClause <= 0 || durationWeeks < 1;
-  const durationMonths = weeksToDurationMonths(durationWeeks);
+  const requiredAmount = isFreeAgentFlow ? numOfferedSalary : numFee + numOfferedSalary;
+  const reservedOther = Math.max(0, clubMercatoReservedOtherOc)
+  const totalReservedIfSubmit = reservedOther + requiredAmount
+  const remainingAfterReserve = myTeam.budget - totalReservedIfSubmit
+  const overBudget = totalReservedIfSubmit > myTeam.budget;
+  const feeValid = isFreeAgentFlow ? numFee >= 0 : numFee >= minClauseAmount;
+  const invalid = !feeValid || numOfferedSalary <= 0 || numClause <= 0 || seasonsCount < 1;
+  const durationMonths = seasonsToDurationMonths(seasonsCount);
   const canSubmit =
     !invalid && !overBudget && !sending && !transferMarketClosed;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
+    if (!canInitiateTransfers) {
+      toast.error('Seuls les dirigeants du club peuvent initier des négociations.')
+      return
+    }
 
     setSending(true);
     setError('');
@@ -222,13 +266,14 @@ export default function TransferOfferModal({
       await api.post('/transfers/offer', {
         player_id: player.id,
         from_team_id: myTeam.id,
-        ...(player.isFreeAgent ? { to_team_id: null } : { to_team_id: player.teamId }),
-        transfer_fee: numFee,
-        salaryPropose: numWeekly,
-        releaseClausePropose: numClause,
-        offered_salary: annualCost,
+        to_team_id: isFreeAgentFlow ? null : player.teamId,
+        transfer_fee: isFreeAgentFlow ? 0 : numFee,
+        transfer_mode: isFreeAgentFlow ? 'NEGOTIATED_FEE' : 'RELEASE_CLAUSE_BUYOUT',
+        offered_salary: numOfferedSalary,
         offered_clause: numClause,
         duration_months: durationMonths,
+        seasons_count: seasonsCount,
+        releaseClausePropose: numClause,
       });
       toast.success(`Contrat proposé à ${player.name} — en attente de signature.`);
       onSuccess?.();
@@ -239,16 +284,7 @@ export default function TransferOfferModal({
           ? (err as { response?: { data?: { message?: string | string[] } } }).response?.data?.message
           : undefined;
       const msg = Array.isArray(raw) ? raw.join(' ') : raw;
-      const hideForFreeAgent =
-        player.isFreeAgent &&
-        typeof msg === 'string' &&
-        (msg.includes("n'appartient pas au club indiqué") ||
-          msg.includes('club actuel du joueur'));
-      if (hideForFreeAgent) {
-        setError('');
-      } else {
-        setError(msg ?? "Erreur lors de l'envoi de l'offre.");
-      }
+      setError(msg ?? "Erreur lors de l'envoi de l'offre.");
     } finally {
       setSending(false);
     }
@@ -284,10 +320,12 @@ export default function TransferOfferModal({
                   Négociation · OMJEP Coins
                 </p>
                 <h2 className="mt-1 font-serif text-xl font-semibold tracking-tight text-[#faf8f3] md:text-2xl">
-                  Offre contractuelle
+                  {isFreeAgentFlow ? 'Proposition — joueur libre' : 'Activation clause libératoire'}
                 </h2>
                 <p className="mt-1 text-xs text-slate-500">
-                  Proposition engageante — frais de transfert, rémunération et clause libératoire.
+                  {isFreeAgentFlow
+                    ? 'Prime de signature, clause du nouveau contrat et durée — sans frais vendeur.'
+                    : 'Paiement de la clause au club actuel, prime joueur et nouveau contrat.'}
                 </p>
               </div>
             </div>
@@ -341,46 +379,56 @@ export default function TransferOfferModal({
               Conditions financières
             </h3>
             <div className="space-y-4">
-              <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-400">
-                  Montant du transfert (vers le club vendeur) · OC
-                </span>
-                <input
-                  ref={inputRef}
-                  type="number"
-                  min={player.isFreeAgent ? 0 : 1}
-                  step={1000}
-                  required
-                  value={transferFee}
-                  onChange={(e) => {
-                    setTransferFee(e.target.value);
-                    if (error) setError('');
-                  }}
-                  className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white tabular-nums placeholder:text-slate-600 focus:border-[#c9a227]/45 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/15"
-                />
-              </label>
+              {isClauseBuyoutFlow && (
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-medium text-slate-400">
+                    Montant clause libératoire (vers {player.teamName}) · OC
+                    {player.currentReleaseClause != null && player.currentReleaseClause > 0 && (
+                      <span className="block text-[10px] text-amber-200/80 mt-0.5">
+                        Minimum contractuel : {formatCurrency(player.currentReleaseClause, 'OC')}
+                      </span>
+                    )}
+                  </span>
+                  <input
+                    ref={inputRef}
+                    type="number"
+                    min={minClauseAmount}
+                    step={1}
+                    required
+                    value={transferFee}
+                    onChange={(e) => {
+                      setTransferFee(e.target.value);
+                      if (error) setError('');
+                    }}
+                    className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white tabular-nums placeholder:text-slate-600 focus:border-[#c9a227]/45 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/15"
+                  />
+                </label>
+              )}
 
               <label className="block">
                 <span className="mb-1.5 block text-xs font-medium text-slate-400">
-                  Salaire hebdomadaire proposé (OC)
+                  Prime / salaire de saison (OC)
                 </span>
                 <input
+                  ref={isFreeAgentFlow ? inputRef : undefined}
                   type="number"
-                  min={1}
-                  step={100}
+                  min={0}
+                  step={1}
                   required
-                  value={weeklySalary}
-                  onChange={(e) => setWeeklySalary(e.target.value)}
+                  value={seasonPrimeOc}
+                  onChange={(e) => setSeasonPrimeOc(e.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white tabular-nums focus:border-[#c9a227]/45 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/15"
                 />
               </label>
 
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-400">Clause libératoire (OC)</span>
+                <span className="mb-1.5 block text-xs font-medium text-slate-400">
+                  Clause du nouveau contrat (OC)
+                </span>
                 <input
                   type="number"
-                  min={1}
-                  step={1000}
+                  min={0}
+                  step={1}
                   required
                   value={releaseClause}
                   onChange={(e) => setReleaseClause(e.target.value)}
@@ -390,36 +438,23 @@ export default function TransferOfferModal({
 
               <div>
                 <span className="mb-1.5 block text-xs font-medium text-slate-400">
-                  Durée du contrat (en semaines)
+                  Durée du contrat (en saisons)
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {[26, 39, 52, 78, 104].map((w) => (
+                  {SEASON_PRESETS.map((s) => (
                     <button
-                      key={w}
+                      key={s}
                       type="button"
-                      onClick={() => setDurationWeeks(w)}
+                      onClick={() => setSeasonsCount(s)}
                       className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${
-                        durationWeeks === w
+                        seasonsCount === s
                           ? 'border-[#c9a227]/50 bg-[#c9a227]/15 text-[#e8d48b]'
                           : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/20'
                       }`}
                     >
-                      {w} sem.
+                      {s === 1 ? '1 saison' : `${s} saisons`}
                     </button>
                   ))}
-                </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={1}
-                    max={260}
-                    value={durationWeeks}
-                    onChange={(e) => setDurationWeeks(Math.max(1, Number(e.target.value) || 1))}
-                    className="w-28 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white tabular-nums focus:border-[#c9a227]/45 focus:outline-none"
-                  />
-                  <span className="text-xs text-slate-500">
-                    → équivalent env. <span className="font-semibold text-slate-400">{durationMonths} mois</span> (envoi API)
-                  </span>
                 </div>
               </div>
             </div>
@@ -428,26 +463,25 @@ export default function TransferOfferModal({
           {/* Calcul dynamique */}
           <div className="rounded-xl border border-[#c9a227]/20 bg-gradient-to-br from-[#c9a227]/[0.07] to-transparent p-4">
             <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-[#a89f7a]">
-              Mémo · coût première année
+              Coût engagé (réservation)
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="rounded-lg bg-black/20 border border-white/5 px-3 py-2.5">
-                <span className="text-xs uppercase text-slate-500 block">Salaire /an</span>
+                <span className="text-xs uppercase text-slate-500 block">Prime de signature</span>
                 <div className="text-lg font-bold tabular-nums text-[#e8d48b] mt-1">
-                  {formatCurrency(annualCost, 'OC')}
+                  {formatCurrency(numOfferedSalary, 'OC')}
                 </div>
-                <p className="text-[10px] text-slate-600 mt-1 font-mono">
-                  {numWeekly.toLocaleString('fr-FR')} OC × 52 sem.
-                </p>
               </div>
-              <div className="rounded-lg bg-black/20 border border-white/5 px-3 py-2.5">
-                <span className="text-xs uppercase text-slate-500 block">Indemnité de transfert</span>
-                <div className="text-lg font-bold tabular-nums text-white mt-1">{formatCurrency(numFee, 'OC')}</div>
-              </div>
+              {!isFreeAgentFlow && (
+                <div className="rounded-lg bg-black/20 border border-white/5 px-3 py-2.5">
+                  <span className="text-xs uppercase text-slate-500 block">Clause (vendeur)</span>
+                  <div className="text-lg font-bold tabular-nums text-white mt-1">{formatCurrency(numFee, 'OC')}</div>
+                </div>
+              )}
               <div className="rounded-lg bg-black/20 border border-[#c9a227]/25 px-3 py-2.5 sm:col-span-1">
-                <span className="text-xs uppercase text-slate-500 block">Engagement année 1</span>
+                <span className="text-xs uppercase text-slate-500 block">Total à réserver</span>
                 <div className="text-lg font-bold tabular-nums text-[#e8d48b] mt-1">
-                  {formatCurrency(totalCommitment, 'OC')}
+                  {formatCurrency(requiredAmount, 'OC')}
                 </div>
               </div>
             </div>
@@ -459,21 +493,27 @@ export default function TransferOfferModal({
               <div className="flex items-center justify-between px-4 py-3">
                 <span className="flex items-center gap-2 text-xs text-slate-500">
                   <User className="h-3.5 w-3.5" />
-                  Budget club actuel
+                  Budget club (OC)
                 </span>
                 <span className="text-sm font-bold tabular-nums text-emerald-400/95">
                   {formatCurrency(myTeam.budget, 'OC')}
                 </span>
               </div>
               <div className="flex items-center justify-between px-4 py-3">
-                <span className="text-xs text-slate-500">Après transfert + 1ʳᵉ année de salaire</span>
+                <span className="text-xs text-slate-500">Déjà réservé (autres offres)</span>
+                <span className="text-sm font-bold tabular-nums text-slate-300">
+                  {formatCurrency(reservedOther, 'OC')}
+                </span>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-xs text-slate-500">Après cette offre (budget − réserves)</span>
                 <span className={`text-sm font-black tabular-nums ${overBudget ? 'text-red-400' : 'text-emerald-400'}`}>
-                  {totalCommitment > 0 ? formatCurrency(remainingBalance, 'OC') : '—'}
+                  {requiredAmount > 0 ? formatCurrency(remainingAfterReserve, 'OC') : '—'}
                 </span>
               </div>
             </div>
             <p className="border-t border-white/5 bg-white/[0.02] px-4 py-2 text-[10px] text-slate-500">
-              Solde restant du club = budget − (montant transfert + coût annuel de salaire).
+              Estimation : trésorerie club moins les réserves mercato en cours et cette proposition.
             </p>
           </div>
 
@@ -481,8 +521,8 @@ export default function TransferOfferModal({
             <div className="flex items-start gap-3 rounded-xl border border-red-500/25 bg-red-500/[0.08] px-4 py-3">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
               <p className="text-xs leading-relaxed text-red-300/95">
-                Budget insuffisant : l’engagement dépasse le trésor du club. Ajustez les montants ou le salaire
-                hebdomadaire.
+                Budget insuffisant : la réservation dépasse la trésorerie du club. Réduisez la prime
+                {isClauseBuyoutFlow ? ' ou le montant de clause.' : '.'}
               </p>
             </div>
           )}

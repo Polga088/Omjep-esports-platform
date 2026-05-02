@@ -9,6 +9,39 @@ import {
 } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatCurrency';
 
+/** Valeurs `transfer_mode` côté API Mercato V2. */
+export type MercatoTransferMode = 'NEGOTIATED_FEE' | 'RELEASE_CLAUSE_BUYOUT'
+
+export const mercatoTransferModeLabel = (mode: MercatoTransferMode | string | null | undefined): string => {
+  if (mode === 'RELEASE_CLAUSE_BUYOUT') return 'Clause libératoire'
+  return 'Contrat joueur libre'
+}
+
+export const mercatoOfferStatusLabel = (offer: {
+  status: string
+  negotiation_turn?: string
+}): string => {
+  if (offer.status === 'EXPIRED') return 'Expirée'
+  if (offer.status === 'ACCEPTED') return 'Acceptée'
+  if (offer.status === 'REJECTED') return 'Refusée'
+  if (offer.status === 'CANCELLED') return 'Annulée'
+  if (offer.status === 'COUNTER_OFFER' && offer.negotiation_turn === 'BUYING_CLUB') {
+    return 'En attente club acheteur'
+  }
+  if (offer.status === 'PENDING' || offer.status === 'COUNTER_OFFER') {
+    return 'En attente joueur'
+  }
+  return offer.status
+}
+
+export const seasonsCountFromOffer = (offer: {
+  seasons_count?: number | null
+  duration_months: number
+}): number => {
+  if (offer.seasons_count != null && offer.seasons_count > 0) return offer.seasons_count
+  return Math.max(1, Math.round(offer.duration_months / 12))
+}
+
 export interface TransferOfferRow {
   id: string;
   player_id: string;
@@ -18,7 +51,10 @@ export interface TransferOfferRow {
   offered_salary: number;
   offered_clause: number;
   duration_months: number;
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'COUNTER_OFFER' | 'CANCELLED';
+  seasons_count?: number | null;
+  reserved_amount?: number | null;
+  transfer_mode?: MercatoTransferMode | string | null;
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'COUNTER_OFFER' | 'CANCELLED' | 'EXPIRED';
   negotiation_turn: 'PLAYER' | 'BUYING_CLUB';
   created_at: string;
   responded_at: string | null;
@@ -39,33 +75,43 @@ export interface TransferOfferRow {
   } | null;
 }
 
-/** Blocs titre + montant (liste offres, fiches joueur) — `offered_salary` est déjà annuel (OC). */
+/** Blocs titre + montant — `offered_salary` = prime saison (OC annuel). */
 export function OfferTermsGrid({ offer }: { offer: TransferOfferRow }) {
-  const cells = [
-    {
-      label: 'Indemnité de transfert',
-      value: formatCurrency(offer.transfer_fee, 'OC'),
-      valueClass: 'text-yellow-500',
-    },
-    {
-      label: 'Salaire /an',
-      value: formatCurrency(offer.offered_salary, 'OC'),
-      valueClass: 'text-green-500',
-    },
-    {
-      label: 'Clause Libératoire',
-      value: formatCurrency(offer.offered_clause, 'OC'),
-      valueClass: 'text-sky-400',
-    },
-    {
-      label: 'Durée',
-      value: `${offer.duration_months} mois`,
-      valueClass: 'text-slate-200',
-    },
-  ] as const;
+  const mode = offer.transfer_mode ?? (offer.to_team_id == null ? 'NEGOTIATED_FEE' : 'RELEASE_CLAUSE_BUYOUT')
+  const isFreeContract = mode === 'NEGOTIATED_FEE' || offer.to_team_id == null
+  const seasons = seasonsCountFromOffer(offer)
+  const durationLabel = seasons <= 1 ? '1 saison' : `${seasons} saisons`
+
+  const modeCell = {
+    label: 'Mode',
+    value: mercatoTransferModeLabel(mode),
+    valueClass: 'text-slate-200',
+  }
+  const feeCell = {
+    label: isFreeContract ? 'Frais vendeur' : 'Montant clause',
+    value: isFreeContract ? '—' : formatCurrency(offer.transfer_fee, 'OC'),
+    valueClass: isFreeContract ? 'text-slate-500' : 'text-yellow-500',
+  }
+  const primeCell = {
+    label: 'Prime de signature',
+    value: formatCurrency(offer.offered_salary, 'OC'),
+    valueClass: 'text-green-500',
+  }
+  const clauseCell = {
+    label: 'Nouvelle clause (contrat)',
+    value: formatCurrency(offer.offered_clause, 'OC'),
+    valueClass: 'text-sky-400',
+  }
+  const durationCell = {
+    label: 'Durée',
+    value: durationLabel,
+    valueClass: 'text-slate-200',
+  }
+
+  const cells = [modeCell, feeCell, primeCell, clauseCell, durationCell] as const
 
   return (
-    <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2">
+    <div className="mt-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
       {cells.map((cell, i) => (
         <div
           key={cell.label}
@@ -115,7 +161,13 @@ export function PlayerOfferActions({
   const [negotiateOpen, setNegotiateOpen] = useState(false);
 
   const isPlayer = currentUserId === offer.player_id;
-  if (!isPlayer || offer.status === 'ACCEPTED' || offer.status === 'REJECTED' || offer.status === 'CANCELLED') {
+  if (
+    !isPlayer ||
+    offer.status === 'ACCEPTED' ||
+    offer.status === 'REJECTED' ||
+    offer.status === 'CANCELLED' ||
+    offer.status === 'EXPIRED'
+  ) {
     return null;
   }
 
