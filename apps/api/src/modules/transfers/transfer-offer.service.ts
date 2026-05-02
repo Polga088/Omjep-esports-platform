@@ -110,35 +110,32 @@ export class TransferOfferService {
   }
 
   /**
-   * Clubs in a competition with `isTransferMarketOpen: false` cannot initiate or finalize
-   * transfers that fall under that competition (buyer in closed comp, or buyer+seller share a closed comp).
+   * Phase D : marché ouvert si le club n’est dans aucune compétition ONGOING au mercato fermé.
+   * Aucune inscription en compétition ONGOING → autorisé.
    */
+  private async teamTransferPeriodAllows(teamId: string): Promise<boolean> {
+    const blocked = await this.prisma.competitionTeam.findFirst({
+      where: {
+        team_id: teamId,
+        competition: {
+          status: 'ONGOING',
+          isTransferMarketOpen: false,
+        },
+      },
+    })
+    return blocked === null
+  }
+
   private async assertTransferMarketOpen(
     fromTeamId: string,
     toTeamId: string | null,
   ) {
-    const buyerInClosed = await this.prisma.competitionTeam.findMany({
-      where: {
-        team_id: fromTeamId,
-        competition: { isTransferMarketOpen: false },
-      },
-      select: { competition_id: true },
-    });
-    const closedCompIds = buyerInClosed.map((r) => r.competition_id);
-    if (closedCompIds.length === 0) {
-      return;
+    const msg = 'La période de transfert est fermée.'
+    if (!(await this.teamTransferPeriodAllows(fromTeamId))) {
+      throw new ForbiddenException(msg)
     }
-    if (toTeamId == null) {
-      throw new ForbiddenException('Marché des transferts clos');
-    }
-    const sharedClosed = await this.prisma.competitionTeam.findFirst({
-      where: {
-        team_id: toTeamId,
-        competition_id: { in: closedCompIds },
-      },
-    });
-    if (sharedClosed) {
-      throw new ForbiddenException('Marché des transferts clos');
+    if (toTeamId != null && !(await this.teamTransferPeriodAllows(toTeamId))) {
+      throw new ForbiddenException(msg)
     }
   }
 
@@ -155,7 +152,10 @@ export class TransferOfferService {
     const hit = await this.prisma.competitionTeam.findFirst({
       where: {
         team_id: { in: teamIds },
-        competition: { isTransferMarketOpen: false },
+        competition: {
+          status: 'ONGOING',
+          isTransferMarketOpen: false,
+        },
       },
       include: { competition: { select: { name: true } } },
     });
@@ -167,22 +167,52 @@ export class TransferOfferService {
 
   // ── POST /transfers/offer ──────────────────────────────────
   async createOffer(requestingUserId: string, dto: CreateTransferOfferDto) {
+    const actorUser = await this.prisma.user.findUnique({
+      where: { id: requestingUserId },
+      select: { role: true },
+    })
+    if (!actorUser) {
+      throw new NotFoundException('Utilisateur introuvable.')
+    }
+
+    const buyingTeam = await this.prisma.club.findUnique({
+      where: { id: dto.from_team_id },
+    })
+
+    if (!buyingTeam) {
+      throw new NotFoundException('Club acheteur introuvable.')
+    }
+
     const membership = await this.prisma.teamMember.findUnique({
       where: {
         user_id_team_id: { user_id: requestingUserId, team_id: dto.from_team_id },
       },
-    });
+    })
 
-    if (!membership || !STAFF_ROLES.includes(membership.club_role as (typeof STAFF_ROLES)[number])) {
+    const staffOk =
+      membership !== null &&
+      STAFF_ROLES.includes(membership.club_role as (typeof STAFF_ROLES)[number])
+    const managerLinkOk =
+      actorUser.role === 'MANAGER' && buyingTeam.manager_id === requestingUserId
+    const isAdmin = actorUser.role === 'ADMIN'
+
+    if (!isAdmin && !staffOk && !managerLinkOk) {
       throw new ForbiddenException(
-        "Vous devez être dirigeant du club acheteur pour envoyer une offre.",
-      );
+        'Seuls les dirigeants du club (Founder, Manager, Co-manager) peuvent initier une offre mercato. Les joueurs peuvent uniquement répondre aux offres reçues.',
+      )
     }
 
     const toTeamId =
       dto.to_team_id === undefined || dto.to_team_id === null || dto.to_team_id === ''
         ? null
         : dto.to_team_id;
+
+    const transferMode = dto.transfer_mode ?? 'NEGOTIATED_FEE'
+    if (transferMode === 'RELEASE_CLAUSE_BUYOUT' && toTeamId == null) {
+      throw new BadRequestException(
+        'Le mode clause libératoire exige un club vendeur (to_team_id).',
+      )
+    }
 
     // to_team_id absent / null = signature libre (recrutement direct) — pas de contrôle d’historique club
     if (toTeamId != null) {
@@ -197,14 +227,6 @@ export class TransferOfferService {
       if (dto.from_team_id === toTeamId) {
         throw new BadRequestException('Impossible de transférer vers le même club.');
       }
-    }
-
-    const buyingTeam = await this.prisma.club.findUnique({
-      where: { id: dto.from_team_id },
-    });
-
-    if (!buyingTeam) {
-      throw new NotFoundException('Club acheteur introuvable.');
     }
 
     const salaryAnnual =
@@ -316,6 +338,7 @@ export class TransferOfferService {
             from_team_id: dto.from_team_id,
             to_team_id: toTeamId,
             transfer_fee: dto.transfer_fee,
+            transfer_mode: transferMode,
             offered_salary: salaryAnnual,
             offered_clause: clauseVal,
             duration_months: dto.duration_months,
@@ -722,9 +745,9 @@ export class TransferOfferService {
   }
 
   /**
-   * Exécute le transfert : consommation réserve wallet acheteur (frais + 1re année salaire),
-   * crédit vendeur (indemnité) sur wallet club, mutation d’effectif, contrat en saisons.
-   * Aucun débit `User.omjepCoins`.
+   * Exécute le transfert : consommation réserve wallet acheteur (frais + salaire année 1),
+   * prime joueur (SIGNING_BONUS), vendeur selon `transfer_mode` (settlement différé vs crédit immédiat),
+   * mutation d’effectif, contrat.
    */
   private async finalizeTransfer(offerId: string) {
     const offerInclude = {
@@ -775,6 +798,8 @@ export class TransferOfferService {
     const releaseClauseMet =
       currentContract != null &&
       offer.transfer_fee >= currentContract.release_clause
+
+    const isReleaseClauseMode = offer.transfer_mode === 'RELEASE_CLAUSE_BUYOUT'
 
     const totalCost = totalSigningCost(offer.transfer_fee, offer.offered_salary)
     const reservedAmount = Number(offer.reserved_amount ?? 0)
@@ -830,15 +855,48 @@ export class TransferOfferService {
         data: { budget: { decrement: consumeAmount } },
       })
 
+      const signingBonusOc = Math.round(Number(cur.offered_salary))
+      if (signingBonusOc > 0) {
+        await tx.user.update({
+          where: { id: cur.player_id },
+          data: { omjepCoins: { increment: signingBonusOc } },
+        })
+        await tx.transaction.create({
+          data: {
+            user_id: cur.player_id,
+            amount: signingBonusOc,
+            type: 'SIGNING_BONUS',
+            description: `Prime de signature mercato (offre ${offerId})`,
+          },
+        })
+      }
+
       if (cur.to_team_id != null && cur.transfer_fee > 0) {
-        await this.clubWallet.creditClubOmjepInTransaction(
-          tx,
-          cur.to_team_id,
-          cur.transfer_fee,
-          'TRANSFER',
-          `Indemnité transfert — ${offer.player.ea_persona_name ?? 'joueur'} vers ${offer.fromTeam.name}${releaseClauseMet ? ' (clause libératoire atteinte)' : ''}`,
-          { offer_id: offerId },
-        )
+        if (cur.transfer_mode === 'RELEASE_CLAUSE_BUYOUT') {
+          await this.clubWallet.creditClubOmjepInTransaction(
+            tx,
+            cur.to_team_id,
+            cur.transfer_fee,
+            'TRANSFER',
+            `Paiement clause libératoire — ${offer.player.ea_persona_name ?? 'joueur'} vers ${offer.fromTeam.name}`,
+            { offer_id: offerId },
+          )
+        } else {
+          const existingSettlement = await tx.transferSellerSettlement.findUnique({
+            where: { transfer_offer_id: offerId },
+          })
+          if (!existingSettlement) {
+            await tx.transferSellerSettlement.create({
+              data: {
+                transfer_offer_id: offerId,
+                seller_team_id: cur.to_team_id,
+                amount: cur.transfer_fee,
+                status: 'PENDING_SEASON_END',
+                season_id: cur.contract_start_season_id,
+              },
+            })
+          }
+        }
       }
 
       if (cur.to_team_id != null) {
@@ -920,9 +978,11 @@ export class TransferOfferService {
       const newsDescription =
         offer.to_team_id == null
           ? `${playerName} s'engage avec ${clubName} en tant qu'agent libre.`
-          : releaseClauseMet
-            ? `${playerName} quitte ${sellerName} et rejoint ${clubName} après activation de la clause libératoire (${montantStr} OC).`
-            : `${playerName} s'engage avec ${clubName}. Frais de transfert : ${montantStr} OC.`
+          : isReleaseClauseMode
+            ? `${playerName} quitte ${sellerName} et rejoint ${clubName} (paiement clause ${montantStr} OC).`
+            : releaseClauseMet
+              ? `${playerName} quitte ${sellerName} et rejoint ${clubName} (offre ≥ clause : ${montantStr} OC, règlement vendeur fin de saison).`
+              : `${playerName} s'engage avec ${clubName}. Frais de transfert : ${montantStr} OC (règlement vendeur fin de saison).`
 
       await tx.newsEvent.create({
         data: {
@@ -939,6 +999,7 @@ export class TransferOfferService {
             transferFee: offer.transfer_fee,
             offeredSalary: offer.offered_salary,
             releaseClauseMet: releaseClauseMet,
+            transferMode: offer.transfer_mode,
             timestamp: new Date().toISOString(),
           },
         },
@@ -979,12 +1040,13 @@ export class TransferOfferService {
     )
 
     if (finalOffer.to_team_id != null) {
+      const releaseMode = finalOffer.transfer_mode === 'RELEASE_CLAUSE_BUYOUT'
       await this.notifications.sendToTeamManagers(
         finalOffer.to_team_id,
-        releaseClauseMet ? '⚡ Clause libératoire activée' : '💰 Transfert réalisé',
-        releaseClauseMet
-          ? `${finalOffer.player.ea_persona_name ?? 'Votre joueur'} a été libéré après activation de la clause libératoire (${finalOffer.transfer_fee.toLocaleString('fr-FR')} OC).`
-          : `${finalOffer.player.ea_persona_name ?? 'Votre joueur'} a été vendu à ${finalOffer.fromTeam.name} pour ${finalOffer.transfer_fee.toLocaleString('fr-FR')} OC.`,
+        releaseMode ? '⚡ Clause libératoire (paiement reçu)' : '💰 Transfert conclu',
+        releaseMode
+          ? `${finalOffer.player.ea_persona_name ?? 'Votre joueur'} : paiement clause ${finalOffer.transfer_fee.toLocaleString('fr-FR')} OC crédité sur le wallet club.`
+          : `${finalOffer.player.ea_persona_name ?? 'Votre joueur'} a été vendu à ${finalOffer.fromTeam.name} (${finalOffer.transfer_fee.toLocaleString('fr-FR')} OC — règlement fin de saison).`,
         { offer_id: offerId, type: 'PLAYER_SOLD' },
         'success',
         TRANSFER_NOTIF_OPTS,

@@ -1,5 +1,6 @@
 import {
   Allow,
+  IsEnum,
   IsInt,
   IsNumber,
   IsOptional,
@@ -9,6 +10,7 @@ import {
   Max,
   ValidateIf,
 } from 'class-validator';
+import { TransferMode } from '@omjep/database';
 
 export class CreateTransferOfferDto {
   @IsUUID()
@@ -24,10 +26,15 @@ export class CreateTransferOfferDto {
   @IsUUID()
   to_team_id?: string | null;
 
-  /** Indemnité versée au club vendeur (OMJEP Coins) — 0 pour agent libre sans frais */
+  /** Indemnité (négocié) ou montant de clause payé au vendeur si `transfer_mode = RELEASE_CLAUSE_BUYOUT` */
   @IsNumber()
   @Min(0)
   transfer_fee!: number;
+
+  /** Mercato V2 Phase D — défaut : négociation classique (règlement vendeur fin de saison). */
+  @IsOptional()
+  @IsEnum(TransferMode)
+  transfer_mode?: TransferMode;
 
   /** Salaire annuel proposé au joueur (OC) — si absent, utiliser `salaryPropose` (hebdo × 52) */
   @IsOptional()
