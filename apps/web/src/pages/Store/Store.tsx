@@ -413,7 +413,7 @@ export default function Store() {
   }
 
   return (
-    <div className="kimi-luxury-store-page space-y-8">
+    <div className="omjep-product-page space-y-8">
       <ExchangeModal
         open={exchangeOpen}
         onClose={() => setExchangeOpen(false)}
@@ -424,9 +424,9 @@ export default function Store() {
         maxOc={omjep}
         maxJepy={jepy}
       />
-      <div className="overflow-hidden rounded-none border border-black/10 bg-transparent backdrop-blur-xl dark:border-white/20">
-        <div className="border-b border-black/10 bg-transparent px-12 py-12 dark:border-white/20">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="overflow-hidden rounded-xl border border-omjep-border bg-omjep-bg-panel shadow-sm">
+        <div className="border-b border-omjep-border px-6 py-8 md:px-10 md:py-9">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
             <DashboardPageHeading
               eyebrow="Storefront"
               title="Boutique"
@@ -434,62 +434,63 @@ export default function Store() {
               className="border-b-0 pb-0"
             />
 
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <div className="inline-flex items-center gap-2 rounded-none border border-violet-200/70 bg-white/70 px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
-                <div>
-                  <p className="text-[12px] uppercase tracking-widest text-slate-600 dark:text-white/65">OMJEP</p>
-                  <p className="font-mono text-6xl font-bold tracking-tight text-slate-950 dark:text-white">{formatCurrency(omjep, 'OC')}</p>
-                </div>
+            <div className="flex flex-wrap items-stretch gap-2 sm:justify-end">
+              <div className="omjep-stat-tile flex min-w-[10rem] flex-1 flex-col justify-center sm:flex-initial sm:min-w-[11rem]">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-omjep-text-muted">OMJEP</p>
+                <p className="mt-0.5 font-mono text-3xl font-bold tabular-nums tracking-tight text-omjep-text-primary md:text-4xl">
+                  {formatCurrency(omjep, 'OC')}
+                </p>
               </div>
               <button
                 type="button"
                 onClick={() => setExchangeOpen(true)}
-                className="rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-bold uppercase tracking-wide text-black transition dark:border-neutral-800 dark:text-white"
+                className="omjep-btn-secondary self-center px-4 py-2.5 text-[11px] font-bold uppercase tracking-wide"
               >
                 Convertir
               </button>
-              <div className="inline-flex items-center gap-2 rounded-none border border-violet-200/70 bg-white/70 px-4 py-2.5 backdrop-blur-sm dark:border-white/20 dark:bg-black/40">
-                <div>
-                  <p className="text-[12px] uppercase tracking-widest text-slate-600 dark:text-white/65">JPY</p>
-                  <p className="font-mono text-6xl font-bold tracking-tight text-slate-950 dark:text-white">{formatCurrency(jepy, 'Jepy')}</p>
-                </div>
+              <div className="omjep-stat-tile flex min-w-[10rem] flex-1 flex-col justify-center sm:flex-initial sm:min-w-[11rem]">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-omjep-text-muted">JPY</p>
+                <p className="mt-0.5 font-mono text-3xl font-bold tabular-nums tracking-tight text-omjep-text-primary md:text-4xl">
+                  {formatCurrency(jepy, 'Jepy')}
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-slate-500">
-              Cosmétiques et abonnements VIP — payez en Jepy.
-            </p>
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-omjep-text-secondary">Cosmétiques et abonnements VIP — payez en Jepy.</p>
 
-            <div className="relative flex w-full max-w-lg rounded-none border border-violet-200 bg-white/80 p-1 sm:w-auto dark:border-neutral-800 dark:bg-black/35">
+            <div className="omjep-tabrail flex w-full max-w-2xl flex-wrap sm:w-auto">
               {(['cosmetics', 'card-styles', 'vip', 'rewards'] as const).map((key) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setTab(key)}
-                  className={`relative flex-1 rounded-none py-2.5 text-center text-sm font-semibold transition-colors sm:min-w-[8rem] ${
-                    tab === key
-                      ? 'text-slate-950 dark:text-white'
-                      : 'text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white'
+                  className={`omjep-tabrail__btn min-w-0 flex-1 sm:flex-initial sm:min-w-[7.5rem] ${
+                    tab === key ? 'omjep-tabrail__btn--active' : ''
                   }`}
                 >
-                  {tab === key && (
-                    <motion.div
-                      layoutId="store-tab-pill"
-                      className="absolute inset-0 rounded-none bg-violet-100/80 dark:bg-white/[0.10]"
-                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                    />
-                  )}
-                  <span className="relative z-10 inline-flex items-center justify-center gap-2">
+                  <span className="inline-flex items-center justify-center gap-2">
                     {key === 'cosmetics' ? (
-                      <><Gem className="h-4 w-4 opacity-80" />Cosmétiques</>
+                      <>
+                        <Gem className="h-4 w-4 text-omjep-mauve/80" aria-hidden />
+                        Cosmétiques
+                      </>
                     ) : key === 'card-styles' ? (
-                      <><Gem className="h-4 w-4 text-black dark:text-white" />Styles de Cartes 🦅</>
+                      <>
+                        <Gem className="h-4 w-4 text-omjep-mauve/80" aria-hidden />
+                        Styles de Cartes 🦅
+                      </>
                     ) : key === 'vip' ? (
-                      <><Crown className="h-4 w-4 text-black dark:text-white" />Abonnements VIP</>
+                      <>
+                        <Crown className="h-4 w-4 text-omjep-gold/90" aria-hidden />
+                        Abonnements VIP
+                      </>
                     ) : (
-                      <><Trophy className="h-4 w-4 text-black dark:text-white" />Récompenses</>
+                      <>
+                        <Trophy className="h-4 w-4 text-omjep-mauve/80" aria-hidden />
+                        Récompenses
+                      </>
                     )}
                   </span>
                 </button>
@@ -517,7 +518,7 @@ export default function Store() {
                   <div className="relative mb-4 h-44 overflow-hidden rounded-none border border-neutral-200 sm:h-52 dark:border-neutral-800">
                     <ProfileShowcaseHeroMedia bannerUrl={resolvedStoreBannerPreview} />
                     <div className="pointer-events-none absolute inset-0 bg-transparent" />
-                    <p className="pointer-events-none absolute bottom-2 left-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black/80 dark:text-white/80">
+                    <p className="pointer-events-none absolute bottom-2 left-3 text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-text-primary/90 dark:text-white/80">
                       Aperçu profil
                     </p>
                   </div>
@@ -554,33 +555,31 @@ export default function Store() {
                         selectCosmeticItem(item);
                       }
                     }}
-                    className={`group flex cursor-pointer flex-col overflow-hidden rounded-none border bg-white/[0.02] backdrop-blur-md outline-none transition hover:border-neutral-200 focus-visible:ring-0 dark:hover:border-neutral-800 ${
-                      isPreviewSelected
-                        ? 'border-neutral-200 ring-0 dark:border-neutral-800'
-                        : 'border-neutral-200 dark:border-neutral-800'
+                    className={`group omjep-surface-card flex cursor-pointer flex-col overflow-hidden outline-none transition hover:border-omjep-mauve/35 hover:shadow-md focus-visible:ring-2 focus-visible:ring-omjep-focus/40 ${
+                      isPreviewSelected ? 'border-omjep-mauve/45 ring-1 ring-omjep-mauve/20' : ''
                     }`}
                   >
-                    <div className="relative aspect-[16/10] overflow-hidden bg-slate-900/50">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-omjep-bg-panel-soft dark:bg-slate-900/50">
                       <img
                         src={item.imageUrl}
                         alt=""
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                       />
-                      <span className="absolute left-3 top-3 rounded-none border border-neutral-200 bg-white/[0.02] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-black dark:border-neutral-800 dark:text-white">
+                      <span className="absolute left-3 top-3 rounded-md border border-omjep-border bg-omjep-bg-panel/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-omjep-text-secondary backdrop-blur-sm dark:text-omjep-text-muted">
                         {CATEGORY_LABEL[item.category]}
                       </span>
                     </div>
-                    <div className="flex flex-1 flex-col p-12">
-                      <h2 className="text-lg font-bold text-black dark:text-white">{item.name}</h2>
-                      <p className="mt-1 line-clamp-2 flex-1 text-sm text-black/65 dark:text-white/65">{item.description}</p>
-                      <div className="mt-4 flex items-center justify-between gap-3">
-                        <span className="inline-flex items-center gap-1.5 font-mono text-sm font-bold text-black dark:text-white">
-                          <Sparkles className="h-4 w-4 text-black dark:text-white" />
+                    <div className="flex flex-1 flex-col p-5 md:p-6">
+                      <h2 className="text-lg font-bold text-omjep-text-primary">{item.name}</h2>
+                      <p className="mt-1 line-clamp-2 flex-1 text-sm text-omjep-text-secondary">{item.description}</p>
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                        <span className="inline-flex items-center gap-1.5 font-mono text-sm font-bold text-omjep-text-primary">
+                          <Sparkles className="h-4 w-4 text-omjep-gold/90" aria-hidden />
                           {formatCurrency(item.priceJepy, 'Jepy')}
                         </span>
                         {owned ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-semibold text-black dark:border-neutral-800 dark:text-white">
-                            <Check className="h-3.5 w-3.5" />
+                          <span className="inline-flex items-center gap-1.5 rounded-lg border border-omjep-border bg-omjep-bg-panel-soft px-3 py-2 text-xs font-semibold text-omjep-text-primary">
+                            <Check className="h-3.5 w-3.5" aria-hidden />
                             Possédé
                           </span>
                         ) : (
@@ -591,7 +590,7 @@ export default function Store() {
                               e.stopPropagation();
                               void buy(item);
                             }}
-                            className="rounded-none border border-neutral-200 bg-transparent px-4 py-2 text-xs font-bold text-black transition disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-800 dark:text-white"
+                            className="omjep-btn-secondary px-4 py-2 text-xs font-bold normal-case disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             {busy ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
@@ -611,8 +610,8 @@ export default function Store() {
             </div>
 
             {sortedItems.length === 0 && (
-              <div className="rounded-none border border-neutral-200 bg-white/[0.02] p-12 text-center backdrop-blur-sm dark:border-neutral-800">
-                <p className="text-sm text-black/60 dark:text-white/60">Aucun article pour le moment.</p>
+              <div className="omjep-surface-card p-10 text-center">
+                <p className="text-sm text-omjep-text-secondary">Aucun article pour le moment.</p>
               </div>
             )}
           </motion.div>

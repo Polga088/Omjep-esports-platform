@@ -7,7 +7,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button, Card } from '@omjep/ui';
+import { Button } from '@omjep/ui';
 import api from '@/lib/api';
 import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 import { Platform } from '@omjep/shared';
@@ -229,16 +229,16 @@ export default function ManagerClub() {
   if (loading || managed === undefined) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-omjep-mauve" />
       </div>
     );
   }
 
   if (managed) {
     return (
-      <div className="max-w-4xl space-y-8">
-        <header className="relative rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8 overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-amber-400/5 blur-[80px] pointer-events-none" />
+      <div className="max-w-4xl space-y-6">
+        <header className="omjep-surface-card relative overflow-hidden p-5 md:p-6">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-omjep-gold/[0.07] blur-3xl" />
           <div className="relative">
             <DashboardPageHeading
               eyebrow="Club Management"
@@ -246,24 +246,25 @@ export default function ManagerClub() {
               subtitle="Modifiez les informations de votre club en toute sécurité"
               className="border-b-0 pb-1"
             />
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Statut actuel: <span className="font-semibold text-slate-900 dark:text-slate-200">{managed.validation_status}</span>
+            <p className="mt-2 text-sm text-omjep-text-secondary">
+              Statut actuel :{' '}
+              <span className="font-semibold text-omjep-text-primary">{managed.validation_status}</span>
             </p>
           </div>
         </header>
 
         {formError && (
-          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="flex items-center gap-2 rounded-xl border border-omjep-danger/30 bg-omjep-danger/10 px-4 py-3 text-sm text-omjep-danger">
+            <AlertCircle className="h-4 w-4 shrink-0" />
             {formError}
           </div>
         )}
 
-        <Card variant="flat" className="p-6 md:p-8 border-white/[0.06]">
-          <form onSubmit={handleManagedSave} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="club-name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <div className="omjep-surface-card p-5 md:p-6">
+          <form onSubmit={handleManagedSave} className="space-y-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+              <div className="space-y-1.5">
+                <label htmlFor="club-name" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
                   Nom du club
                 </label>
                 <input
@@ -273,11 +274,11 @@ export default function ManagerClub() {
                   onChange={(e) => setEditForm((prev) => (prev ? { ...prev, name: e.target.value } : prev))}
                   maxLength={50}
                   required
-                  className="w-full rounded-xl border border-slate-300/60 dark:border-white/10 bg-white dark:bg-white/[0.03] py-3 px-4 text-sm text-slate-900 dark:text-white outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20"
+                  className="omjep-field text-sm"
                 />
               </div>
-              <div className="space-y-2">
-                <label htmlFor="club-platform" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              <div className="space-y-1.5">
+                <label htmlFor="club-platform" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
                   Plateforme
                 </label>
                 <select
@@ -288,7 +289,7 @@ export default function ManagerClub() {
                       prev ? { ...prev, platform: e.target.value as Platform } : prev,
                     )
                   }
-                  className="w-full rounded-xl border border-slate-300/60 dark:border-white/10 bg-white dark:bg-white/[0.03] py-3 px-4 text-sm text-slate-900 dark:text-white outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20"
+                  className="omjep-field text-sm"
                 >
                   {platformOptions.map((option) => (
                     <option key={option} value={option}>
@@ -299,8 +300,8 @@ export default function ManagerClub() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="club-description" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            <div className="space-y-1.5">
+              <label htmlFor="club-description" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
                 Description
               </label>
               <textarea
@@ -308,13 +309,13 @@ export default function ManagerClub() {
                 value={editForm?.description ?? ''}
                 onChange={(e) => setEditForm((prev) => (prev ? { ...prev, description: e.target.value } : prev))}
                 maxLength={4000}
-                rows={4}
-                className="w-full rounded-xl border border-slate-300/60 dark:border-white/10 bg-white dark:bg-white/[0.03] py-3 px-4 text-sm text-slate-900 dark:text-white outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20 resize-y min-h-[100px]"
+                rows={3}
+                className="omjep-field min-h-[5.5rem] resize-y text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="club-proclubs-url" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            <div className="space-y-1.5">
+              <label htmlFor="club-proclubs-url" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
                 Lien Pro Clubs / EA
               </label>
               <input
@@ -324,13 +325,13 @@ export default function ManagerClub() {
                 onChange={(e) => setEditForm((prev) => (prev ? { ...prev, proclubs_url: e.target.value } : prev))}
                 maxLength={2048}
                 placeholder="https://proclubs.io/club/..."
-                className="w-full rounded-xl border border-slate-300/60 dark:border-white/10 bg-white dark:bg-white/[0.03] py-3 px-4 text-sm text-slate-900 dark:text-white outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20"
+                className="omjep-field text-sm placeholder:text-omjep-text-muted"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="club-primary-color" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+              <div className="space-y-1.5">
+                <label htmlFor="club-primary-color" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
                   Couleur principale
                 </label>
                 <input
@@ -338,11 +339,11 @@ export default function ManagerClub() {
                   type="color"
                   value={editForm?.primaryColor ?? '#5B21B6'}
                   onChange={(e) => setEditForm((prev) => (prev ? { ...prev, primaryColor: e.target.value } : prev))}
-                  className="w-full h-12 rounded-xl border border-slate-300/60 dark:border-white/10 bg-white dark:bg-white/[0.03] p-2"
+                  className="omjep-field h-10 w-full cursor-pointer p-1"
                 />
               </div>
-              <div className="space-y-2">
-                <label htmlFor="club-secondary-color" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              <div className="space-y-1.5">
+                <label htmlFor="club-secondary-color" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
                   Couleur secondaire
                 </label>
                 <input
@@ -350,15 +351,17 @@ export default function ManagerClub() {
                   type="color"
                   value={editForm?.secondaryColor ?? '#F59E0B'}
                   onChange={(e) => setEditForm((prev) => (prev ? { ...prev, secondaryColor: e.target.value } : prev))}
-                  className="w-full h-12 rounded-xl border border-slate-300/60 dark:border-white/10 bg-white dark:bg-white/[0.03] p-2"
+                  className="omjep-field h-10 w-full cursor-pointer p-1"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <span className="block text-sm font-medium text-slate-700 dark:text-slate-300">Identité visuelle (logo)</span>
-              <div className="flex flex-wrap items-start gap-4">
-                <label className="flex flex-col items-center justify-center w-28 h-28 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/15 bg-slate-50 dark:bg-white/[0.02] cursor-pointer hover:border-amber-400/40 hover:bg-amber-400/5 transition-colors shrink-0">
+            <div className="space-y-1.5">
+              <span className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
+                Identité visuelle (logo)
+              </span>
+              <div className="flex flex-wrap items-start gap-3">
+                <label className="flex h-24 w-24 shrink-0 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-omjep-border bg-omjep-bg-panel-soft transition-colors hover:border-omjep-mauve/40 hover:bg-omjep-mauve/[0.06]">
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
@@ -367,22 +370,22 @@ export default function ManagerClub() {
                     disabled={logoUploading}
                   />
                   {managedLogoPreview ? (
-                    <img src={managedLogoPreview} alt="Club logo preview" className="w-full h-full object-cover rounded-[10px]" />
+                    <img src={managedLogoPreview} alt="Club logo preview" className="h-full w-full rounded-lg object-cover" />
                   ) : (
-                    <span className="flex flex-col items-center gap-1 text-slate-500 text-xs p-2 text-center">
-                      <ImagePlus className="w-6 h-6 text-slate-500" />
+                    <span className="flex flex-col items-center gap-1 p-2 text-center text-[11px] text-omjep-text-muted">
+                      <ImagePlus className="h-5 w-5 text-omjep-text-muted" />
                       Ajouter
                     </span>
                   )}
                 </label>
-                <p className="text-xs text-slate-500 max-w-sm pt-1">
+                <p className="max-w-sm pt-0.5 text-xs text-omjep-text-secondary">
                   PNG, JPG, JPEG, WebP uniquement. Taille max: 2MB.
                   {logoUploading ? ' Upload en cours...' : ''}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 pt-1">
               <Button
                 type="submit"
                 variant="gold"
@@ -403,15 +406,15 @@ export default function ManagerClub() {
               </Button>
             </div>
           </form>
-        </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl space-y-8">
-      <header className="relative rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-transparent to-transparent p-8 overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-amber-400/5 blur-[80px] pointer-events-none" />
+    <div className="max-w-2xl space-y-6">
+      <header className="omjep-surface-card relative overflow-hidden p-5 md:p-6">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-omjep-gold/[0.07] blur-3xl" />
         <div className="relative">
           <DashboardPageHeading
             eyebrow="Club Setup"
@@ -419,7 +422,7 @@ export default function ManagerClub() {
             subtitle="Renseignez les informations du club pour lancer la validation"
             className="border-b-0 pb-1"
           />
-          <p className="text-slate-400 text-sm leading-relaxed max-w-lg">
+          <p className="mt-2 max-w-lg text-sm leading-relaxed text-omjep-text-secondary">
             Renseignez les informations de votre club Pro Clubs. Après envoi, l&apos;équipe OMJEP
             validera votre demande avant activation sur la plateforme.
           </p>
@@ -427,17 +430,17 @@ export default function ManagerClub() {
       </header>
 
       {formError && (
-        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <AlertCircle className="w-4 h-4 shrink-0" />
+        <div className="flex items-center gap-2 rounded-xl border border-omjep-danger/30 bg-omjep-danger/10 px-4 py-3 text-sm text-omjep-danger">
+          <AlertCircle className="h-4 w-4 shrink-0" />
           {formError}
         </div>
       )}
 
-      <Card variant="flat" className="p-6 md:p-8 border-white/[0.06]">
-        <form onSubmit={handleRequestSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="club-name" className="block text-sm font-medium text-slate-300">
-              Nom du club <span className="text-red-400">*</span>
+      <div className="omjep-surface-card p-5 md:p-6">
+        <form onSubmit={handleRequestSubmit} className="space-y-4">
+          <div className="space-y-1.5">
+            <label htmlFor="club-name" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
+              Nom du club <span className="text-omjep-danger">*</span>
             </label>
             <input
               id="club-name"
@@ -447,12 +450,12 @@ export default function ManagerClub() {
               maxLength={120}
               required
               placeholder="Ex : Eagles Casablanca"
-              className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 px-4 text-sm text-white placeholder-slate-600 outline-none transition-all focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20 hover:border-white/20"
+              className="omjep-field text-sm placeholder:text-omjep-text-muted"
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="club-desc" className="block text-sm font-medium text-slate-300">
+          <div className="space-y-1.5">
+            <label htmlFor="club-desc" className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">
               Description
             </label>
             <textarea
@@ -460,27 +463,27 @@ export default function ManagerClub() {
               value={requestDescription}
               onChange={(e) => setRequestDescription(e.target.value)}
               maxLength={4000}
-              rows={4}
+              rows={3}
               placeholder="Présentez votre club, vos objectifs, votre communauté…"
-              className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 px-4 text-sm text-white placeholder-slate-600 outline-none transition-all focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20 hover:border-white/20 resize-y min-h-[100px]"
+              className="omjep-field min-h-[5.5rem] resize-y text-sm placeholder:text-omjep-text-muted"
             />
           </div>
 
-          <div className="space-y-2">
-            <span className="block text-sm font-medium text-slate-300">Logo</span>
-            <div className="flex flex-wrap items-start gap-4">
-              <label className="flex flex-col items-center justify-center w-28 h-28 rounded-xl border-2 border-dashed border-white/15 bg-white/[0.02] cursor-pointer hover:border-amber-400/40 hover:bg-amber-400/5 transition-colors shrink-0">
+          <div className="space-y-1.5">
+            <span className="block text-[11px] font-semibold uppercase tracking-wide text-omjep-text-muted">Logo</span>
+            <div className="flex flex-wrap items-start gap-3">
+              <label className="flex h-24 w-24 shrink-0 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-omjep-border bg-omjep-bg-panel-soft transition-colors hover:border-omjep-mauve/40 hover:bg-omjep-mauve/[0.06]">
                 <input type="file" accept="image/*" className="sr-only" onChange={onRequestLogoChange} />
                 {requestLogoPreview ? (
-                  <img src={requestLogoPreview} alt="" className="w-full h-full object-cover rounded-[10px]" />
+                  <img src={requestLogoPreview} alt="" className="h-full w-full rounded-lg object-cover" />
                 ) : (
-                  <span className="flex flex-col items-center gap-1 text-slate-500 text-xs p-2 text-center">
-                    <ImagePlus className="w-6 h-6 text-slate-500" />
+                  <span className="flex flex-col items-center gap-1 p-2 text-center text-[11px] text-omjep-text-muted">
+                    <ImagePlus className="h-5 w-5 text-omjep-text-muted" />
                     Ajouter
                   </span>
                 )}
               </label>
-              <p className="text-xs text-slate-500 max-w-sm pt-1">
+              <p className="max-w-sm pt-0.5 text-xs text-omjep-text-secondary">
                 PNG, JPG ou WebP — max. {REQUEST_LOGO_MAX_BYTES / 1024} Ko. Le logo sera visible par les
                 administrateurs lors de la validation.
               </p>
@@ -491,9 +494,9 @@ export default function ManagerClub() {
             Envoyer la demande
           </Button>
         </form>
-      </Card>
+      </div>
 
-      <p className="text-xs text-slate-600 text-center">
+      <p className="text-center text-xs text-omjep-text-muted">
         Après soumission, un message confirmera que votre club est en attente de validation par
         l&apos;équipe OMJEP.
       </p>

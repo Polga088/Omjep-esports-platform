@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Loader2, Gem } from 'lucide-react';
+import { Loader2, Gem, Lock } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuthStore, type User } from '@/store/useAuthStore';
 import {
@@ -8,7 +8,6 @@ import {
   useResolvedShowcaseBanner,
   useShowcaseVortexHue,
 } from '@/components/ProfileShowcaseHeroMedia';
-import MaintenancePrestige from '@/components/MaintenancePrestige';
 import type { StoreItemRow } from '@/pages/Store/IdentityPreview';
 import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
 
@@ -134,7 +133,7 @@ export default function Vault() {
   if (loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-cyan-400" />
+        <Loader2 className="h-10 w-10 animate-spin text-omjep-mauve" />
       </div>
     );
   }
@@ -143,18 +142,23 @@ export default function Vault() {
     return (
       <div className="space-y-8">
         <VaultHeader />
-        <MaintenancePrestige
-          title="The Vault"
-          message="Coffre-fort vide. Accédez au Store pour débloquer votre identité."
-          icon="lock"
-        >
+        <div className="omjep-surface-card flex flex-col items-center gap-6 px-6 py-14 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-omjep-border bg-omjep-bg-panel-soft shadow-sm">
+            <Lock className="h-7 w-7 text-omjep-mauve" strokeWidth={1.5} aria-hidden />
+          </div>
+          <div className="max-w-md space-y-2">
+            <h2 className="font-heading text-xl font-semibold tracking-tight text-omjep-text-primary">The Vault</h2>
+            <p className="text-sm leading-relaxed text-omjep-text-secondary">
+              Coffre-fort vide. Accédez à la boutique pour débloquer bannières, cadres et badges.
+            </p>
+          </div>
           <Link
             to="/dashboard/store"
-            className="rounded-xl border border-cyan-400/45 bg-cyan-500/15 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,0.25)] transition hover:bg-cyan-500/25"
+            className="inline-flex items-center justify-center rounded-xl border border-omjep-border-gold/35 bg-omjep-gold/[0.08] px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-omjep-text-primary transition hover:border-omjep-border-gold/50 hover:bg-omjep-gold/[0.12]"
           >
             Ouvrir la boutique
           </Link>
-        </MaintenancePrestige>
+        </div>
       </div>
     );
   }
@@ -164,20 +168,20 @@ export default function Vault() {
       <VaultHeader />
 
       <div
-        className={`relative overflow-hidden rounded-2xl border border-cyan-500/15 bg-[#070b12] ${vortexHud ? 'showcase-hud-vortex' : ''}`}
+        className={`relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel shadow-sm dark:border-cyan-500/20 dark:bg-[#070b12] dark:shadow-none ${vortexHud ? 'showcase-hud-vortex' : ''}`}
       >
         <div className="relative h-44 w-full overflow-hidden sm:h-52">
           <ProfileShowcaseHeroMedia bannerUrl={resolvedBanner} />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#070b12] via-transparent to-black/40" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-omjep-bg-panel via-transparent to-omjep-text-primary/5 dark:from-[#070b12] dark:to-black/40" />
         </div>
-        <div className="relative z-[1] flex flex-col items-center gap-2 border-t border-white/[0.06] px-4 py-3 sm:flex-row sm:justify-center sm:gap-4">
-          <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/80">
+        <div className="relative z-[1] flex flex-col items-center gap-2 border-t border-omjep-border bg-omjep-bg-panel-soft px-4 py-3 sm:flex-row sm:justify-center sm:gap-4 dark:border-white/[0.06] dark:bg-transparent">
+          <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-text-muted dark:text-cyan-400/85">
             Prévisualisation — identique au hero du tableau de bord
           </p>
           {hasBannerPreview ? (
             <Link
               to={{ pathname: '/dashboard', search: searchParams.toString() }}
-              className="text-[10px] font-bold uppercase tracking-widest text-amber-400/90 underline-offset-2 hover:text-amber-300 hover:underline"
+              className="text-[10px] font-bold uppercase tracking-widest text-omjep-mauve underline-offset-2 hover:text-omjep-brand hover:underline dark:text-amber-400/90 dark:hover:text-amber-300"
             >
               Ouvrir le tableau de bord avec cette bannière
             </Link>
@@ -191,30 +195,32 @@ export default function Vault() {
             key={item.id}
             type="button"
             onClick={() => onItemClick(item)}
-            className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0D13]/90 text-left shadow-[inset_0_0_48px_rgba(34,211,238,0.07),inset_0_1px_0_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.35)] transition hover:border-cyan-400/25 hover:shadow-[inset_0_0_56px_rgba(34,211,238,0.12),inset_0_1px_0_rgba(255,255,255,0.08),0_12px_40px_rgba(34,211,238,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/50"
+            className="group relative overflow-hidden rounded-xl border border-omjep-border bg-omjep-bg-panel text-left shadow-sm transition hover:border-omjep-mauve/35 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-omjep-mauve/40 dark:border-white/[0.08] dark:bg-[#0B0D13]/92 dark:shadow-[inset_0_0_36px_rgba(34,211,238,0.06),0_8px_28px_rgba(0,0,0,0.35)] dark:hover:border-cyan-400/25"
           >
             {isItemEquipped(item, user) ? (
               <span
-                className="absolute left-3 top-3 z-[2] rounded border border-cyan-400/80 bg-black/75 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em] text-cyan-200 shadow-[0_0_16px_rgba(34,211,238,0.95),inset_0_0_10px_rgba(34,211,238,0.25)]"
+                className="absolute left-3 top-3 z-[2] rounded-md border border-omjep-border-gold/50 bg-omjep-bg-panel px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em] text-omjep-gold shadow-sm dark:border-cyan-400/70 dark:bg-black/80 dark:text-cyan-200"
                 aria-label="Équipé"
               >
                 ACTIVE
               </span>
             ) : null}
-            <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40">
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-omjep-bg-panel-soft dark:bg-black/40">
               <img
                 src={item.imageUrl}
                 alt=""
-                className="h-full w-full object-cover opacity-95 transition group-hover:opacity-100 group-hover:scale-[1.02]"
+                className="h-full w-full object-cover opacity-95 transition group-hover:scale-[1.02] group-hover:opacity-100"
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0D13] via-transparent to-transparent" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-omjep-bg-panel via-transparent to-transparent dark:from-[#0B0D13]" />
             </div>
-            <div className="relative z-[1] space-y-1 p-4 pt-3">
+            <div className="relative z-[1] space-y-1 p-3.5 pt-2.5">
               <div className="flex items-start justify-between gap-2">
-                <p className="line-clamp-2 font-display text-sm font-bold leading-snug text-white">{item.name}</p>
-                <Gem className="h-4 w-4 shrink-0 text-cyan-400/50" aria-hidden />
+                <p className="line-clamp-2 font-display text-sm font-bold leading-snug text-omjep-text-primary">
+                  {item.name}
+                </p>
+                <Gem className="h-4 w-4 shrink-0 text-omjep-mauve/50 dark:text-cyan-400/50" aria-hidden />
               </div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-omjep-text-muted">
                 {CATEGORY_LABEL[item.category]}
               </p>
             </div>
