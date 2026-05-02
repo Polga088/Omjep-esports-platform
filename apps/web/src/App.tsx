@@ -68,9 +68,9 @@ function ThemedToaster() {
       position="top-right"
       toastOptions={{
         style: {
-          background: isDark ? '#000000' : '#ffffff',
-          border: isDark ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(0, 0, 0, 0.12)',
-          color: isDark ? '#ffffff' : '#000000',
+          background: 'var(--omjep-bg-panel)',
+          border: '1px solid color-mix(in srgb, var(--omjep-border) 85%, transparent)',
+          color: 'var(--omjep-text-primary)',
         },
       }}
     />

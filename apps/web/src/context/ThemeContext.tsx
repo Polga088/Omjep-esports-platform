@@ -12,8 +12,6 @@ const ThemeContext = createContext<ThemeContextValue | null>(null)
 
 const STORAGE_KEY = 'omjep-theme'
 const DEFAULT_THEME: Theme = 'dark'
-const LIGHT_ACCENT = '#166534'
-const DARK_ACCENT = '#22c55e'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
@@ -31,8 +29,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const isDark = theme === 'dark'
     root.setAttribute('data-theme', theme)
     root.classList.toggle('dark', isDark)
-    root.style.setProperty('--omjep-bg', isDark ? '#000000' : '#FFFFFF')
-    root.style.setProperty('--omjep-accent', isDark ? DARK_ACCENT : LIGHT_ACCENT)
+    /** Tokens OMJEP vivent dans index.css — ne plus écraser avec du inline (Phase 1). */
+    root.style.removeProperty('--omjep-bg')
+    root.style.removeProperty('--omjep-accent')
     try {
       localStorage.setItem(STORAGE_KEY, theme)
     } catch {

@@ -12,6 +12,10 @@
   --omjep-bg: #090b16;
   --omjep-surface: rgba(16, 19, 35, 0.86);
   --omjep-gold: #d4af37;
+  /** Marque primaire (mauve) — alias explicites pour Tailwind / sélection */
+  --omjep-mauve: #6c52d9;
+  --omjep-brand: #6c52d9;
+  /** Accent = marque (rétrocompat classes omjep-accent) */
   --omjep-accent: #6c52d9;
   --omjep-neutral: #aab0c8;
   --omjep-bg-elevated: #10142a;
@@ -48,12 +52,14 @@
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --omjep-bg: #f8f7f3;
+  --omjep-bg: #f4f2f8;
   --omjep-surface: rgba(255, 255, 255, 0.92);
+  --omjep-mauve: #684fcf;
+  --omjep-brand: #684fcf;
   --omjep-accent: #684fcf;
   --omjep-neutral: #4f5a79;
   --omjep-bg-elevated: #f0eef8;
-  --omjep-bg-panel: #ffffff;
+  --omjep-bg-panel: #fdfcfa;
   --omjep-bg-panel-soft: #f4f2fc;
   --omjep-text-primary: #171d37;
   --omjep-text-secondary: #2a3658;

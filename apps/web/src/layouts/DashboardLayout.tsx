@@ -30,8 +30,6 @@ import {
   getEquippedCardStyle,
   mapCardRarityToIdentityRarity,
 } from '@/features/profile/mocks/premiumProfile.mock';
-import { useTheme } from '@/context/ThemeContext';
-
 const dockPrimary: DockItem[] = [
   { to: '/dashboard/team', label: 'Mon Équipe', icon: Users },
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
@@ -71,8 +69,6 @@ const pageTitles: Record<string, string> = {
 };
 
 export default function DashboardLayout() {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, patchUser } = useAuthStore();
@@ -210,9 +206,7 @@ export default function DashboardLayout() {
   return (
     <div className={`dashboard-layout-shell flex min-h-[100dvh] bg-omjep-bg text-omjep-text-primary`}>
       <GoldConfetti active={showConfetti} />
-      <aside
-        className={`fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-omjep-border px-4 py-5 lg:flex lg:flex-col ${isDark ? 'bg-omjep-bg-panel/82 backdrop-blur-2xl' : 'bg-white/92 backdrop-blur-2xl'}`}
-      >
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-omjep-border bg-omjep-bg-panel/88 px-4 py-5 backdrop-blur-2xl lg:flex lg:flex-col">
         <Link to="/dashboard" className="mb-6 flex items-center gap-2 px-2" aria-label="Cockpit OMJEP">
           <span className="font-heading text-xs font-semibold uppercase tracking-[0.28em] text-omjep-gold">OMJEP</span>
         </Link>
@@ -250,7 +244,7 @@ export default function DashboardLayout() {
       </aside>
 
       <section className="flex min-h-[100dvh] w-full flex-col lg:pl-72">
-        <header className={`dashboard-cockpit-topbar sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-omjep-border px-5 ${isDark ? 'bg-omjep-bg/88 backdrop-blur-xl' : 'bg-white/92 backdrop-blur-xl'}`}>
+        <header className="dashboard-cockpit-topbar sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-omjep-border bg-omjep-bg-panel/90 px-5 backdrop-blur-xl">
           <div className="min-w-0">
             <h1 className="truncate text-xl font-extrabold text-omjep-text-primary">{currentPageTitle}</h1>
             <p className="text-[11px] uppercase tracking-[0.16em] text-omjep-text-muted">Dashboard operation shell</p>
@@ -286,7 +280,7 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <div className={`border-b border-omjep-border/60 ${isDark ? 'bg-omjep-bg-panel/70' : 'bg-white/90'}`}>
+        <div className="border-b border-omjep-border/60 bg-omjep-bg-panel-soft/75">
           <LiveTicker />
           {mercatoLiveBadge ? (
             <div className="container-dashboard pt-0">
