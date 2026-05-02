@@ -6,6 +6,7 @@ import {
   getEquippedCardStyle,
   premiumProfileMock,
 } from '@/features/profile/mocks/premiumProfile.mock'
+import type { PlayerCardStoreRarity } from '@/features/store/models/playerCardStore.model'
 
 interface StoreItem {
   id: string
@@ -60,6 +61,13 @@ const rarityStyles: Record<StoreItem['rarity'], string> = {
   BRONZE: 'border-[#ad6f35]/40 from-[#ad6f35]/20 to-[#120d09]',
   SILVER: 'border-slate-300/35 from-slate-300/20 to-[#0f1218]',
   GOLD: 'border-amber-300/45 from-amber-400/30 to-[#171308]',
+}
+
+/** Rareté boutique 5 niveaux → rareté attendue par le callback profil (legacy 3 paliers). */
+const mapStoreRarityToCallbackRarity = (rarity: PlayerCardStoreRarity): StoreItem['rarity'] => {
+  if (rarity === 'COMMON') return 'BRONZE'
+  if (rarity === 'RARE') return 'SILVER'
+  return 'GOLD'
 }
 
 interface CardStyleStoreProps {
@@ -121,7 +129,7 @@ const CardStyleStore = ({
         if (equippedRarity) {
           onEquippedStyleChange?.(equippedRarity)
         } else if (mockEquippedStyle?.rarity) {
-          onEquippedStyleChange?.(mockEquippedStyle.rarity)
+          onEquippedStyleChange?.(mapStoreRarityToCallbackRarity(mockEquippedStyle.rarity))
         }
       }
     }
