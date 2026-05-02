@@ -459,7 +459,7 @@ export default function TransferMarket() {
   };
 
   return (
-    <div className="kimi-luxury-transfers-page space-y-8">
+    <div className="omjep-product-page space-y-8">
       <GoldConfetti active={showConfetti} />
 
       <div className="omjep-premium-panel rounded-none border border-black/10 bg-transparent px-12 py-12 dark:border-white/20">
@@ -625,18 +625,18 @@ export default function TransferMarket() {
                             <StatusIcon className="w-2.5 h-2.5" />
                             {statusLabel}
                           </span>
-                          <span className="text-[10px] text-slate-600">{timeAgo(offer.created_at)}</span>
+                          <span className="text-[10px] text-omjep-text-muted">{timeAgo(offer.created_at)}</span>
                         </div>
-                        <p className="mt-2 text-sm text-white">
-                          <span className="font-semibold text-black dark:text-white">{offer.fromTeam.name ?? '—'}</span>
+                        <p className="mt-2 text-sm text-omjep-text-primary">
+                          <span className="font-semibold text-omjep-text-primary">{offer.fromTeam.name ?? '—'}</span>
                           {' → '}
-                          <span className="text-slate-400">
+                          <span className="text-omjep-text-secondary">
                             {offer.toTeam?.name ?? (offer.to_team_id == null ? 'Agent libre' : '—')}
                           </span>
                           {' · '}
                           <Link
                             to={`/dashboard/profile/${offer.player_id}`}
-                            className="font-semibold hover:text-black dark:hover:text-white"
+                            className="font-semibold text-omjep-text-primary hover:opacity-80"
                           >
                             {offer.player.ea_persona_name ?? 'Joueur'}
                           </Link>
@@ -676,10 +676,11 @@ export default function TransferMarket() {
                       <StatusIcon className="w-2.5 h-2.5" />
                       {statusLabel}
                     </span>
-                    <span className="text-[10px] text-slate-600">{timeAgo(offer.created_at)}</span>
+                    <span className="text-[10px] text-omjep-text-muted">{timeAgo(offer.created_at)}</span>
                   </div>
-                  <p className="mt-2 text-sm text-white">
-                    Proposition de <span className="font-bold text-black dark:text-white">{offer.fromTeam.name ?? '—'}</span>
+                  <p className="mt-2 text-sm text-omjep-text-primary">
+                    Proposition de{' '}
+                    <span className="font-bold text-omjep-text-primary">{offer.fromTeam.name ?? '—'}</span>
                   </p>
                   <OfferTermsGrid offer={offer} />
                   <PlayerOfferActions
@@ -770,27 +771,27 @@ export default function TransferMarket() {
 
                     <div className="mt-4 grid grid-cols-4 gap-2 font-mono text-[11px]">
                       <div className="text-center">
-                        <span className="text-slate-500 block">Matchs</span>
-                        <span className="font-semibold text-white">{agent.stats?.matches_played ?? 0}</span>
+                        <span className="block text-omjep-text-muted">Matchs</span>
+                        <span className="font-semibold text-omjep-text-primary">{agent.stats?.matches_played ?? 0}</span>
                       </div>
                       <div className="text-center">
-                        <span className="text-slate-500 block">Buts</span>
-                        <span className="font-mono font-semibold text-black dark:text-white">{agent.stats?.goals ?? 0}</span>
+                        <span className="block text-omjep-text-muted">Buts</span>
+                        <span className="font-mono font-semibold text-omjep-text-primary">{agent.stats?.goals ?? 0}</span>
                       </div>
                       <div className="text-center">
-                        <span className="text-slate-500 block">Passes</span>
-                        <span className="font-semibold text-sky-400">{agent.stats?.assists ?? 0}</span>
+                        <span className="block text-omjep-text-muted">Passes</span>
+                        <span className="font-semibold text-omjep-cobalt">{agent.stats?.assists ?? 0}</span>
                       </div>
                       <div className="text-center">
-                        <span className="text-slate-500 block">Note</span>
-                        <span className="font-mono font-semibold text-black dark:text-white">
+                        <span className="block text-omjep-text-muted">Note</span>
+                        <span className="font-mono font-semibold text-omjep-text-primary">
                           {(agent.stats?.average_rating ?? 0).toFixed(1)}
                         </span>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <p className="text-[10px] text-slate-500">
+                    <div className="mt-4 pt-3 border-t border-omjep-border/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <p className="text-[10px] text-omjep-text-muted">
                         Contrat joueur libre — réserve = prime de signature uniquement
                       </p>
                       <button
