@@ -89,11 +89,17 @@ export default function LandingNavbar() {
             ))}
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-2 sm:flex">
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
             <NotificationsBtn />
             <ThemeToggle />
             {authed ? (
               <>
+                <Link
+                  to="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--omjep-gold)_42%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_10%,var(--omjep-bg-panel-soft))] px-4 py-2 text-sm font-semibold text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-gold)_62%,var(--omjep-mauve))]"
+                >
+                  Portail compétition
+                </Link>
                 <span className="hidden max-w-[8rem] truncate text-xs text-omjep-text-muted xl:inline">{user?.ea_persona_name}</span>
                 <button
                   type="button"

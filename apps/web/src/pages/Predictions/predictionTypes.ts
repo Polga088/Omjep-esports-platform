@@ -1,2 +1,2 @@
 /** Aligné sur l’API (`CompetitionsService.enrichMatchesWithFormAndRank`). */
-export type TeamFormLetter = 'W' | 'D' | 'L';
+export type TeamFormLetter = 'W' | 'D' | 'L'
