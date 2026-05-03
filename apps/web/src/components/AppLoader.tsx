@@ -1,5 +1,4 @@
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { Crown } from 'lucide-react'
 
 interface AppLoaderProps {
   active: boolean
@@ -12,41 +11,68 @@ export default function AppLoader({ active }: AppLoaderProps) {
     <AnimatePresence>
       {active && (
         <motion.div
-          className="app-loader-overlay fixed inset-0 z-[120] flex items-center justify-center"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[color-mix(in_srgb,var(--omjep-bg)_94%,var(--omjep-bg-elevated))] backdrop-blur-[3px] dark:bg-[color-mix(in_srgb,var(--omjep-bg)_92%,#07060c)]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.22 }}
         >
-          <motion.div
-            className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-amber-300/15 to-transparent"
-            initial={{ x: '-140%' }}
-            animate={{ x: '360%' }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-50"
+            aria-hidden
+            style={{
+              backgroundImage: `radial-gradient(ellipse 55% 42% at 50% 0%, color-mix(in srgb, var(--omjep-mauve) 18%, transparent), transparent 72%)`,
+            }}
           />
-          <div className="app-loader-panel app-loader-shimmer flex w-[min(250px,90vw)] flex-col items-center gap-3 px-6 py-7">
+          <motion.div
+            className="relative flex w-[min(340px,92vw)] flex-col items-center gap-5 rounded-2xl border border-[color-mix(in_srgb,var(--omjep-border)_88%,var(--omjep-mauve)_12%)] bg-[color-mix(in_srgb,var(--omjep-bg-panel)_96%,var(--omjep-bg-elevated))] px-8 py-10 shadow-[var(--omjep-shadow-lg)] ring-1 ring-[color-mix(in_srgb,var(--omjep-border)_70%,transparent)] dark:border-[color-mix(in_srgb,var(--omjep-border-gold)_32%,var(--omjep-border))] dark:bg-[color-mix(in_srgb,var(--omjep-bg-panel)_88%,#08060f)] dark:ring-[color-mix(in_srgb,var(--omjep-gold)_12%,transparent)]"
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
             <motion.div
-              animate={prefersReducedMotion ? { rotate: 0, scale: 1 } : { rotate: 360, scale: [1, 1.03, 1] }}
-              transition={prefersReducedMotion ? { duration: 0 } : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
-              className="app-loader-emblem rounded-xl p-3"
+              className="flex h-16 w-16 items-center justify-center rounded-2xl border border-[color-mix(in_srgb,var(--omjep-border-gold)_50%,transparent)] bg-[color-mix(in_srgb,var(--omjep-gold)_14%,var(--omjep-bg-panel-soft))] shadow-[var(--omjep-glow-gold-soft)] dark:bg-[color-mix(in_srgb,var(--omjep-gold)_12%,transparent)]"
+              animate={
+                prefersReducedMotion
+                  ? { opacity: 1 }
+                  : { opacity: [0.82, 1, 0.82], scale: [0.99, 1, 0.99] }
+              }
+              transition={
+                prefersReducedMotion
+                  ? { duration: 0 }
+                  : { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }
+              }
+              aria-hidden
             >
-              <Crown className="h-6 w-6 text-amber-200 dark:text-amber-300" />
+              <span className="font-heading text-lg font-black tracking-[0.08em] text-omjep-mauve dark:text-[color-mix(in_srgb,var(--omjep-gold)_95%,#fff)]">
+                OM
+              </span>
             </motion.div>
-            <p className="app-loader-title font-tech text-xs font-bold uppercase tracking-[0.18em]">
-              Initialisation de la plateforme
-            </p>
-            <p className="app-loader-subtitle text-[10px] font-semibold uppercase tracking-[0.14em]">
-              Chargement des donnees en cours
-            </p>
-            <div className="app-loader-progress h-1.5 w-44 overflow-hidden rounded-full">
+            <div className="space-y-1 text-center">
+              <p className="font-heading text-[11px] font-extrabold uppercase tracking-[0.28em] text-omjep-text-primary">
+                OMJEP
+              </p>
+              <p className="text-[12px] font-medium leading-snug text-omjep-text-secondary text-balance">
+                Préparation de votre session…
+              </p>
+            </div>
+            <div className="relative h-1.5 w-full max-w-[220px] overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--omjep-mauve)_12%,var(--omjep-bg-panel-soft))] dark:bg-[color-mix(in_srgb,var(--omjep-border)_75%,transparent)]">
               <motion.div
-                className="app-loader-progress-bar h-full"
-                initial={prefersReducedMotion ? { x: 0 } : { x: '-100%' }}
-                animate={prefersReducedMotion ? { x: 0 } : { x: '100%' }}
-                transition={prefersReducedMotion ? { duration: 0 } : { duration: 1.4, repeat: Infinity, ease: 'linear' }}
+                className="absolute top-0 h-full w-[42%] rounded-full bg-gradient-to-r from-[color-mix(in_srgb,var(--omjep-mauve)_78%,transparent)] to-[color-mix(in_srgb,var(--omjep-gold)_72%,transparent)]"
+                animate={
+                  prefersReducedMotion
+                    ? { left: '0%', width: '100%', opacity: 0.5 }
+                    : { left: ['-42%', '100%'] }
+                }
+                transition={
+                  prefersReducedMotion
+                    ? { duration: 0.3 }
+                    : { duration: 1.35, repeat: Infinity, ease: 'linear' }
+                }
               />
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Send, Terminal } from 'lucide-react';
+import { Headphones, Loader2, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
@@ -36,23 +36,32 @@ interface Ticket {
 
 function statusBadge(status: TicketStatus) {
   const base =
-    'inline-block rounded-sm border-[0.5px] bg-[#0a0a0c] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide';
+    'inline-block rounded-md border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide';
   if (status === 'OPEN') {
     return (
-      <span className={`${base} border-cyan-500/55 text-cyan-200/95`} title="Ouvert">
+      <span
+        className={`${base} border-[color-mix(in_srgb,var(--omjep-mauve)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_10%,var(--omjep-bg-panel-soft))] text-omjep-text-primary`}
+        title="Ouvert"
+      >
         OUVERT
       </span>
     );
   }
   if (status === 'URGENT') {
     return (
-      <span className={`${base} border-amber-500/60 text-amber-200/95`} title="Urgent">
+      <span
+        className={`${base} border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_12%,var(--omjep-bg-panel-soft))] text-[color-mix(in_srgb,var(--omjep-accent-gold)_90%,var(--omjep-text-primary))]`}
+        title="Urgent"
+      >
         URGENT
       </span>
     );
   }
   return (
-    <span className={`${base} border-white/15 text-slate-500`} title="Clos">
+    <span
+      className={`${base} border-omjep-border/70 bg-omjep-bg-panel-soft text-omjep-text-muted`}
+      title="Clos"
+    >
       CLÔTURÉ
     </span>
   );
@@ -112,11 +121,8 @@ export default function Support() {
     }
   };
 
-  const terminalInput =
-    'w-full rounded-md border border-emerald-500/25 bg-[#0a0c0f] px-3 py-2.5 font-mono text-sm text-emerald-100/95 placeholder:text-emerald-700/50 focus:border-emerald-400/45 focus:outline-none focus:ring-1 focus:ring-emerald-500/20';
-
   return (
-    <div className="mx-auto max-w-3xl space-y-10 pb-16">
+    <div className="mx-auto min-w-0 max-w-3xl space-y-10 overflow-x-hidden pb-16">
       <DashboardPageHeading
         eyebrow="Support Desk"
         title="Support"
@@ -124,38 +130,53 @@ export default function Support() {
       />
 
       <section
-        className="rounded-lg border-[0.5px] border-emerald-500/20 bg-[#080a0c] p-5 shadow-[inset_0_1px_0_rgba(16,185,129,0.06)]"
-        aria-labelledby="support-terminal-title"
+        className="omjep-surface-card border border-omjep-border/80 p-6 shadow-[var(--omjep-shadow-lg)]"
+        aria-labelledby="support-form-title"
       >
-        <div className="mb-4 flex items-center gap-2 border-b border-emerald-500/10 pb-3">
-          <Terminal className="h-4 w-4 text-emerald-500/80" aria-hidden />
-          <h2 id="support-terminal-title" className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-500/90">
-            omjep-support ~ nouveau ticket
-          </h2>
+        <div className="mb-5 flex items-center gap-3 border-b border-omjep-border/60 pb-4">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-omjep-border/70 bg-omjep-bg-panel-soft text-omjep-mauve">
+            <Headphones className="h-5 w-5" aria-hidden />
+          </span>
+          <div>
+            <h2 id="support-form-title" className="text-sm font-bold text-omjep-text-primary">
+              Nouveau ticket
+            </h2>
+            <p className="mt-0.5 text-xs text-omjep-text-muted">
+              Décrivez le problème — nous revenons vers vous sur cette page.
+            </p>
+          </div>
         </div>
 
         <form onSubmit={(e) => void onSubmit(e)} className="space-y-4">
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-emerald-600/90">
-              <span className="text-emerald-500/70">&gt;</span> objet
+            <label
+              htmlFor="support-subject"
+              className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-omjep-text-secondary"
+            >
+              Objet
             </label>
             <input
+              id="support-subject"
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Résumé du problème"
-              className={terminalInput}
+              className="omjep-field py-2.5 text-sm placeholder:text-omjep-text-muted"
               autoComplete="off"
             />
           </div>
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-emerald-600/90">
-              <span className="text-emerald-500/70">&gt;</span> catégorie
+            <label
+              htmlFor="support-category"
+              className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-omjep-text-secondary"
+            >
+              Catégorie
             </label>
             <select
+              id="support-category"
               value={category}
               onChange={(e) => setCategory(e.target.value as TicketCategory)}
-              className={`${terminalInput} cursor-pointer appearance-none bg-[#0a0c0f]`}
+              className="omjep-field cursor-pointer py-2.5 text-sm"
             >
               <option value="BUG">BUG</option>
               <option value="LITIGE">LITIGE</option>
@@ -163,45 +184,52 @@ export default function Support() {
             </select>
           </div>
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-emerald-600/90">
-              <span className="text-emerald-500/70">&gt;</span> message
+            <label
+              htmlFor="support-message"
+              className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-omjep-text-secondary"
+            >
+              Message
             </label>
             <textarea
+              id="support-message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={6}
               placeholder="Décrivez la situation (captures, dates, IDs utiles)…"
-              className={`${terminalInput} resize-y min-h-[120px]`}
+              className="omjep-field min-h-[120px] resize-y py-2.5 text-sm placeholder:text-omjep-text-muted"
             />
           </div>
           <div className="flex justify-end pt-1">
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 rounded-md border border-emerald-500/35 bg-emerald-950/50 px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-emerald-200 hover:border-emerald-400/50 hover:bg-emerald-900/30 disabled:opacity-40"
+              className="omjep-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold normal-case tracking-normal disabled:pointer-events-none disabled:opacity-45"
             >
-              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              envoyer
+              {submitting ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Send className="h-4 w-4 shrink-0" />}
+              Envoyer
             </button>
           </div>
         </form>
       </section>
 
-      <section>
-        <h2 className="mb-4 flex items-center gap-2 font-scifi text-xs font-medium uppercase tracking-[0.25em] text-slate-400">
+      <section className="min-w-0">
+        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-omjep-text-secondary">
           Mes tickets
         </h2>
         {loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-emerald-500/50" />
+            <Loader2 className="h-8 w-8 animate-spin text-omjep-mauve/70" aria-hidden />
           </div>
         ) : tickets.length === 0 ? (
-          <p className="rounded-lg border-[0.5px] border-white/10 bg-[#08090c] p-8 text-center text-sm text-slate-500">
+          <p className="rounded-xl border border-omjep-border/70 bg-omjep-bg-panel-soft/80 p-8 text-center text-sm text-omjep-text-secondary">
             Aucun ticket pour l’instant.
           </p>
         ) : (
-          <div className="relative">
-            <div className="absolute bottom-3 left-[11px] top-3 w-px bg-emerald-500/15" aria-hidden />
+          <div className="relative min-w-0">
+            <div
+              className="absolute bottom-3 left-[11px] top-3 w-px bg-[color-mix(in_srgb,var(--omjep-mauve)_22%,var(--omjep-border))]"
+              aria-hidden
+            />
             <ul className="relative space-y-0">
               {tickets.map((t) => {
                 const d = new Date(t.created_at);
@@ -210,47 +238,47 @@ export default function Support() {
                 return (
                   <li key={t.id} className="relative pb-10 pl-9 last:pb-2">
                     <span
-                      className="absolute left-[11px] top-[0.65rem] z-[1] h-2 w-2 -translate-x-1/2 rounded-full border border-emerald-500/30 bg-[#08090c]"
+                      className="absolute left-[11px] top-[0.65rem] z-[1] h-2 w-2 -translate-x-1/2 rounded-full border border-omjep-border/80 bg-omjep-bg-panel"
                       aria-hidden
                     />
-                    <div className="min-w-0 rounded-md border-l-2 border-emerald-500/25 py-2 pl-3 pr-2">
+                    <div className="min-w-0 rounded-lg border border-omjep-border/60 border-l-[3px] border-l-[color-mix(in_srgb,var(--omjep-mauve)_55%,var(--omjep-border))] bg-omjep-bg-panel/90 py-2 pl-3 pr-2 dark:bg-omjep-bg-panel-soft/50">
                       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                         <div className="flex flex-wrap items-center gap-2">
                           {statusBadge(t.status)}
-                          <span className="rounded-sm border-[0.5px] border-white/12 bg-[#0a0a0c] px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wide text-slate-400">
+                          <span className="rounded-md border border-omjep-border/70 bg-omjep-bg-panel-soft px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-omjep-text-secondary">
                             {t.category}
                           </span>
                         </div>
-                        <span className="text-[10px] text-white/40">
+                        <span className="text-[10px] text-omjep-text-muted">
                           <span>{datePart}</span>
-                          <span className="mx-1 text-white/25">·</span>
-                          <span className="font-mono tabular-nums text-white/55">{timePart}</span>
+                          <span className="mx-1 text-omjep-border">·</span>
+                          <span className="tabular-nums text-omjep-text-secondary">{timePart}</span>
                         </span>
                       </div>
-                      <p className="mt-2 text-sm font-semibold text-white">{t.subject}</p>
-                      <p className="mt-1 whitespace-pre-wrap font-mono text-xs leading-relaxed text-slate-400">
+                      <p className="mt-2 text-sm font-semibold text-omjep-text-primary">{t.subject}</p>
+                      <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-omjep-text-secondary">
                         {t.message}
                       </p>
                       {t.replies.length > 0 ? (
-                        <ul className="mt-4 space-y-3 border-t border-white/5 pt-3">
+                        <ul className="mt-4 space-y-3 border-t border-omjep-border/50 pt-3">
                           {t.replies.map((r) => (
                             <li
                               key={r.id}
-                              className={`rounded-md border-[0.5px] px-3 py-2 ${
+                              className={`rounded-lg border px-3 py-2 ${
                                 r.is_staff
-                                  ? 'border-amber-500/20 bg-amber-950/20'
-                                  : 'border-white/10 bg-white/[0.02]'
+                                  ? 'border-[color-mix(in_srgb,var(--omjep-gold)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_8%,var(--omjep-bg-panel-soft))]'
+                                  : 'border-omjep-border/60 bg-omjep-bg-panel-soft/70'
                               }`}
                             >
-                              <div className="mb-1 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-500">
-                                <span className="font-mono uppercase tracking-wide text-amber-500/80">
+                              <div className="mb-1 flex flex-wrap items-center justify-between gap-2 text-[10px] text-omjep-text-muted">
+                                <span className="font-semibold uppercase tracking-wide text-omjep-text-secondary">
                                   {r.is_staff ? 'Équipe OMJEP' : 'Vous'}
                                 </span>
-                                <span className="font-mono tabular-nums text-slate-600">
+                                <span className="tabular-nums text-omjep-text-muted">
                                   {new Date(r.created_at).toLocaleString('fr-FR')}
                                 </span>
                               </div>
-                              <p className="whitespace-pre-wrap font-mono text-xs text-slate-300">{r.body}</p>
+                              <p className="whitespace-pre-wrap text-xs text-omjep-text-primary">{r.body}</p>
                             </li>
                           ))}
                         </ul>
