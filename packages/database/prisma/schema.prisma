@@ -741,6 +741,24 @@ model NewsEvent {
   @@map("news_events")
 }
 
+/// Médias publics landing (Palmarès, etc.) — ligne singleton `default`.
+model PublicLandingContent {
+  id String @id
+
+  /// Image hero Palmarès (URL absolue ou chemin `/api/v1/uploads/...`).
+  palmaresHeroVisualUrl String? @map("palmares_hero_visual_url")
+
+  /// Par clé compétition (`ligue-elite`, `coupe-trone`, `ucl`): trophyImageUrl, cardImageUrl.
+  palmaresCompetitionsMedia Json? @map("palmares_competitions_media")
+
+  /// Par clé champion (`atlas-wolves`, …): badgeImageUrl.
+  palmaresChampionsMedia Json? @map("palmares_champions_media")
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("public_landing_content")
+}
+
 enum NewsEventType {
   TRANSFER
   CONTRACT_RENEWAL

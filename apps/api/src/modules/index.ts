@@ -6,6 +6,7 @@ export { CompetitionsModule } from './competitions';
 export { FinanceModule } from './finance';
 export { GamificationModule } from './gamification';
 export { InvitationsModule } from './invitations';
+export { LandingContentModule } from './landing-content/landing-content.module';
 export { LevelingModule } from './leveling';
 export { MatchesModule } from './matches';
 export { NewsModule } from './news';

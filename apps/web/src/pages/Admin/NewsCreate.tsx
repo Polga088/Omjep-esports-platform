@@ -1,7 +1,9 @@
 import { FormEvent, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import { Loader2, Upload } from 'lucide-react'
 import api from '@/lib/api'
 
 type NewsCategory = 'MERCATO' | 'TOURNAMENT' | 'UPDATE'
@@ -22,6 +24,7 @@ export default function NewsCreate() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [coverUploading, setCoverUploading] = useState(false)
   const [formState, setFormState] = useState({
     category: 'UPDATE' as NewsCategory,
     title: '',
@@ -34,6 +37,24 @@ export default function NewsCreate() {
 
   function updateField(field: keyof typeof formState, value: string) {
     setFormState((current) => ({ ...current, [field]: value }))
+  }
+
+  async function handleArticleCoverUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    setCoverUploading(true)
+    const fd = new FormData()
+    fd.append('file', file)
+    try {
+      const { data } = await api.post<{ url: string }>('/admin/news-media/article-cover', fd)
+      updateField('image', data.url)
+      toast.success('Couverture téléversée — URL appliquée au champ image')
+    } catch {
+      toast.error('Téléversement impossible')
+    } finally {
+      setCoverUploading(false)
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -131,6 +152,18 @@ export default function NewsCreate() {
               onChange={(event) => updateField('image', event.target.value)}
               className="mt-2 w-full rounded-lg border border-white/15 bg-black/45 px-3 py-2 text-sm text-slate-100 outline-none"
             />
+          </label>
+        </div>
+
+        <div className="rounded-lg border border-white/10 bg-black/30 p-4">
+          <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Couverture (fichier)</p>
+          <p className="mt-1 text-[11px] text-slate-500">
+            Téléversement admin — l’URL est injectée dans le champ « Image (URL) ».
+          </p>
+          <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-lg border border-amber-400/35 bg-amber-400/10 px-3 py-2 text-xs font-bold uppercase tracking-wider text-amber-100 hover:bg-amber-400/15">
+            {coverUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            {coverUploading ? 'Envoi…' : 'Choisir une image'}
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" className="sr-only" onChange={handleArticleCoverUpload} disabled={coverUploading} />
           </label>
         </div>
 

@@ -14,6 +14,7 @@ import { RewardsModule } from '../rewards/rewards.module';
 import { PlayerStatsModule } from '../player-stats/player-stats.module';
 import { WalletsModule } from '../wallets/wallets.module';
 import { AdminWalletsController } from './admin-wallets.controller';
+import { AdminNewsMediaController } from './admin-news-media.controller';
 import { UsersModule } from '../users/users.module';
 import { AdminUsersController } from './admin-users.controller';
 import { CupBracketService } from './cup-bracket.service';
@@ -36,6 +37,7 @@ import { CupBracketService } from './cup-bracket.service';
     AdminStoreController,
     AdminWalletsController,
     AdminUsersController,
+    AdminNewsMediaController,
   ],
   providers: [AdminStoreService, AdminCompetitionsService, DrawService, CupBracketService],
 })
