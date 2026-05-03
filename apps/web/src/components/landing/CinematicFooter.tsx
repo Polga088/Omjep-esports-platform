@@ -4,15 +4,16 @@ import { Crown, Send } from 'lucide-react'
 import { toast } from 'sonner'
 
 const linksNav = [
-  { to: '/', label: 'Dashboard OMJEP' },
-  { to: '/#leaderboard', label: 'Ranking national' },
-  { to: '/#live-matches', label: 'Matchs officiels' },
+  { to: '/', label: 'Rejoindre OMJEP' },
+  { to: '/palmares', label: 'Palmarès officiel' },
+  { to: '/plateforme#leaderboard', label: 'Ranking national' },
+  { to: '/plateforme#live-matches', label: 'Matchs officiels' },
   { to: '/community', label: 'Communauté eSport' },
 ]
 
 const linksPro = [
   { to: '/register', label: 'Inscription pro' },
-  { to: '/hall-of-fame', label: 'Palmarès officiel' },
+  { to: '/palmares', label: 'Palmarès officiel' },
   { to: '/community', label: 'Actualités EA FC' },
 ]
 

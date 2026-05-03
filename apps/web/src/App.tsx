@@ -13,6 +13,8 @@ import AdminRoute from '@/components/AdminRoute'
 import ModeratorRoute from '@/components/ModeratorRoute'
 import ManagerRoute from '@/components/ManagerRoute'
 import Home from '@/pages/Home'
+import JoinOmjep from '@/pages/JoinOmjep'
+import Palmares from '@/pages/Palmares'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import AppLoader from '@/components/AppLoader'
@@ -50,6 +52,7 @@ const AdminClubs = lazy(() => import('@/pages/Admin/Clubs'))
 const AdminClubRequests = lazy(() => import('@/pages/Admin/ClubRequests'))
 const AdminStoreManagement = lazy(() => import('@/pages/Admin/StoreManagement'))
 const NewsCreate = lazy(() => import('@/pages/Admin/NewsCreate'))
+const AdminLandingMedia = lazy(() => import('@/pages/Admin/AdminLandingMedia'))
 const AdminSupportTickets = lazy(() => import('@/pages/Admin/SupportTickets'))
 const DrawSystem = lazy(() => import('@/pages/Admin/DrawSystem'))
 
@@ -94,7 +97,10 @@ function AnimatedAppRoutes() {
         <Routes location={location}>
             {/* Public routes */}
             <Route element={<MainLayout />}>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<JoinOmjep />} />
+              <Route path="/join" element={<JoinOmjep />} />
+              <Route path="/plateforme" element={<Home />} />
+              <Route path="/palmares" element={<Palmares />} />
               <Route path="/community" element={<Community />} />
               <Route path="/community/news/:slugOrId" element={<ArticleDetail />} />
               <Route path="/hall-of-fame" element={<HallOfFame />} />
@@ -168,6 +174,7 @@ function AnimatedAppRoutes() {
               <Route path="/admin/club-requests" element={<AdminClubRequests />} />
               <Route path="/admin/store" element={<AdminStoreManagement />} />
               <Route path="/admin/news/create" element={<NewsCreate />} />
+              <Route path="/admin/landing-media" element={<AdminLandingMedia />} />
               <Route path="/admin/support" element={<AdminSupportTickets />} />
               <Route path="/admin/competitions/:id/draw" element={<DrawSystem />} />
             </Route>

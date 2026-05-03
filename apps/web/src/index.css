@@ -1606,17 +1606,11 @@ span.mercato-live-badge-ea-pulse {
 }
 
 .app-loader-overlay {
-  background:
-    radial-gradient(ellipse 42% 28% at 18% 0%, rgba(124, 58, 237, 0.14) 0%, transparent 70%),
-    radial-gradient(ellipse 48% 32% at 86% 100%, rgba(212, 175, 55, 0.12) 0%, transparent 72%),
-    linear-gradient(160deg, rgba(244, 240, 255, 0.94) 0%, rgba(234, 226, 255, 0.92) 45%, rgba(252, 250, 245, 0.96) 100%);
+  background: color-mix(in srgb, var(--omjep-bg) 92%, transparent);
 }
 
-.dark .app-loader-overlay {
-  background:
-    radial-gradient(ellipse 45% 30% at 20% 0%, rgba(124, 58, 237, 0.22) 0%, transparent 72%),
-    radial-gradient(ellipse 45% 30% at 85% 100%, rgba(212, 175, 55, 0.16) 0%, transparent 70%),
-    #08050f;
+:root[data-theme='dark'] .app-loader-overlay {
+  background: color-mix(in srgb, var(--omjep-bg) 96%, #050308);
 }
 
 @keyframes app-loader-glint {
@@ -1631,23 +1625,19 @@ span.mercato-live-badge-ea-pulse {
 .app-loader-panel {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(124, 58, 237, 0.24);
-  background:
-    linear-gradient(145deg, rgba(124, 58, 237, 0.08) 0%, rgba(255, 255, 255, 0.78) 40%, rgba(212, 175, 55, 0.08) 100%),
-    rgba(255, 255, 255, 0.76);
+  border: 1px solid color-mix(in srgb, var(--omjep-border) 88%, var(--omjep-mauve) 12%);
+  background: color-mix(in srgb, var(--omjep-bg-panel) 94%, var(--omjep-bg-elevated));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    0 20px 42px rgba(76, 29, 149, 0.12);
+    var(--omjep-shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-text-primary) 5%, transparent);
 }
 
-.dark .app-loader-panel {
-  border-color: rgba(212, 175, 55, 0.26);
-  background:
-    linear-gradient(155deg, rgba(124, 58, 237, 0.22) 0%, rgba(12, 8, 23, 0.88) 55%, rgba(212, 175, 55, 0.09) 100%),
-    rgba(8, 5, 15, 0.88);
+:root[data-theme='dark'] .app-loader-panel {
+  border-color: color-mix(in srgb, var(--omjep-border-gold) 35%, var(--omjep-border));
+  background: color-mix(in srgb, var(--omjep-bg-panel) 88%, #06040c);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 20px 45px rgba(0, 0, 0, 0.5);
+    var(--omjep-shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-gold) 8%, transparent);
 }
 
 .app-loader-shimmer::before {
@@ -1657,51 +1647,46 @@ span.mercato-live-badge-ea-pulse {
   pointer-events: none;
   background: linear-gradient(
     95deg,
-    rgba(212, 175, 55, 0) 16%,
-    rgba(212, 175, 55, 0.08) 42%,
-    rgba(212, 175, 55, 0.2) 50%,
-    rgba(124, 58, 237, 0.1) 58%,
-    rgba(212, 175, 55, 0) 84%
+    transparent 18%,
+    color-mix(in srgb, var(--omjep-gold) 12%, transparent) 44%,
+    color-mix(in srgb, var(--omjep-mauve) 14%, transparent) 52%,
+    transparent 82%
   );
-  animation: app-loader-glint 2.2s linear infinite;
+  animation: app-loader-glint 2.6s linear infinite;
 }
 
 .app-loader-emblem {
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  background: rgba(212, 175, 55, 0.14);
+  border: 1px solid color-mix(in srgb, var(--omjep-border-gold) 55%, transparent);
+  background: color-mix(in srgb, var(--omjep-gold) 12%, var(--omjep-bg-panel-soft));
 }
 
-.dark .app-loader-emblem {
-  border-color: rgba(212, 175, 55, 0.38);
-  background: rgba(212, 175, 55, 0.1);
+:root[data-theme='dark'] .app-loader-emblem {
+  border-color: color-mix(in srgb, var(--omjep-border-gold) 45%, transparent);
+  background: color-mix(in srgb, var(--omjep-gold) 10%, transparent);
 }
 
 .app-loader-title {
-  color: rgba(67, 20, 117, 0.9);
-}
-
-.dark .app-loader-title {
-  color: rgba(245, 240, 255, 0.94);
+  color: var(--omjep-text-primary);
 }
 
 .app-loader-subtitle {
-  color: rgba(67, 20, 117, 0.78);
-}
-
-.dark .app-loader-subtitle {
-  color: rgba(231, 213, 255, 0.74);
+  color: var(--omjep-text-secondary);
 }
 
 .app-loader-progress {
-  background: rgba(124, 58, 237, 0.14);
+  background: color-mix(in srgb, var(--omjep-mauve) 14%, var(--omjep-bg-panel-soft));
 }
 
-.dark .app-loader-progress {
-  background: rgba(255, 255, 255, 0.1);
+:root[data-theme='dark'] .app-loader-progress {
+  background: color-mix(in srgb, var(--omjep-border) 70%, transparent);
 }
 
 .app-loader-progress-bar {
-  background: linear-gradient(90deg, rgba(124, 58, 237, 0.78) 0%, rgba(212, 175, 55, 0.84) 100%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--omjep-mauve) 75%, transparent) 0%,
+    color-mix(in srgb, var(--omjep-gold) 70%, transparent) 100%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2550,4 +2535,375 @@ html.cockpit-fullscreen body {
   .dashboard-phase3-matches {
     row-gap: 1.25rem;
   }
+}
+
+/* —— Public landing (/) : section shells + typography (excl. #hero — styled in Hero.tsx) —— */
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero),
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero),
+[data-omjep-public-home='1'] .space-y-8 > .grid > section,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section {
+  border-color: color-mix(in srgb, var(--omjep-border) 82%, transparent) !important;
+  background: color-mix(in srgb, var(--omjep-bg-panel) 94%, var(--omjep-bg-elevated)) !important;
+  box-shadow: var(--omjep-shadow-md);
+}
+
+:root[data-theme='dark'] [data-omjep-public-home='1'] .space-y-8 > section:not(#hero),
+:root[data-theme='dark'] [data-omjep-public-home='1'] .space-y-10 > section:not(#hero),
+:root[data-theme='dark'] [data-omjep-public-home='1'] .space-y-8 > .grid > section,
+:root[data-theme='dark'] [data-omjep-public-home='1'] .space-y-10 > .grid > section {
+  background: color-mix(in srgb, var(--omjep-bg-panel) 88%, #05060d) !important;
+  box-shadow:
+    var(--omjep-shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-text-primary) 4%, transparent);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) h2,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) h2,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section h2,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section h2,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section h3,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section h3 {
+  color: var(--omjep-text-primary);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .text-white,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .text-white,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .text-white,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .text-white {
+  color: var(--omjep-text-primary);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .text-slate-100,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .text-slate-100,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .text-slate-100,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .text-slate-100 {
+  color: var(--omjep-text-primary);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .text-slate-200,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .text-slate-200,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .text-slate-200,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .text-slate-200 {
+  color: var(--omjep-text-secondary);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .text-slate-300,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .text-slate-300,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .text-slate-300,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .text-slate-300 {
+  color: var(--omjep-text-secondary);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .text-slate-400,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .text-slate-400,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .text-slate-400,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .text-slate-400 {
+  color: var(--omjep-text-muted);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .text-slate-500,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .text-slate-500,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .text-slate-500,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .text-slate-500 {
+  color: var(--omjep-text-muted);
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .border-white\/10,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .border-white\/10,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .border-white\/10,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .border-white\/10 {
+  border-color: color-mix(in srgb, var(--omjep-border) 78%, transparent) !important;
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .bg-white\/\[0\.03\],
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .bg-white\/\[0\.03\],
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .bg-white\/\[0\.03\],
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .bg-white\/\[0\.03\] {
+  background: color-mix(in srgb, var(--omjep-bg-panel-soft) 88%, var(--omjep-bg-elevated)) !important;
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .bg-slate-950\/70,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .bg-slate-950\/70,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .bg-slate-950\/70,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .bg-slate-950\/70 {
+  background: color-mix(in srgb, var(--omjep-bg-panel-soft) 90%, transparent) !important;
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) .bg-slate-800,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) .bg-slate-800,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section .bg-slate-800,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section .bg-slate-800 {
+  background: color-mix(in srgb, var(--omjep-bg-panel-soft) 92%, var(--omjep-border)) !important;
+}
+
+[data-omjep-public-home='1'] .space-y-8 > section:not(#hero) tbody tr:hover,
+[data-omjep-public-home='1'] .space-y-10 > section:not(#hero) tbody tr:hover,
+[data-omjep-public-home='1'] .space-y-8 > .grid > section tbody tr:hover,
+[data-omjep-public-home='1'] .space-y-10 > .grid > section tbody tr:hover {
+  background: color-mix(in srgb, var(--omjep-mauve) 6%, var(--omjep-bg-panel-soft)) !important;
+}
+
+/* —— Join OMJEP player landing (/ + /join) — scoped decorative layers —— */
+.join-omjep-grid-fade {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--omjep-mauve) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--omjep-mauve) 8%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 75%);
+}
+
+.join-omjep-hero-glow {
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    color-mix(in srgb, var(--omjep-mauve) 22%, transparent) 0%,
+    transparent 65%
+  );
+}
+
+.join-omjep-highlight--mauve {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-text-primary) 6%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--omjep-mauve) 18%, transparent);
+}
+
+.join-omjep-highlight--gold {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-gold) 12%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--omjep-gold) 16%, transparent);
+}
+
+.join-omjep-cta-shine {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    color-mix(in srgb, var(--omjep-gold) 14%, transparent) 42%,
+    color-mix(in srgb, var(--omjep-mauve) 12%, transparent) 52%,
+    transparent 88%
+  );
+  animation: join-omjep-cta-sweep 9s ease-in-out infinite;
+}
+
+@keyframes join-omjep-cta-sweep {
+  0%,
+  100% {
+    transform: translateX(-12%) skewX(-6deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateX(12%) skewX(-6deg);
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .join-omjep-cta-shine {
+    animation: none;
+    transform: none;
+    opacity: 0.22;
+  }
+}
+
+/* —— Public Palmarès (/palmares) — trophy room ambiance —— */
+.palmares-root {
+  isolation: isolate;
+}
+
+.palmares-hero-ambient {
+  background-image:
+    radial-gradient(ellipse 95% 55% at 50% -18%, color-mix(in srgb, var(--omjep-mauve) 32%, transparent), transparent 52%),
+    radial-gradient(ellipse 65% 48% at 100% 22%, color-mix(in srgb, var(--omjep-gold) 18%, transparent), transparent 48%),
+    radial-gradient(ellipse 50% 42% at 0% 72%, color-mix(in srgb, var(--omjep-mauve) 14%, transparent), transparent 50%),
+    radial-gradient(ellipse 40% 35% at 80% 88%, color-mix(in srgb, var(--omjep-gold) 8%, transparent), transparent 55%);
+  opacity: 0.98;
+}
+
+:root[data-theme='light'] .palmares-hero-ambient {
+  opacity: 0.78;
+}
+
+.palmares-hero-particles {
+  background-image:
+    radial-gradient(circle at 12% 18%, color-mix(in srgb, var(--omjep-gold) 12%, transparent) 0, transparent 0.45%),
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--omjep-mauve) 10%, transparent) 0, transparent 0.4%),
+    radial-gradient(circle at 72% 42%, color-mix(in srgb, #fff 6%, transparent) 0, transparent 0.35%),
+    radial-gradient(circle at 24% 56%, color-mix(in srgb, var(--omjep-gold) 8%, transparent) 0, transparent 0.38%),
+    radial-gradient(circle at 48% 88%, color-mix(in srgb, var(--omjep-mauve) 9%, transparent) 0, transparent 0.42%),
+    radial-gradient(circle at 94% 70%, color-mix(in srgb, var(--omjep-gold) 7%, transparent) 0, transparent 0.32%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+:root[data-theme='light'] .palmares-hero-particles {
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+
+@keyframes palmares-spark-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.palmares-hero-sparks circle {
+  animation: palmares-spark-twinkle 2.8s ease-in-out infinite;
+}
+
+.palmares-hero-sparks circle:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.palmares-hero-sparks circle:nth-child(3) {
+  animation-delay: 0.9s;
+}
+
+.palmares-hero-sparks circle:nth-child(4) {
+  animation-delay: 1.2s;
+}
+
+.palmares-hero-sparks circle:nth-child(5) {
+  animation-delay: 1.7s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palmares-hero-sparks circle {
+    animation: none;
+    opacity: 0.65;
+    transform: none;
+  }
+}
+
+.palmares-trophy-emblem {
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--omjep-gold) 18%, transparent));
+}
+
+.palmares-trophy-card {
+  border: 1px solid color-mix(in srgb, var(--omjep-border) 72%, var(--omjep-mauve) 8%);
+  border-radius: 1rem;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--omjep-bg-panel) 92%, #03060f) 0%,
+    color-mix(in srgb, #0a1020 88%, var(--omjep-bg-panel)) 100%
+  );
+  box-shadow:
+    var(--omjep-shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, #fff 6%, transparent);
+}
+
+.palmares-comp-card--mauve {
+  border-color: color-mix(in srgb, var(--omjep-mauve) 28%, var(--omjep-border));
+  box-shadow:
+    var(--omjep-shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-mauve) 14%, transparent),
+    inset 0 0 60px -28px color-mix(in srgb, var(--omjep-mauve) 22%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--omjep-gold) 12%, transparent),
+    0 0 56px -18px color-mix(in srgb, var(--omjep-mauve) 32%, transparent);
+}
+
+.palmares-comp-card--gold {
+  border-color: color-mix(in srgb, var(--omjep-gold) 32%, var(--omjep-border));
+  box-shadow:
+    var(--omjep-shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-gold) 16%, transparent),
+    inset 0 0 56px -26px color-mix(in srgb, var(--omjep-mauve) 12%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--omjep-gold) 22%, transparent),
+    0 0 52px -16px color-mix(in srgb, var(--omjep-gold) 28%, transparent);
+}
+
+.palmares-comp-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    var(--omjep-shadow-lg),
+    0 0 0 1px color-mix(in srgb, var(--omjep-gold) 28%, transparent),
+    0 0 64px -20px color-mix(in srgb, var(--omjep-mauve) 26%, transparent),
+    0 24px 56px -28px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palmares-comp-card-hover:hover {
+    transform: none;
+  }
+}
+
+.palmares-hero-trophy {
+  filter: drop-shadow(0 0 32px color-mix(in srgb, var(--omjep-mauve) 26%, transparent))
+    drop-shadow(0 0 20px color-mix(in srgb, var(--omjep-gold) 14%, transparent));
+}
+
+.palmares-glass-panel {
+  box-shadow:
+    var(--omjep-shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, #fff 5%, transparent),
+    0 0 80px -36px color-mix(in srgb, var(--omjep-mauve) 18%, transparent);
+}
+
+.palmares-champions-panel {
+  border-color: color-mix(in srgb, var(--omjep-border) 50%, var(--omjep-mauve) 16%);
+}
+
+.palmares-champion-tile {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.palmares-champion-tile:hover {
+  border-color: color-mix(in srgb, var(--omjep-gold) 28%, var(--omjep-border));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 28px -12px color-mix(in srgb, var(--omjep-mauve) 22%, transparent);
+}
+
+.palmares-records-aside {
+  border-color: color-mix(in srgb, var(--omjep-border) 52%, var(--omjep-gold) 14%);
+  box-shadow:
+    var(--omjep-shadow-lg),
+    inset 0 0 48px -30px color-mix(in srgb, var(--omjep-mauve) 14%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--omjep-gold) 8%, transparent);
+}
+
+/* Navbar publique premium — halo discret + lien Palmarès actif */
+.landing-nav-premium {
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--omjep-border) 55%, transparent),
+    0 12px 40px -28px color-mix(in srgb, var(--omjep-mauve) 35%, transparent);
+}
+
+.landing-nav-link--active-palmares::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 56%;
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--omjep-gold) 75%, transparent) 35%,
+    color-mix(in srgb, var(--omjep-mauve) 80%, transparent) 65%,
+    transparent
+  );
+  box-shadow: 0 0 14px color-mix(in srgb, var(--omjep-gold) 45%, transparent);
+  pointer-events: none;
+}
+
+.landing-nav-notify-badge {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--omjep-gold) 88%, #fff) 0%,
+    color-mix(in srgb, var(--omjep-gold) 55%, #b45309) 100%
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--omjep-border-gold) 55%, transparent);
 }
