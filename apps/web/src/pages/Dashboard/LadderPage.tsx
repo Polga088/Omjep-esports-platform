@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Search, ShieldAlert, Swords, Trophy, Users } from 'lucide-react'
+import { Search, ShieldAlert, Trophy } from 'lucide-react'
 import api from '@/lib/api'
 import MaintenancePrestige, { PRESTIGE_MSG } from '@/components/MaintenancePrestige'
 import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
@@ -10,21 +10,24 @@ interface LadderTeam {
   teamName: string
   logoUrl: string | null
   memberCount: number
-  averageRating: number
-  totalGoals: number
-  xp_prestige: number
-  prestige_level: number
+  matchesPlayed: number
+  wins: number
+  draws: number
+  losses: number
+  goalsFor: number
+  goalsAgainst: number
+  goalDifference: number
+  points: number
 }
 
 function SkeletonRow() {
   return (
-    <li className="grid grid-cols-[4rem_minmax(14rem,1.6fr)_0.8fr_0.8fr_0.9fr_0.8fr] items-center gap-3 rounded-xl border border-omjep-border/55 bg-omjep-bg-panel-soft/70 px-4 py-3 animate-pulse">
+    <li className="grid grid-cols-[4rem_minmax(12rem,1.5fr)_repeat(8,minmax(2.2rem,0.7fr))] items-center gap-2 rounded-xl border border-omjep-border/55 bg-omjep-bg-panel-soft/70 px-4 py-3 animate-pulse">
       <div className="h-11 w-11 rounded-lg bg-omjep-bg-panel" />
       <div className="h-5 w-52 rounded bg-omjep-bg-panel" />
-      <div className="h-4 w-10 rounded bg-omjep-bg-panel" />
-      <div className="h-4 w-12 rounded bg-omjep-bg-panel" />
-      <div className="h-4 w-16 rounded bg-omjep-bg-panel" />
-      <div className="h-4 w-12 rounded bg-omjep-bg-panel" />
+      {Array.from({ length: 8 }).map((_, idx) => (
+        <div key={idx} className="h-4 w-8 rounded bg-omjep-bg-panel" />
+      ))}
     </li>
   )
 }
@@ -128,7 +131,7 @@ export default function LadderPage() {
             title="Classement clubs"
             subtitle={
               loading
-                ? 'Tableau broadcast basé sur le prestige et la performance collective'
+                ? 'Classement compétition calculé sur les résultats validés'
                 : `${teams.length} club${teams.length > 1 ? 's' : ''} dans la ligue`
             }
             className="border-b-0 pb-0"
@@ -158,13 +161,17 @@ export default function LadderPage() {
         <MaintenancePrestige overlay title="Classement clubs" message={PRESTIGE_MSG} className="border-omjep-border" />
       ) : (
         <section className="overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel shadow-[var(--omjep-shadow-lg)]">
-          <header className="grid grid-cols-[4rem_minmax(14rem,1.6fr)_0.8fr_0.8fr_0.9fr_0.8fr] items-center gap-3 border-b border-omjep-border/70 bg-omjep-bg-panel-soft/80 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-omjep-text-muted">
+          <header className="grid grid-cols-[4rem_minmax(12rem,1.5fr)_repeat(8,minmax(2.2rem,0.7fr))] items-center gap-2 border-b border-omjep-border/70 bg-omjep-bg-panel-soft/80 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-omjep-text-muted">
             <span>Rang</span>
             <span>Club</span>
-            <span>Joueurs</span>
-            <span>Note</span>
-            <span>Prestige XP</span>
-            <span>Buts</span>
+            <span className="text-center">MJ</span>
+            <span className="text-center">V</span>
+            <span className="text-center">N</span>
+            <span className="text-center">D</span>
+            <span className="text-center">BP</span>
+            <span className="text-center">BC</span>
+            <span className="text-center">Diff</span>
+            <span className="text-center">Pts</span>
           </header>
 
           <ul className="space-y-2 p-3 sm:p-4">
@@ -191,7 +198,7 @@ export default function LadderPage() {
                 return (
                   <li
                     key={team.teamId}
-                    className={`group grid grid-cols-[4rem_minmax(14rem,1.6fr)_0.8fr_0.8fr_0.9fr_0.8fr] items-center gap-3 rounded-xl border px-4 py-3 transition ${
+                    className={`group grid grid-cols-[4rem_minmax(12rem,1.5fr)_repeat(8,minmax(2.2rem,0.7fr))] items-center gap-2 rounded-xl border px-4 py-3 transition ${
                       isMyTeam
                         ? 'border-[color-mix(in_srgb,var(--omjep-gold)_46%,var(--omjep-mauve))] bg-[color-mix(in_srgb,var(--omjep-mauve)_14%,var(--omjep-bg-panel-soft))]'
                         : 'border-omjep-border/60 bg-omjep-bg-panel-soft/72 hover:border-[color-mix(in_srgb,var(--omjep-gold)_28%,var(--omjep-border))] hover:bg-omjep-bg-panel-soft'
@@ -220,7 +227,7 @@ export default function LadderPage() {
                           </p>
                           <div className="mt-0.5 flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-omjep-text-muted">
                             <span className="rounded-full border border-omjep-border/60 bg-omjep-bg-panel px-1.5 py-[1px] font-bold">
-                              Lvl {team.prestige_level ?? 1}
+                              {team.memberCount ?? 0} joueurs
                             </span>
                             {isMyTeam ? <span className="font-bold text-[color-mix(in_srgb,var(--omjep-gold)_88%,var(--omjep-mauve))]">Mon club</span> : null}
                           </div>
@@ -228,27 +235,14 @@ export default function LadderPage() {
                       </div>
                     </div>
 
-                    <div className="flex justify-center">
-                      <div className="inline-flex items-center gap-1 text-omjep-text-primary">
-                        <Users className="h-3.5 w-3.5 text-omjep-text-muted" />
-                        <span className="text-sm font-bold tabular-nums">{team.memberCount ?? 0}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center">
-                      <StatCell value={Number.isFinite(team.averageRating) && team.averageRating > 0 ? team.averageRating.toFixed(1) : 'N/A'} />
-                    </div>
-
-                    <div className="flex justify-center">
-                      <StatCell value={(team.xp_prestige ?? 0).toLocaleString('fr-FR')} accent />
-                    </div>
-
-                    <div className="flex justify-center">
-                      <div className="inline-flex items-center gap-1 text-omjep-text-primary">
-                        <Swords className="h-3.5 w-3.5 text-omjep-text-muted" />
-                        <span className="text-sm font-bold tabular-nums">{(team.totalGoals ?? 0).toLocaleString('fr-FR')}</span>
-                      </div>
-                    </div>
+                    <div className="flex justify-center"><StatCell value={`${team.matchesPlayed ?? 0}`} /></div>
+                    <div className="flex justify-center"><StatCell value={`${team.wins ?? 0}`} /></div>
+                    <div className="flex justify-center"><StatCell value={`${team.draws ?? 0}`} /></div>
+                    <div className="flex justify-center"><StatCell value={`${team.losses ?? 0}`} /></div>
+                    <div className="flex justify-center"><StatCell value={`${team.goalsFor ?? 0}`} /></div>
+                    <div className="flex justify-center"><StatCell value={`${team.goalsAgainst ?? 0}`} /></div>
+                    <div className="flex justify-center"><StatCell value={`${team.goalDifference ?? 0}`} /></div>
+                    <div className="flex justify-center"><StatCell value={`${team.points ?? 0}`} accent /></div>
                   </li>
                 )
               })

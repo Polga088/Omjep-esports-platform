@@ -28,12 +28,14 @@ export type LadderEntry = {
   logoUrl: string | null;
   platform: string;
   memberCount: number;
-  averageRating: number;
-  totalGoals: number;
-  totalAssists: number;
-  /** XP prestige club (colonne `xp` côté Prisma) — critère de tri principal. */
-  xp_prestige: number;
-  prestige_level: number;
+  matchesPlayed: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
 };
 
 const TEAM_WITH_ROSTER = {
@@ -230,57 +232,89 @@ export class TeamsService {
   }
 
   /**
-   * Classement général (Ladder) : tri principal par XP prestige (`xp` club),
-   * puis note moyenne, puis buts du roster.
+   * Classement compétition (Ladder) :
+   * MJ/V/N/D/BP/BC/DIFF/PTS à partir des matchs finalisés.
+   * Tri : points, différence de buts, buts marqués, nom du club.
    */
   async getLadder(): Promise<LadderEntry[]> {
     const teams = await this.prisma.club.findMany({
-      include: {
-        members: {
-          include: {
-            user: {
-              select: { stats: true },
-            },
-          },
-        },
-      },
+      include: { members: true },
     });
 
-    const entries: LadderEntry[] = teams.map((team) => {
-      const memberCount = team.members.length;
-
-      let totalGoals = 0;
-      let totalAssists = 0;
-      let sumRating = 0;
-
-      for (const m of team.members) {
-        const s = m.user.stats;
-        totalGoals += s?.goals ?? 0;
-        totalAssists += s?.assists ?? 0;
-        sumRating += s?.average_rating ?? 0;
-      }
-
-      const averageRating = memberCount > 0 ? sumRating / memberCount : 0;
-
-      return {
+    const entries: LadderEntry[] = teams.map((team) => ({
         rank: 0,
         teamId: team.id,
         teamName: team.name,
         logoUrl: team.logo_url,
         platform: team.platform,
-        memberCount,
-        averageRating: Math.round(averageRating * 100) / 100,
-        totalGoals,
-        totalAssists,
-        xp_prestige: team.xp ?? 0,
-        prestige_level: team.prestige_level ?? 1,
-      };
+        memberCount: team.members.length,
+        matchesPlayed: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDifference: 0,
+        points: 0,
+      }));
+
+    const byTeamId = new Map(entries.map((e) => [e.teamId, e]));
+
+    const finalizedMatches = await this.prisma.match.findMany({
+      where: {
+        status: {
+          in: ['PLAYED', 'VALIDATED', 'FINISHED'],
+        },
+        home_score: { not: null },
+        away_score: { not: null },
+      },
+      select: {
+        home_team_id: true,
+        away_team_id: true,
+        home_score: true,
+        away_score: true,
+      },
     });
 
+    for (const match of finalizedMatches) {
+      const home = byTeamId.get(match.home_team_id);
+      const away = byTeamId.get(match.away_team_id);
+      if (!home || !away) continue;
+
+      const homeScore = match.home_score ?? 0;
+      const awayScore = match.away_score ?? 0;
+
+      home.matchesPlayed += 1;
+      away.matchesPlayed += 1;
+      home.goalsFor += homeScore;
+      home.goalsAgainst += awayScore;
+      away.goalsFor += awayScore;
+      away.goalsAgainst += homeScore;
+
+      if (homeScore > awayScore) {
+        home.wins += 1;
+        away.losses += 1;
+        home.points += 3;
+      } else if (homeScore < awayScore) {
+        away.wins += 1;
+        home.losses += 1;
+        away.points += 3;
+      } else {
+        home.draws += 1;
+        away.draws += 1;
+        home.points += 1;
+        away.points += 1;
+      }
+    }
+
+    for (const entry of entries) {
+      entry.goalDifference = entry.goalsFor - entry.goalsAgainst;
+    }
+
     entries.sort((a, b) => {
-      if (b.xp_prestige !== a.xp_prestige) return b.xp_prestige - a.xp_prestige;
-      if (b.averageRating !== a.averageRating) return b.averageRating - a.averageRating;
-      if (b.totalGoals !== a.totalGoals) return b.totalGoals - a.totalGoals;
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+      if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
       return a.teamName.localeCompare(b.teamName);
     });
 
