@@ -55,32 +55,36 @@ function timeAgo(dateStr: string): string {
 const statusConfig = {
   PENDING: {
     label: 'En attente',
-    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
+    className:
+      'border-[color-mix(in_srgb,var(--omjep-mauve)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_12%,var(--omjep-bg-panel-soft))] text-omjep-text-primary',
     icon: Clock,
   },
   ACCEPTED: {
     label: 'Signé',
-    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
+    className:
+      'border-[color-mix(in_srgb,var(--omjep-success)_45%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-success)_14%,var(--omjep-bg-panel-soft))] text-omjep-text-primary',
     icon: Check,
   },
   REJECTED: {
     label: 'Refusé',
-    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
+    className:
+      'border-[color-mix(in_srgb,var(--omjep-danger)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-danger)_10%,var(--omjep-bg-panel-soft))] text-omjep-text-secondary',
     icon: X,
   },
   COUNTER_OFFER: {
     label: 'Contre-proposition',
-    className: 'bg-transparent text-black dark:text-white border-neutral-200 dark:border-neutral-800',
+    className:
+      'border-[color-mix(in_srgb,var(--omjep-gold)_42%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_10%,var(--omjep-bg-panel-soft))] text-omjep-text-primary',
     icon: MessageCircle,
   },
   CANCELLED: {
     label: 'Annulée',
-    className: 'bg-transparent text-black/70 dark:text-white/70 border-neutral-200 dark:border-neutral-800',
+    className: 'border-omjep-border/80 bg-omjep-bg-panel-soft/90 text-omjep-text-muted',
     icon: X,
   },
   EXPIRED: {
     label: 'Expirée',
-    className: 'bg-transparent text-black/60 dark:text-white/60 border-neutral-200 dark:border-neutral-800',
+    className: 'border-omjep-border/60 bg-omjep-bg-panel/80 text-omjep-text-muted',
     icon: Clock,
   },
 } as const;
@@ -184,7 +188,7 @@ export default function TransferMarket() {
   const mainTabsForUi = useMemo(() => {
     const playerTab = {
       key: 'player' as const,
-      label: 'Mes offres (joueur)',
+      label: 'Mes offres joueur',
       icon: User,
       count: pendingPlayerCount,
     };
@@ -255,6 +259,11 @@ export default function TransferMarket() {
       .filter((o) => o.status === 'PENDING' || o.status === 'COUNTER_OFFER')
       .reduce((s, o) => s + Number(o.reserved_amount ?? 0), 0)
   }, [myTeam, sentOffers])
+
+  const clubBudgetAvailableOc = useMemo(() => {
+    if (!myTeam) return 0
+    return Math.max(0, (myTeam.budget ?? 0) - clubMercatoReservedTotalOc)
+  }, [myTeam, clubMercatoReservedTotalOc])
 
   const playerRespond = async (offerId: string, body: Record<string, unknown>) => {
     setRespondingId(offerId);
@@ -375,9 +384,9 @@ export default function TransferMarket() {
     };
 
     return (
-      <div className="mt-4 space-y-3 border-t border-white/5 pt-4">
-        <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
-          <Gavel className="w-3.5 h-3.5" />
+      <div className="mt-4 space-y-3 border-t border-omjep-border/50 pt-4">
+        <p className="flex items-center gap-2 text-xs font-semibold text-omjep-text-secondary">
+          <Gavel className="h-3.5 w-3.5 shrink-0 text-omjep-mauve" aria-hidden />
           Réponse club acheteur
         </p>
         <div className="flex flex-wrap gap-2">
@@ -385,30 +394,30 @@ export default function TransferMarket() {
             type="button"
             disabled={busy || signLocked}
             onClick={() => buyerRespond(offer.id, { action: 'ACCEPT_COUNTER' })}
-            className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-bold text-black dark:border-neutral-800 dark:text-white"
+            className="omjep-btn-primary inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold normal-case tracking-normal disabled:opacity-50"
           >
-            {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-            &gt; [ ACCEPTER ] &lt;
+            {busy ? <Loader2 className="h-3 w-3 animate-spin" aria-hidden /> : <Check className="h-3.5 w-3.5" aria-hidden />}
+            Accepter
           </button>
           <button
             type="button"
             disabled={busy}
             onClick={() => buyerRespond(offer.id, { action: 'REJECT' })}
-            className="inline-flex items-center gap-1.5 rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-xs font-bold text-black/70 dark:border-neutral-800 dark:text-white/70"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-omjep-border/80 bg-omjep-bg-panel-soft/80 px-3 py-2 text-xs font-semibold text-omjep-text-secondary transition hover:border-omjep-border hover:text-omjep-text-primary"
           >
-            &gt; [ ABANDONNER ] &lt;
+            Abandonner
           </button>
         </div>
-        <div className="rounded-none border border-neutral-200 p-3 space-y-2 dark:border-neutral-800">
-          <p className="text-[10px] font-bold uppercase text-black/60 dark:text-white/60">Nouvelle proposition</p>
-          <div className="grid grid-cols-3 gap-1 text-[9px] uppercase text-black/50 dark:text-white/50">
+        <div className="space-y-2 rounded-xl border border-omjep-border/80 bg-omjep-bg-panel/60 p-3">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-omjep-text-muted">Nouvelle proposition</p>
+          <div className="grid grid-cols-3 gap-1 text-[9px] font-semibold uppercase tracking-wide text-omjep-text-muted">
             <span>{offer.transfer_mode === 'RELEASE_CLAUSE_BUYOUT' ? 'Clause' : 'Frais'}</span>
             <span>Prime</span>
             <span>N. clause</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <input
-              className="w-full rounded-none border border-neutral-200 bg-transparent px-2 py-1.5 font-mono text-xs text-black dark:border-neutral-800 dark:text-white"
+              className="omjep-field w-full rounded-lg px-2 py-1.5 font-mono text-xs text-omjep-text-primary"
               value={draft.fee}
               onChange={(e) =>
                 setCounterDraft((d) => ({
@@ -418,7 +427,7 @@ export default function TransferMarket() {
               }
             />
             <input
-              className="w-full rounded-none border border-neutral-200 bg-transparent px-2 py-1.5 font-mono text-xs text-black dark:border-neutral-800 dark:text-white"
+              className="omjep-field w-full rounded-lg px-2 py-1.5 font-mono text-xs text-omjep-text-primary"
               value={draft.sal}
               onChange={(e) =>
                 setCounterDraft((d) => ({
@@ -428,7 +437,7 @@ export default function TransferMarket() {
               }
             />
             <input
-              className="w-full rounded-none border border-neutral-200 bg-transparent px-2 py-1.5 font-mono text-xs text-black dark:border-neutral-800 dark:text-white"
+              className="omjep-field w-full rounded-lg px-2 py-1.5 font-mono text-xs text-omjep-text-primary"
               value={draft.clause}
               onChange={(e) =>
                 setCounterDraft((d) => ({
@@ -449,9 +458,9 @@ export default function TransferMarket() {
                 offered_clause: Number(draft.clause) || undefined,
               })
             }
-            className="w-full rounded-none border border-neutral-200 bg-transparent py-2 text-xs font-bold text-black dark:border-neutral-800 dark:text-white"
+            className="w-full rounded-lg border border-[color-mix(in_srgb,var(--omjep-gold)_38%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_8%,var(--omjep-bg-panel-soft))] py-2 text-xs font-semibold text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-gold)_55%,var(--omjep-mauve))] disabled:opacity-50"
           >
-            &gt; [ RÉVISER ] &lt;
+            Réviser l&apos;offre
           </button>
         </div>
       </div>
@@ -459,130 +468,154 @@ export default function TransferMarket() {
   };
 
   return (
-    <div className="omjep-product-page space-y-8">
+    <div className="mercato-cockpit mx-auto max-w-[1600px] space-y-5 sm:space-y-7">
       <GoldConfetti active={showConfetti} />
 
-      <div className="omjep-premium-panel rounded-none border border-black/10 bg-transparent px-12 py-12 dark:border-white/20">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="flex h-8 w-8 items-center justify-center rounded-none border border-neutral-200 bg-transparent dark:border-neutral-800">
-            <Repeat className="w-4 h-4 text-black dark:text-white" />
+      <section className="relative overflow-hidden rounded-2xl border border-omjep-border/85 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_94%,#070b14)] px-5 py-5 shadow-[var(--omjep-shadow-lg)] sm:px-6 sm:py-6">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_80%_at_15%_0%,color-mix(in_srgb,var(--omjep-mauve)_18%,transparent),transparent_55%),radial-gradient(ellipse_50%_60%_at_100%_100%,color-mix(in_srgb,var(--omjep-gold)_12%,transparent),transparent_50%)]"
+          aria-hidden
+        />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0 space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[color-mix(in_srgb,var(--omjep-gold)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_8%,var(--omjep-bg-panel-soft))]">
+                <Repeat className="h-5 w-5 text-[color-mix(in_srgb,var(--omjep-gold)_82%,var(--omjep-mauve))]" aria-hidden />
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-omjep-text-muted">MERCATO LIVE</p>
+            </div>
+            <h1 className="font-heading text-2xl font-extrabold tracking-tight text-omjep-text-primary sm:text-3xl">
+              Mercato
+            </h1>
+            <p className="max-w-xl text-sm leading-relaxed text-omjep-text-secondary">
+              Offres, contrats, clauses libératoires et trésorerie club — tout piloter depuis ce cockpit.
+            </p>
           </div>
-          <span className="omjep-kicker">
-            Mercato Live
+          <span
+            className={`inline-flex w-fit shrink-0 items-center rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] ${
+              signaturesBlocked
+                ? 'border-[color-mix(in_srgb,var(--omjep-danger)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-danger)_10%,var(--omjep-bg-panel-soft))] text-omjep-text-secondary'
+                : 'border-[color-mix(in_srgb,var(--omjep-success)_45%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-success)_12%,var(--omjep-bg-panel-soft))] text-omjep-text-primary'
+            }`}
+            role="status"
+          >
+            {signaturesBlocked ? 'Marché clos' : 'Marché ouvert'}
           </span>
         </div>
-        <h1 className="omjep-title-condensed text-4xl font-bold tracking-tight text-black dark:text-white">MERCATO</h1>
-        <p className="mt-1 text-sm omjep-muted-label">
-          Offres, contre-propositions et signature — budget en OMJEP Coins (OC)
-        </p>
-      </div>
+      </section>
 
       {signaturesBlocked && (
         <div
-          className="omjep-premium-panel rounded-none border-neutral-200 px-4 py-3 font-mono text-xs uppercase tracking-wider text-black dark:border-neutral-800 dark:text-white"
+          className="rounded-xl border border-[color-mix(in_srgb,var(--omjep-danger)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-danger)_08%,var(--omjep-bg-panel-soft))] px-4 py-3 text-xs font-medium leading-relaxed text-omjep-text-primary sm:text-sm"
           role="status"
         >
-          MARCHÉ CLOS — Les signatures et nouvelles offres sont suspendues pour votre club (compétition
-          concernée).
+          Signatures et nouvelles offres sont suspendues pour votre club (compétition concernée).
         </div>
       )}
 
       {!loading && !canInitiateTransferOffers && user && (
         <div
-          className="omjep-premium-panel rounded-none border border-amber-500/25 bg-amber-500/[0.06] px-5 py-4 text-sm text-amber-100 dark:border-amber-500/30"
+          className="rounded-xl border border-amber-500/35 bg-[color-mix(in_srgb,var(--omjep-gold)_08%,var(--omjep-bg-panel-soft))] px-4 py-4 text-sm leading-relaxed text-omjep-text-primary"
           role="status"
         >
-          Seuls les dirigeants du club peuvent initier des négociations. Vous pouvez consulter et répondre
-          aux offres reçues dans l’onglet « Mes offres (joueur) ».
+          Seuls les dirigeants du club peuvent initier des négociations. Consultez et répondez aux offres dans
+          l’onglet « Mes offres joueur ».
         </div>
       )}
 
       {myTeam && (
-        <div className="omjep-premium-panel omjep-gold-accent flex flex-col gap-3 rounded-none border-neutral-200 px-5 py-4 dark:border-neutral-800 sm:flex-row sm:items-center">
-          <div className="flex-1 space-y-1">
-            <p className="text-[12px] uppercase tracking-widest opacity-50">Trésorerie club — {myTeam.name ?? '—'}</p>
-            <p className="font-mono text-lg font-black text-black tabular-nums dark:text-white">
-              {formatCurrency(myTeam.budget ?? 0, 'OC')}
-            </p>
-            {canInitiateTransferOffers && (
-              <p className="text-xs text-black/70 dark:text-white/70">
-                Réservé mercato (offres envoyées en cours) :{' '}
-                <span className="font-mono font-semibold text-black dark:text-white">
-                  {formatCurrency(clubMercatoReservedTotalOc, 'OC')}
-                </span>
-              </p>
-            )}
+        <section className="rounded-2xl border border-omjep-border/80 bg-omjep-bg-panel-soft/45 p-4 shadow-[var(--omjep-shadow-lg)] sm:p-5">
+          <div className="mb-4 flex flex-col gap-3 border-b border-omjep-border/50 pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-text-muted">Trésorerie club</p>
+              <p className="mt-0.5 truncate text-sm font-semibold text-omjep-text-primary">{myTeam.name ?? '—'}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => fetchData()}
+              className="omjep-btn-secondary shrink-0 px-4 py-2 text-xs font-semibold normal-case tracking-normal"
+            >
+              Actualiser
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => fetchData()}
-            className="shrink-0 text-xs text-black hover:underline dark:text-white"
-          >
-            &gt; [ ACTUALISER ] &lt;
-          </button>
-        </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-omjep-border/70 bg-omjep-bg-panel/85 px-3 py-3">
+              <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-omjep-text-muted">Solde OC</p>
+              <p className="mt-1 font-heading text-xl font-black tabular-nums text-[color-mix(in_srgb,var(--omjep-gold)_90%,var(--omjep-text-primary))]">
+                {formatCurrency(myTeam.budget ?? 0, 'OC')}
+              </p>
+            </div>
+            <div className="rounded-xl border border-omjep-border/70 bg-omjep-bg-panel/85 px-3 py-3">
+              <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-omjep-text-muted">Réservé mercato</p>
+              <p className="mt-1 font-heading text-xl font-black tabular-nums text-omjep-text-primary">
+                {canInitiateTransferOffers ? formatCurrency(clubMercatoReservedTotalOc, 'OC') : '—'}
+              </p>
+            </div>
+            <div className="rounded-xl border border-[color-mix(in_srgb,var(--omjep-gold)_28%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_06%,var(--omjep-bg-panel))] px-3 py-3">
+              <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-omjep-text-muted">Disponible</p>
+              <p className="mt-1 font-heading text-xl font-black tabular-nums text-[color-mix(in_srgb,var(--omjep-gold)_88%,var(--omjep-text-primary))]">
+                {formatCurrency(clubBudgetAvailableOc, 'OC')}
+              </p>
+            </div>
+          </div>
+        </section>
       )}
 
-      <div className="omjep-premium-panel flex w-fit flex-wrap items-center gap-1 rounded-none border-neutral-200 p-1 dark:border-neutral-800">
-        {mainTabsForUi.map(({ key, label, icon: Icon, count }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setMainTab(key)}
-            className={`flex items-center gap-2 rounded-none px-4 py-2.5 text-sm font-semibold transition-all ${
-              mainTab === key
-                ? 'border border-neutral-200 bg-white/[0.02] text-black dark:border-neutral-800 dark:text-white'
-                : 'border border-transparent text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'
-            }`}
-          >
-            <Icon className="w-4 h-4" />
-            {label}
-            {count > 0 && (
-              <span className="ml-1 rounded-none border border-neutral-200 px-1.5 py-0.5 text-[10px] font-bold text-black dark:border-neutral-800 dark:text-white">
-                {count}
-              </span>
-            )}
-          </button>
-        ))}
+      <div className="omjep-tabrail flex w-full max-w-full flex-wrap gap-1 p-1">
+        {mainTabsForUi.map(({ key, label, icon: Icon, count }) => {
+          const active = mainTab === key;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setMainTab(key)}
+              className={`omjep-tabrail__btn ${active ? 'omjep-tabrail__btn--active' : ''}`}
+            >
+              <Icon className="h-4 w-4 shrink-0" aria-hidden />
+              <span className="truncate">{label}</span>
+              {count > 0 ? (
+                <span className="omjep-badge ml-0.5 py-0 font-mono tabular-nums">{count}</span>
+              ) : null}
+            </button>
+          );
+        })}
       </div>
 
       {loading && (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-black dark:text-white" />
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="h-8 w-8 animate-spin text-omjep-mauve" aria-hidden />
         </div>
       )}
 
       {!loading && mainTab === 'club' && (
         <>
-          <div className="omjep-premium-panel flex w-fit items-center gap-1 rounded-none border-neutral-200 p-1 dark:border-neutral-800">
+          <div className="omjep-tabrail flex w-full max-w-full flex-wrap gap-1 p-1">
             {([
               { key: 'received' as const, label: 'Côté club vendeur', icon: Inbox, count: pendingReceivedCount },
               { key: 'sent' as const, label: 'Offres envoyées', icon: Send, count: pendingSentCount },
-            ]).map(({ key, label, icon: Icon, count }) => (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`flex items-center gap-2 rounded-none px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                  activeTab === key
-                    ? 'border border-neutral-200 bg-white/[0.02] text-black dark:border-neutral-800 dark:text-white'
-                    : 'border border-transparent text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-                {count > 0 && (
-                  <span className="ml-1 rounded-none border border-neutral-200 px-1.5 py-0.5 text-[10px] font-bold text-black dark:border-neutral-800 dark:text-white">
-                    {count}
-                  </span>
-                )}
-              </button>
-            ))}
+            ]).map(({ key, label, icon: Icon, count }) => {
+              const active = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setActiveTab(key)}
+                  className={`omjep-tabrail__btn ${active ? 'omjep-tabrail__btn--active' : ''}`}
+                >
+                  <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                  <span className="truncate">{label}</span>
+                  {count > 0 ? (
+                    <span className="omjep-badge ml-0.5 py-0 font-mono tabular-nums">{count}</span>
+                  ) : null}
+                </button>
+              );
+            })}
           </div>
 
           <div className="space-y-3">
             {currentClubList.length === 0 ? (
-              <div className="omjep-premium-panel rounded-none border-neutral-200 p-12 text-center dark:border-neutral-800">
-                <p className="text-sm text-slate-500">Aucune offre dans cette catégorie.</p>
+              <div className="rounded-xl border border-dashed border-omjep-border/80 bg-omjep-bg-panel-soft/40 px-6 py-14 text-center">
+                <p className="text-sm text-omjep-text-secondary">Aucune offre dans cette catégorie.</p>
               </div>
             ) : (
               currentClubList.map((offer) => {
@@ -597,13 +630,7 @@ export default function TransferMarket() {
                 return (
                   <div
                     key={offer.id}
-                    className={`omjep-premium-panel rounded-none bg-black/[0.02] p-5 dark:bg-white/[0.05] ${
-                      offer.status === 'ACCEPTED'
-                        ? 'border-neutral-200 dark:border-neutral-800'
-                        : offer.status === 'PENDING' || offer.status === 'COUNTER_OFFER'
-                          ? 'border-neutral-200 dark:border-neutral-800'
-                          : 'border-neutral-200 dark:border-neutral-800'
-                    }`}
+                    className="rounded-xl border border-omjep-border/75 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_92%,#060910)] p-4 shadow-sm transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_30%,var(--omjep-border))] sm:p-5"
                   >
                     <div className="flex items-start gap-4">
                       <div className="shrink-0">
@@ -611,18 +638,18 @@ export default function TransferMarket() {
                           <img
                             src={otherTeam.logo_url}
                             alt=""
-                            className="h-12 w-12 rounded-none border border-neutral-200 object-cover dark:border-neutral-800"
+                            className="h-12 w-12 rounded-xl border border-omjep-border/70 object-cover"
                           />
                         ) : (
-                          <div className="flex h-12 w-12 items-center justify-center rounded-none border border-neutral-200 bg-transparent text-lg font-bold text-black dark:border-neutral-800 dark:text-white">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-omjep-border/80 bg-omjep-bg-panel-soft text-lg font-bold text-omjep-text-primary">
                             {otherLabel.charAt(0) || '?'}
                           </div>
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${cfg.className}`}>
-                            <StatusIcon className="w-2.5 h-2.5" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${cfg.className}`}>
+                            <StatusIcon className="h-2.5 w-2.5 shrink-0" aria-hidden />
                             {statusLabel}
                           </span>
                           <span className="text-[10px] text-omjep-text-muted">{timeAgo(offer.created_at)}</span>
@@ -654,11 +681,16 @@ export default function TransferMarket() {
       )}
 
       {!loading && mainTab === 'player' && (
-        <div className="space-y-3">
+        <div className="space-y-4">
+          <div className="rounded-xl border border-omjep-border/60 bg-omjep-bg-panel-soft/50 px-4 py-3 text-sm leading-relaxed text-omjep-text-secondary">
+            <span className="font-semibold text-omjep-text-primary">Joueur sous contrat ailleurs :</span> ouvrez sa fiche
+            profil et utilisez <span className="text-omjep-text-primary">« Activer la clause »</span> pour négocier un
+            transfert avec clause libératoire.
+          </div>
           {playerOffers.length === 0 ? (
-            <div className="omjep-premium-panel rounded-none border-neutral-200 p-12 text-center dark:border-neutral-800">
-              <MessageCircle className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">Aucune négociation en cours pour vous.</p>
+            <div className="rounded-xl border border-dashed border-omjep-border/80 bg-omjep-bg-panel-soft/40 px-6 py-14 text-center">
+              <MessageCircle className="mx-auto mb-3 h-10 w-10 text-omjep-text-muted" aria-hidden />
+              <p className="text-sm text-omjep-text-secondary">Aucune négociation en cours pour vous.</p>
             </div>
           ) : (
             playerOffers.map((offer) => {
@@ -669,11 +701,11 @@ export default function TransferMarket() {
               return (
                 <div
                   key={offer.id}
-                    className="omjep-premium-panel rounded-none border-neutral-200 bg-black/[0.02] p-5 dark:border-neutral-800 dark:bg-white/[0.05]"
+                  className="rounded-xl border border-omjep-border/75 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_92%,#060910)] p-4 shadow-sm sm:p-5"
                 >
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-[10px] font-bold uppercase border ${cfg.className}`}>
-                      <StatusIcon className="w-2.5 h-2.5" />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[10px] font-bold uppercase ${cfg.className}`}>
+                      <StatusIcon className="h-2.5 w-2.5 shrink-0" aria-hidden />
                       {statusLabel}
                     </span>
                     <span className="text-[10px] text-omjep-text-muted">{timeAgo(offer.created_at)}</span>
@@ -710,18 +742,22 @@ export default function TransferMarket() {
       )}
 
       {!loading && mainTab === 'freeAgents' && (
-        <div className="space-y-4">
-          <p className="text-sm text-black/75 dark:text-white/75 max-w-2xl">
-            Joueurs sans contrat actif : proposition de contrat (prime de signature, pas de frais vendeur).
-            Pour un joueur encore sous contrat dans un autre club, ouvrez sa fiche profil et utilisez « Activer la
-            clause ».
-          </p>
-          <div className="flex items-center gap-4 flex-wrap border-b border-black/10 pb-4 dark:border-white/20">
-            <label className="text-[12px] font-mono uppercase tracking-widest text-black/55 dark:text-white/55">Filtrer par position</label>
+        <div className="space-y-5">
+          <div className="rounded-xl border border-omjep-border/60 bg-omjep-bg-panel-soft/50 px-4 py-3 text-sm leading-relaxed text-omjep-text-secondary">
+            <span className="font-semibold text-omjep-text-primary">Agent libre :</span> contrat sans frais vendeur —{' '}
+            <span className="text-omjep-text-primary">prime de signature uniquement</span> est réservée sur votre
+            trésorerie. Pour un joueur encore sous contrat, ouvrez sa fiche et utilisez la clause libératoire.
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <label htmlFor="mercato-position-filter" className="text-xs font-semibold uppercase tracking-wide text-omjep-text-muted">
+              Position
+            </label>
             <select
+              id="mercato-position-filter"
               value={freeAgentPosition}
               onChange={(e) => setFreeAgentPosition(e.target.value)}
-              className="rounded-none border border-neutral-200 bg-transparent px-3 py-2 text-sm text-black focus:ring-0 dark:border-neutral-800 dark:text-white"
+              className="omjep-field max-w-full rounded-xl py-2.5 text-sm text-omjep-text-primary sm:max-w-xs"
             >
               <option value="">Toutes les positions</option>
               <option value="GK">Gardien (GK)</option>
@@ -738,72 +774,77 @@ export default function TransferMarket() {
           </div>
 
           {freeAgents.length === 0 ? (
-            <div className="omjep-premium-panel rounded-none border-neutral-200 p-12 text-center dark:border-neutral-800">
-              <Users className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">Aucun agent libre disponible pour le moment.</p>
+            <div className="rounded-xl border border-dashed border-omjep-border/80 bg-omjep-bg-panel-soft/40 px-6 py-14 text-center">
+              <Users className="mx-auto mb-3 h-10 w-10 text-omjep-text-muted" aria-hidden />
+              <p className="text-sm text-omjep-text-secondary">Aucun agent libre disponible pour le moment.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {freeAgents
                 .filter((agent) => !freeAgentPosition || agent.position === freeAgentPosition)
                 .map((agent) => (
-                  <div
+                  <article
                     key={agent.id}
-                    className="omjep-premium-panel omjep-premium-hover rounded-none border-neutral-200 bg-white/[0.02] p-5 transition-all hover:border-neutral-200 dark:border-neutral-800 dark:hover:border-neutral-800"
+                    className="group flex flex-col rounded-2xl border border-omjep-border/75 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_94%,#070c14)] p-4 shadow-[var(--omjep-shadow-lg)] transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))] sm:p-5"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-none border border-neutral-200 bg-transparent text-lg font-bold text-black dark:border-neutral-800 dark:text-white">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-omjep-border/80 bg-omjep-bg-panel-soft font-heading text-lg font-bold text-[color-mix(in_srgb,var(--omjep-gold)_85%,var(--omjep-text-primary))]">
                         {(agent.name ?? '?').charAt(0).toUpperCase() || '?'}
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <Link
                           to={`/dashboard/profile/${agent.id}`}
-                          className="block truncate font-semibold text-black hover:text-black dark:text-white dark:hover:text-white"
+                          className="block truncate font-heading text-base font-bold text-omjep-text-primary transition hover:text-omjep-mauve"
                         >
                           {agent.name ?? '—'}
                         </Link>
-                        <span className="font-mono text-xs text-black dark:text-white">Agent libre · 0 OC</span>
+                        <p className="mt-0.5 text-xs text-omjep-text-muted">
+                          Marché : <span className="font-mono tabular-nums text-[color-mix(in_srgb,var(--omjep-gold)_88%,var(--omjep-text-primary))]">0 OC</span>
+                        </p>
                       </div>
-                      <span className="rounded-none border border-neutral-200 bg-transparent px-2 py-1 text-[10px] font-bold text-black/70 dark:border-neutral-800 dark:text-white/70">
+                      <span className="shrink-0 rounded-lg border border-omjep-border/70 bg-omjep-bg-panel-soft px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-omjep-text-secondary">
                         {agent.position}
                       </span>
                     </div>
+                    <span className="mt-3 inline-flex w-fit rounded-full border border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_10%,transparent)] px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-omjep-text-primary">
+                      Agent libre
+                    </span>
 
-                    <div className="mt-4 grid grid-cols-4 gap-2 font-mono text-[11px]">
+                    <div className="mt-4 grid grid-cols-4 gap-1 rounded-xl border border-omjep-border/50 bg-omjep-bg-panel/60 py-2 text-[11px]">
                       <div className="text-center">
-                        <span className="block text-omjep-text-muted">Matchs</span>
-                        <span className="font-semibold text-omjep-text-primary">{agent.stats?.matches_played ?? 0}</span>
+                        <span className="block text-[9px] font-semibold uppercase tracking-wide text-omjep-text-muted">M</span>
+                        <span className="font-semibold tabular-nums text-omjep-text-primary">{agent.stats?.matches_played ?? 0}</span>
                       </div>
                       <div className="text-center">
-                        <span className="block text-omjep-text-muted">Buts</span>
-                        <span className="font-mono font-semibold text-omjep-text-primary">{agent.stats?.goals ?? 0}</span>
+                        <span className="block text-[9px] font-semibold uppercase tracking-wide text-omjep-text-muted">B</span>
+                        <span className="font-semibold tabular-nums text-omjep-text-primary">{agent.stats?.goals ?? 0}</span>
                       </div>
                       <div className="text-center">
-                        <span className="block text-omjep-text-muted">Passes</span>
-                        <span className="font-semibold text-omjep-cobalt">{agent.stats?.assists ?? 0}</span>
+                        <span className="block text-[9px] font-semibold uppercase tracking-wide text-omjep-text-muted">A</span>
+                        <span className="font-semibold tabular-nums text-omjep-text-primary">{agent.stats?.assists ?? 0}</span>
                       </div>
                       <div className="text-center">
-                        <span className="block text-omjep-text-muted">Note</span>
-                        <span className="font-mono font-semibold text-omjep-text-primary">
+                        <span className="block text-[9px] font-semibold uppercase tracking-wide text-omjep-text-muted">N</span>
+                        <span className="font-mono font-semibold tabular-nums text-omjep-text-primary">
                           {(agent.stats?.average_rating ?? 0).toFixed(1)}
                         </span>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-omjep-border/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <p className="text-[10px] text-omjep-text-muted">
-                        Contrat joueur libre — réserve = prime de signature uniquement
+                    <div className="mt-4 flex flex-col gap-3 border-t border-omjep-border/55 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-[10px] leading-relaxed text-omjep-text-muted">
+                        Réserve mercato = prime de signature uniquement.
                       </p>
                       <button
                         type="button"
                         disabled={!myTeam || signaturesBlocked || !canInitiateTransferOffers}
                         onClick={() => handleOpenOfferModal(agent)}
-                        className="inline-flex items-center justify-center gap-2 rounded-none border border-neutral-200 bg-transparent px-4 py-2.5 text-xs font-bold text-black transition disabled:pointer-events-none disabled:opacity-40 dark:border-neutral-800 dark:text-white"
+                        className="omjep-btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold normal-case tracking-normal disabled:pointer-events-none disabled:opacity-40"
                       >
-                        &gt; [ PROPOSER CONTRAT ] &lt;
+                        Proposer un contrat
                       </button>
                     </div>
-                  </div>
+                  </article>
                 ))}
             </div>
           )}

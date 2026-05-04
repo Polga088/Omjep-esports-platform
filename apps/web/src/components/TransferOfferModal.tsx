@@ -510,9 +510,9 @@ export default function TransferOfferModal({
           </div>
 
           {overBudget && (
-            <div className="flex items-start gap-3 rounded-xl border border-red-500/25 bg-red-500/[0.08] px-4 py-3">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
-              <p className="text-xs leading-relaxed text-red-300/95">
+            <div className="flex items-start gap-3 rounded-xl border border-[color-mix(in_srgb,var(--omjep-danger)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-danger)_10%,var(--omjep-bg-panel-soft))] px-4 py-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-omjep-danger" aria-hidden />
+              <p className="text-xs leading-relaxed text-omjep-danger">
                 Budget insuffisant : la réservation dépasse la trésorerie du club. Réduisez la prime
                 {isClauseBuyoutFlow ? ' ou le montant de clause.' : '.'}
               </p>
@@ -520,9 +520,9 @@ export default function TransferOfferModal({
           )}
 
           {error && (
-            <div className="flex items-start gap-3 rounded-xl border border-red-500/25 bg-red-500/[0.08] px-4 py-3">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
-              <p className="text-xs text-red-300/95">{error}</p>
+            <div className="flex items-start gap-3 rounded-xl border border-[color-mix(in_srgb,var(--omjep-danger)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-danger)_10%,var(--omjep-bg-panel-soft))] px-4 py-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-omjep-danger" aria-hidden />
+              <p className="text-xs text-omjep-danger">{error}</p>
             </div>
           )}
 
