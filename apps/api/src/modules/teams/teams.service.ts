@@ -234,7 +234,7 @@ export class TeamsService {
   /**
    * Classement compétition (Ladder) :
    * MJ/V/N/D/BP/BC/DIFF/PTS à partir des matchs finalisés.
-   * Tri : points, différence de buts, buts marqués, nom du club.
+   * Tri : points, matchs joués, différence de buts, buts pour, nom du club.
    */
   async getLadder(): Promise<LadderEntry[]> {
     const teams = await this.prisma.club.findMany({
@@ -313,6 +313,7 @@ export class TeamsService {
 
     entries.sort((a, b) => {
       if (b.points !== a.points) return b.points - a.points;
+      if (b.matchesPlayed !== a.matchesPlayed) return b.matchesPlayed - a.matchesPlayed;
       if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
       if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
       return a.teamName.localeCompare(b.teamName);
