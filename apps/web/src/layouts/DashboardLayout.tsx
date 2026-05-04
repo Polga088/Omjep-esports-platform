@@ -19,13 +19,13 @@ import {
   Headphones,
   Trophy,
   Newspaper,
-  Bell,
   Sun,
   Moon,
   Menu,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useTheme } from '@/context/ThemeContext';
+import DashboardNotificationBell from '@/components/notifications/DashboardNotificationBell';
 import PlayerIdentity from '@/components/PlayerIdentity';
 import LiveTicker from '@/components/LiveTicker';
 import GoldConfetti from '@/components/GoldConfetti';
@@ -298,49 +298,40 @@ export default function DashboardLayout() {
       </aside>
 
       <section className="relative z-10 flex min-h-[100dvh] w-full flex-col lg:pl-72">
-        <header className="dashboard-cockpit-topbar sticky top-0 z-20 flex min-h-16 flex-wrap items-center justify-between gap-2 border-b border-omjep-border px-3 py-2.5 backdrop-blur-xl sm:gap-3 sm:px-5 sm:py-3">
-          <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+        <header className="dashboard-cockpit-topbar sticky top-0 z-20 flex min-h-[3.25rem] items-center justify-between gap-2 border-b border-omjep-border/90 bg-[color-mix(in_srgb,var(--omjep-bg)_88%,transparent)] px-3 py-2 backdrop-blur-xl sm:gap-3 sm:px-4 sm:py-2.5">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
             <button
               type="button"
-              className="shrink-0 rounded-lg border border-omjep-border/70 p-2 text-omjep-text-secondary transition hover:bg-omjep-bg-panel-soft/50 hover:text-omjep-text-primary lg:hidden"
+              className="shrink-0 rounded-lg border border-omjep-border/70 p-1.5 text-omjep-text-secondary transition hover:bg-omjep-bg-panel-soft/50 hover:text-omjep-text-primary lg:hidden"
               aria-label="Ouvrir la navigation"
               onClick={() => setMobileNavOpen(true)}
             >
-              <Menu className="h-5 w-5" aria-hidden />
+              <Menu className="h-[18px] w-[18px]" aria-hidden />
             </button>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate font-heading text-base font-extrabold tracking-tight text-omjep-text-primary sm:text-lg md:text-xl">
+              <h1 className="truncate font-heading text-[15px] font-extrabold leading-tight tracking-tight text-omjep-text-primary sm:text-lg md:text-xl">
                 {currentPageTitle}
               </h1>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-muted">Cockpit</p>
+              <p className="truncate text-[9px] font-semibold uppercase tracking-[0.22em] text-omjep-text-muted">Cockpit</p>
             </div>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
-            <button
-              type="button"
-              className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-omjep-border/80 bg-omjep-bg-panel-soft/70 text-omjep-text-primary transition hover:border-omjep-mauve/40 hover:bg-omjep-bg-panel-soft"
-              aria-label="Notifications, 3 non lues (démo)"
-            >
-              <Bell className="h-4 w-4" aria-hidden />
-              <span className="absolute right-1 top-1 flex h-3.5 min-w-[0.875rem] items-center justify-center rounded-full bg-omjep-mauve px-0.5 text-[8px] font-black tabular-nums text-white">
-                3
-              </span>
-            </button>
+          <div className="flex max-w-[min(100%,28rem)] shrink-0 items-center justify-end gap-1.5 sm:gap-2 md:max-w-none md:flex-nowrap">
+            <DashboardNotificationBell />
             <button
               type="button"
               onClick={() => toggleTheme()}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-omjep-border/80 bg-omjep-bg-panel-soft/70 text-omjep-text-primary transition hover:border-omjep-mauve/40 hover:bg-omjep-bg-panel-soft"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-omjep-border/80 bg-omjep-bg-panel-soft/80 text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_40%,var(--omjep-border))] hover:bg-omjep-bg-panel-soft"
               aria-label={theme === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre'}
             >
               {theme === 'dark' ? (
-                <Sun className="h-4 w-4 text-omjep-gold" aria-hidden />
+                <Sun className="h-[18px] w-[18px] text-[color-mix(in_srgb,var(--omjep-gold)_85%,#fff)]" aria-hidden />
               ) : (
-                <Moon className="h-4 w-4 text-omjep-mauve" aria-hidden />
+                <Moon className="h-[18px] w-[18px] text-omjep-mauve" aria-hidden />
               )}
             </button>
-            <div className="hidden items-center gap-2 sm:flex">
+            <div className="flex min-w-0 items-center gap-2">
               <PlayerIdentity
-                size="sm"
+                size="xs"
                 initial={user?.ea_persona_name?.charAt(0) ?? 'U'}
                 avatarUrl={user?.avatarUrl}
                 rarity={user?.avatarRarity ?? 'common'}
@@ -349,26 +340,30 @@ export default function DashboardLayout() {
                 teamPrimaryColor={user?.teamPrimaryColor}
                 teamSecondaryColor={user?.teamSecondaryColor}
               />
-              <div className="min-w-0 max-w-[10rem] md:max-w-[14rem]">
-                <p className="truncate text-sm font-semibold text-omjep-text-primary">{user?.ea_persona_name ?? 'Joueur'}</p>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">
+              <div className="hidden min-w-0 max-w-[7.5rem] sm:max-w-[10rem] md:block lg:max-w-[12rem]">
+                <p className="truncate text-xs font-semibold leading-tight text-omjep-text-primary sm:text-[13px]">
+                  {user?.ea_persona_name ?? 'Joueur'}
+                </p>
+                <p className="truncate text-[9px] uppercase tracking-[0.16em] text-omjep-text-muted">
                   {user?.role === 'MANAGER' ? 'Manager' : user?.role === 'ADMIN' ? 'Admin' : 'Joueur'}
                 </p>
               </div>
             </div>
-            <SystemStatusIndicator />
+            <div className="hidden origin-right scale-[0.88] sm:block sm:scale-[0.9]">
+              <SystemStatusIndicator />
+            </div>
             <button
               type="button"
               onClick={handleLogout}
               aria-label="Déconnexion"
-              className="shrink-0 rounded-lg border border-omjep-border px-2.5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-omjep-text-secondary transition-colors hover:border-omjep-border-gold hover:text-omjep-text-primary sm:px-3 sm:text-[11px]"
+              className="shrink-0 rounded-lg border border-omjep-border/80 px-2 py-1.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-omjep-text-secondary transition-colors hover:border-[color-mix(in_srgb,var(--omjep-gold)_35%,var(--omjep-border))] hover:text-omjep-text-primary sm:px-2.5 sm:text-[10px]"
             >
               Logout
             </button>
           </div>
         </header>
 
-        <div className="border-b border-omjep-border/50 bg-omjep-bg-panel-soft/60 backdrop-blur-md">
+        <div className="dashboard-live-ticker-strip border-b border-omjep-border/40 bg-omjep-bg-panel-soft/35 backdrop-blur-md">
           <LiveTicker />
           {mercatoLiveBadge ? (
             <div className="container-dashboard pt-0">

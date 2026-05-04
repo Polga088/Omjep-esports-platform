@@ -1,7 +1,18 @@
-import { useState } from 'react'
-import { AnimatePresence, motion, type Variants } from 'framer-motion'
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Camera, Clock3, Flame, MessageCircleMore, Plus, Radar } from 'lucide-react'
+import {
+  ArrowUpRight,
+  BookOpen,
+  ExternalLink,
+  Flame,
+  Megaphone,
+  Newspaper,
+  Plus,
+  Radio,
+  Sparkles,
+  Trophy,
+  Users,
+} from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '@/lib/api'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -35,48 +46,15 @@ interface NewsResponse {
   pagination: NewsPagination
 }
 
-const fallbackImages: Record<NewsCategory, string> = {
-  MERCATO:
-    'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=1400&q=80',
-  TOURNAMENT:
-    'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80',
-  UPDATE:
-    'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=1400&q=80',
-}
+type FilterKey = NewsCategory | 'ALL' | 'COMMUNITY'
 
-const categoryFilters: Array<{ label: string; value: NewsCategory | 'ALL' }> = [
-  { label: 'Tous', value: 'ALL' },
-  { label: 'Mercato', value: 'MERCATO' },
-  { label: 'Tournament', value: 'TOURNAMENT' },
-  { label: 'Update', value: 'UPDATE' },
+const FILTER_TABS: { key: FilterKey; label: string }[] = [
+  { key: 'ALL', label: 'Tous' },
+  { key: 'MERCATO', label: 'Mercato' },
+  { key: 'TOURNAMENT', label: 'Compétition' },
+  { key: 'UPDATE', label: 'Annonce' },
+  { key: 'COMMUNITY', label: 'Communauté' },
 ]
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: [0.22, 1, 0.36, 1],
-      staggerChildren: 0.08,
-    },
-  },
-}
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
-  },
-  exit: {
-    opacity: 0,
-    y: -16,
-    transition: { duration: 0.2, ease: [0.4, 0, 1, 1] },
-  },
-}
 
 async function fetchNews(page: number, limit: number, category: NewsCategory | 'ALL'): Promise<NewsResponse> {
   const params: Record<string, string | number> = { page, limit }
@@ -87,75 +65,108 @@ async function fetchNews(page: number, limit: number, category: NewsCategory | '
   return data
 }
 
-function CategoryBadge({ category }: { category: NewsCategory }) {
-  return (
-    <span className="inline-flex rounded-none border border-neutral-200 bg-transparent px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-black dark:border-neutral-800 dark:text-white">
-      {category}
-    </span>
-  )
+function categoryLabel(c: NewsCategory): string {
+  switch (c) {
+    case 'MERCATO':
+      return 'Mercato'
+    case 'TOURNAMENT':
+      return 'Compétition'
+    case 'UPDATE':
+      return 'Annonce'
+    default:
+      return c
+  }
 }
 
-function TacticalSkeletonCard() {
-  return (
-    <article className="tactical-bento tactical-skeleton-shimmer relative h-[250px] overflow-hidden rounded-none border border-neutral-200 bg-white/[0.02] dark:border-neutral-800 sm:h-[280px]">
-      <div className="absolute inset-x-0 bottom-0 space-y-3 p-5">
-        <div className="h-5 w-20 rounded-none border-[0.5px] border-black/5 bg-transparent dark:border-white/10" />
-        <div className="h-5 w-11/12 rounded-none border-[0.5px] border-black/5 bg-transparent dark:border-white/10" />
-        <div className="h-4 w-1/2 rounded-none border-[0.5px] border-black/5 bg-transparent dark:border-white/10" />
-      </div>
-    </article>
-  )
+function categoryTone(c: NewsCategory): string {
+  switch (c) {
+    case 'MERCATO':
+      return 'border-omjep-mauve/45 bg-[color-mix(in_srgb,var(--omjep-mauve)_18%,transparent)] text-omjep-text-primary'
+    case 'TOURNAMENT':
+      return 'border-[color-mix(in_srgb,var(--omjep-gold)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_10%,transparent)] text-omjep-text-primary'
+    case 'UPDATE':
+      return 'border-omjep-border text-omjep-text-secondary bg-omjep-bg-panel-soft/80'
+    default:
+      return 'border-omjep-border text-omjep-text-secondary'
+  }
 }
 
-function ArticleCard({
-  article,
-  isLarge = false,
-  onSelect,
+function gradientForCategory(c: NewsCategory): string {
+  switch (c) {
+    case 'MERCATO':
+      return 'from-[color-mix(in_srgb,var(--omjep-mauve)_42%,#0a0f18)] via-[#080d16] to-[#05080f]'
+    case 'TOURNAMENT':
+      return 'from-[color-mix(in_srgb,var(--omjep-gold)_22%,#0c1018)] via-[#0a0e14] to-[#05070c]'
+    case 'UPDATE':
+      return 'from-[color-mix(in_srgb,var(--omjep-mauve)_18%,#080c14)] via-[#070a12] to-[#05060c]'
+    default:
+      return 'from-omjep-bg-panel to-omjep-bg'
+  }
+}
+
+function formatArticleDate(iso: string): string {
+  try {
+    return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(iso))
+  } catch {
+    return ''
+  }
+}
+
+function ArticleCover({
+  category,
+  imageUrl,
+  title,
+  tall,
 }: {
-  article: CommunityArticle
-  isLarge?: boolean
-  onSelect: (article: CommunityArticle) => void
+  category: NewsCategory
+  imageUrl: string | null
+  title: string
+  tall?: boolean
 }) {
-  const imageUrl = article.image ?? fallbackImages[article.category]
-
+  const h = tall ? 'min-h-[220px] sm:min-h-[280px] lg:min-h-[320px]' : 'min-h-[160px] sm:min-h-[180px]'
+  if (imageUrl) {
+    return (
+      <div className={`relative ${h} w-full overflow-hidden`}>
+        <img
+          src={imageUrl}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[color-mix(in_srgb,var(--omjep-bg)_96%,#000)] via-[color-mix(in_srgb,#000_35%,transparent)] to-transparent" />
+        <div className="absolute inset-0 ring-1 ring-inset ring-white/10" aria-hidden />
+      </div>
+    )
+  }
   return (
-    <motion.article variants={itemVariants} exit="exit" layout>
-      <button
-        type="button"
-        onClick={() => onSelect(article)}
-        className="group tactical-bento relative w-full overflow-hidden rounded-none border border-neutral-200 text-left transition-all duration-300 hover:-translate-y-1 hover:border-neutral-200 focus:outline-none focus-visible:ring-0 dark:border-neutral-800 dark:hover:border-neutral-800"
-      >
-        <div className={`relative ${isLarge ? 'h-[430px]' : 'h-[250px] sm:h-[280px]'}`}>
-          <img
-            src={imageUrl}
-            alt={article.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-            <CategoryBadge category={article.category} />
-            <h3 className="mt-3 font-['Rajdhani'] text-xl font-black italic uppercase leading-tight tracking-[0.05em] text-black dark:text-white sm:text-2xl">
-              {article.title}
-            </h3>
-            <div className="mt-3 flex items-center gap-2 text-xs uppercase tracking-[0.14em] text-black/70 dark:text-white/70">
-              <Clock3 className="h-3.5 w-3.5 text-black dark:text-white" />
-              <span>{article.readTime} de lecture</span>
-            </div>
-          </div>
-        </div>
-      </button>
-    </motion.article>
+    <div
+      className={`relative ${h} w-full overflow-hidden bg-gradient-to-br ${gradientForCategory(category)}`}
+      aria-hidden
+    >
+      <div className="absolute inset-0 opacity-[0.35] bg-[radial-gradient(ellipse_at_30%_20%,color-mix(in_srgb,var(--omjep-mauve)_35%,transparent),transparent_55%),radial-gradient(ellipse_at_80%_90%,color-mix(in_srgb,var(--omjep-gold)_18%,transparent),transparent_50%)]" />
+      <div className="absolute bottom-6 left-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-black/25 backdrop-blur-md">
+        <Newspaper className="h-7 w-7 text-[color-mix(in_srgb,var(--omjep-gold)_88%,#fff)]" aria-hidden />
+      </div>
+      <p className="sr-only">{title}</p>
+    </div>
   )
 }
 
 export default function Community() {
-  const [selectedCategory, setSelectedCategory] = useState<NewsCategory | 'ALL'>('ALL')
+  const [selectedFilter, setSelectedFilter] = useState<FilterKey>('ALL')
   const [page, setPage] = useState(1)
   const navigate = useNavigate()
   const { user } = useAuthStore()
-
   const isAdmin = user?.role === 'ADMIN'
+
+  const apiCategory: NewsCategory | 'ALL' =
+    selectedFilter === 'COMMUNITY' ? 'ALL' : selectedFilter === 'ALL' ? 'ALL' : selectedFilter
 
   const {
     data,
@@ -163,243 +174,318 @@ export default function Community() {
     isError,
     isFetching,
   } = useQuery({
-    queryKey: ['community-news', selectedCategory, page],
-    queryFn: () => fetchNews(page, 9, selectedCategory),
+    queryKey: ['community-news', apiCategory, page],
+    queryFn: () => fetchNews(page, 12, apiCategory),
   })
 
-  const items = data?.items ?? []
+  const rawItems = data?.items ?? []
   const pagination = data?.pagination
 
+  const items = useMemo(() => {
+    if (selectedFilter !== 'COMMUNITY') return rawItems
+    return [...rawItems].sort((a, b) => b.views - a.views)
+  }, [rawItems, selectedFilter])
+
+  const trending = useMemo(() => {
+    const pool = rawItems.length ? rawItems : items
+    return [...pool].sort((a, b) => b.views - a.views).slice(0, 4)
+  }, [rawItems, items])
+
   const heroMain = items[0]
-  const heroRight = items.slice(1, 3)
-  const gridItems = items.slice(2)
-  const trending = items.slice(0, 5)
+  const heroSecondary = items.slice(1, 3)
+  const feedItems = items.slice(3)
 
-  function handleFilterChange(filter: NewsCategory | 'ALL') {
-    setSelectedCategory(filter)
-    setPage(1)
-  }
+  const stats = useMemo(() => {
+    const mercato = items.filter((a) => a.category === 'MERCATO').length
+    const comp = items.filter((a) => a.category === 'TOURNAMENT').length
+    const views = items.reduce((s, a) => s + (a.views || 0), 0)
+    return {
+      articles: pagination?.total ?? items.length,
+      mercato,
+      comp,
+      views,
+    }
+  }, [items, pagination?.total])
 
-  function handleSelectArticle(article: CommunityArticle) {
+  const handleSelectArticle = (article: CommunityArticle) => {
     navigate(`/community/news/${article.id}`)
   }
 
+  const setFilter = (k: FilterKey) => {
+    setSelectedFilter(k)
+    setPage(1)
+  }
+
   return (
-    <div className="kimi-community-page relative min-h-screen bg-transparent text-black dark:text-white">
-      <div className="pointer-events-none absolute inset-0 bg-transparent" />
-      <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-16 px-4 py-10 sm:px-6 lg:flex-row lg:px-8">
-        <div className="flex-1">
-          <h1 className="mb-10 text-8xl font-bold tracking-tighter text-black dark:text-white">Community</h1>
-          <div className="mb-6 flex flex-wrap items-center gap-3">
-            {categoryFilters.map((filter) => {
-              const isActive = selectedCategory === filter.value
+    <div className="community-hub relative min-h-screen overflow-x-hidden bg-omjep-bg text-omjep-text-primary">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,color-mix(in_srgb,var(--omjep-mauve)_14%,transparent),transparent_50%)]"
+        aria-hidden
+      />
+
+      <div className="relative mx-auto max-w-[1440px] px-4 pb-16 pt-8 sm:px-6 lg:px-10">
+        <header className="mb-10 grid gap-8 lg:grid-cols-[1fr_minmax(0,320px)] lg:items-end">
+          <div className="space-y-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-omjep-text-muted">COMMUNITY HUB</p>
+            <h1 className="font-heading text-3xl font-extrabold tracking-tight text-omjep-text-primary sm:text-4xl lg:text-[2.35rem] lg:leading-[1.1]">
+              Actualités &amp; Communauté OMJEP
+            </h1>
+            <p className="max-w-2xl text-sm leading-relaxed text-omjep-text-secondary">
+              Mercato, compétitions, clubs et joueurs — le flux officiel OMJEP Pro Clubs. Restez alignés sur la saison.
+            </p>
+            {isAdmin ? (
+              <Link
+                to="/admin/news/create"
+                className="inline-flex w-fit items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--omjep-gold)_38%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_8%,var(--omjep-bg-panel-soft))] px-4 py-2.5 text-xs font-semibold text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-gold)_55%,var(--omjep-mauve))]"
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+                Créer un article
+              </Link>
+            ) : null}
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2 lg:gap-3">
+            <div className="rounded-xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_90%,#070d18)] px-3 py-3 shadow-[var(--omjep-shadow-lg)]">
+              <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.16em] text-omjep-text-muted">
+                <BookOpen className="h-3.5 w-3.5 text-omjep-mauve" aria-hidden />
+                Articles
+              </div>
+              <p className="mt-1.5 font-heading text-2xl font-black tabular-nums text-omjep-text-primary">{stats.articles}</p>
+            </div>
+            <div className="rounded-xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_90%,#070d18)] px-3 py-3 shadow-[var(--omjep-shadow-lg)]">
+              <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.16em] text-omjep-text-muted">
+                <Radio className="h-3.5 w-3.5 text-[color-mix(in_srgb,var(--omjep-gold)_80%,var(--omjep-mauve))]" aria-hidden />
+                Mercato
+              </div>
+              <p className="mt-1.5 font-heading text-2xl font-black tabular-nums text-[color-mix(in_srgb,var(--omjep-gold)_85%,var(--omjep-text-primary))]">{stats.mercato}</p>
+            </div>
+            <div className="rounded-xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_90%,#070d18)] px-3 py-3 shadow-[var(--omjep-shadow-lg)]">
+              <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.16em] text-omjep-text-muted">
+                <Trophy className="h-3.5 w-3.5 text-omjep-mauve" aria-hidden />
+                Compétition
+              </div>
+              <p className="mt-1.5 font-heading text-2xl font-black tabular-nums text-omjep-text-primary">{stats.comp}</p>
+            </div>
+            <div className="rounded-xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_90%,#070d18)] px-3 py-3 shadow-[var(--omjep-shadow-lg)]">
+              <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.16em] text-omjep-text-muted">
+                <Users className="h-3.5 w-3.5 text-omjep-mauve" aria-hidden />
+                Lectures
+              </div>
+              <p className="mt-1.5 font-heading text-2xl font-black tabular-nums text-omjep-text-primary">{stats.views.toLocaleString('fr-FR')}</p>
+            </div>
+          </div>
+        </header>
+
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="omjep-tabrail flex w-full max-w-full flex-wrap gap-1 p-1">
+            {FILTER_TABS.map(({ key, label }) => {
+              const active = selectedFilter === key
               return (
                 <button
-                  key={filter.value}
+                  key={key}
                   type="button"
-                  onClick={() => handleFilterChange(filter.value)}
-                  className={`rounded-none border border-neutral-200 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] transition dark:border-neutral-800 ${
-                    isActive
-                      ? 'bg-white/[0.02] text-black dark:text-white'
-                      : 'bg-transparent text-black/65 hover:text-black dark:text-white/65 dark:hover:text-white'
-                  }`}
+                  onClick={() => setFilter(key)}
+                  className={`omjep-tabrail__btn ${active ? 'omjep-tabrail__btn--active' : ''}`}
                 >
-                  {filter.label}
+                  {label}
                 </button>
               )
             })}
-
-            <div className="ml-auto flex items-center gap-3">
-              {isFetching && !isLoading && (
-                <span className="font-['JetBrains_Mono'] text-[11px] uppercase tracking-[0.18em] text-black/70 dark:text-white/70">
-                  Uplink Sync...
-                </span>
-              )}
-              {isAdmin && (
-                <Link
-                  to="/admin/news/create"
-                  className="inline-flex items-center gap-2 rounded-none border border-neutral-200 bg-transparent px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-black transition dark:border-neutral-800 dark:text-white"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  Créer un article
-                </Link>
-              )}
-            </div>
           </div>
-
-          {isError && (
-            <div className="tactical-bento rounded-none border border-neutral-200 bg-white/[0.02] p-5 text-sm text-black dark:border-neutral-800 dark:text-white">
-              Impossible de charger les news pour le moment
-            </div>
-          )}
-
-          {isLoading && (
-            <div className="space-y-8">
-              <div className="grid gap-5 lg:grid-cols-3">
-                <div className="lg:col-span-2">
-                  <article className="tactical-bento tactical-skeleton-shimmer h-[430px] rounded-none border border-neutral-200 bg-white/[0.02] dark:border-neutral-800" />
-                </div>
-                <div className="space-y-5">
-                  <TacticalSkeletonCard />
-                  <TacticalSkeletonCard />
-                </div>
-              </div>
-              <div className="grid auto-rows-[230px] gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <TacticalSkeletonCard key={`skeleton-${index}`} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {!isLoading && items.length > 0 && (
-            <>
-              <motion.section
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid gap-5 lg:grid-cols-3"
-              >
-                {heroMain && (
-                  <div className="lg:col-span-2">
-                    <ArticleCard article={heroMain} onSelect={handleSelectArticle} isLarge />
-                  </div>
-                )}
-                <div className="flex flex-col gap-5">
-                  {heroRight.map((article) => (
-                    <ArticleCard key={article.id} article={article} onSelect={handleSelectArticle} />
-                  ))}
-                </div>
-              </motion.section>
-
-              <motion.section
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="mt-10"
-              >
-                <div className="mb-4 flex items-center gap-2">
-                  <Flame className="h-4 w-4 text-black dark:text-white" />
-                  <span className="font-['JetBrains_Mono'] text-xs uppercase tracking-[0.22em] text-black/70 dark:text-white/70">
-                    Flux Articles
-                  </span>
-                </div>
-
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`${selectedCategory}-${page}`}
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    className="grid auto-rows-[230px] gap-5 sm:grid-cols-2 xl:grid-cols-3"
-                  >
-                    {gridItems.map((article, index) => (
-                      <div
-                        key={article.id}
-                        className={index % 4 === 0 ? 'sm:col-span-2 xl:col-span-2 xl:row-span-2' : ''}
-                      >
-                        <ArticleCard article={article} onSelect={handleSelectArticle} />
-                      </div>
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-              </motion.section>
-            </>
-          )}
-
-          {!isLoading && items.length === 0 && !isError && (
-            <TacticalEmptyState
-              icon={Radar}
-              title="Aucune donnée détectée dans le secteur"
-              description="Aucun article pour ce filtre. Changez de catégorie ou revenez plus tard."
-            />
-          )}
-
-          {pagination && pagination.totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-between rounded-none border border-neutral-200 bg-white/[0.02] px-4 py-3 dark:border-neutral-800">
-              <p className="font-['JetBrains_Mono'] text-xs uppercase tracking-[0.14em] text-black dark:text-white">
-                Page {pagination.page} / {pagination.totalPages}
-              </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  disabled={pagination.page <= 1}
-                  onClick={() => setPage((current) => Math.max(1, current - 1))}
-                  className="rounded-none border border-neutral-200 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-black disabled:cursor-not-allowed disabled:opacity-35 dark:border-neutral-800 dark:text-white"
-                >
-                  Précédent
-                </button>
-                <button
-                  type="button"
-                  disabled={pagination.page >= pagination.totalPages}
-                  onClick={() => setPage((current) => Math.min(pagination.totalPages, current + 1))}
-                  className="rounded-none border border-neutral-200 bg-transparent px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-black disabled:cursor-not-allowed disabled:opacity-35 dark:border-neutral-800 dark:text-white"
-                >
-                  Suivant
-                </button>
-              </div>
-            </div>
-          )}
+          {isFetching && !isLoading ? (
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-muted">Mise à jour…</span>
+          ) : null}
         </div>
 
-        <aside className="w-full lg:sticky lg:top-24 lg:h-fit lg:max-w-sm">
-          <section className="tactical-bento rounded-none border-neutral-200 p-5 dark:border-neutral-800">
-            <h3 className="font-['Rajdhani'] text-xl font-black italic uppercase tracking-[0.08em] text-black dark:text-white">
-              Trending
-            </h3>
-            <div className="mt-4 space-y-4">
-              {trending.map((article, index) => (
-                <button
-                  key={article.id}
-                  type="button"
-                  onClick={() => handleSelectArticle(article)}
-                  className="group relative block w-full overflow-hidden rounded-none border border-neutral-200 bg-white/[0.02] px-4 py-4 text-left dark:border-neutral-800"
-                >
-                  <span className="pointer-events-none absolute -right-1 top-1 font-['JetBrains_Mono'] text-[58px] font-extrabold leading-none text-white/5">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <p className="pr-16 font-['Rajdhani'] text-base font-bold italic uppercase tracking-[0.04em] text-black dark:text-white">
-                    {article.title}
-                  </p>
-                  <p className="mt-1 font-['JetBrains_Mono'] text-xs uppercase tracking-[0.16em] text-black/60 dark:text-white/60">{article.readTime}</p>
-                </button>
-              ))}
-            </div>
-          </section>
+        {isError ? (
+          <div className="mb-10 rounded-xl border border-omjep-border/80 bg-omjep-bg-panel-soft/60 px-4 py-4 text-sm text-omjep-text-secondary">
+            Impossible de charger les articles pour le moment. Réessayez plus tard.
+          </div>
+        ) : null}
 
-          <section className="hub-surface mt-5 rounded-none border-neutral-200 p-5 dark:border-neutral-800">
-            <h4 className="font-['Rajdhani'] text-lg font-black italic uppercase tracking-[0.08em] text-black dark:text-white">
-              Reseaux Sociaux
-            </h4>
-            <div className="mt-4 space-y-3">
-              <a
-                href="https://discord.com"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-between rounded-none border border-neutral-200 bg-white/[0.02] px-4 py-3 transition hover:border-neutral-200 dark:border-neutral-800 dark:hover:border-neutral-800"
-              >
-                <span className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.15em] text-black dark:text-white">
-                  <MessageCircleMore className="h-4 w-4 text-black dark:text-white" />
-                  Discord
-                </span>
-                <span className="font-['JetBrains_Mono'] text-xs text-black/60 dark:text-white/60">+4.2k</span>
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-between rounded-none border border-neutral-200 bg-white/[0.02] px-4 py-3 transition hover:border-neutral-200 dark:border-neutral-800 dark:hover:border-neutral-800"
-              >
-                <span className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.15em] text-black dark:text-white">
-                  <Camera className="h-4 w-4 text-black dark:text-white" />
-                  Instagram
-                </span>
-                <span className="font-['JetBrains_Mono'] text-xs text-black/60 dark:text-white/60">@omjep_official</span>
-              </a>
+        {isLoading ? (
+          <div className="grid gap-5 lg:grid-cols-3">
+            <div className="h-[320px] animate-pulse rounded-2xl border border-omjep-border/60 bg-omjep-bg-panel-soft/40 lg:col-span-2" />
+            <div className="space-y-4">
+              <div className="h-[150px] animate-pulse rounded-xl border border-omjep-border/60 bg-omjep-bg-panel-soft/40" />
+              <div className="h-[150px] animate-pulse rounded-xl border border-omjep-border/60 bg-omjep-bg-panel-soft/40" />
             </div>
-          </section>
-        </aside>
+          </div>
+        ) : null}
+
+        {!isLoading && items.length > 0 && heroMain ? (
+          <>
+            <section className="mb-12 grid gap-5 lg:grid-cols-3" aria-label="À la une">
+              <article className="group overflow-hidden rounded-2xl border border-omjep-border/80 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_94%,#060a12)] shadow-[var(--omjep-shadow-lg)] transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_38%,var(--omjep-border))] hover:shadow-[0_0_40px_-16px_color-mix(in_srgb,var(--omjep-mauve)_35%,transparent)] lg:col-span-2">
+                <button type="button" onClick={() => handleSelectArticle(heroMain)} className="block w-full text-left">
+                  <ArticleCover category={heroMain.category} imageUrl={heroMain.image} title={heroMain.title} tall />
+                  <div className="space-y-3 p-5 sm:p-6">
+                    <span className={`inline-flex rounded-lg border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${categoryTone(heroMain.category)}`}>
+                      {categoryLabel(heroMain.category)}
+                    </span>
+                    <h2 className="font-heading text-xl font-bold leading-snug text-omjep-text-primary sm:text-2xl">{heroMain.title}</h2>
+                    <p className="line-clamp-3 text-sm leading-relaxed text-omjep-text-secondary">{heroMain.excerpt}</p>
+                    <div className="flex flex-wrap items-center gap-3 text-[11px] font-medium text-omjep-text-muted">
+                      <time dateTime={heroMain.createdAt}>{formatArticleDate(heroMain.createdAt)}</time>
+                      <span aria-hidden>·</span>
+                      <span>{heroMain.readTime}</span>
+                      <span className="ml-auto inline-flex items-center gap-1 text-omjep-mauve">
+                        Lire <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              </article>
+
+              <div className="flex flex-col gap-4">
+                {heroSecondary.map((article) => (
+                  <article
+                    key={article.id}
+                    className="group overflow-hidden rounded-xl border border-omjep-border/80 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_94%,#060a12)] shadow-sm transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))]"
+                  >
+                    <button type="button" onClick={() => handleSelectArticle(article)} className="block w-full text-left">
+                      <ArticleCover category={article.category} imageUrl={article.image} title={article.title} />
+                      <div className="space-y-2 p-4">
+                        <span className={`inline-flex rounded-md border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] ${categoryTone(article.category)}`}>
+                          {categoryLabel(article.category)}
+                        </span>
+                        <h3 className="line-clamp-2 font-heading text-base font-bold leading-tight text-omjep-text-primary">{article.title}</h3>
+                        <p className="text-[11px] text-omjep-text-muted">{article.readTime}</p>
+                      </div>
+                    </button>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <div className="mb-12 grid gap-10 lg:grid-cols-[1fr_320px]">
+              <section aria-label="Flux">
+                <div className="mb-4 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-omjep-mauve" aria-hidden />
+                  <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-omjep-text-muted">Flux</h2>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {feedItems.map((article) => (
+                    <article
+                      key={article.id}
+                      className="group flex flex-col overflow-hidden rounded-xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_92%,#05080f)] shadow-sm transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_32%,var(--omjep-border))]"
+                    >
+                      <button type="button" onClick={() => handleSelectArticle(article)} className="flex flex-1 flex-col text-left">
+                        <ArticleCover category={article.category} imageUrl={article.image} title={article.title} />
+                        <div className="flex flex-1 flex-col p-4">
+                          <span className={`mb-2 w-fit rounded-md border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] ${categoryTone(article.category)}`}>
+                            {categoryLabel(article.category)}
+                          </span>
+                          <h3 className="line-clamp-2 flex-1 font-heading text-sm font-bold leading-snug text-omjep-text-primary">{article.title}</h3>
+                          <p className="mt-2 line-clamp-2 text-xs text-omjep-text-secondary">{article.excerpt}</p>
+                          <div className="mt-3 flex items-center justify-between gap-2 text-[10px] text-omjep-text-muted">
+                            <time dateTime={article.createdAt}>{formatArticleDate(article.createdAt)}</time>
+                            <span>{article.readTime}</span>
+                          </div>
+                        </div>
+                      </button>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <aside className="lg:sticky lg:top-24 lg:self-start" aria-label="Tendance et liens">
+                <div className="rounded-2xl border border-omjep-border/80 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_95%,#070b14)] p-5 shadow-[var(--omjep-shadow-lg)]">
+                  <div className="mb-4 flex items-center gap-2">
+                    <Flame className="h-4 w-4 text-[color-mix(in_srgb,var(--omjep-gold)_75%,var(--omjep-mauve))]" aria-hidden />
+                    <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-omjep-text-muted">Tendance</h2>
+                  </div>
+                  <ol className="space-y-3">
+                    {trending.map((article, i) => (
+                      <li key={article.id}>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectArticle(article)}
+                          className="flex w-full gap-3 rounded-xl border border-transparent p-2 text-left transition hover:border-omjep-border/60 hover:bg-omjep-bg-panel-soft/40"
+                        >
+                          <span className="mt-0.5 w-6 shrink-0 text-right font-heading text-lg font-black tabular-nums text-omjep-text-muted/50">
+                            {i + 1}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="line-clamp-2 text-sm font-semibold leading-snug text-omjep-text-primary">{article.title}</span>
+                            <span className="mt-1 block text-[10px] text-omjep-text-muted">{article.views.toLocaleString('fr-FR')} vues</span>
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="mt-6 rounded-2xl border border-omjep-border/80 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_92%,#060910)] p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <Megaphone className="h-4 w-4 text-omjep-mauve" aria-hidden />
+                    <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-omjep-text-muted">Réseaux &amp; communauté</h2>
+                  </div>
+                  <p className="mb-4 text-xs leading-relaxed text-omjep-text-secondary">
+                    Rejoignez les canaux officiels OMJEP pour les annonces live, clips et soirées compétitives.
+                  </p>
+                  <ul className="space-y-2">
+                    {[
+                      { label: 'Discord OMJEP', hint: 'Salons compétition', href: 'https://discord.com' },
+                      { label: 'YouTube', hint: 'Highlights & interviews', href: 'https://youtube.com' },
+                      { label: 'Kick / Live', hint: 'Streams matchs', href: 'https://kick.com' },
+                      { label: 'Instagram', hint: '@omjep — stories', href: 'https://instagram.com' },
+                    ].map((row) => (
+                      <li key={row.label}>
+                        <a
+                          href={row.href}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="flex items-center justify-between gap-2 rounded-xl border border-omjep-border/60 bg-omjep-bg-panel-soft/35 px-3 py-2.5 text-sm font-medium text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))] hover:bg-omjep-bg-panel-soft/55"
+                        >
+                          <span className="min-w-0">
+                            <span className="block truncate">{row.label}</span>
+                            <span className="text-[10px] text-omjep-text-muted">{row.hint}</span>
+                          </span>
+                          <ExternalLink className="h-4 w-4 shrink-0 text-omjep-text-muted" aria-hidden />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
+            </div>
+
+            {pagination && pagination.totalPages > 1 ? (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-omjep-border/70 bg-omjep-bg-panel-soft/40 px-4 py-3">
+                <p className="text-xs font-medium text-omjep-text-secondary">
+                  Page {pagination.page} / {pagination.totalPages}
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    disabled={pagination.page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    className="rounded-lg border border-omjep-border/80 px-3 py-1.5 text-xs font-semibold text-omjep-text-primary transition hover:border-omjep-mauve/40 disabled:opacity-40"
+                  >
+                    Précédent
+                  </button>
+                  <button
+                    type="button"
+                    disabled={pagination.page >= pagination.totalPages}
+                    onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
+                    className="rounded-lg border border-omjep-border/80 px-3 py-1.5 text-xs font-semibold text-omjep-text-primary transition hover:border-omjep-mauve/40 disabled:opacity-40"
+                  >
+                    Suivant
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </>
+        ) : null}
+
+        {!isLoading && items.length === 0 && !isError ? (
+          <TacticalEmptyState
+            icon={Newspaper}
+            title="Aucun article dans ce flux"
+            description="Changez de filtre ou revenez plus tard pour les prochaines annonces OMJEP."
+          />
+        ) : null}
       </div>
     </div>
   )

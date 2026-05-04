@@ -2907,3 +2907,8 @@ html.cockpit-fullscreen body {
   );
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--omjep-border-gold) 55%, transparent);
 }
+
+/* Dashboard: live ticker under topbar — less visual weight */
+.dashboard-live-ticker-strip {
+  padding-block: 0.125rem;
+}
