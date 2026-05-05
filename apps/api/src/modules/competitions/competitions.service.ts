@@ -33,6 +33,9 @@ export interface MatchBrief {
   away_score: number | null;
   homeTeam: { id: string; name: string; logo_url: string | null };
   awayTeam: { id: string; name: string; logo_url: string | null };
+  /** ISO 8601 — coup d’envoi ou fin réelle si disponible */
+  played_at: string | null;
+  scheduled_at: string | null;
 }
 
 interface CompetitionMeta {
@@ -154,6 +157,8 @@ function toMatchBrief(m: {
   status: string;
   home_score: number | null;
   away_score: number | null;
+  played_at: Date | null;
+  startTime: Date | null;
   homeTeam: { id: string; name: string; logo_url: string | null };
   awayTeam: { id: string; name: string; logo_url: string | null };
 }): MatchBrief {
@@ -165,6 +170,8 @@ function toMatchBrief(m: {
     away_score: m.away_score,
     homeTeam: m.homeTeam,
     awayTeam: m.awayTeam,
+    played_at: m.played_at ? m.played_at.toISOString() : null,
+    scheduled_at: m.startTime ? m.startTime.toISOString() : null,
   };
 }
 
@@ -680,6 +687,47 @@ export class CompetitionsService {
   }
 
   // ── Unified standings ─────────────────────────────────────────────────────
+
+  /** Liste publique des compétitions (hub classement / sélecteur). */
+  async listCompetitionsHub(): Promise<
+    Array<{
+      id: string;
+      name: string;
+      type: string;
+      status: string;
+      teamCount: number;
+      matchCount: number;
+      startDate: string;
+      endDate: string;
+    }>
+  > {
+    const rows = await this.prisma.competition.findMany({
+      include: {
+        _count: { select: { teams: true, matches: true } },
+      },
+    });
+
+    const statusRank = (s: string) =>
+      s === 'ONGOING' ? 0 : s === 'DRAFT' ? 1 : s === 'FINISHED' ? 2 : 3;
+
+    return [...rows]
+      .sort((a, b) => {
+        const ra = statusRank(a.status);
+        const rb = statusRank(b.status);
+        if (ra !== rb) return ra - rb;
+        return b.start_date.getTime() - a.start_date.getTime();
+      })
+      .map((c) => ({
+        id: c.id,
+        name: c.name,
+        type: c.type,
+        status: c.status,
+        teamCount: c._count.teams,
+        matchCount: c._count.matches,
+        startDate: c.start_date.toISOString(),
+        endDate: c.end_date.toISOString(),
+      }));
+  }
 
   async getStandings(competitionId: string): Promise<StandingsResponse> {
     const competition = await this.prisma.competition.findUnique({

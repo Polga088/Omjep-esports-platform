@@ -17,6 +17,20 @@ export class CompetitionsController {
     return this.competitionsService.getHallOfFame();
   }
 
+  /**
+   * Liste des compétitions (sélecteur hub « classement compétition »).
+   * — `GET /competitions` et `GET /competitions/hub` : même payload (chemin explicite pour éviter tout conflit de routage).
+   */
+  @Get()
+  listCompetitionsHubRoot() {
+    return this.competitionsService.listCompetitionsHub();
+  }
+
+  @Get('hub')
+  listCompetitionsHub() {
+    return this.competitionsService.listCompetitionsHub();
+  }
+
   @Get(':id/standings')
   getStandings(@Param('id', ParseUUIDPipe) id: string) {
     return this.competitionsService.getStandings(id);

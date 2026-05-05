@@ -5,6 +5,7 @@ import {
   Patch,
   Delete,
   Param,
+  Query,
   Body,
   ParseUUIDPipe,
   UseGuards,
@@ -36,8 +37,8 @@ export class TeamsController {
   }
 
   @Get('ladder')
-  getLadder() {
-    return this.teamsService.getLadder();
+  getLadder(@Query('competitionId') competitionId?: string) {
+    return this.teamsService.getLadder(competitionId);
   }
 
   @Get(':id')

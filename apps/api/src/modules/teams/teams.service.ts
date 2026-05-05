@@ -1,7 +1,7 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { ClubsService } from '../clubs/clubs.service';
-import { Prisma } from '@omjep/database';
+import { MatchStatus, Prisma } from '@omjep/database';
 
 export type TeamMemberStatSnapshot = {
   userId: string;
@@ -231,17 +231,116 @@ export class TeamsService {
     };
   }
 
-  /**
-   * Classement compétition (Ladder) :
-   * MJ/V/N/D/BP/BC/DIFF/PTS à partir des matchs finalisés.
-   * Tri : points, matchs joués, différence de buts, buts pour, nom du club.
-   */
-  async getLadder(): Promise<LadderEntry[]> {
-    const teams = await this.prisma.club.findMany({
-      include: { members: true },
-    });
+  private static readonly LADDER_FINAL_STATUSES: MatchStatus[] = [
+    'PLAYED',
+    'VALIDATED',
+    'FINISHED',
+  ];
 
-    const entries: LadderEntry[] = teams.map((team) => ({
+  /**
+   * Classement global (sans `competitionId`) ou classement **ligue** pour une compétition donnée.
+   * MJ/V/N/D/BP/BC/DIFF/PTS à partir des matchs finalisés (scores renseignés).
+   * Tri : points, matchs joués, différence de buts, buts pour, nom du club.
+   *
+   * `competitionId` : uniquement les clubs inscrits à la compétition + matchs où `competition_id` = id.
+   */
+  async getLadder(competitionId?: string): Promise<LadderEntry[]> {
+    const finalizedWhere: Prisma.MatchWhereInput = {
+      status: { in: [...TeamsService.LADDER_FINAL_STATUSES] },
+      home_score: { not: null },
+      away_score: { not: null },
+    };
+
+    let entries: LadderEntry[];
+    const byTeamId = new Map<string, LadderEntry>();
+
+    if (competitionId) {
+      const competition = await this.prisma.competition.findUnique({
+        where: { id: competitionId },
+        include: {
+          teams: {
+            include: {
+              team: { include: { members: true } },
+            },
+          },
+        },
+      });
+      if (!competition) {
+        throw new NotFoundException(`Compétition #${competitionId} introuvable.`);
+      }
+
+      entries = competition.teams.map((ct) => {
+        const team = ct.team;
+        return {
+          rank: 0,
+          teamId: team.id,
+          teamName: team.name,
+          logoUrl: team.logo_url,
+          platform: team.platform,
+          memberCount: team.members.length,
+          matchesPlayed: 0,
+          wins: 0,
+          draws: 0,
+          losses: 0,
+          goalsFor: 0,
+          goalsAgainst: 0,
+          goalDifference: 0,
+          points: 0,
+        };
+      });
+      for (const e of entries) {
+        byTeamId.set(e.teamId, e);
+      }
+
+      const finalizedMatches = await this.prisma.match.findMany({
+        where: {
+          ...finalizedWhere,
+          competition_id: competitionId,
+        },
+        select: {
+          home_team_id: true,
+          away_team_id: true,
+          home_score: true,
+          away_score: true,
+        },
+      });
+
+      for (const match of finalizedMatches) {
+        const home = byTeamId.get(match.home_team_id);
+        const away = byTeamId.get(match.away_team_id);
+        if (!home || !away) continue;
+
+        const homeScore = match.home_score ?? 0;
+        const awayScore = match.away_score ?? 0;
+
+        home.matchesPlayed += 1;
+        away.matchesPlayed += 1;
+        home.goalsFor += homeScore;
+        home.goalsAgainst += awayScore;
+        away.goalsFor += awayScore;
+        away.goalsAgainst += homeScore;
+
+        if (homeScore > awayScore) {
+          home.wins += 1;
+          away.losses += 1;
+          home.points += 3;
+        } else if (homeScore < awayScore) {
+          away.wins += 1;
+          home.losses += 1;
+          away.points += 3;
+        } else {
+          home.draws += 1;
+          away.draws += 1;
+          home.points += 1;
+          away.points += 1;
+        }
+      }
+    } else {
+      const teams = await this.prisma.club.findMany({
+        include: { members: true },
+      });
+
+      entries = teams.map((team) => ({
         rank: 0,
         teamId: team.id,
         teamName: team.name,
@@ -258,52 +357,49 @@ export class TeamsService {
         points: 0,
       }));
 
-    const byTeamId = new Map(entries.map((e) => [e.teamId, e]));
+      for (const e of entries) {
+        byTeamId.set(e.teamId, e);
+      }
 
-    const finalizedMatches = await this.prisma.match.findMany({
-      where: {
-        status: {
-          in: ['PLAYED', 'VALIDATED', 'FINISHED'],
+      const finalizedMatches = await this.prisma.match.findMany({
+        where: finalizedWhere,
+        select: {
+          home_team_id: true,
+          away_team_id: true,
+          home_score: true,
+          away_score: true,
         },
-        home_score: { not: null },
-        away_score: { not: null },
-      },
-      select: {
-        home_team_id: true,
-        away_team_id: true,
-        home_score: true,
-        away_score: true,
-      },
-    });
+      });
 
-    for (const match of finalizedMatches) {
-      const home = byTeamId.get(match.home_team_id);
-      const away = byTeamId.get(match.away_team_id);
-      if (!home || !away) continue;
+      for (const match of finalizedMatches) {
+        const home = byTeamId.get(match.home_team_id);
+        const away = byTeamId.get(match.away_team_id);
+        if (!home || !away) continue;
 
-      const homeScore = match.home_score ?? 0;
-      const awayScore = match.away_score ?? 0;
+        const homeScore = match.home_score ?? 0;
+        const awayScore = match.away_score ?? 0;
 
-      home.matchesPlayed += 1;
-      away.matchesPlayed += 1;
-      home.goalsFor += homeScore;
-      home.goalsAgainst += awayScore;
-      away.goalsFor += awayScore;
-      away.goalsAgainst += homeScore;
+        home.matchesPlayed += 1;
+        away.matchesPlayed += 1;
+        home.goalsFor += homeScore;
+        home.goalsAgainst += awayScore;
+        away.goalsFor += awayScore;
+        away.goalsAgainst += homeScore;
 
-      if (homeScore > awayScore) {
-        home.wins += 1;
-        away.losses += 1;
-        home.points += 3;
-      } else if (homeScore < awayScore) {
-        away.wins += 1;
-        home.losses += 1;
-        away.points += 3;
-      } else {
-        home.draws += 1;
-        away.draws += 1;
-        home.points += 1;
-        away.points += 1;
+        if (homeScore > awayScore) {
+          home.wins += 1;
+          away.losses += 1;
+          home.points += 3;
+        } else if (homeScore < awayScore) {
+          away.wins += 1;
+          home.losses += 1;
+          away.points += 3;
+        } else {
+          home.draws += 1;
+          away.draws += 1;
+          home.points += 1;
+          away.points += 1;
+        }
       }
     }
 

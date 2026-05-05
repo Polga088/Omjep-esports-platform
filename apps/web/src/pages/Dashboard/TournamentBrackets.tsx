@@ -10,6 +10,8 @@ export interface MatchBrief {
   away_score: number | null;
   homeTeam: { id: string; name: string; logo_url: string | null };
   awayTeam: { id: string; name: string; logo_url: string | null };
+  played_at?: string | null;
+  scheduled_at?: string | null;
 }
 
 interface BracketRound {
