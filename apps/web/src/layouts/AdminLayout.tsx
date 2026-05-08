@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Swords, Shield, Users, ClipboardList,
   ChevronRight, Menu, X, ArrowLeft, Crown, ShoppingBag, ListOrdered, Headphones, Images,
+  Mail,
 } from 'lucide-react';
 
 const sidebarLinks = [
@@ -15,6 +16,7 @@ const sidebarLinks = [
   { to: '/admin/store', label: 'Gestion Boutique', icon: ShoppingBag, exact: true },
   { to: '/admin/landing-media', label: 'Médias landing', icon: Images },
   { to: '/admin/support', label: 'Support', icon: Headphones },
+  { to: '/admin/email-templates', label: 'Templates emails', icon: Mail },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -27,6 +29,7 @@ const pageTitles: Record<string, string> = {
   '/admin/store': 'Gestion Boutique',
   '/admin/landing-media': 'Médias landing',
   '/admin/support': 'Support',
+  '/admin/email-templates': 'Templates emails',
 };
 
 export default function AdminLayout() {

@@ -18,6 +18,9 @@ import { AdminNewsMediaController } from './admin-news-media.controller';
 import { UsersModule } from '../users/users.module';
 import { AdminUsersController } from './admin-users.controller';
 import { CupBracketService } from './cup-bracket.service';
+import { AdminEmailTemplatesController } from './admin-email-templates.controller';
+import { AdminEmailTemplatesService } from './admin-email-templates.service';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -28,6 +31,7 @@ import { CupBracketService } from './cup-bracket.service';
     PlayerStatsModule,
     WalletsModule,
     UsersModule,
+    EmailModule,
   ],
   controllers: [
     AdminCompetitionsController,
@@ -38,7 +42,14 @@ import { CupBracketService } from './cup-bracket.service';
     AdminWalletsController,
     AdminUsersController,
     AdminNewsMediaController,
+    AdminEmailTemplatesController,
   ],
-  providers: [AdminStoreService, AdminCompetitionsService, DrawService, CupBracketService],
+  providers: [
+    AdminStoreService,
+    AdminCompetitionsService,
+    DrawService,
+    CupBracketService,
+    AdminEmailTemplatesService,
+  ],
 })
 export class AdminModule {}

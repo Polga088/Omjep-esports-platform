@@ -215,6 +215,22 @@ model CompetitionTeam {
   @@map("competition_teams")
 }
 
+model EmailTemplate {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  name        String
+  subject     String
+  preheader   String?
+  htmlContent String   @map("html_content")
+  textContent String?  @map("text_content")
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([enabled])
+  @@map("email_templates")
+}
+
 model Match {
   id                          String              @id @default(uuid()) @db.Uuid
   ea_match_id                 String?             @unique
@@ -739,6 +755,24 @@ model NewsEvent {
   @@index([type, created_at])
   @@index([created_at])
   @@map("news_events")
+}
+
+/// Médias publics landing (Palmarès, etc.) — ligne singleton `default`.
+model PublicLandingContent {
+  id String @id
+
+  /// Image hero Palmarès (URL absolue ou chemin `/api/v1/uploads/...`).
+  palmaresHeroVisualUrl String? @map("palmares_hero_visual_url")
+
+  /// Par clé compétition (`ligue-elite`, `coupe-trone`, `ucl`): trophyImageUrl, cardImageUrl.
+  palmaresCompetitionsMedia Json? @map("palmares_competitions_media")
+
+  /// Par clé champion (`atlas-wolves`, …): badgeImageUrl.
+  palmaresChampionsMedia Json? @map("palmares_champions_media")
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("public_landing_content")
 }
 
 enum NewsEventType {

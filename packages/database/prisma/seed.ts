@@ -302,6 +302,217 @@ async function main() {
     console.log(`         Plateforme : ${club.platform}\n`);
   }
 
+  // ─── Email templates (admin-managed) ───────────────────────────────────────
+  const emailTemplates = [
+    {
+      key: 'club_invitation',
+      name: 'Invitation club',
+      subject: 'Invitation OMJEP — {{clubName}}',
+      preheader: '{{inviterName}} vous invite à rejoindre {{clubName}} sur OMJEP',
+      enabled: true,
+      htmlContent: `
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>OMJEP</title>
+  </head>
+  <body style="margin:0;padding:0;background:#050912;color:#e2e8f0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;">
+    <div style="padding:28px 14px;">
+      <div style="max-width:620px;margin:0 auto;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:#d4af37;">OMJEP</div>
+          <div style="font-size:12px;color:#94a3b8;">noreply@omjep.ma</div>
+        </div>
+
+        <div style="border:1px solid rgba(148,163,184,.18);border-radius:16px;background:linear-gradient(180deg, rgba(124,58,237,.08), rgba(212,175,55,.04));padding:22px;">
+          <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;font-weight:800;">Invitation club</div>
+          <h1 style="margin:10px 0 0 0;font-size:22px;line-height:1.2;color:#f8fafc;">{{clubName}}</h1>
+          <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:#cbd5e1;">
+            {{inviterName}} vous invite à rejoindre son club sur OMJEP.
+          </p>
+          <div style="margin-top:18px;">
+            <a href="{{actionUrl}}" style="display:inline-block;background:#7c3aed;color:#ffffff;text-decoration:none;font-weight:800;padding:12px 16px;border-radius:12px;">
+              Rejoindre le club
+            </a>
+          </div>
+          <p style="margin:14px 0 0 0;font-size:12px;line-height:1.6;color:#94a3b8;">
+            Si le bouton ne fonctionne pas, copiez-collez ce lien :<br />
+            <span style="color:#d4af37;">{{actionUrl}}</span>
+          </p>
+        </div>
+
+        <div style="margin-top:14px;color:#64748b;font-size:11px;line-height:1.6;text-align:center;">
+          OMJEP — Organisation Marocaine des Jeux Électroniques Professionnels
+        </div>
+      </div>
+    </div>
+  </body>
+</html>`.trim(),
+      textContent:
+        `OMJEP — Invitation club\n\n{{inviterName}} vous invite à rejoindre {{clubName}}.\n\nLien : {{actionUrl}}\n\nOMJEP — Organisation Marocaine des Jeux Électroniques Professionnels`,
+    },
+    {
+      key: 'support_ticket_created',
+      name: 'Support — ticket créé',
+      subject: 'Support OMJEP — Ticket #{{ticketId}} reçu',
+      preheader: 'Nous avons bien reçu votre demande',
+      enabled: true,
+      htmlContent:
+        `
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+  <body style="margin:0;padding:0;background:#050912;color:#e2e8f0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;">
+    <div style="padding:28px 14px;">
+      <div style="max-width:620px;margin:0 auto;">
+        <div style="font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:#d4af37;margin-bottom:14px;">OMJEP</div>
+        <div style="border:1px solid rgba(148,163,184,.18);border-radius:16px;background:#0b1220;padding:22px;">
+          <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;font-weight:800;">Support</div>
+          <h1 style="margin:10px 0 0 0;font-size:20px;color:#f8fafc;">Ticket #{{ticketId}} reçu</h1>
+          <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:#cbd5e1;">
+            Bonjour {{displayName}}, nous avons bien reçu votre demande. Notre équipe reviendra vers vous rapidement.
+          </p>
+          <div style="margin-top:14px;padding:14px;border-radius:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.22);">
+            <div style="font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;font-weight:800;">Résumé</div>
+            <div style="margin-top:6px;color:#e2e8f0;font-size:14px;">{{subject}}</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;color:#64748b;font-size:11px;line-height:1.6;text-align:center;">
+          OMJEP — Organisation Marocaine des Jeux Électroniques Professionnels
+        </div>
+      </div>
+    </div>
+  </body>
+</html>`.trim(),
+      textContent:
+        `OMJEP — Support\n\nTicket #{{ticketId}} reçu.\nBonjour {{displayName}}, nous avons bien reçu votre demande.\n\nSujet : {{subject}}\n\nOMJEP — Organisation Marocaine des Jeux Électroniques Professionnels`,
+    },
+    {
+      key: 'support_ticket_reply',
+      name: 'Support — réponse',
+      subject: 'Support OMJEP — Réponse au ticket #{{ticketId}}',
+      preheader: 'Une nouvelle réponse est disponible',
+      enabled: true,
+      htmlContent:
+        `
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+  <body style="margin:0;padding:0;background:#050912;color:#e2e8f0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;">
+    <div style="padding:28px 14px;">
+      <div style="max-width:620px;margin:0 auto;">
+        <div style="font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:#d4af37;margin-bottom:14px;">OMJEP</div>
+        <div style="border:1px solid rgba(148,163,184,.18);border-radius:16px;background:#0b1220;padding:22px;">
+          <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;font-weight:800;">Support</div>
+          <h1 style="margin:10px 0 0 0;font-size:20px;color:#f8fafc;">Réponse au ticket #{{ticketId}}</h1>
+          <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:#cbd5e1;">
+            {{message}}
+          </p>
+        </div>
+        <div style="margin-top:14px;color:#64748b;font-size:11px;line-height:1.6;text-align:center;">
+          OMJEP — Organisation Marocaine des Jeux Électroniques Professionnels
+        </div>
+      </div>
+    </div>
+  </body>
+</html>`.trim(),
+      textContent:
+        `OMJEP — Support\n\nRéponse au ticket #{{ticketId}}\n\n{{message}}\n\nOMJEP — Organisation Marocaine des Jeux Électroniques Professionnels`,
+    },
+    {
+      key: 'match_scheduled',
+      name: 'Match — programmé',
+      subject: 'Match programmé — {{homeTeam}} vs {{awayTeam}}',
+      preheader: 'Votre rencontre est planifiée',
+      enabled: true,
+      htmlContent:
+        `
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+  <body style="margin:0;padding:0;background:#050912;color:#e2e8f0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;">
+    <div style="padding:28px 14px;">
+      <div style="max-width:620px;margin:0 auto;">
+        <div style="font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:#d4af37;margin-bottom:14px;">OMJEP</div>
+        <div style="border:1px solid rgba(148,163,184,.18);border-radius:16px;background:#0b1220;padding:22px;">
+          <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;font-weight:800;">Match</div>
+          <h1 style="margin:10px 0 0 0;font-size:20px;color:#f8fafc;">{{homeTeam}} <span style=\"color:#d4af37;\">vs</span> {{awayTeam}}</h1>
+          <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:#cbd5e1;">
+            Date : <strong style=\"color:#f8fafc;\">{{scheduledAt}}</strong><br/>
+            Compétition : <strong style=\"color:#f8fafc;\">{{competitionName}}</strong>
+          </p>
+        </div>
+        <div style="margin-top:14px;color:#64748b;font-size:11px;line-height:1.6;text-align:center;">
+          OMJEP — Organisation Marocaine des Jeux Électroniques Professionnels
+        </div>
+      </div>
+    </div>
+  </body>
+</html>`.trim(),
+      textContent:
+        `OMJEP — Match programmé\n\n{{homeTeam}} vs {{awayTeam}}\nDate : {{scheduledAt}}\nCompétition : {{competitionName}}\n\nOMJEP — Organisation Marocaine des Jeux Électroniques Professionnels`,
+    },
+    {
+      key: 'match_result_validated',
+      name: 'Match — résultat validé',
+      subject: 'Résultat validé — {{homeTeam}} {{homeScore}}–{{awayScore}} {{awayTeam}}',
+      preheader: 'Le résultat a été validé',
+      enabled: true,
+      htmlContent:
+        `
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+  <body style="margin:0;padding:0;background:#050912;color:#e2e8f0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;">
+    <div style="padding:28px 14px;">
+      <div style="max-width:620px;margin:0 auto;">
+        <div style="font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:#d4af37;margin-bottom:14px;">OMJEP</div>
+        <div style="border:1px solid rgba(148,163,184,.18);border-radius:16px;background:#0b1220;padding:22px;">
+          <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;font-weight:800;">Résultat</div>
+          <h1 style="margin:10px 0 0 0;font-size:20px;color:#f8fafc;">{{homeTeam}} <span style=\"color:#d4af37;\">{{homeScore}}–{{awayScore}}</span> {{awayTeam}}</h1>
+          <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:#cbd5e1;">
+            Statut : <strong style=\"color:#f8fafc;\">Validé</strong><br/>
+            Compétition : <strong style=\"color:#f8fafc;\">{{competitionName}}</strong>
+          </p>
+        </div>
+        <div style="margin-top:14px;color:#64748b;font-size:11px;line-height:1.6;text-align:center;">
+          OMJEP — Organisation Marocaine des Jeux Électroniques Professionnels
+        </div>
+      </div>
+    </div>
+  </body>
+</html>`.trim(),
+      textContent:
+        `OMJEP — Résultat validé\n\n{{homeTeam}} {{homeScore}}-{{awayScore}} {{awayTeam}}\nCompétition : {{competitionName}}\n\nOMJEP — Organisation Marocaine des Jeux Électroniques Professionnels`,
+    },
+  ] as const;
+
+  for (const t of emailTemplates) {
+    await prisma.emailTemplate.upsert({
+      where: { key: t.key },
+      update: {
+        name: t.name,
+        subject: t.subject,
+        preheader: t.preheader ?? null,
+        htmlContent: t.htmlContent,
+        textContent: t.textContent ?? null,
+        enabled: t.enabled,
+      },
+      create: {
+        key: t.key,
+        name: t.name,
+        subject: t.subject,
+        preheader: t.preheader ?? null,
+        htmlContent: t.htmlContent,
+        textContent: t.textContent ?? null,
+        enabled: t.enabled,
+      },
+    });
+  }
+  console.log(`📧 Templates email : ${emailTemplates.length} upsert`);
+
   // ─── Summary ───────────────────────────────────────────────────────
   console.log('─'.repeat(55));
   console.log('✅ Seeding terminé avec succès !');

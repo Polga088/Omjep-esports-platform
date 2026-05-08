@@ -64,6 +64,11 @@ export type Competition = $Result.DefaultSelection<Prisma.$CompetitionPayload>
  */
 export type CompetitionTeam = $Result.DefaultSelection<Prisma.$CompetitionTeamPayload>
 /**
+ * Model EmailTemplate
+ * 
+ */
+export type EmailTemplate = $Result.DefaultSelection<Prisma.$EmailTemplatePayload>
+/**
  * Model Match
  * 
  */
@@ -154,6 +159,11 @@ export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
  * 
  */
 export type NewsEvent = $Result.DefaultSelection<Prisma.$NewsEventPayload>
+/**
+ * Model PublicLandingContent
+ * Médias publics landing (Palmarès, etc.) — ligne singleton `default`.
+ */
+export type PublicLandingContent = $Result.DefaultSelection<Prisma.$PublicLandingContentPayload>
 /**
  * Model Ticket
  * Ticket support joueur → équipe admin
@@ -791,6 +801,16 @@ export class PrismaClient<
   get competitionTeam(): Prisma.CompetitionTeamDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.emailTemplate`: Exposes CRUD operations for the **EmailTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmailTemplates
+    * const emailTemplates = await prisma.emailTemplate.findMany()
+    * ```
+    */
+  get emailTemplate(): Prisma.EmailTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.match`: Exposes CRUD operations for the **Match** model.
     * Example usage:
     * ```ts
@@ -969,6 +989,16 @@ export class PrismaClient<
     * ```
     */
   get newsEvent(): Prisma.NewsEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.publicLandingContent`: Exposes CRUD operations for the **PublicLandingContent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PublicLandingContents
+    * const publicLandingContents = await prisma.publicLandingContent.findMany()
+    * ```
+    */
+  get publicLandingContent(): Prisma.PublicLandingContentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.ticket`: Exposes CRUD operations for the **Ticket** model.
@@ -1440,6 +1470,7 @@ export namespace Prisma {
     EaClubStats: 'EaClubStats',
     Competition: 'Competition',
     CompetitionTeam: 'CompetitionTeam',
+    EmailTemplate: 'EmailTemplate',
     Match: 'Match',
     LeagueTable: 'LeagueTable',
     MatchScoreReport: 'MatchScoreReport',
@@ -1458,6 +1489,7 @@ export namespace Prisma {
     UserSubscription: 'UserSubscription',
     Message: 'Message',
     NewsEvent: 'NewsEvent',
+    PublicLandingContent: 'PublicLandingContent',
     Ticket: 'Ticket',
     TicketReply: 'TicketReply'
   };
@@ -1478,7 +1510,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "club" | "clubWallet" | "season" | "teamMember" | "playerStats" | "eaExternalStats" | "eaClubStats" | "competition" | "competitionTeam" | "match" | "leagueTable" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "transferSellerSettlement" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription" | "message" | "newsEvent" | "ticket" | "ticketReply"
+      modelProps: "user" | "club" | "clubWallet" | "season" | "teamMember" | "playerStats" | "eaExternalStats" | "eaClubStats" | "competition" | "competitionTeam" | "emailTemplate" | "match" | "leagueTable" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "transferSellerSettlement" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription" | "message" | "newsEvent" | "publicLandingContent" | "ticket" | "ticketReply"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2219,6 +2251,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CompetitionTeamCountArgs<ExtArgs>
             result: $Utils.Optional<CompetitionTeamCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmailTemplate: {
+        payload: Prisma.$EmailTemplatePayload<ExtArgs>
+        fields: Prisma.EmailTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmailTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmailTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.EmailTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmailTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.EmailTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.EmailTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.EmailTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmailTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.EmailTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          update: {
+            args: Prisma.EmailTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.EmailTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmailTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmailTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.EmailTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.EmailTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmailTemplate>
+          }
+          groupBy: {
+            args: Prisma.EmailTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmailTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmailTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<EmailTemplateCountAggregateOutputType> | number
           }
         }
       }
@@ -3554,6 +3660,80 @@ export namespace Prisma {
           }
         }
       }
+      PublicLandingContent: {
+        payload: Prisma.$PublicLandingContentPayload<ExtArgs>
+        fields: Prisma.PublicLandingContentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PublicLandingContentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PublicLandingContentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>
+          }
+          findFirst: {
+            args: Prisma.PublicLandingContentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PublicLandingContentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>
+          }
+          findMany: {
+            args: Prisma.PublicLandingContentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>[]
+          }
+          create: {
+            args: Prisma.PublicLandingContentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>
+          }
+          createMany: {
+            args: Prisma.PublicLandingContentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PublicLandingContentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>[]
+          }
+          delete: {
+            args: Prisma.PublicLandingContentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>
+          }
+          update: {
+            args: Prisma.PublicLandingContentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>
+          }
+          deleteMany: {
+            args: Prisma.PublicLandingContentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PublicLandingContentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PublicLandingContentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>[]
+          }
+          upsert: {
+            args: Prisma.PublicLandingContentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PublicLandingContentPayload>
+          }
+          aggregate: {
+            args: Prisma.PublicLandingContentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePublicLandingContent>
+          }
+          groupBy: {
+            args: Prisma.PublicLandingContentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PublicLandingContentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PublicLandingContentCountArgs<ExtArgs>
+            result: $Utils.Optional<PublicLandingContentCountAggregateOutputType> | number
+          }
+        }
+      }
       Ticket: {
         payload: Prisma.$TicketPayload<ExtArgs>
         fields: Prisma.TicketFieldRefs
@@ -3808,6 +3988,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsOmit
     competition?: CompetitionOmit
     competitionTeam?: CompetitionTeamOmit
+    emailTemplate?: EmailTemplateOmit
     match?: MatchOmit
     leagueTable?: LeagueTableOmit
     matchScoreReport?: MatchScoreReportOmit
@@ -3826,6 +4007,7 @@ export namespace Prisma {
     userSubscription?: UserSubscriptionOmit
     message?: MessageOmit
     newsEvent?: NewsEventOmit
+    publicLandingContent?: PublicLandingContentOmit
     ticket?: TicketOmit
     ticketReply?: TicketReplyOmit
   }
@@ -17206,6 +17388,1066 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CompetitionTeamInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmailTemplate
+   */
+
+  export type AggregateEmailTemplate = {
+    _count: EmailTemplateCountAggregateOutputType | null
+    _min: EmailTemplateMinAggregateOutputType | null
+    _max: EmailTemplateMaxAggregateOutputType | null
+  }
+
+  export type EmailTemplateMinAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    subject: string | null
+    preheader: string | null
+    htmlContent: string | null
+    textContent: string | null
+    enabled: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmailTemplateMaxAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    subject: string | null
+    preheader: string | null
+    htmlContent: string | null
+    textContent: string | null
+    enabled: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmailTemplateCountAggregateOutputType = {
+    id: number
+    key: number
+    name: number
+    subject: number
+    preheader: number
+    htmlContent: number
+    textContent: number
+    enabled: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmailTemplateMinAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    subject?: true
+    preheader?: true
+    htmlContent?: true
+    textContent?: true
+    enabled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmailTemplateMaxAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    subject?: true
+    preheader?: true
+    htmlContent?: true
+    textContent?: true
+    enabled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmailTemplateCountAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    subject?: true
+    preheader?: true
+    htmlContent?: true
+    textContent?: true
+    enabled?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmailTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailTemplate to aggregate.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmailTemplates
+    **/
+    _count?: true | EmailTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmailTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmailTemplateMaxAggregateInputType
+  }
+
+  export type GetEmailTemplateAggregateType<T extends EmailTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmailTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmailTemplate[P]>
+      : GetScalarType<T[P], AggregateEmailTemplate[P]>
+  }
+
+
+
+
+  export type EmailTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailTemplateWhereInput
+    orderBy?: EmailTemplateOrderByWithAggregationInput | EmailTemplateOrderByWithAggregationInput[]
+    by: EmailTemplateScalarFieldEnum[] | EmailTemplateScalarFieldEnum
+    having?: EmailTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmailTemplateCountAggregateInputType | true
+    _min?: EmailTemplateMinAggregateInputType
+    _max?: EmailTemplateMaxAggregateInputType
+  }
+
+  export type EmailTemplateGroupByOutputType = {
+    id: string
+    key: string
+    name: string
+    subject: string
+    preheader: string | null
+    htmlContent: string
+    textContent: string | null
+    enabled: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: EmailTemplateCountAggregateOutputType | null
+    _min: EmailTemplateMinAggregateOutputType | null
+    _max: EmailTemplateMaxAggregateOutputType | null
+  }
+
+  type GetEmailTemplateGroupByPayload<T extends EmailTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmailTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmailTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmailTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], EmailTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmailTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    subject?: boolean
+    preheader?: boolean
+    htmlContent?: boolean
+    textContent?: boolean
+    enabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["emailTemplate"]>
+
+  export type EmailTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    subject?: boolean
+    preheader?: boolean
+    htmlContent?: boolean
+    textContent?: boolean
+    enabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["emailTemplate"]>
+
+  export type EmailTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    subject?: boolean
+    preheader?: boolean
+    htmlContent?: boolean
+    textContent?: boolean
+    enabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["emailTemplate"]>
+
+  export type EmailTemplateSelectScalar = {
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    subject?: boolean
+    preheader?: boolean
+    htmlContent?: boolean
+    textContent?: boolean
+    enabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmailTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "name" | "subject" | "preheader" | "htmlContent" | "textContent" | "enabled" | "createdAt" | "updatedAt", ExtArgs["result"]["emailTemplate"]>
+
+  export type $EmailTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmailTemplate"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      key: string
+      name: string
+      subject: string
+      preheader: string | null
+      htmlContent: string
+      textContent: string | null
+      enabled: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["emailTemplate"]>
+    composites: {}
+  }
+
+  type EmailTemplateGetPayload<S extends boolean | null | undefined | EmailTemplateDefaultArgs> = $Result.GetResult<Prisma.$EmailTemplatePayload, S>
+
+  type EmailTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmailTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmailTemplateCountAggregateInputType | true
+    }
+
+  export interface EmailTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmailTemplate'], meta: { name: 'EmailTemplate' } }
+    /**
+     * Find zero or one EmailTemplate that matches the filter.
+     * @param {EmailTemplateFindUniqueArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmailTemplateFindUniqueArgs>(args: SelectSubset<T, EmailTemplateFindUniqueArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmailTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmailTemplateFindUniqueOrThrowArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmailTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, EmailTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateFindFirstArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmailTemplateFindFirstArgs>(args?: SelectSubset<T, EmailTemplateFindFirstArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateFindFirstOrThrowArgs} args - Arguments to find a EmailTemplate
+     * @example
+     * // Get one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmailTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, EmailTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmailTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmailTemplates
+     * const emailTemplates = await prisma.emailTemplate.findMany()
+     * 
+     * // Get first 10 EmailTemplates
+     * const emailTemplates = await prisma.emailTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const emailTemplateWithIdOnly = await prisma.emailTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmailTemplateFindManyArgs>(args?: SelectSubset<T, EmailTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmailTemplate.
+     * @param {EmailTemplateCreateArgs} args - Arguments to create a EmailTemplate.
+     * @example
+     * // Create one EmailTemplate
+     * const EmailTemplate = await prisma.emailTemplate.create({
+     *   data: {
+     *     // ... data to create a EmailTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmailTemplateCreateArgs>(args: SelectSubset<T, EmailTemplateCreateArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmailTemplates.
+     * @param {EmailTemplateCreateManyArgs} args - Arguments to create many EmailTemplates.
+     * @example
+     * // Create many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmailTemplateCreateManyArgs>(args?: SelectSubset<T, EmailTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmailTemplates and returns the data saved in the database.
+     * @param {EmailTemplateCreateManyAndReturnArgs} args - Arguments to create many EmailTemplates.
+     * @example
+     * // Create many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmailTemplates and only return the `id`
+     * const emailTemplateWithIdOnly = await prisma.emailTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmailTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, EmailTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmailTemplate.
+     * @param {EmailTemplateDeleteArgs} args - Arguments to delete one EmailTemplate.
+     * @example
+     * // Delete one EmailTemplate
+     * const EmailTemplate = await prisma.emailTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one EmailTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmailTemplateDeleteArgs>(args: SelectSubset<T, EmailTemplateDeleteArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmailTemplate.
+     * @param {EmailTemplateUpdateArgs} args - Arguments to update one EmailTemplate.
+     * @example
+     * // Update one EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmailTemplateUpdateArgs>(args: SelectSubset<T, EmailTemplateUpdateArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmailTemplates.
+     * @param {EmailTemplateDeleteManyArgs} args - Arguments to filter EmailTemplates to delete.
+     * @example
+     * // Delete a few EmailTemplates
+     * const { count } = await prisma.emailTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmailTemplateDeleteManyArgs>(args?: SelectSubset<T, EmailTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmailTemplateUpdateManyArgs>(args: SelectSubset<T, EmailTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailTemplates and returns the data updated in the database.
+     * @param {EmailTemplateUpdateManyAndReturnArgs} args - Arguments to update many EmailTemplates.
+     * @example
+     * // Update many EmailTemplates
+     * const emailTemplate = await prisma.emailTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmailTemplates and only return the `id`
+     * const emailTemplateWithIdOnly = await prisma.emailTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmailTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, EmailTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmailTemplate.
+     * @param {EmailTemplateUpsertArgs} args - Arguments to update or create a EmailTemplate.
+     * @example
+     * // Update or create a EmailTemplate
+     * const emailTemplate = await prisma.emailTemplate.upsert({
+     *   create: {
+     *     // ... data to create a EmailTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmailTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmailTemplateUpsertArgs>(args: SelectSubset<T, EmailTemplateUpsertArgs<ExtArgs>>): Prisma__EmailTemplateClient<$Result.GetResult<Prisma.$EmailTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmailTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateCountArgs} args - Arguments to filter EmailTemplates to count.
+     * @example
+     * // Count the number of EmailTemplates
+     * const count = await prisma.emailTemplate.count({
+     *   where: {
+     *     // ... the filter for the EmailTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmailTemplateCountArgs>(
+      args?: Subset<T, EmailTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmailTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmailTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmailTemplateAggregateArgs>(args: Subset<T, EmailTemplateAggregateArgs>): Prisma.PrismaPromise<GetEmailTemplateAggregateType<T>>
+
+    /**
+     * Group by EmailTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmailTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmailTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: EmailTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmailTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmailTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmailTemplate model
+   */
+  readonly fields: EmailTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmailTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmailTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmailTemplate model
+   */
+  interface EmailTemplateFieldRefs {
+    readonly id: FieldRef<"EmailTemplate", 'String'>
+    readonly key: FieldRef<"EmailTemplate", 'String'>
+    readonly name: FieldRef<"EmailTemplate", 'String'>
+    readonly subject: FieldRef<"EmailTemplate", 'String'>
+    readonly preheader: FieldRef<"EmailTemplate", 'String'>
+    readonly htmlContent: FieldRef<"EmailTemplate", 'String'>
+    readonly textContent: FieldRef<"EmailTemplate", 'String'>
+    readonly enabled: FieldRef<"EmailTemplate", 'Boolean'>
+    readonly createdAt: FieldRef<"EmailTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmailTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmailTemplate findUnique
+   */
+  export type EmailTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate findUniqueOrThrow
+   */
+  export type EmailTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate findFirst
+   */
+  export type EmailTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailTemplates.
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailTemplates.
+     */
+    distinct?: EmailTemplateScalarFieldEnum | EmailTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * EmailTemplate findFirstOrThrow
+   */
+  export type EmailTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplate to fetch.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailTemplates.
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailTemplates.
+     */
+    distinct?: EmailTemplateScalarFieldEnum | EmailTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * EmailTemplate findMany
+   */
+  export type EmailTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which EmailTemplates to fetch.
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailTemplates to fetch.
+     */
+    orderBy?: EmailTemplateOrderByWithRelationInput | EmailTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmailTemplates.
+     */
+    cursor?: EmailTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailTemplates.
+     */
+    skip?: number
+    distinct?: EmailTemplateScalarFieldEnum | EmailTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * EmailTemplate create
+   */
+  export type EmailTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EmailTemplate.
+     */
+    data: XOR<EmailTemplateCreateInput, EmailTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * EmailTemplate createMany
+   */
+  export type EmailTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmailTemplates.
+     */
+    data: EmailTemplateCreateManyInput | EmailTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailTemplate createManyAndReturn
+   */
+  export type EmailTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmailTemplates.
+     */
+    data: EmailTemplateCreateManyInput | EmailTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailTemplate update
+   */
+  export type EmailTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EmailTemplate.
+     */
+    data: XOR<EmailTemplateUpdateInput, EmailTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which EmailTemplate to update.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate updateMany
+   */
+  export type EmailTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmailTemplates.
+     */
+    data: XOR<EmailTemplateUpdateManyMutationInput, EmailTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailTemplates to update
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * Limit how many EmailTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailTemplate updateManyAndReturn
+   */
+  export type EmailTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update EmailTemplates.
+     */
+    data: XOR<EmailTemplateUpdateManyMutationInput, EmailTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailTemplates to update
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * Limit how many EmailTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailTemplate upsert
+   */
+  export type EmailTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EmailTemplate to update in case it exists.
+     */
+    where: EmailTemplateWhereUniqueInput
+    /**
+     * In case the EmailTemplate found by the `where` argument doesn't exist, create a new EmailTemplate with this data.
+     */
+    create: XOR<EmailTemplateCreateInput, EmailTemplateUncheckedCreateInput>
+    /**
+     * In case the EmailTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmailTemplateUpdateInput, EmailTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * EmailTemplate delete
+   */
+  export type EmailTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
+    /**
+     * Filter which EmailTemplate to delete.
+     */
+    where: EmailTemplateWhereUniqueInput
+  }
+
+  /**
+   * EmailTemplate deleteMany
+   */
+  export type EmailTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailTemplates to delete
+     */
+    where?: EmailTemplateWhereInput
+    /**
+     * Limit how many EmailTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailTemplate without action
+   */
+  export type EmailTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailTemplate
+     */
+    select?: EmailTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailTemplate
+     */
+    omit?: EmailTemplateOmit<ExtArgs> | null
   }
 
 
@@ -38157,6 +39399,1002 @@ export namespace Prisma {
 
 
   /**
+   * Model PublicLandingContent
+   */
+
+  export type AggregatePublicLandingContent = {
+    _count: PublicLandingContentCountAggregateOutputType | null
+    _min: PublicLandingContentMinAggregateOutputType | null
+    _max: PublicLandingContentMaxAggregateOutputType | null
+  }
+
+  export type PublicLandingContentMinAggregateOutputType = {
+    id: string | null
+    palmaresHeroVisualUrl: string | null
+    updatedAt: Date | null
+  }
+
+  export type PublicLandingContentMaxAggregateOutputType = {
+    id: string | null
+    palmaresHeroVisualUrl: string | null
+    updatedAt: Date | null
+  }
+
+  export type PublicLandingContentCountAggregateOutputType = {
+    id: number
+    palmaresHeroVisualUrl: number
+    palmaresCompetitionsMedia: number
+    palmaresChampionsMedia: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PublicLandingContentMinAggregateInputType = {
+    id?: true
+    palmaresHeroVisualUrl?: true
+    updatedAt?: true
+  }
+
+  export type PublicLandingContentMaxAggregateInputType = {
+    id?: true
+    palmaresHeroVisualUrl?: true
+    updatedAt?: true
+  }
+
+  export type PublicLandingContentCountAggregateInputType = {
+    id?: true
+    palmaresHeroVisualUrl?: true
+    palmaresCompetitionsMedia?: true
+    palmaresChampionsMedia?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PublicLandingContentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PublicLandingContent to aggregate.
+     */
+    where?: PublicLandingContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PublicLandingContents to fetch.
+     */
+    orderBy?: PublicLandingContentOrderByWithRelationInput | PublicLandingContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PublicLandingContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PublicLandingContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PublicLandingContents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PublicLandingContents
+    **/
+    _count?: true | PublicLandingContentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PublicLandingContentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PublicLandingContentMaxAggregateInputType
+  }
+
+  export type GetPublicLandingContentAggregateType<T extends PublicLandingContentAggregateArgs> = {
+        [P in keyof T & keyof AggregatePublicLandingContent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePublicLandingContent[P]>
+      : GetScalarType<T[P], AggregatePublicLandingContent[P]>
+  }
+
+
+
+
+  export type PublicLandingContentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PublicLandingContentWhereInput
+    orderBy?: PublicLandingContentOrderByWithAggregationInput | PublicLandingContentOrderByWithAggregationInput[]
+    by: PublicLandingContentScalarFieldEnum[] | PublicLandingContentScalarFieldEnum
+    having?: PublicLandingContentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PublicLandingContentCountAggregateInputType | true
+    _min?: PublicLandingContentMinAggregateInputType
+    _max?: PublicLandingContentMaxAggregateInputType
+  }
+
+  export type PublicLandingContentGroupByOutputType = {
+    id: string
+    palmaresHeroVisualUrl: string | null
+    palmaresCompetitionsMedia: JsonValue | null
+    palmaresChampionsMedia: JsonValue | null
+    updatedAt: Date
+    _count: PublicLandingContentCountAggregateOutputType | null
+    _min: PublicLandingContentMinAggregateOutputType | null
+    _max: PublicLandingContentMaxAggregateOutputType | null
+  }
+
+  type GetPublicLandingContentGroupByPayload<T extends PublicLandingContentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PublicLandingContentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PublicLandingContentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PublicLandingContentGroupByOutputType[P]>
+            : GetScalarType<T[P], PublicLandingContentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PublicLandingContentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    palmaresHeroVisualUrl?: boolean
+    palmaresCompetitionsMedia?: boolean
+    palmaresChampionsMedia?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["publicLandingContent"]>
+
+  export type PublicLandingContentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    palmaresHeroVisualUrl?: boolean
+    palmaresCompetitionsMedia?: boolean
+    palmaresChampionsMedia?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["publicLandingContent"]>
+
+  export type PublicLandingContentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    palmaresHeroVisualUrl?: boolean
+    palmaresCompetitionsMedia?: boolean
+    palmaresChampionsMedia?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["publicLandingContent"]>
+
+  export type PublicLandingContentSelectScalar = {
+    id?: boolean
+    palmaresHeroVisualUrl?: boolean
+    palmaresCompetitionsMedia?: boolean
+    palmaresChampionsMedia?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PublicLandingContentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "palmaresHeroVisualUrl" | "palmaresCompetitionsMedia" | "palmaresChampionsMedia" | "updatedAt", ExtArgs["result"]["publicLandingContent"]>
+
+  export type $PublicLandingContentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PublicLandingContent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * Image hero Palmarès (URL absolue ou chemin `/api/v1/uploads/...`).
+       */
+      palmaresHeroVisualUrl: string | null
+      /**
+       * Par clé compétition (`ligue-elite`, `coupe-trone`, `ucl`): trophyImageUrl, cardImageUrl.
+       */
+      palmaresCompetitionsMedia: Prisma.JsonValue | null
+      /**
+       * Par clé champion (`atlas-wolves`, …): badgeImageUrl.
+       */
+      palmaresChampionsMedia: Prisma.JsonValue | null
+      updatedAt: Date
+    }, ExtArgs["result"]["publicLandingContent"]>
+    composites: {}
+  }
+
+  type PublicLandingContentGetPayload<S extends boolean | null | undefined | PublicLandingContentDefaultArgs> = $Result.GetResult<Prisma.$PublicLandingContentPayload, S>
+
+  type PublicLandingContentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PublicLandingContentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PublicLandingContentCountAggregateInputType | true
+    }
+
+  export interface PublicLandingContentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PublicLandingContent'], meta: { name: 'PublicLandingContent' } }
+    /**
+     * Find zero or one PublicLandingContent that matches the filter.
+     * @param {PublicLandingContentFindUniqueArgs} args - Arguments to find a PublicLandingContent
+     * @example
+     * // Get one PublicLandingContent
+     * const publicLandingContent = await prisma.publicLandingContent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PublicLandingContentFindUniqueArgs>(args: SelectSubset<T, PublicLandingContentFindUniqueArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PublicLandingContent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PublicLandingContentFindUniqueOrThrowArgs} args - Arguments to find a PublicLandingContent
+     * @example
+     * // Get one PublicLandingContent
+     * const publicLandingContent = await prisma.publicLandingContent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PublicLandingContentFindUniqueOrThrowArgs>(args: SelectSubset<T, PublicLandingContentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PublicLandingContent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PublicLandingContentFindFirstArgs} args - Arguments to find a PublicLandingContent
+     * @example
+     * // Get one PublicLandingContent
+     * const publicLandingContent = await prisma.publicLandingContent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PublicLandingContentFindFirstArgs>(args?: SelectSubset<T, PublicLandingContentFindFirstArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PublicLandingContent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PublicLandingContentFindFirstOrThrowArgs} args - Arguments to find a PublicLandingContent
+     * @example
+     * // Get one PublicLandingContent
+     * const publicLandingContent = await prisma.publicLandingContent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PublicLandingContentFindFirstOrThrowArgs>(args?: SelectSubset<T, PublicLandingContentFindFirstOrThrowArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PublicLandingContents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PublicLandingContentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PublicLandingContents
+     * const publicLandingContents = await prisma.publicLandingContent.findMany()
+     * 
+     * // Get first 10 PublicLandingContents
+     * const publicLandingContents = await prisma.publicLandingContent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const publicLandingContentWithIdOnly = await prisma.publicLandingContent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PublicLandingContentFindManyArgs>(args?: SelectSubset<T, PublicLandingContentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PublicLandingContent.
+     * @param {PublicLandingContentCreateArgs} args - Arguments to create a PublicLandingContent.
+     * @example
+     * // Create one PublicLandingContent
+     * const PublicLandingContent = await prisma.publicLandingContent.create({
+     *   data: {
+     *     // ... data to create a PublicLandingContent
+     *   }
+     * })
+     * 
+     */
+    create<T extends PublicLandingContentCreateArgs>(args: SelectSubset<T, PublicLandingContentCreateArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PublicLandingContents.
+     * @param {PublicLandingContentCreateManyArgs} args - Arguments to create many PublicLandingContents.
+     * @example
+     * // Create many PublicLandingContents
+     * const publicLandingContent = await prisma.publicLandingContent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PublicLandingContentCreateManyArgs>(args?: SelectSubset<T, PublicLandingContentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PublicLandingContents and returns the data saved in the database.
+     * @param {PublicLandingContentCreateManyAndReturnArgs} args - Arguments to create many PublicLandingContents.
+     * @example
+     * // Create many PublicLandingContents
+     * const publicLandingContent = await prisma.publicLandingContent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PublicLandingContents and only return the `id`
+     * const publicLandingContentWithIdOnly = await prisma.publicLandingContent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PublicLandingContentCreateManyAndReturnArgs>(args?: SelectSubset<T, PublicLandingContentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PublicLandingContent.
+     * @param {PublicLandingContentDeleteArgs} args - Arguments to delete one PublicLandingContent.
+     * @example
+     * // Delete one PublicLandingContent
+     * const PublicLandingContent = await prisma.publicLandingContent.delete({
+     *   where: {
+     *     // ... filter to delete one PublicLandingContent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PublicLandingContentDeleteArgs>(args: SelectSubset<T, PublicLandingContentDeleteArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PublicLandingContent.
+     * @param {PublicLandingContentUpdateArgs} args - Arguments to update one PublicLandingContent.
+     * @example
+     * // Update one PublicLandingContent
+     * const publicLandingContent = await prisma.publicLandingContent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PublicLandingContentUpdateArgs>(args: SelectSubset<T, PublicLandingContentUpdateArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PublicLandingContents.
+     * @param {PublicLandingContentDeleteManyArgs} args - Arguments to filter PublicLandingContents to delete.
+     * @example
+     * // Delete a few PublicLandingContents
+     * const { count } = await prisma.publicLandingContent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PublicLandingContentDeleteManyArgs>(args?: SelectSubset<T, PublicLandingContentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PublicLandingContents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PublicLandingContentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PublicLandingContents
+     * const publicLandingContent = await prisma.publicLandingContent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PublicLandingContentUpdateManyArgs>(args: SelectSubset<T, PublicLandingContentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PublicLandingContents and returns the data updated in the database.
+     * @param {PublicLandingContentUpdateManyAndReturnArgs} args - Arguments to update many PublicLandingContents.
+     * @example
+     * // Update many PublicLandingContents
+     * const publicLandingContent = await prisma.publicLandingContent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PublicLandingContents and only return the `id`
+     * const publicLandingContentWithIdOnly = await prisma.publicLandingContent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PublicLandingContentUpdateManyAndReturnArgs>(args: SelectSubset<T, PublicLandingContentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PublicLandingContent.
+     * @param {PublicLandingContentUpsertArgs} args - Arguments to update or create a PublicLandingContent.
+     * @example
+     * // Update or create a PublicLandingContent
+     * const publicLandingContent = await prisma.publicLandingContent.upsert({
+     *   create: {
+     *     // ... data to create a PublicLandingContent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PublicLandingContent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PublicLandingContentUpsertArgs>(args: SelectSubset<T, PublicLandingContentUpsertArgs<ExtArgs>>): Prisma__PublicLandingContentClient<$Result.GetResult<Prisma.$PublicLandingContentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PublicLandingContents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PublicLandingContentCountArgs} args - Arguments to filter PublicLandingContents to count.
+     * @example
+     * // Count the number of PublicLandingContents
+     * const count = await prisma.publicLandingContent.count({
+     *   where: {
+     *     // ... the filter for the PublicLandingContents we want to count
+     *   }
+     * })
+    **/
+    count<T extends PublicLandingContentCountArgs>(
+      args?: Subset<T, PublicLandingContentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PublicLandingContentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PublicLandingContent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PublicLandingContentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PublicLandingContentAggregateArgs>(args: Subset<T, PublicLandingContentAggregateArgs>): Prisma.PrismaPromise<GetPublicLandingContentAggregateType<T>>
+
+    /**
+     * Group by PublicLandingContent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PublicLandingContentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PublicLandingContentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PublicLandingContentGroupByArgs['orderBy'] }
+        : { orderBy?: PublicLandingContentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PublicLandingContentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPublicLandingContentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PublicLandingContent model
+   */
+  readonly fields: PublicLandingContentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PublicLandingContent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PublicLandingContentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PublicLandingContent model
+   */
+  interface PublicLandingContentFieldRefs {
+    readonly id: FieldRef<"PublicLandingContent", 'String'>
+    readonly palmaresHeroVisualUrl: FieldRef<"PublicLandingContent", 'String'>
+    readonly palmaresCompetitionsMedia: FieldRef<"PublicLandingContent", 'Json'>
+    readonly palmaresChampionsMedia: FieldRef<"PublicLandingContent", 'Json'>
+    readonly updatedAt: FieldRef<"PublicLandingContent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PublicLandingContent findUnique
+   */
+  export type PublicLandingContentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * Filter, which PublicLandingContent to fetch.
+     */
+    where: PublicLandingContentWhereUniqueInput
+  }
+
+  /**
+   * PublicLandingContent findUniqueOrThrow
+   */
+  export type PublicLandingContentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * Filter, which PublicLandingContent to fetch.
+     */
+    where: PublicLandingContentWhereUniqueInput
+  }
+
+  /**
+   * PublicLandingContent findFirst
+   */
+  export type PublicLandingContentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * Filter, which PublicLandingContent to fetch.
+     */
+    where?: PublicLandingContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PublicLandingContents to fetch.
+     */
+    orderBy?: PublicLandingContentOrderByWithRelationInput | PublicLandingContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PublicLandingContents.
+     */
+    cursor?: PublicLandingContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PublicLandingContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PublicLandingContents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PublicLandingContents.
+     */
+    distinct?: PublicLandingContentScalarFieldEnum | PublicLandingContentScalarFieldEnum[]
+  }
+
+  /**
+   * PublicLandingContent findFirstOrThrow
+   */
+  export type PublicLandingContentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * Filter, which PublicLandingContent to fetch.
+     */
+    where?: PublicLandingContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PublicLandingContents to fetch.
+     */
+    orderBy?: PublicLandingContentOrderByWithRelationInput | PublicLandingContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PublicLandingContents.
+     */
+    cursor?: PublicLandingContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PublicLandingContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PublicLandingContents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PublicLandingContents.
+     */
+    distinct?: PublicLandingContentScalarFieldEnum | PublicLandingContentScalarFieldEnum[]
+  }
+
+  /**
+   * PublicLandingContent findMany
+   */
+  export type PublicLandingContentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * Filter, which PublicLandingContents to fetch.
+     */
+    where?: PublicLandingContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PublicLandingContents to fetch.
+     */
+    orderBy?: PublicLandingContentOrderByWithRelationInput | PublicLandingContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PublicLandingContents.
+     */
+    cursor?: PublicLandingContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PublicLandingContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PublicLandingContents.
+     */
+    skip?: number
+    distinct?: PublicLandingContentScalarFieldEnum | PublicLandingContentScalarFieldEnum[]
+  }
+
+  /**
+   * PublicLandingContent create
+   */
+  export type PublicLandingContentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PublicLandingContent.
+     */
+    data: XOR<PublicLandingContentCreateInput, PublicLandingContentUncheckedCreateInput>
+  }
+
+  /**
+   * PublicLandingContent createMany
+   */
+  export type PublicLandingContentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PublicLandingContents.
+     */
+    data: PublicLandingContentCreateManyInput | PublicLandingContentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PublicLandingContent createManyAndReturn
+   */
+  export type PublicLandingContentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * The data used to create many PublicLandingContents.
+     */
+    data: PublicLandingContentCreateManyInput | PublicLandingContentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PublicLandingContent update
+   */
+  export type PublicLandingContentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PublicLandingContent.
+     */
+    data: XOR<PublicLandingContentUpdateInput, PublicLandingContentUncheckedUpdateInput>
+    /**
+     * Choose, which PublicLandingContent to update.
+     */
+    where: PublicLandingContentWhereUniqueInput
+  }
+
+  /**
+   * PublicLandingContent updateMany
+   */
+  export type PublicLandingContentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PublicLandingContents.
+     */
+    data: XOR<PublicLandingContentUpdateManyMutationInput, PublicLandingContentUncheckedUpdateManyInput>
+    /**
+     * Filter which PublicLandingContents to update
+     */
+    where?: PublicLandingContentWhereInput
+    /**
+     * Limit how many PublicLandingContents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PublicLandingContent updateManyAndReturn
+   */
+  export type PublicLandingContentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * The data used to update PublicLandingContents.
+     */
+    data: XOR<PublicLandingContentUpdateManyMutationInput, PublicLandingContentUncheckedUpdateManyInput>
+    /**
+     * Filter which PublicLandingContents to update
+     */
+    where?: PublicLandingContentWhereInput
+    /**
+     * Limit how many PublicLandingContents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PublicLandingContent upsert
+   */
+  export type PublicLandingContentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PublicLandingContent to update in case it exists.
+     */
+    where: PublicLandingContentWhereUniqueInput
+    /**
+     * In case the PublicLandingContent found by the `where` argument doesn't exist, create a new PublicLandingContent with this data.
+     */
+    create: XOR<PublicLandingContentCreateInput, PublicLandingContentUncheckedCreateInput>
+    /**
+     * In case the PublicLandingContent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PublicLandingContentUpdateInput, PublicLandingContentUncheckedUpdateInput>
+  }
+
+  /**
+   * PublicLandingContent delete
+   */
+  export type PublicLandingContentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+    /**
+     * Filter which PublicLandingContent to delete.
+     */
+    where: PublicLandingContentWhereUniqueInput
+  }
+
+  /**
+   * PublicLandingContent deleteMany
+   */
+  export type PublicLandingContentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PublicLandingContents to delete
+     */
+    where?: PublicLandingContentWhereInput
+    /**
+     * Limit how many PublicLandingContents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PublicLandingContent without action
+   */
+  export type PublicLandingContentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PublicLandingContent
+     */
+    select?: PublicLandingContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PublicLandingContent
+     */
+    omit?: PublicLandingContentOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model Ticket
    */
 
@@ -40516,6 +42754,22 @@ export namespace Prisma {
   export type CompetitionTeamScalarFieldEnum = (typeof CompetitionTeamScalarFieldEnum)[keyof typeof CompetitionTeamScalarFieldEnum]
 
 
+  export const EmailTemplateScalarFieldEnum: {
+    id: 'id',
+    key: 'key',
+    name: 'name',
+    subject: 'subject',
+    preheader: 'preheader',
+    htmlContent: 'htmlContent',
+    textContent: 'textContent',
+    enabled: 'enabled',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
+
+
   export const MatchScalarFieldEnum: {
     id: 'id',
     ea_match_id: 'ea_match_id',
@@ -40774,6 +43028,17 @@ export namespace Prisma {
   };
 
   export type NewsEventScalarFieldEnum = (typeof NewsEventScalarFieldEnum)[keyof typeof NewsEventScalarFieldEnum]
+
+
+  export const PublicLandingContentScalarFieldEnum: {
+    id: 'id',
+    palmaresHeroVisualUrl: 'palmaresHeroVisualUrl',
+    palmaresCompetitionsMedia: 'palmaresCompetitionsMedia',
+    palmaresChampionsMedia: 'palmaresChampionsMedia',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PublicLandingContentScalarFieldEnum = (typeof PublicLandingContentScalarFieldEnum)[keyof typeof PublicLandingContentScalarFieldEnum]
 
 
   export const TicketScalarFieldEnum: {
@@ -42254,6 +44519,83 @@ export namespace Prisma {
     joined_at?: DateTimeWithAggregatesFilter<"CompetitionTeam"> | Date | string
   }
 
+  export type EmailTemplateWhereInput = {
+    AND?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    OR?: EmailTemplateWhereInput[]
+    NOT?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    id?: UuidFilter<"EmailTemplate"> | string
+    key?: StringFilter<"EmailTemplate"> | string
+    name?: StringFilter<"EmailTemplate"> | string
+    subject?: StringFilter<"EmailTemplate"> | string
+    preheader?: StringNullableFilter<"EmailTemplate"> | string | null
+    htmlContent?: StringFilter<"EmailTemplate"> | string
+    textContent?: StringNullableFilter<"EmailTemplate"> | string | null
+    enabled?: BoolFilter<"EmailTemplate"> | boolean
+    createdAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+  }
+
+  export type EmailTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    preheader?: SortOrderInput | SortOrder
+    htmlContent?: SortOrder
+    textContent?: SortOrderInput | SortOrder
+    enabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    OR?: EmailTemplateWhereInput[]
+    NOT?: EmailTemplateWhereInput | EmailTemplateWhereInput[]
+    name?: StringFilter<"EmailTemplate"> | string
+    subject?: StringFilter<"EmailTemplate"> | string
+    preheader?: StringNullableFilter<"EmailTemplate"> | string | null
+    htmlContent?: StringFilter<"EmailTemplate"> | string
+    textContent?: StringNullableFilter<"EmailTemplate"> | string | null
+    enabled?: BoolFilter<"EmailTemplate"> | boolean
+    createdAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailTemplate"> | Date | string
+  }, "id" | "key">
+
+  export type EmailTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    preheader?: SortOrderInput | SortOrder
+    htmlContent?: SortOrder
+    textContent?: SortOrderInput | SortOrder
+    enabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmailTemplateCountOrderByAggregateInput
+    _max?: EmailTemplateMaxOrderByAggregateInput
+    _min?: EmailTemplateMinOrderByAggregateInput
+  }
+
+  export type EmailTemplateScalarWhereWithAggregatesInput = {
+    AND?: EmailTemplateScalarWhereWithAggregatesInput | EmailTemplateScalarWhereWithAggregatesInput[]
+    OR?: EmailTemplateScalarWhereWithAggregatesInput[]
+    NOT?: EmailTemplateScalarWhereWithAggregatesInput | EmailTemplateScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"EmailTemplate"> | string
+    key?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    name?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    subject?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    preheader?: StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
+    htmlContent?: StringWithAggregatesFilter<"EmailTemplate"> | string
+    textContent?: StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
+    enabled?: BoolWithAggregatesFilter<"EmailTemplate"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"EmailTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmailTemplate"> | Date | string
+  }
+
   export type MatchWhereInput = {
     AND?: MatchWhereInput | MatchWhereInput[]
     OR?: MatchWhereInput[]
@@ -43673,6 +46015,58 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"NewsEvent"> | Date | string
   }
 
+  export type PublicLandingContentWhereInput = {
+    AND?: PublicLandingContentWhereInput | PublicLandingContentWhereInput[]
+    OR?: PublicLandingContentWhereInput[]
+    NOT?: PublicLandingContentWhereInput | PublicLandingContentWhereInput[]
+    id?: StringFilter<"PublicLandingContent"> | string
+    palmaresHeroVisualUrl?: StringNullableFilter<"PublicLandingContent"> | string | null
+    palmaresCompetitionsMedia?: JsonNullableFilter<"PublicLandingContent">
+    palmaresChampionsMedia?: JsonNullableFilter<"PublicLandingContent">
+    updatedAt?: DateTimeFilter<"PublicLandingContent"> | Date | string
+  }
+
+  export type PublicLandingContentOrderByWithRelationInput = {
+    id?: SortOrder
+    palmaresHeroVisualUrl?: SortOrderInput | SortOrder
+    palmaresCompetitionsMedia?: SortOrderInput | SortOrder
+    palmaresChampionsMedia?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PublicLandingContentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PublicLandingContentWhereInput | PublicLandingContentWhereInput[]
+    OR?: PublicLandingContentWhereInput[]
+    NOT?: PublicLandingContentWhereInput | PublicLandingContentWhereInput[]
+    palmaresHeroVisualUrl?: StringNullableFilter<"PublicLandingContent"> | string | null
+    palmaresCompetitionsMedia?: JsonNullableFilter<"PublicLandingContent">
+    palmaresChampionsMedia?: JsonNullableFilter<"PublicLandingContent">
+    updatedAt?: DateTimeFilter<"PublicLandingContent"> | Date | string
+  }, "id">
+
+  export type PublicLandingContentOrderByWithAggregationInput = {
+    id?: SortOrder
+    palmaresHeroVisualUrl?: SortOrderInput | SortOrder
+    palmaresCompetitionsMedia?: SortOrderInput | SortOrder
+    palmaresChampionsMedia?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    _count?: PublicLandingContentCountOrderByAggregateInput
+    _max?: PublicLandingContentMaxOrderByAggregateInput
+    _min?: PublicLandingContentMinOrderByAggregateInput
+  }
+
+  export type PublicLandingContentScalarWhereWithAggregatesInput = {
+    AND?: PublicLandingContentScalarWhereWithAggregatesInput | PublicLandingContentScalarWhereWithAggregatesInput[]
+    OR?: PublicLandingContentScalarWhereWithAggregatesInput[]
+    NOT?: PublicLandingContentScalarWhereWithAggregatesInput | PublicLandingContentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PublicLandingContent"> | string
+    palmaresHeroVisualUrl?: StringNullableWithAggregatesFilter<"PublicLandingContent"> | string | null
+    palmaresCompetitionsMedia?: JsonNullableWithAggregatesFilter<"PublicLandingContent">
+    palmaresChampionsMedia?: JsonNullableWithAggregatesFilter<"PublicLandingContent">
+    updatedAt?: DateTimeWithAggregatesFilter<"PublicLandingContent"> | Date | string
+  }
+
   export type TicketWhereInput = {
     AND?: TicketWhereInput | TicketWhereInput[]
     OR?: TicketWhereInput[]
@@ -44833,6 +47227,97 @@ export namespace Prisma {
     competition_id?: StringFieldUpdateOperationsInput | string
     team_id?: StringFieldUpdateOperationsInput | string
     joined_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateCreateInput = {
+    id?: string
+    key: string
+    name: string
+    subject: string
+    preheader?: string | null
+    htmlContent: string
+    textContent?: string | null
+    enabled?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailTemplateUncheckedCreateInput = {
+    id?: string
+    key: string
+    name: string
+    subject: string
+    preheader?: string | null
+    htmlContent: string
+    textContent?: string | null
+    enabled?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    preheader?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlContent?: StringFieldUpdateOperationsInput | string
+    textContent?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    preheader?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlContent?: StringFieldUpdateOperationsInput | string
+    textContent?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateCreateManyInput = {
+    id?: string
+    key: string
+    name: string
+    subject: string
+    preheader?: string | null
+    htmlContent: string
+    textContent?: string | null
+    enabled?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    preheader?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlContent?: StringFieldUpdateOperationsInput | string
+    textContent?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    preheader?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlContent?: StringFieldUpdateOperationsInput | string
+    textContent?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MatchCreateInput = {
@@ -46268,6 +48753,62 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PublicLandingContentCreateInput = {
+    id: string
+    palmaresHeroVisualUrl?: string | null
+    palmaresCompetitionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    palmaresChampionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
+  }
+
+  export type PublicLandingContentUncheckedCreateInput = {
+    id: string
+    palmaresHeroVisualUrl?: string | null
+    palmaresCompetitionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    palmaresChampionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
+  }
+
+  export type PublicLandingContentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    palmaresHeroVisualUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    palmaresCompetitionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    palmaresChampionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PublicLandingContentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    palmaresHeroVisualUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    palmaresCompetitionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    palmaresChampionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PublicLandingContentCreateManyInput = {
+    id: string
+    palmaresHeroVisualUrl?: string | null
+    palmaresCompetitionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    palmaresChampionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
+  }
+
+  export type PublicLandingContentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    palmaresHeroVisualUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    palmaresCompetitionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    palmaresChampionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PublicLandingContentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    palmaresHeroVisualUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    palmaresCompetitionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    palmaresChampionsMedia?: NullableJsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TicketCreateInput = {
     id?: string
     category: $Enums.TicketCategory
@@ -47530,6 +50071,45 @@ export namespace Prisma {
     joined_at?: SortOrder
   }
 
+  export type EmailTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    preheader?: SortOrder
+    htmlContent?: SortOrder
+    textContent?: SortOrder
+    enabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    preheader?: SortOrder
+    htmlContent?: SortOrder
+    textContent?: SortOrder
+    enabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    subject?: SortOrder
+    preheader?: SortOrder
+    htmlContent?: SortOrder
+    textContent?: SortOrder
+    enabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type EnumMatchStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.MatchStatus | EnumMatchStatusFieldRefInput<$PrismaModel>
     in?: $Enums.MatchStatus[] | ListEnumMatchStatusFieldRefInput<$PrismaModel>
@@ -48784,6 +51364,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNewsEventTypeFilter<$PrismaModel>
     _max?: NestedEnumNewsEventTypeFilter<$PrismaModel>
+  }
+
+  export type PublicLandingContentCountOrderByAggregateInput = {
+    id?: SortOrder
+    palmaresHeroVisualUrl?: SortOrder
+    palmaresCompetitionsMedia?: SortOrder
+    palmaresChampionsMedia?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PublicLandingContentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    palmaresHeroVisualUrl?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PublicLandingContentMinOrderByAggregateInput = {
+    id?: SortOrder
+    palmaresHeroVisualUrl?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EnumTicketCategoryFilter<$PrismaModel = never> = {

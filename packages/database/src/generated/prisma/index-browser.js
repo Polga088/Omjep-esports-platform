@@ -244,6 +244,19 @@ exports.Prisma.CompetitionTeamScalarFieldEnum = {
   joined_at: 'joined_at'
 };
 
+exports.Prisma.EmailTemplateScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  name: 'name',
+  subject: 'subject',
+  preheader: 'preheader',
+  htmlContent: 'htmlContent',
+  textContent: 'textContent',
+  enabled: 'enabled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.MatchScalarFieldEnum = {
   id: 'id',
   ea_match_id: 'ea_match_id',
@@ -448,6 +461,14 @@ exports.Prisma.NewsEventScalarFieldEnum = {
   description: 'description',
   metadata: 'metadata',
   created_at: 'created_at'
+};
+
+exports.Prisma.PublicLandingContentScalarFieldEnum = {
+  id: 'id',
+  palmaresHeroVisualUrl: 'palmaresHeroVisualUrl',
+  palmaresCompetitionsMedia: 'palmaresCompetitionsMedia',
+  palmaresChampionsMedia: 'palmaresChampionsMedia',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.TicketScalarFieldEnum = {
@@ -708,6 +729,7 @@ exports.Prisma.ModelName = {
   EaClubStats: 'EaClubStats',
   Competition: 'Competition',
   CompetitionTeam: 'CompetitionTeam',
+  EmailTemplate: 'EmailTemplate',
   Match: 'Match',
   LeagueTable: 'LeagueTable',
   MatchScoreReport: 'MatchScoreReport',
@@ -726,6 +748,7 @@ exports.Prisma.ModelName = {
   UserSubscription: 'UserSubscription',
   Message: 'Message',
   NewsEvent: 'NewsEvent',
+  PublicLandingContent: 'PublicLandingContent',
   Ticket: 'Ticket',
   TicketReply: 'TicketReply'
 };
