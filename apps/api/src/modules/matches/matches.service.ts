@@ -9,11 +9,13 @@ import { MatchStatus } from '@omjep/shared';
 import { CompetitionsService } from '../competitions/competitions.service';
 import { ReportMatchDto } from './dto/report-match.dto';
 import { ConfirmMatchDto } from './dto/confirm-match.dto';
+import { isEaClubsSyncEnabled } from '../sync/ea-clubs-sync.config';
 
 const TEAM_WITH_MANAGER = {
   id: true,
   name: true,
   logo_url: true,
+  manager_id: true,
   manager: { select: { level: true } },
 } as const;
 
@@ -133,17 +135,19 @@ function toIsoFromMatchSchedule(
 }
 
 function mapClubForMyTeamDashboardWeb(team: {
-  id: string
-  name: string
-  logo_url: string | null
-  manager?: { level: number } | null
+  id: string;
+  name: string;
+  logo_url: string | null;
+  manager_id?: string | null;
+  manager?: { level: number } | null;
 }) {
   return {
     id: team.id,
     name: team.name,
     logoUrl: team.logo_url ?? null,
+    managerId: team.manager_id ?? null,
     ...(team.manager != null ? { manager: team.manager } : {}),
-  }
+  };
 }
 
 function sortMatchesCalendar<T extends { status: MatchStatus; played_at: Date | null }>(
@@ -222,6 +226,27 @@ export class MatchesService {
 
     const teamId = membership.team_id;
 
+    const [club, mem, authUser] = await Promise.all([
+      this.prisma.club.findUnique({
+        where: { id: teamId },
+        select: { manager_id: true },
+      }),
+      this.prisma.teamMember.findUnique({
+        where: { user_id_team_id: { user_id: userId, team_id: teamId } },
+        select: { club_role: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true },
+      }),
+    ]);
+
+    const canRunEaMatchSync =
+      authUser?.role === 'ADMIN' ||
+      club?.manager_id === userId ||
+      (mem != null &&
+        ['FOUNDER', 'MANAGER', 'CO_MANAGER'].includes(mem.club_role));
+
     const matches = await this.prisma.match.findMany({
       where: {
         OR: [{ home_team_id: teamId }, { away_team_id: teamId }],
@@ -240,6 +265,8 @@ export class MatchesService {
       homeTeam: mapClubForMyTeamDashboardWeb(m.homeTeam),
       awayTeam: mapClubForMyTeamDashboardWeb(m.awayTeam),
       myTeamId: teamId,
+      eaClubsSyncEnabled: isEaClubsSyncEnabled(),
+      canRunEaMatchSync,
     }));
   }
 

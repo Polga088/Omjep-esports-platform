@@ -53,6 +53,8 @@ model User {
   walletTransactions    Transaction[]
   supportTickets      Ticket[]
   ticketReplies       TicketReply[]
+  playerExternalLinks     PlayerExternalLink[]
+  playerMatchExternalStats PlayerMatchExternalStat[]
   instagramUrl        String?            @map("instagram_url")
   whatsappUrl         String?            @map("whatsapp_url")
   discordUrl          String?            @map("discord_url")
@@ -102,6 +104,7 @@ model Club {
   leagueTableEntries LeagueTable[]
   wallet            ClubWallet?
   transferSellerSettlementsAsSeller TransferSellerSettlement[] @relation("TransferSettlementSellerClub")
+  teamExternalLinks TeamExternalLink[]
 
   @@map("teams")
 }
@@ -269,9 +272,92 @@ model Match {
   competition    Competition?       @relation(fields: [competition_id], references: [id], onDelete: Cascade)
   homeTeam       Club               @relation("HomeTeam", fields: [home_team_id], references: [id])
   predictions    Prediction[]
+  matchSyncs              MatchSync[]
+  playerMatchExternalStats PlayerMatchExternalStat[]
 
   @@index([competition_id, bracket_round, bracket_index])
   @@map("matches")
+}
+
+/// Liaison club OMJEP ↔ identifiant EA Clubs / proclubs.io (sans credentials).
+model TeamExternalLink {
+  id         String    @id @default(uuid()) @db.Uuid
+  teamId     String    @db.Uuid @map("team_id")
+  team       Club      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  provider   String    @default("EA_CLUBS")
+  platform   String
+  eaClubId   String    @map("ea_club_id")
+  clubName   String?   @map("club_name")
+  verifiedAt DateTime? @map("verified_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@unique([teamId, provider])
+  @@index([eaClubId, platform])
+  @@map("team_external_links")
+}
+
+/// Persona EA FC 26 côté provider (complète users.ea_persona_name).
+model PlayerExternalLink {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @db.Uuid @map("user_id")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider    String    @default("EA_CLUBS")
+  platform    String?
+  personaName String    @map("persona_name")
+  verifiedAt  DateTime? @map("verified_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, provider])
+  @@index([personaName])
+  @@map("player_external_links")
+}
+
+/// État de synchronisation automatique d’un match OMJEP avec EA Clubs.
+model MatchSync {
+  id              String    @id @default(uuid()) @db.Uuid
+  matchId         String    @db.Uuid @map("match_id")
+  match           Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  provider        String    @default("EA_CLUBS")
+  providerMatchId String?   @map("provider_match_id")
+  homeEaClubId    String?   @map("home_ea_club_id")
+  awayEaClubId    String?   @map("away_ea_club_id")
+  status          String    @default("pending")
+  attempts        Int       @default(0)
+  lastError       String?   @map("last_error")
+  rawPayload      Json?     @map("raw_payload")
+  syncedAt        DateTime? @map("synced_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@unique([matchId, provider])
+  @@index([status])
+  @@map("match_syncs")
+}
+
+/// Stats joueur importées depuis EA / provider pour un match donné.
+model PlayerMatchExternalStat {
+  id          String   @id @default(uuid()) @db.Uuid
+  matchId     String   @db.Uuid @map("match_id")
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId      String?  @db.Uuid @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  provider    String   @default("EA_CLUBS")
+  personaName String   @map("persona_name")
+  rating      Float?
+  goals       Int?
+  assists     Int?
+  saves       Int?
+  cleanSheet  Boolean? @map("clean_sheet")
+  position    String?
+  rawPayload  Json?    @map("raw_payload")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([matchId])
+  @@index([userId])
+  @@index([personaName])
+  @@map("player_match_external_stats")
 }
 
 model LeagueTable {

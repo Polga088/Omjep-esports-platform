@@ -990,8 +990,9 @@ export default function ProfilePage() {
             <h2 className="font-display text-xl font-bold text-omjep-text-primary">Réglages compétition</h2>
             <p className="mt-2 text-sm leading-relaxed text-omjep-text-secondary">
               Votre{' '}
-              <span className="font-semibold text-omjep-mauve">ID EA FC 26 / Persona</span> sera utilisé plus tard pour
-              associer vos stats EA FC 26 à votre profil OMJEP. Complétez-le dès maintenant pour la beta.
+              <span className="font-semibold text-omjep-mauve">ID EA FC 26 / Persona</span> permet d&apos;associer vos
+              statistiques EA FC 26 à votre profil OMJEP lorsque la synchronisation automatique est activée. Complétez-le
+              dès que possible.
             </p>
             </div>
             <button
@@ -1055,7 +1056,7 @@ export default function ProfilePage() {
                 />
               </div>
               <p className="text-xs text-omjep-text-muted">
-                Utilisé plus tard pour associer vos stats EA FC 26 à votre profil OMJEP. Saisissez le même identifiant
+                Cet ID sera utilisé pour associer vos stats EA FC 26 à votre profil OMJEP. Saisissez le même identifiant
                 qu&apos;en jeu.
               </p>
             </div>

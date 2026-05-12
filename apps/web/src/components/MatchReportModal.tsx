@@ -10,6 +10,7 @@ import {
   Loader2,
   Minus,
   Plus,
+  RefreshCw,
   ShieldCheck,
   Upload,
   X,
@@ -33,6 +34,8 @@ interface MatchLite {
   status?: 'SCHEDULED' | 'PENDING' | 'VALIDATED' | 'DISPUTE' | 'PLAYED'
   scheduledAt?: string
   competition?: { id: string; name: string; type: string } | null
+  eaClubsSyncEnabled?: boolean
+  canRunEaMatchSync?: boolean
 }
 
 interface RankingSummary {
@@ -323,6 +326,13 @@ export default function MatchReportModal({ open, match, onClose, onUpdated }: Ma
   const [scoreError, setScoreError] = useState<string | null>(null)
   const [proofError, setProofError] = useState<string | null>(null)
   const [consignesOpen, setConsignesOpen] = useState(false)
+  const [eaSyncStatus, setEaSyncStatus] = useState<{
+    syncEnabled: boolean
+    status: string | null
+    attempts: number
+    lastError: string | null
+  } | null>(null)
+  const [eaSyncBusy, setEaSyncBusy] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const reducedMotion = usePrefersReducedMotion()
@@ -341,6 +351,36 @@ export default function MatchReportModal({ open, match, onClose, onUpdated }: Ma
     setProofError(null)
     setPendingAction(null)
     setConsignesOpen(false)
+  }, [open, match?.id])
+
+  useEffect(() => {
+    if (!open || !match?.id) {
+      setEaSyncStatus(null)
+      return
+    }
+    let cancelled = false
+    void api
+      .get<{
+        syncEnabled?: boolean
+        status?: string | null
+        attempts?: number
+        lastError?: string | null
+      }>(`/sync/matches/${match.id}/status`)
+      .then(({ data }) => {
+        if (cancelled) return
+        setEaSyncStatus({
+          syncEnabled: Boolean(data.syncEnabled),
+          status: data.status ?? null,
+          attempts: data.attempts ?? 0,
+          lastError: data.lastError ?? null,
+        })
+      })
+      .catch(() => {
+        if (!cancelled) setEaSyncStatus(null)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [open, match?.id])
 
   useEffect(() => {
@@ -414,6 +454,54 @@ export default function MatchReportModal({ open, match, onClose, onUpdated }: Ma
     setScoreError(null)
     return true
   }, [homeScore, awayScore])
+
+  const refreshEaSyncStatus = useCallback(async () => {
+    const id = match?.id
+    if (!id) return
+    try {
+      const { data } = await api.get<{
+        syncEnabled?: boolean
+        status?: string | null
+        attempts?: number
+        lastError?: string | null
+      }>(`/sync/matches/${id}/status`)
+      setEaSyncStatus({
+        syncEnabled: Boolean(data.syncEnabled),
+        status: data.status ?? null,
+        attempts: data.attempts ?? 0,
+        lastError: data.lastError ?? null,
+      })
+    } catch {
+      setEaSyncStatus(null)
+    }
+  }, [match?.id])
+
+  const handleEaSyncRun = useCallback(async () => {
+    const id = match?.id
+    if (!id) return
+    setEaSyncBusy(true)
+    try {
+      const { data } = await api.post<{ ok?: boolean; message?: string; code?: string }>(
+        `/sync/matches/${id}/run`,
+      )
+      if (data?.ok) {
+        toast.success(data.message ?? 'Synchronisation réussie')
+      } else {
+        toast.message(data?.message ?? 'Synchronisation terminée', {
+          description: data?.code ? `Code : ${data.code}` : undefined,
+        })
+      }
+      onUpdated()
+      await refreshEaSyncStatus()
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        'Synchronisation impossible'
+      toast.error(typeof msg === 'string' ? msg : 'Synchronisation impossible')
+    } finally {
+      setEaSyncBusy(false)
+    }
+  }, [match?.id, onUpdated, refreshEaSyncStatus])
 
   if (!open || !currentMatch) return null
 
@@ -564,6 +652,64 @@ export default function MatchReportModal({ open, match, onClose, onUpdated }: Ma
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain scroll-smooth px-2.5 py-2 sm:px-3 sm:py-2.5">
           <div className="space-y-2.5 sm:space-y-3">
             <MatchSummaryCompact match={currentMatch} />
+
+            <section
+              aria-labelledby="ea-sync-heading"
+              className="rounded-xl border border-omjep-border/50 bg-[color-mix(in_srgb,var(--omjep-bg-panel-soft)_72%,var(--omjep-bg-panel))] px-3 py-3 sm:px-3.5"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <h3 id="ea-sync-heading" className="font-heading text-xs font-bold text-omjep-text-primary sm:text-sm">
+                  Synchronisation EA FC 26
+                </h3>
+                {eaSyncStatus?.status ? (
+                  <span className="rounded-md border border-omjep-border/60 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-omjep-text-muted">
+                    {eaSyncStatus.status}
+                  </span>
+                ) : null}
+              </div>
+              <p className="mt-1.5 text-[11px] leading-relaxed text-omjep-text-secondary">
+                Import automatique du score depuis la source EA Clubs (sans compte EA). En cas d&apos;échec, la saisie
+                manuelle et la preuve restent disponibles ci-dessous.
+              </p>
+              {!currentMatch.eaClubsSyncEnabled && !eaSyncStatus?.syncEnabled ? (
+                <p className="mt-2 text-[11px] font-medium text-omjep-text-muted">
+                  Bientôt disponible : la synchronisation automatique est désactivée sur cet environnement.
+                </p>
+              ) : null}
+              {eaSyncStatus?.lastError ? (
+                <p className="mt-2 rounded-lg border border-amber-500/25 bg-amber-500/5 px-2 py-1.5 text-[11px] text-amber-100/90">
+                  {eaSyncStatus.lastError}
+                </p>
+              ) : null}
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => void refreshEaSyncStatus()}
+                  disabled={eaSyncBusy || !currentMatch.id}
+                  className="inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg border border-omjep-border/60 bg-omjep-bg-panel-soft px-3 py-2 text-[10px] font-bold uppercase tracking-[0.1em] text-omjep-text-primary transition hover:border-omjep-mauve/40 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${eaSyncBusy ? 'animate-spin' : ''}`} aria-hidden />
+                  Voir statut
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleEaSyncRun()}
+                  disabled={
+                    eaSyncBusy ||
+                    !currentMatch.id ||
+                    !currentMatch.canRunEaMatchSync ||
+                    !(currentMatch.eaClubsSyncEnabled ?? eaSyncStatus?.syncEnabled ?? false)
+                  }
+                  className="inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg border border-[color-mix(in_srgb,var(--omjep-gold)_28%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_8%,var(--omjep-bg-panel-soft))] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.1em] text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-mauve))] disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  {eaSyncBusy ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : null}
+                  Synchroniser / relancer
+                </button>
+              </div>
+              <p className="mt-2 text-[10px] text-omjep-text-muted">
+                Statut : {eaSyncStatus?.status ?? '—'} · tentatives : {eaSyncStatus?.attempts ?? 0}
+              </p>
+            </section>
 
             <section aria-labelledby="scoreboard-heading" className="space-y-2">
               <div className="flex flex-wrap items-baseline justify-between gap-2">

@@ -25,6 +25,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AdminCreateUserDto } from './dto/admin-create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
+import { UpsertPlayerExternalLinkDto } from './dto/upsert-player-external-link.dto';
 
 function ensureUploadSubdir(...segments: string[]) {
   const dir = join(process.cwd(), 'uploads', ...segments);
@@ -47,6 +48,15 @@ export class UsersController {
   @Patch('profile')
   updateProfile(@Req() req: { user: { id: string } }, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateProfile(req.user.id, dto);
+  }
+
+  @Patch('me/external-link')
+  @UseGuards(JwtAuthGuard)
+  upsertMyPlayerExternalLink(
+    @Req() req: { user: { id: string } },
+    @Body() dto: UpsertPlayerExternalLinkDto,
+  ) {
+    return this.usersService.upsertMyPlayerExternalLink(req.user.id, dto);
   }
 
   @Post('profile/avatar')

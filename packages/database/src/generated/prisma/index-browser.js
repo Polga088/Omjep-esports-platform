@@ -285,6 +285,61 @@ exports.Prisma.MatchScalarFieldEnum = {
   winner_slot_in_next: 'winner_slot_in_next'
 };
 
+exports.Prisma.TeamExternalLinkScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  provider: 'provider',
+  platform: 'platform',
+  eaClubId: 'eaClubId',
+  clubName: 'clubName',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PlayerExternalLinkScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  provider: 'provider',
+  platform: 'platform',
+  personaName: 'personaName',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MatchSyncScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  provider: 'provider',
+  providerMatchId: 'providerMatchId',
+  homeEaClubId: 'homeEaClubId',
+  awayEaClubId: 'awayEaClubId',
+  status: 'status',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  rawPayload: 'rawPayload',
+  syncedAt: 'syncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PlayerMatchExternalStatScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  userId: 'userId',
+  provider: 'provider',
+  personaName: 'personaName',
+  rating: 'rating',
+  goals: 'goals',
+  assists: 'assists',
+  saves: 'saves',
+  cleanSheet: 'cleanSheet',
+  position: 'position',
+  rawPayload: 'rawPayload',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.LeagueTableScalarFieldEnum = {
   id: 'id',
   competition_id: 'competition_id',
@@ -739,6 +794,10 @@ exports.Prisma.ModelName = {
   CompetitionTeam: 'CompetitionTeam',
   EmailTemplate: 'EmailTemplate',
   Match: 'Match',
+  TeamExternalLink: 'TeamExternalLink',
+  PlayerExternalLink: 'PlayerExternalLink',
+  MatchSync: 'MatchSync',
+  PlayerMatchExternalStat: 'PlayerMatchExternalStat',
   LeagueTable: 'LeagueTable',
   MatchScoreReport: 'MatchScoreReport',
   MatchEvent: 'MatchEvent',

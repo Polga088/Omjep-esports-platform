@@ -2,16 +2,15 @@ import { useState, useEffect, Component } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  UserPlus, UserMinus, Star, Shield, Swords, Crown, Users, Link2,
-  CheckCircle2, Loader2, Wallet, ArrowUpRight, ArrowDownRight,
+  UserMinus, Star, Shield, Swords, Crown, Users,
+  Loader2, Wallet, ArrowUpRight, ArrowDownRight,
   FileText, TrendingUp, Banknote, Trophy, Repeat, Gem, Info,
-  AlertTriangle,
+  AlertTriangle, Link2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import api from '../../lib/api';
 import { useAuth } from '@/hooks/useAuth';
-import InvitePlayerModal from '@/components/InvitePlayerModal';
 import { xpProgress } from '@/lib/leveling';
 import { formatCurrency } from '@/utils/formatCurrency';
 import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
@@ -190,13 +189,13 @@ function RatingBar({ value }: { value: number }) {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+      <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-omjep-bg-panel-soft">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="w-10 text-right text-sm font-semibold tabular-nums text-gray-300">
+      <span className="w-10 text-right text-sm font-semibold tabular-nums text-omjep-text-secondary">
         {value > 0 ? value.toFixed(1) : 'N/A'}
       </span>
     </div>
@@ -205,10 +204,10 @@ function RatingBar({ value }: { value: number }) {
 
 function SkeletonRow({ cols = 5 }: { cols?: number }) {
   return (
-    <tr className="border-b border-gray-800/30 last:border-b-0">
+    <tr>
       {[...Array(cols)].map((_, i) => (
         <td key={i} className="px-5 py-4">
-          <div className="h-4 rounded-md bg-white/5 animate-pulse" style={{ width: i === 0 ? '60%' : '40%' }} />
+          <div className="h-4 rounded-md bg-omjep-bg-panel-soft animate-pulse" style={{ width: i === 0 ? '60%' : '40%' }} />
         </td>
       ))}
     </tr>
@@ -222,11 +221,11 @@ function PrestigeSection({ xp, prestigeLevel }: { xp: number; prestigeLevel: num
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-gray-800 bg-[#0B0D13]/50 backdrop-blur-md">
-      <div className="flex items-center justify-between border-b border-gray-800/80 px-5 py-4">
+    <div className="omjep-surface-elevated overflow-hidden backdrop-blur-md">
+      <div className="flex items-center justify-between border-b border-omjep-border/60 px-5 py-4">
         <div className="flex items-center gap-2.5">
-          <Gem className="h-5 w-5 shrink-0 text-cyan-200 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)] [filter:drop-shadow(0_0_8px_rgba(34,211,238,0.5))]" />
-          <h3 className="text-sm font-bold tracking-wide text-white">Prestige du Club</h3>
+          <Gem className="h-5 w-5 shrink-0 text-omjep-mauve" />
+          <h3 className="text-sm font-bold tracking-wide text-omjep-text-primary">Prestige du Club</h3>
         </div>
         <div className="relative">
           <button
@@ -326,20 +325,33 @@ export default function MyTeam() {
   const [team, setTeam] = useState<MyTeamData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const { user } = useAuth();
 
   const [activeTab, setActiveTab] = useState<FinanceTab>('roster');
   const [finance, setFinance] = useState<FinanceData | null>(null);
   const [financeLoading, setFinanceLoading] = useState(false);
 
-  const [externalIdInput, setExternalIdInput] = useState('');
-  const [linkingClub, setLinkingClub] = useState(false);
-  const [linkSuccess, setLinkSuccess] = useState('');
-  const [linkError, setLinkError] = useState('');
   const [kickTarget, setKickTarget] = useState<TeamMember | null>(null);
   const [kickLoading, setKickLoading] = useState(false);
   const [roleBusyUserId, setRoleBusyUserId] = useState<string | null>(null);
+
+  type ClubEaLinkResponse = {
+    syncEnabled: boolean;
+    provider: string;
+    link: {
+      eaClubId: string;
+      platform: string;
+      clubName: string | null;
+      verifiedAt: string | null;
+    } | null;
+    legacyEaClubId: string | null;
+    clubPlatform: string | null;
+  };
+
+  const [eaClubPayload, setEaClubPayload] = useState<ClubEaLinkResponse | null>(null);
+  const [eaClubLoadError, setEaClubLoadError] = useState<string | null>(null);
+  const [eaClubSaving, setEaClubSaving] = useState(false);
+  const [eaClubForm, setEaClubForm] = useState({ eaClubId: '', platform: 'PS5', clubName: '' });
 
   useEffect(() => {
     let cancelled = false;
@@ -380,23 +392,60 @@ export default function MyTeam() {
   const allMembers = team?.members ?? [];
 
   const currentMember = team?.members.find((m) => m.user_id === user?.id);
-  const canRecruit = currentMember &&
-    ['FOUNDER', 'MANAGER', 'CO_MANAGER'].includes(currentMember.club_role);
-
   const avgRating =
     allMembers.length > 0
       ? allMembers.reduce((sum, m) => sum + (m.user.stats?.average_rating ?? 0), 0) / allMembers.length
       : 0;
 
-  /** Accès onglet / bloc liaison EA (staff club). */
-  const isManager =
-    currentMember &&
-    ['FOUNDER', 'MANAGER', 'CO_MANAGER'].includes(currentMember.club_role);
-
-  const isSynced = !!team?.proclubs_url;
-
   /** Manager désigné (`manager_id`) — promotion co-manager & licenciement. */
   const isDesignatedManager = !!user?.id && team?.manager_id === user.id;
+
+  /** Liaison EA Clubs : manager désigné, fondateur, manager ou co-manager de club. */
+  const canLinkEaClub =
+    user?.role === 'ADMIN' ||
+    isDesignatedManager ||
+    currentMember?.club_role === 'FOUNDER' ||
+    currentMember?.club_role === 'MANAGER' ||
+    currentMember?.club_role === 'CO_MANAGER';
+
+  useEffect(() => {
+    if (!team?.id || !canLinkEaClub) {
+      setEaClubPayload(null);
+      return;
+    }
+    let cancelled = false;
+    void api
+      .get<ClubEaLinkResponse>('/clubs/my/external-link')
+      .then(({ data }) => {
+        if (cancelled) return;
+        setEaClubPayload(data);
+        setEaClubLoadError(null);
+        if (data.link) {
+          setEaClubForm({
+            eaClubId: data.link.eaClubId,
+            platform: data.link.platform,
+            clubName: data.link.clubName ?? '',
+          });
+        } else if (data.legacyEaClubId) {
+          setEaClubForm((prev) => ({
+            eaClubId: data.legacyEaClubId ?? '',
+            platform: (data.clubPlatform as string) || prev.platform,
+            clubName: prev.clubName,
+          }));
+        }
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        const msg =
+          err && typeof err === 'object' && 'response' in err
+            ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+            : null;
+        setEaClubLoadError(typeof msg === 'string' ? msg : 'Impossible de charger la liaison EA.');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [team?.id, canLinkEaClub]);
 
   /** Outils de gestion (effectif, finance, actions) : manager désigné, fondateur, co-manager, admin. */
   const canManage =
@@ -459,34 +508,6 @@ export default function MyTeam() {
     }
   };
 
-  useEffect(() => {
-    if (team?.proclubs_url) setExternalIdInput(team.proclubs_url);
-  }, [team?.proclubs_url]);
-
-  const handleLinkClub = async () => {
-    if (!team || !externalIdInput.trim()) return;
-    setLinkingClub(true);
-    setLinkError('');
-    setLinkSuccess('');
-    const trimmed = externalIdInput.trim();
-    try {
-      await api.patch(`/teams/${team.id}`, { proclubs_url: trimmed });
-      setTeam((prev) => (prev ? { ...prev, proclubs_url: trimmed } : prev));
-      await api.post(`/clubs/${team.id}/sync-stats`);
-      setLinkSuccess('Club lié et statistiques EA synchronisées.');
-      await reloadTeamAndFinance();
-      setTimeout(() => setLinkSuccess(''), 5000);
-    } catch (err: unknown) {
-      const msg =
-        err && typeof err === 'object' && 'response' in err
-          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
-          : null;
-      setLinkError(typeof msg === 'string' ? msg : 'Erreur lors de la liaison ou de la synchronisation.');
-    } finally {
-      setLinkingClub(false);
-    }
-  };
-
   const handlePromoteCoManager = async (member: TeamMember) => {
     if (!team) return;
     const uid = member.user_id;
@@ -525,6 +546,48 @@ export default function MyTeam() {
     }
   };
 
+  const handleSaveEaClubLink = async () => {
+    const trimmedId = eaClubForm.eaClubId.trim();
+    const plat = eaClubForm.platform.trim();
+    if (!trimmedId || !plat) {
+      toast.error('EA Club ID et plateforme sont requis.');
+      return;
+    }
+    setEaClubSaving(true);
+    try {
+      const { data } = await api.patch<ClubEaLinkResponse>('/clubs/my/external-link', {
+        provider: 'EA_CLUBS',
+        eaClubId: trimmedId,
+        platform: plat,
+        clubName: eaClubForm.clubName.trim() || undefined,
+      });
+      setEaClubPayload(data);
+      toast.success('Liaison EA club enregistrée.');
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+          : null;
+      toast.error(typeof msg === 'string' ? msg : 'Enregistrement impossible.');
+    } finally {
+      setEaClubSaving(false);
+    }
+  };
+
+  const handleVerifyEaClub = () => {
+    if (!eaClubPayload?.syncEnabled) {
+      toast.message('Bientôt disponible', {
+        description:
+          'La vérification automatique du club sera proposée lorsque la synchronisation EA FC 26 sera activée sur la plateforme.',
+      });
+      return;
+    }
+    toast.message('Vérification automatique', {
+      description:
+        'Le fournisseur distant confirmera bientôt la correspondance club. Vous pouvez déjà enregistrer votre EA Club ID pour préparer les imports.',
+    });
+  };
+
   return (
     <TeamErrorBoundary>
     <div className="cockpit-page dashboard-phase3-team space-y-6">
@@ -536,22 +599,12 @@ export default function MyTeam() {
             ? 'Gestion de l’effectif, des rôles et des finances club'
             : `${allMembers.length} membres enregistrés dans le système`
         }
-        action={
-          canRecruit ? (
-            <button
-              onClick={() => setInviteModalOpen(true)}
-              className="group inline-flex items-center gap-2.5 rounded-none border border-black/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-black transition-all duration-200 whitespace-nowrap dark:border-white/20 dark:text-white"
-            >
-              [ ACTION ]
-            </button>
-          ) : undefined
-        }
       />
 
       {/* Stats Bento — aligné 3 colonnes desktop, 1 colonne mobile */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Total joueurs */}
-        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
+        <div className="omjep-stat-tile group relative overflow-hidden">
           <svg
             className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-white opacity-[0.05]"
             viewBox="0 0 24 24"
@@ -564,13 +617,13 @@ export default function MyTeam() {
             <circle cx="12" cy="7" r="4" />
           </svg>
           <p className="text-xs font-semibold uppercase tracking-widest text-omjep-text-secondary">Total joueurs</p>
-          <p className="mt-2 text-4xl font-black tabular-nums text-white">
+          <p className="mt-2 text-4xl font-black tabular-nums text-omjep-text-primary">
             {isLoading ? '—' : players.length}
           </p>
         </div>
 
         {/* Staff / Managers */}
-        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
+        <div className="omjep-stat-tile group relative overflow-hidden">
           <svg
             className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-emerald-400 opacity-[0.05]"
             viewBox="0 0 24 24"
@@ -590,7 +643,7 @@ export default function MyTeam() {
         </div>
 
         {/* Note moy. équipe */}
-        <div className="group relative overflow-hidden rounded-2xl border border-omjep-border bg-omjep-bg-panel/70 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-omjep-border-gold hover:shadow-lg hover:shadow-black/25">
+        <div className="omjep-stat-tile group relative overflow-hidden">
           <svg
             className="pointer-events-none absolute bottom-0 right-0 h-24 w-24 translate-x-2 translate-y-2 text-yellow-500 opacity-[0.05]"
             viewBox="0 0 24 24"
@@ -613,6 +666,124 @@ export default function MyTeam() {
         <PrestigeSection xp={team.xp ?? 0} prestigeLevel={team.prestige_level ?? 1} />
       )}
 
+      {team && !isLoading && canLinkEaClub && (
+        <div className="omjep-surface-elevated overflow-hidden backdrop-blur-md">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-omjep-border/60 px-5 py-4">
+            <div className="flex items-center gap-2.5">
+              <Link2 className="h-5 w-5 shrink-0 text-omjep-mauve" aria-hidden />
+              <div>
+                <h3 className="text-sm font-bold tracking-wide text-omjep-text-primary">Connexion EA FC 26 Club</h3>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-omjep-text-secondary">
+                  Liez l&apos;identifiant Pro Clubs / EA Club de votre équipe pour la synchronisation des scores (aucun
+                  compte EA requis).
+                </p>
+              </div>
+            </div>
+            <span
+              className={`rounded-md border px-2 py-1 text-[9px] font-bold uppercase tracking-[0.14em] ${
+                eaClubLoadError
+                  ? 'border-rose-500/40 bg-rose-500/10 text-rose-200'
+                  : eaClubPayload?.link?.verifiedAt
+                    ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-200'
+                    : eaClubPayload?.link
+                      ? 'border-[color-mix(in_srgb,var(--omjep-gold)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_8%,var(--omjep-bg-panel))] text-omjep-text-secondary'
+                      : 'border-omjep-border/60 bg-omjep-bg-panel-soft/60 text-omjep-text-muted'
+              }`}
+            >
+              {eaClubLoadError
+                ? 'Erreur'
+                : eaClubPayload?.link?.verifiedAt
+                  ? 'Vérifié'
+                  : eaClubPayload?.link
+                    ? 'Configuré'
+                    : 'Non configuré'}
+            </span>
+          </div>
+
+          <div className="space-y-4 px-5 py-5">
+            {!eaClubPayload?.syncEnabled ? (
+              <p className="rounded-lg border border-omjep-border/50 bg-omjep-bg-panel-soft/50 px-3 py-2 text-xs text-omjep-text-secondary">
+                Synchronisation automatique EA FC 26 : <span className="font-semibold text-omjep-text-primary">bientôt disponible</span> sur cet
+                environnement. Vous pouvez tout de même enregistrer votre EA Club ID pour préparer la reprise des
+                matchs.
+              </p>
+            ) : null}
+            {eaClubLoadError ? (
+              <p className="text-sm text-rose-400" role="alert">
+                {eaClubLoadError}
+              </p>
+            ) : null}
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label htmlFor="ea-club-id" className="text-xs font-semibold uppercase tracking-wide text-omjep-text-muted">
+                  EA Club ID / Team ID
+                </label>
+                <input
+                  id="ea-club-id"
+                  type="text"
+                  value={eaClubForm.eaClubId}
+                  onChange={(e) => setEaClubForm((f) => ({ ...f, eaClubId: e.target.value }))}
+                  placeholder="ex. 1234567"
+                  autoComplete="off"
+                  className="w-full rounded-xl border border-omjep-border/70 bg-omjep-bg-panel-soft px-3 py-2.5 text-sm text-omjep-text-primary outline-none transition placeholder:text-omjep-text-muted focus:border-omjep-mauve/50 focus:ring-2 focus:ring-omjep-mauve/20"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="ea-platform" className="text-xs font-semibold uppercase tracking-wide text-omjep-text-muted">
+                  Plateforme
+                </label>
+                <select
+                  id="ea-platform"
+                  value={eaClubForm.platform}
+                  onChange={(e) => setEaClubForm((f) => ({ ...f, platform: e.target.value }))}
+                  className="w-full cursor-pointer rounded-xl border border-omjep-border/70 bg-omjep-bg-panel-soft px-3 py-2.5 text-sm text-omjep-text-primary outline-none transition focus:border-omjep-mauve/50 focus:ring-2 focus:ring-omjep-mauve/20"
+                >
+                  {['PS5', 'PS4', 'XBOX_SERIES', 'XBOX_ONE', 'PC', 'CROSSPLAY'].map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label htmlFor="ea-club-name" className="text-xs font-semibold uppercase tracking-wide text-omjep-text-muted">
+                Nom club EA (optionnel)
+              </label>
+              <input
+                id="ea-club-name"
+                type="text"
+                value={eaClubForm.clubName}
+                onChange={(e) => setEaClubForm((f) => ({ ...f, clubName: e.target.value }))}
+                placeholder="ex. Moroccan Eagles"
+                className="w-full rounded-xl border border-omjep-border/70 bg-omjep-bg-panel-soft px-3 py-2.5 text-sm text-omjep-text-primary outline-none transition placeholder:text-omjep-text-muted focus:border-omjep-mauve/50 focus:ring-2 focus:ring-omjep-mauve/20"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => void handleSaveEaClubLink()}
+                disabled={eaClubSaving}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-omjep-mauve/45 bg-omjep-mauve/20 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-omjep-text-primary transition hover:bg-omjep-mauve/30 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {eaClubSaving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
+                Sauvegarder
+              </button>
+              <button
+                type="button"
+                onClick={handleVerifyEaClub}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-omjep-border/70 bg-omjep-bg-panel-soft px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-omjep-text-secondary transition hover:border-omjep-mauve/35 hover:text-omjep-text-primary"
+              >
+                {eaClubPayload?.syncEnabled ? 'Vérifier le club' : 'Vérifier bientôt'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Erreur */}
       {error && !isLoading && (
         <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-4 text-sm text-red-400">
@@ -628,21 +799,18 @@ export default function MyTeam() {
       )}
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/5 w-fit">
+      <div className="omjep-tabrail w-fit max-w-full">
         {([
           { key: 'roster' as const, label: 'Effectif', icon: Users },
           { key: 'finance' as const, label: 'Finance', icon: Wallet },
         ]).map(({ key, label, icon: Icon }) => (
           <button
             key={key}
+            type="button"
             onClick={() => setActiveTab(key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-              activeTab === key
-                ? 'bg-amber-400/15 text-amber-400 border border-amber-400/25 shadow-sm'
-                : 'text-slate-500 hover:text-slate-300 border border-transparent'
-            }`}
+            className={`omjep-tabrail__btn ${activeTab === key ? 'omjep-tabrail__btn--active' : ''}`}
           >
-            <Icon className="w-4 h-4" />
+            <Icon className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
             {label}
           </button>
         ))}
@@ -650,21 +818,19 @@ export default function MyTeam() {
 
       {/* ══════════ TAB: Effectif (Roster) ══════════ */}
       {activeTab === 'roster' && (
-        <div className="overflow-hidden rounded-2xl border border-gray-800 bg-[#0B0D13]/50 backdrop-blur-md">
-          <div className="flex items-center justify-between border-b border-gray-800/50 px-5 py-4">
+        <div className="omjep-data-shell backdrop-blur-md">
+          <div className="flex items-center justify-between border-b border-omjep-border/50 px-5 py-4">
             <div className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-amber-400/90" />
-              <h2 className="text-sm font-semibold text-white">Roster actuel</h2>
+              <Star className="h-4 w-4 text-omjep-gold" />
+              <h2 className="text-sm font-semibold text-omjep-text-primary">Roster actuel</h2>
             </div>
-            <span className="rounded-full border border-gray-800/80 bg-white/[0.04] px-2.5 py-1 text-xs text-gray-500">
-              Saison 2025
-            </span>
+            <span className="omjep-badge">Saison 2025</span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[640px] text-left">
               <thead>
-                <tr className="border-b border-gray-800/50">
+                <tr>
                   {[
                     'Joueur (Pseudo EA)',
                     'Poste',
@@ -675,7 +841,7 @@ export default function MyTeam() {
                   ].map((col) => (
                     <th
                       key={col}
-                      className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                      className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-omjep-text-muted"
                     >
                       {col}
                     </th>
@@ -692,7 +858,7 @@ export default function MyTeam() {
                     </td>
                   </tr>
                 ) : (
-                  allMembers.map((member, rowIndex) => {
+                  allMembers.map((member) => {
                     const rowUser = member.user;
                     const { club_role } = member;
                     const role = roleConfig[club_role];
@@ -703,7 +869,6 @@ export default function MyTeam() {
                     const matchesPlayed = rowUser.stats?.matches_played ?? 0;
                     const avgRatingPlayer = rowUser.stats?.average_rating ?? 0;
                     const pseudo = rowUser.ea_persona_name ?? `Joueur #${rowUser.id.slice(0, 6)}`;
-                    const isLast = rowIndex === allMembers.length - 1;
                     const memberId = member.user_id || rowUser?.id;
                     const showPromote =
                       canPromoteCoManagers &&
@@ -715,25 +880,20 @@ export default function MyTeam() {
                       canKickPlayer && club_role === 'PLAYER' && memberId !== user?.id;
 
                     return (
-                      <tr
-                        key={rowUser.id}
-                        className={`group transition-colors duration-200 hover:bg-white/[0.02] ${
-                          isLast ? '' : 'border-b border-gray-800/30'
-                        }`}
-                      >
+                      <tr key={rowUser.id} className="group">
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-800 to-gray-900 text-xs font-bold uppercase text-white shadow-inner">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-omjep-border/50 bg-omjep-bg-panel-soft text-xs font-bold uppercase text-omjep-text-primary shadow-inner">
                               {pseudo.charAt(0)}
                             </div>
                             <div className="min-w-0">
                               <Link
                                 to={`/dashboard/profile/${rowUser.id}`}
-                                className="text-sm font-semibold text-white transition-colors hover:text-amber-400/90 hover:underline decoration-amber-400/30 underline-offset-2"
+                                className="text-sm font-semibold text-omjep-text-primary transition-colors hover:text-omjep-mauve hover:underline decoration-omjep-mauve/40 underline-offset-2"
                               >
                                 {pseudo}
                               </Link>
-                              <p className="text-xs text-gray-600">{rowUser.nationality ?? '—'}</p>
+                              <p className="text-xs text-omjep-text-muted">{rowUser.nationality ?? '—'}</p>
                             </div>
                           </div>
                         </td>
@@ -751,8 +911,8 @@ export default function MyTeam() {
                           </span>
                         </td>
                         <td className="px-5 py-4">
-                          <span className="text-sm font-semibold tabular-nums text-gray-300">{matchesPlayed}</span>
-                          <span className="ml-1 text-xs text-gray-600">matchs</span>
+                          <span className="text-sm font-semibold tabular-nums text-omjep-text-primary">{matchesPlayed}</span>
+                          <span className="ml-1 text-xs text-omjep-text-muted">matchs</span>
                         </td>
                         <td className="min-w-[160px] px-5 py-4">
                           <RatingBar value={avgRatingPlayer} />
@@ -807,11 +967,11 @@ export default function MyTeam() {
             </table>
           </div>
 
-          <div className="flex items-center justify-between border-t border-gray-800/50 px-5 py-3">
-            <span className="text-xs text-gray-600">
+          <div className="flex items-center justify-between border-t border-omjep-border/50 px-5 py-3">
+            <span className="text-xs text-omjep-text-muted">
               {isLoading ? '…' : `${allMembers.length} membre${allMembers.length > 1 ? 's' : ''} au total`}
             </span>
-            <span className="text-xs text-gray-700">Données live — v1.0</span>
+            <span className="text-xs text-omjep-text-muted/80">Données live — v1.0</span>
           </div>
         </div>
       )}
@@ -822,7 +982,7 @@ export default function MyTeam() {
           {/* Budget overview cards */}
           {finance && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="rounded-xl bg-[#0D1221] border border-emerald-500/15 p-5">
+              <div className="omjep-surface-card border-emerald-500/20 p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                     <Wallet className="w-4 h-4 text-emerald-400" />
@@ -831,7 +991,7 @@ export default function MyTeam() {
                 </div>
                 <span className="text-2xl font-black tabular-nums text-emerald-400">{formatCurrency(finance?.budget ?? 0, 'OC')}</span>
               </div>
-              <div className="rounded-xl bg-[#0D1221] border border-blue-500/15 p-5">
+              <div className="omjep-surface-card border-blue-500/20 p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
                     <FileText className="w-4 h-4 text-blue-400" />
@@ -840,7 +1000,7 @@ export default function MyTeam() {
                 </div>
                 <span className="text-2xl font-black tabular-nums text-blue-400">{finance?.contracts?.length ?? 0}</span>
               </div>
-              <div className="rounded-xl bg-[#0D1221] border border-amber-500/15 p-5">
+              <div className="omjep-surface-card border-amber-500/25 p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
                     <Banknote className="w-4 h-4 text-amber-400" />
@@ -864,12 +1024,12 @@ export default function MyTeam() {
           {finance && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Transactions list */}
-              <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-amber-400" />
-                  <h2 className="text-sm font-semibold text-white">Dernières transactions</h2>
+              <div className="omjep-data-shell overflow-hidden">
+                <div className="flex items-center gap-2 border-b border-omjep-border/50 px-6 py-4">
+                  <TrendingUp className="h-4 w-4 text-omjep-gold" />
+                  <h2 className="text-sm font-semibold text-omjep-text-primary">Dernières transactions</h2>
                 </div>
-                <div className="divide-y divide-white/5 max-h-[420px] overflow-y-auto">
+                <div className="max-h-[420px] divide-y divide-omjep-border/40 overflow-y-auto">
                   {(finance?.transactions ?? []).length === 0 ? (
                     <div className="px-6 py-12 text-center text-sm text-slate-600">
                       Aucune transaction enregistrée.
@@ -919,17 +1079,17 @@ export default function MyTeam() {
               </div>
 
               {/* Contracts table */}
-              <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-amber-400" />
-                  <h2 className="text-sm font-semibold text-white">Contrats joueurs</h2>
+              <div className="omjep-data-shell overflow-hidden">
+                <div className="flex items-center gap-2 border-b border-omjep-border/50 px-6 py-4">
+                  <FileText className="h-4 w-4 text-omjep-gold" />
+                  <h2 className="text-sm font-semibold text-omjep-text-primary">Contrats joueurs</h2>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[520px]">
                     <thead>
-                      <tr className="border-b border-white/5">
+                      <tr>
                         {['Joueur', 'Salaire /sem', 'Clause', 'Expiration'].map((col) => (
-                          <th key={col} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-600">
+                          <th key={col} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-omjep-text-muted">
                             {col}
                           </th>
                         ))}
@@ -979,117 +1139,6 @@ export default function MyTeam() {
         </>
       )}
 
-      {/* Section Liaison EA Sports — visible pour Manager / Fondateur */}
-      {isManager && team && (
-        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-          <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link2 className="w-4 h-4 text-amber-400" />
-              <h2 className="text-sm font-semibold text-white">Liaison EA Sports</h2>
-            </div>
-            <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                isSynced
-                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                  : 'bg-white/5 border-white/10 text-slate-500'
-              }`}
-            >
-              <span className={`w-2 h-2 rounded-full ${isSynced ? 'bg-emerald-400' : 'bg-slate-500'}`} />
-              {isSynced ? 'Synchronisé' : 'Non lié'}
-            </span>
-          </div>
-          <div className="px-6 py-6 space-y-4">
-            <p className="text-sm text-slate-400">
-              Liez votre club EA Sports FC Pro Clubs pour synchroniser automatiquement les résultats et statistiques de matchs.
-            </p>
-
-            {linkSuccess && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs animate-[fadeIn_0.3s_ease-out]">
-                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                {linkSuccess}
-              </div>
-            )}
-            {linkError && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs animate-[fadeIn_0.3s_ease-out]">
-                {linkError}
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1">
-                <label className="block text-xs font-semibold uppercase tracking-widest text-slate-600 mb-2">
-                  URL ProClubs.io
-                </label>
-                <input
-                  type="text"
-                  value={externalIdInput}
-                  onChange={(e) => setExternalIdInput(e.target.value)}
-                  placeholder="ex: https://proclubs.io/club/ps5/mon-club/12345/overview"
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-amber-400/10 text-white text-sm placeholder:text-slate-700 focus:outline-none focus:border-amber-400/30 focus:ring-1 focus:ring-amber-400/20 transition-all duration-200 tabular-nums"
-                />
-              </div>
-              <div className="flex items-end">
-                <button
-                  type="button"
-                  onClick={handleLinkClub}
-                  disabled={linkingClub || !externalIdInput.trim()}
-                  className="inline-flex min-h-[3rem] max-w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 px-5 py-3 text-sm font-semibold text-[#0A0E1A] shadow-lg shadow-amber-400/20 transition-all hover:brightness-110 hover:shadow-amber-400/40 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 sm:min-w-[12rem]"
-                >
-                  {linkingClub ? (
-                    <span className="flex flex-col items-center gap-1.5 px-1 sm:flex-row sm:gap-2">
-                      <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
-                      <span className="max-w-[min(100%,16rem)] text-center text-[11px] leading-snug sm:max-w-[20rem] sm:text-xs">
-                        Synchronisation des données EA Sports en cours...
-                      </span>
-                    </span>
-                  ) : (
-                    <>
-                      <Link2 className="h-4 w-4 shrink-0" />
-                      {isSynced ? 'Mettre à jour' : 'Lier le club'}
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {isSynced && (
-              <div className="flex items-center gap-2 pt-1">
-                <span className="text-xs text-slate-600">URL actuelle :</span>
-                <a
-                  href={team.proclubs_url!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/15 text-amber-400 text-xs font-mono hover:bg-amber-400/20 transition-colors truncate max-w-xs"
-                >
-                  {team.proclubs_url}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Section Recrutement — visible uniquement pour Fondateur / Manager / Co-Manager */}
-      {canRecruit && team && (
-        <div className="rounded-2xl border border-white/5 bg-[#0D1221] overflow-hidden">
-          <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-            <UserPlus className="w-4 h-4 text-amber-400" />
-            <h2 className="text-sm font-semibold text-white">Recrutement</h2>
-          </div>
-          <div className="px-6 py-6">
-            <p className="text-sm text-slate-400 mb-4">
-              En tant que <span className="text-white font-medium">{roleConfig[currentMember!.club_role].label}</span>, vous pouvez inviter de nouveaux joueurs à rejoindre <span className="text-amber-400 font-medium">{team.name}</span>.
-            </p>
-            <button
-              onClick={() => setInviteModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-amber-400 to-amber-600 text-[#0A0E1A] shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 hover:brightness-110 active:scale-95 transition-all"
-            >
-              <UserPlus className="w-4 h-4" />
-              Inviter un Joueur
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Confirmation licenciement */}
       {kickTarget && (
@@ -1146,14 +1195,6 @@ export default function MyTeam() {
         </div>
       )}
 
-      {/* Modale d'invitation */}
-      {team && (
-        <InvitePlayerModal
-          teamId={team.id}
-          open={inviteModalOpen}
-          onClose={() => setInviteModalOpen(false)}
-        />
-      )}
     </div>
     </TeamErrorBoundary>
   );

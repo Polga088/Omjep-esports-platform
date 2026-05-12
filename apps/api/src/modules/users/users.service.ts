@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@api/prisma/prisma.service';
 import { Prisma, AvatarRarity } from '@omjep/database';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpsertPlayerExternalLinkDto } from './dto/upsert-player-external-link.dto';
 import { AdminCreateUserDto } from './dto/admin-create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { LevelingService } from '../leveling/leveling.service';
@@ -301,10 +302,69 @@ export class UsersService {
       },
     });
 
+    if (dto.ea_persona_name !== undefined) {
+      await this.syncPlayerExternalLinkFromPersona(
+        userId,
+        updated.ea_persona_name ?? null,
+      );
+    }
+
     return {
       ...updated,
       avatarRarity: mapAvatarRarityJson(updated.avatarRarity),
     };
+  }
+
+  async upsertMyPlayerExternalLink(userId: string, dto: UpsertPlayerExternalLinkDto) {
+    const provider = (dto.provider || 'EA_CLUBS').trim();
+    if (provider !== 'EA_CLUBS') {
+      throw new BadRequestException('Provider non supporté pour le moment.');
+    }
+    const personaName = dto.personaName.trim();
+    if (!personaName) {
+      throw new BadRequestException('personaName requis.');
+    }
+    const existing = await this.prisma.user.findFirst({
+      where: {
+        ea_persona_name: { equals: personaName, mode: 'insensitive' },
+        NOT: { id: userId },
+      },
+      select: { id: true },
+    });
+    if (existing) {
+      throw new ConflictException(
+        `Le persona "${personaName}" est déjà utilisé par un autre joueur.`,
+      );
+    }
+    const platform = dto.platform?.trim() || null;
+    await this.prisma.playerExternalLink.upsert({
+      where: { userId_provider: { userId, provider } },
+      create: { userId, provider, personaName, platform },
+      update: { personaName, platform },
+    });
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { ea_persona_name: personaName },
+    });
+    return { ok: true, provider, personaName, platform };
+  }
+
+  private async syncPlayerExternalLinkFromPersona(
+    userId: string,
+    persona: string | null,
+  ) {
+    const p = persona?.trim();
+    if (!p) {
+      await this.prisma.playerExternalLink.deleteMany({
+        where: { userId, provider: 'EA_CLUBS' },
+      });
+      return;
+    }
+    await this.prisma.playerExternalLink.upsert({
+      where: { userId_provider: { userId, provider: 'EA_CLUBS' } },
+      create: { userId, provider: 'EA_CLUBS', personaName: p, platform: null },
+      update: { personaName: p },
+    });
   }
 
   private async removeFileIfExists(path: string | undefined) {

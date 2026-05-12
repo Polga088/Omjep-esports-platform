@@ -55,6 +55,7 @@ const AdminLandingMedia = lazy(() => import('@/pages/Admin/AdminLandingMedia'))
 const AdminSupportTickets = lazy(() => import('@/pages/Admin/SupportTickets'))
 const AdminEmailTemplates = lazy(() => import('@/pages/Admin/EmailTemplates'))
 const DrawSystem = lazy(() => import('@/pages/Admin/DrawSystem'))
+const AdminEaMatchSyncQueue = lazy(() => import('@/pages/Admin/EaMatchSyncQueue'))
 
 const LeagueHome = lazy(() => import('@/pages/Admin/league/LeagueHome'))
 const LeagueCompetitions = lazy(() => import('@/pages/Admin/league/LeagueCompetitions'))
@@ -177,6 +178,7 @@ function AnimatedAppRoutes() {
               <Route path="/admin/landing-media" element={<AdminLandingMedia />} />
               <Route path="/admin/support" element={<AdminSupportTickets />} />
               <Route path="/admin/email-templates" element={<AdminEmailTemplates />} />
+              <Route path="/admin/ea-match-sync" element={<AdminEaMatchSyncQueue />} />
               <Route path="/admin/competitions/:id/draw" element={<DrawSystem />} />
             </Route>
 

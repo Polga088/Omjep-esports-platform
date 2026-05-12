@@ -23,6 +23,7 @@ import { AdminValidateClubDto } from './dto/admin-validate-club.dto';
 import { KickMemberDto } from './dto/kick-member.dto';
 import { CoManagerTargetDto } from './dto/co-manager-target.dto';
 import { UpdateManagedClubDto } from './dto/update-managed-club.dto';
+import { UpsertClubExternalLinkDto } from './dto/upsert-club-external-link.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -52,6 +53,22 @@ export class ClubsController {
     @Body() dto: UpdateManagedClubDto,
   ) {
     return this.clubsService.updateManagedClub(req.user.id, dto);
+  }
+
+  /** Liaison EA Clubs (dirigeants club : fondateur / manager / co-manager ou manager désigné). */
+  @Get('my/external-link')
+  @UseGuards(JwtAuthGuard)
+  getMyClubExternalLink(@Request() req: { user: { id: string } }) {
+    return this.clubsService.getMyTeamExternalLink(req.user.id);
+  }
+
+  @Patch('my/external-link')
+  @UseGuards(JwtAuthGuard)
+  upsertMyClubExternalLink(
+    @Request() req: { user: { id: string } },
+    @Body() dto: UpsertClubExternalLinkDto,
+  ) {
+    return this.clubsService.upsertMyTeamExternalLink(req.user.id, dto);
   }
 
   @Post('me/logo')

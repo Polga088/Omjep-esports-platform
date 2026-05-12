@@ -74,6 +74,26 @@ export type EmailTemplate = $Result.DefaultSelection<Prisma.$EmailTemplatePayloa
  */
 export type Match = $Result.DefaultSelection<Prisma.$MatchPayload>
 /**
+ * Model TeamExternalLink
+ * Liaison club OMJEP ↔ identifiant EA Clubs / proclubs.io (sans credentials).
+ */
+export type TeamExternalLink = $Result.DefaultSelection<Prisma.$TeamExternalLinkPayload>
+/**
+ * Model PlayerExternalLink
+ * Persona EA FC 26 côté provider (complète users.ea_persona_name).
+ */
+export type PlayerExternalLink = $Result.DefaultSelection<Prisma.$PlayerExternalLinkPayload>
+/**
+ * Model MatchSync
+ * État de synchronisation automatique d’un match OMJEP avec EA Clubs.
+ */
+export type MatchSync = $Result.DefaultSelection<Prisma.$MatchSyncPayload>
+/**
+ * Model PlayerMatchExternalStat
+ * Stats joueur importées depuis EA / provider pour un match donné.
+ */
+export type PlayerMatchExternalStat = $Result.DefaultSelection<Prisma.$PlayerMatchExternalStatPayload>
+/**
  * Model LeagueTable
  * 
  */
@@ -821,6 +841,46 @@ export class PrismaClient<
   get match(): Prisma.MatchDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.teamExternalLink`: Exposes CRUD operations for the **TeamExternalLink** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TeamExternalLinks
+    * const teamExternalLinks = await prisma.teamExternalLink.findMany()
+    * ```
+    */
+  get teamExternalLink(): Prisma.TeamExternalLinkDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.playerExternalLink`: Exposes CRUD operations for the **PlayerExternalLink** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PlayerExternalLinks
+    * const playerExternalLinks = await prisma.playerExternalLink.findMany()
+    * ```
+    */
+  get playerExternalLink(): Prisma.PlayerExternalLinkDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.matchSync`: Exposes CRUD operations for the **MatchSync** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MatchSyncs
+    * const matchSyncs = await prisma.matchSync.findMany()
+    * ```
+    */
+  get matchSync(): Prisma.MatchSyncDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.playerMatchExternalStat`: Exposes CRUD operations for the **PlayerMatchExternalStat** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PlayerMatchExternalStats
+    * const playerMatchExternalStats = await prisma.playerMatchExternalStat.findMany()
+    * ```
+    */
+  get playerMatchExternalStat(): Prisma.PlayerMatchExternalStatDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.leagueTable`: Exposes CRUD operations for the **LeagueTable** model.
     * Example usage:
     * ```ts
@@ -1472,6 +1532,10 @@ export namespace Prisma {
     CompetitionTeam: 'CompetitionTeam',
     EmailTemplate: 'EmailTemplate',
     Match: 'Match',
+    TeamExternalLink: 'TeamExternalLink',
+    PlayerExternalLink: 'PlayerExternalLink',
+    MatchSync: 'MatchSync',
+    PlayerMatchExternalStat: 'PlayerMatchExternalStat',
     LeagueTable: 'LeagueTable',
     MatchScoreReport: 'MatchScoreReport',
     MatchEvent: 'MatchEvent',
@@ -1510,7 +1574,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "club" | "clubWallet" | "season" | "teamMember" | "playerStats" | "eaExternalStats" | "eaClubStats" | "competition" | "competitionTeam" | "emailTemplate" | "match" | "leagueTable" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "transferSellerSettlement" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription" | "message" | "newsEvent" | "publicLandingContent" | "ticket" | "ticketReply"
+      modelProps: "user" | "club" | "clubWallet" | "season" | "teamMember" | "playerStats" | "eaExternalStats" | "eaClubStats" | "competition" | "competitionTeam" | "emailTemplate" | "match" | "teamExternalLink" | "playerExternalLink" | "matchSync" | "playerMatchExternalStat" | "leagueTable" | "matchScoreReport" | "matchEvent" | "transferRequest" | "invitation" | "contract" | "transaction" | "transferOffer" | "transferSellerSettlement" | "notification" | "storeItem" | "userInventory" | "prediction" | "subscriptionPlan" | "userSubscription" | "message" | "newsEvent" | "publicLandingContent" | "ticket" | "ticketReply"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2399,6 +2463,302 @@ export namespace Prisma {
           count: {
             args: Prisma.MatchCountArgs<ExtArgs>
             result: $Utils.Optional<MatchCountAggregateOutputType> | number
+          }
+        }
+      }
+      TeamExternalLink: {
+        payload: Prisma.$TeamExternalLinkPayload<ExtArgs>
+        fields: Prisma.TeamExternalLinkFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TeamExternalLinkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TeamExternalLinkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>
+          }
+          findFirst: {
+            args: Prisma.TeamExternalLinkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TeamExternalLinkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>
+          }
+          findMany: {
+            args: Prisma.TeamExternalLinkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>[]
+          }
+          create: {
+            args: Prisma.TeamExternalLinkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>
+          }
+          createMany: {
+            args: Prisma.TeamExternalLinkCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TeamExternalLinkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>[]
+          }
+          delete: {
+            args: Prisma.TeamExternalLinkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>
+          }
+          update: {
+            args: Prisma.TeamExternalLinkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>
+          }
+          deleteMany: {
+            args: Prisma.TeamExternalLinkDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TeamExternalLinkUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TeamExternalLinkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>[]
+          }
+          upsert: {
+            args: Prisma.TeamExternalLinkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamExternalLinkPayload>
+          }
+          aggregate: {
+            args: Prisma.TeamExternalLinkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTeamExternalLink>
+          }
+          groupBy: {
+            args: Prisma.TeamExternalLinkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TeamExternalLinkGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TeamExternalLinkCountArgs<ExtArgs>
+            result: $Utils.Optional<TeamExternalLinkCountAggregateOutputType> | number
+          }
+        }
+      }
+      PlayerExternalLink: {
+        payload: Prisma.$PlayerExternalLinkPayload<ExtArgs>
+        fields: Prisma.PlayerExternalLinkFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PlayerExternalLinkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PlayerExternalLinkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>
+          }
+          findFirst: {
+            args: Prisma.PlayerExternalLinkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PlayerExternalLinkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>
+          }
+          findMany: {
+            args: Prisma.PlayerExternalLinkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>[]
+          }
+          create: {
+            args: Prisma.PlayerExternalLinkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>
+          }
+          createMany: {
+            args: Prisma.PlayerExternalLinkCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PlayerExternalLinkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>[]
+          }
+          delete: {
+            args: Prisma.PlayerExternalLinkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>
+          }
+          update: {
+            args: Prisma.PlayerExternalLinkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>
+          }
+          deleteMany: {
+            args: Prisma.PlayerExternalLinkDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PlayerExternalLinkUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PlayerExternalLinkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>[]
+          }
+          upsert: {
+            args: Prisma.PlayerExternalLinkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerExternalLinkPayload>
+          }
+          aggregate: {
+            args: Prisma.PlayerExternalLinkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlayerExternalLink>
+          }
+          groupBy: {
+            args: Prisma.PlayerExternalLinkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PlayerExternalLinkGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PlayerExternalLinkCountArgs<ExtArgs>
+            result: $Utils.Optional<PlayerExternalLinkCountAggregateOutputType> | number
+          }
+        }
+      }
+      MatchSync: {
+        payload: Prisma.$MatchSyncPayload<ExtArgs>
+        fields: Prisma.MatchSyncFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MatchSyncFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MatchSyncFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>
+          }
+          findFirst: {
+            args: Prisma.MatchSyncFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MatchSyncFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>
+          }
+          findMany: {
+            args: Prisma.MatchSyncFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>[]
+          }
+          create: {
+            args: Prisma.MatchSyncCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>
+          }
+          createMany: {
+            args: Prisma.MatchSyncCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MatchSyncCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>[]
+          }
+          delete: {
+            args: Prisma.MatchSyncDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>
+          }
+          update: {
+            args: Prisma.MatchSyncUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>
+          }
+          deleteMany: {
+            args: Prisma.MatchSyncDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MatchSyncUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MatchSyncUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>[]
+          }
+          upsert: {
+            args: Prisma.MatchSyncUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MatchSyncPayload>
+          }
+          aggregate: {
+            args: Prisma.MatchSyncAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMatchSync>
+          }
+          groupBy: {
+            args: Prisma.MatchSyncGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MatchSyncGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MatchSyncCountArgs<ExtArgs>
+            result: $Utils.Optional<MatchSyncCountAggregateOutputType> | number
+          }
+        }
+      }
+      PlayerMatchExternalStat: {
+        payload: Prisma.$PlayerMatchExternalStatPayload<ExtArgs>
+        fields: Prisma.PlayerMatchExternalStatFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PlayerMatchExternalStatFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PlayerMatchExternalStatFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>
+          }
+          findFirst: {
+            args: Prisma.PlayerMatchExternalStatFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PlayerMatchExternalStatFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>
+          }
+          findMany: {
+            args: Prisma.PlayerMatchExternalStatFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>[]
+          }
+          create: {
+            args: Prisma.PlayerMatchExternalStatCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>
+          }
+          createMany: {
+            args: Prisma.PlayerMatchExternalStatCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PlayerMatchExternalStatCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>[]
+          }
+          delete: {
+            args: Prisma.PlayerMatchExternalStatDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>
+          }
+          update: {
+            args: Prisma.PlayerMatchExternalStatUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>
+          }
+          deleteMany: {
+            args: Prisma.PlayerMatchExternalStatDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PlayerMatchExternalStatUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PlayerMatchExternalStatUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>[]
+          }
+          upsert: {
+            args: Prisma.PlayerMatchExternalStatUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlayerMatchExternalStatPayload>
+          }
+          aggregate: {
+            args: Prisma.PlayerMatchExternalStatAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlayerMatchExternalStat>
+          }
+          groupBy: {
+            args: Prisma.PlayerMatchExternalStatGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PlayerMatchExternalStatGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PlayerMatchExternalStatCountArgs<ExtArgs>
+            result: $Utils.Optional<PlayerMatchExternalStatCountAggregateOutputType> | number
           }
         }
       }
@@ -3990,6 +4350,10 @@ export namespace Prisma {
     competitionTeam?: CompetitionTeamOmit
     emailTemplate?: EmailTemplateOmit
     match?: MatchOmit
+    teamExternalLink?: TeamExternalLinkOmit
+    playerExternalLink?: PlayerExternalLinkOmit
+    matchSync?: MatchSyncOmit
+    playerMatchExternalStat?: PlayerMatchExternalStatOmit
     leagueTable?: LeagueTableOmit
     matchScoreReport?: MatchScoreReportOmit
     matchEvent?: MatchEventOmit
@@ -4108,6 +4472,8 @@ export namespace Prisma {
     walletTransactions: number
     supportTickets: number
     ticketReplies: number
+    playerExternalLinks: number
+    playerMatchExternalStats: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4129,6 +4495,8 @@ export namespace Prisma {
     walletTransactions?: boolean | UserCountOutputTypeCountWalletTransactionsArgs
     supportTickets?: boolean | UserCountOutputTypeCountSupportTicketsArgs
     ticketReplies?: boolean | UserCountOutputTypeCountTicketRepliesArgs
+    playerExternalLinks?: boolean | UserCountOutputTypeCountPlayerExternalLinksArgs
+    playerMatchExternalStats?: boolean | UserCountOutputTypeCountPlayerMatchExternalStatsArgs
   }
 
   // Custom InputTypes
@@ -4268,6 +4636,20 @@ export namespace Prisma {
     where?: TicketReplyWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPlayerExternalLinksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlayerExternalLinkWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPlayerMatchExternalStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlayerMatchExternalStatWhereInput
+  }
+
 
   /**
    * Count Type ClubCountOutputType
@@ -4290,6 +4672,7 @@ export namespace Prisma {
     messages: number
     leagueTableEntries: number
     transferSellerSettlementsAsSeller: number
+    teamExternalLinks: number
   }
 
   export type ClubCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4309,6 +4692,7 @@ export namespace Prisma {
     messages?: boolean | ClubCountOutputTypeCountMessagesArgs
     leagueTableEntries?: boolean | ClubCountOutputTypeCountLeagueTableEntriesArgs
     transferSellerSettlementsAsSeller?: boolean | ClubCountOutputTypeCountTransferSellerSettlementsAsSellerArgs
+    teamExternalLinks?: boolean | ClubCountOutputTypeCountTeamExternalLinksArgs
   }
 
   // Custom InputTypes
@@ -4434,6 +4818,13 @@ export namespace Prisma {
     where?: TransferSellerSettlementWhereInput
   }
 
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountTeamExternalLinksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamExternalLinkWhereInput
+  }
+
 
   /**
    * Count Type SeasonCountOutputType
@@ -4551,6 +4942,8 @@ export namespace Prisma {
     events: number
     scoreReports: number
     predictions: number
+    matchSyncs: number
+    playerMatchExternalStats: number
   }
 
   export type MatchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4558,6 +4951,8 @@ export namespace Prisma {
     events?: boolean | MatchCountOutputTypeCountEventsArgs
     scoreReports?: boolean | MatchCountOutputTypeCountScoreReportsArgs
     predictions?: boolean | MatchCountOutputTypeCountPredictionsArgs
+    matchSyncs?: boolean | MatchCountOutputTypeCountMatchSyncsArgs
+    playerMatchExternalStats?: boolean | MatchCountOutputTypeCountPlayerMatchExternalStatsArgs
   }
 
   // Custom InputTypes
@@ -4597,6 +4992,20 @@ export namespace Prisma {
    */
   export type MatchCountOutputTypeCountPredictionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PredictionWhereInput
+  }
+
+  /**
+   * MatchCountOutputType without action
+   */
+  export type MatchCountOutputTypeCountMatchSyncsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchSyncWhereInput
+  }
+
+  /**
+   * MatchCountOutputType without action
+   */
+  export type MatchCountOutputTypeCountPlayerMatchExternalStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlayerMatchExternalStatWhereInput
   }
 
 
@@ -5129,6 +5538,8 @@ export namespace Prisma {
     walletTransactions?: boolean | User$walletTransactionsArgs<ExtArgs>
     supportTickets?: boolean | User$supportTicketsArgs<ExtArgs>
     ticketReplies?: boolean | User$ticketRepliesArgs<ExtArgs>
+    playerExternalLinks?: boolean | User$playerExternalLinksArgs<ExtArgs>
+    playerMatchExternalStats?: boolean | User$playerMatchExternalStatsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5253,6 +5664,8 @@ export namespace Prisma {
     walletTransactions?: boolean | User$walletTransactionsArgs<ExtArgs>
     supportTickets?: boolean | User$supportTicketsArgs<ExtArgs>
     ticketReplies?: boolean | User$ticketRepliesArgs<ExtArgs>
+    playerExternalLinks?: boolean | User$playerExternalLinksArgs<ExtArgs>
+    playerMatchExternalStats?: boolean | User$playerMatchExternalStatsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5286,6 +5699,8 @@ export namespace Prisma {
       walletTransactions: Prisma.$TransactionPayload<ExtArgs>[]
       supportTickets: Prisma.$TicketPayload<ExtArgs>[]
       ticketReplies: Prisma.$TicketReplyPayload<ExtArgs>[]
+      playerExternalLinks: Prisma.$PlayerExternalLinkPayload<ExtArgs>[]
+      playerMatchExternalStats: Prisma.$PlayerMatchExternalStatPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5738,6 +6153,8 @@ export namespace Prisma {
     walletTransactions<T extends User$walletTransactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$walletTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     supportTickets<T extends User$supportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$supportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ticketReplies<T extends User$ticketRepliesArgs<ExtArgs> = {}>(args?: Subset<T, User$ticketRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    playerExternalLinks<T extends User$playerExternalLinksArgs<ExtArgs> = {}>(args?: Subset<T, User$playerExternalLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    playerMatchExternalStats<T extends User$playerMatchExternalStatsArgs<ExtArgs> = {}>(args?: Subset<T, User$playerMatchExternalStatsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6681,6 +7098,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.playerExternalLinks
+   */
+  export type User$playerExternalLinksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    where?: PlayerExternalLinkWhereInput
+    orderBy?: PlayerExternalLinkOrderByWithRelationInput | PlayerExternalLinkOrderByWithRelationInput[]
+    cursor?: PlayerExternalLinkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlayerExternalLinkScalarFieldEnum | PlayerExternalLinkScalarFieldEnum[]
+  }
+
+  /**
+   * User.playerMatchExternalStats
+   */
+  export type User$playerMatchExternalStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    where?: PlayerMatchExternalStatWhereInput
+    orderBy?: PlayerMatchExternalStatOrderByWithRelationInput | PlayerMatchExternalStatOrderByWithRelationInput[]
+    cursor?: PlayerMatchExternalStatWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlayerMatchExternalStatScalarFieldEnum | PlayerMatchExternalStatScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7012,6 +7477,7 @@ export namespace Prisma {
     leagueTableEntries?: boolean | Club$leagueTableEntriesArgs<ExtArgs>
     wallet?: boolean | Club$walletArgs<ExtArgs>
     transferSellerSettlementsAsSeller?: boolean | Club$transferSellerSettlementsAsSellerArgs<ExtArgs>
+    teamExternalLinks?: boolean | Club$teamExternalLinksArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -7095,6 +7561,7 @@ export namespace Prisma {
     leagueTableEntries?: boolean | Club$leagueTableEntriesArgs<ExtArgs>
     wallet?: boolean | Club$walletArgs<ExtArgs>
     transferSellerSettlementsAsSeller?: boolean | Club$transferSellerSettlementsAsSellerArgs<ExtArgs>
+    teamExternalLinks?: boolean | Club$teamExternalLinksArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClubIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7126,6 +7593,7 @@ export namespace Prisma {
       leagueTableEntries: Prisma.$LeagueTablePayload<ExtArgs>[]
       wallet: Prisma.$ClubWalletPayload<ExtArgs> | null
       transferSellerSettlementsAsSeller: Prisma.$TransferSellerSettlementPayload<ExtArgs>[]
+      teamExternalLinks: Prisma.$TeamExternalLinkPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7557,6 +8025,7 @@ export namespace Prisma {
     leagueTableEntries<T extends Club$leagueTableEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Club$leagueTableEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeagueTablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     wallet<T extends Club$walletArgs<ExtArgs> = {}>(args?: Subset<T, Club$walletArgs<ExtArgs>>): Prisma__ClubWalletClient<$Result.GetResult<Prisma.$ClubWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     transferSellerSettlementsAsSeller<T extends Club$transferSellerSettlementsAsSellerArgs<ExtArgs> = {}>(args?: Subset<T, Club$transferSellerSettlementsAsSellerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferSellerSettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    teamExternalLinks<T extends Club$teamExternalLinksArgs<ExtArgs> = {}>(args?: Subset<T, Club$teamExternalLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8436,6 +8905,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransferSellerSettlementScalarFieldEnum | TransferSellerSettlementScalarFieldEnum[]
+  }
+
+  /**
+   * Club.teamExternalLinks
+   */
+  export type Club$teamExternalLinksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    where?: TeamExternalLinkWhereInput
+    orderBy?: TeamExternalLinkOrderByWithRelationInput | TeamExternalLinkOrderByWithRelationInput[]
+    cursor?: TeamExternalLinkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamExternalLinkScalarFieldEnum | TeamExternalLinkScalarFieldEnum[]
   }
 
   /**
@@ -18869,6 +19362,8 @@ export namespace Prisma {
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | ClubDefaultArgs<ExtArgs>
     predictions?: boolean | Match$predictionsArgs<ExtArgs>
+    matchSyncs?: boolean | Match$matchSyncsArgs<ExtArgs>
+    playerMatchExternalStats?: boolean | Match$playerMatchExternalStatsArgs<ExtArgs>
     _count?: boolean | MatchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["match"]>
 
@@ -18950,6 +19445,8 @@ export namespace Prisma {
     competition?: boolean | Match$competitionArgs<ExtArgs>
     homeTeam?: boolean | ClubDefaultArgs<ExtArgs>
     predictions?: boolean | Match$predictionsArgs<ExtArgs>
+    matchSyncs?: boolean | Match$matchSyncsArgs<ExtArgs>
+    playerMatchExternalStats?: boolean | Match$playerMatchExternalStatsArgs<ExtArgs>
     _count?: boolean | MatchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MatchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18976,6 +19473,8 @@ export namespace Prisma {
       competition: Prisma.$CompetitionPayload<ExtArgs> | null
       homeTeam: Prisma.$ClubPayload<ExtArgs>
       predictions: Prisma.$PredictionPayload<ExtArgs>[]
+      matchSyncs: Prisma.$MatchSyncPayload<ExtArgs>[]
+      playerMatchExternalStats: Prisma.$PlayerMatchExternalStatPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -19409,6 +19908,8 @@ export namespace Prisma {
     competition<T extends Match$competitionArgs<ExtArgs> = {}>(args?: Subset<T, Match$competitionArgs<ExtArgs>>): Prisma__CompetitionClient<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     homeTeam<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     predictions<T extends Match$predictionsArgs<ExtArgs> = {}>(args?: Subset<T, Match$predictionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PredictionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    matchSyncs<T extends Match$matchSyncsArgs<ExtArgs> = {}>(args?: Subset<T, Match$matchSyncsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    playerMatchExternalStats<T extends Match$playerMatchExternalStatsArgs<ExtArgs> = {}>(args?: Subset<T, Match$playerMatchExternalStatsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19985,6 +20486,54 @@ export namespace Prisma {
   }
 
   /**
+   * Match.matchSyncs
+   */
+  export type Match$matchSyncsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    where?: MatchSyncWhereInput
+    orderBy?: MatchSyncOrderByWithRelationInput | MatchSyncOrderByWithRelationInput[]
+    cursor?: MatchSyncWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MatchSyncScalarFieldEnum | MatchSyncScalarFieldEnum[]
+  }
+
+  /**
+   * Match.playerMatchExternalStats
+   */
+  export type Match$playerMatchExternalStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    where?: PlayerMatchExternalStatWhereInput
+    orderBy?: PlayerMatchExternalStatOrderByWithRelationInput | PlayerMatchExternalStatOrderByWithRelationInput[]
+    cursor?: PlayerMatchExternalStatWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlayerMatchExternalStatScalarFieldEnum | PlayerMatchExternalStatScalarFieldEnum[]
+  }
+
+  /**
    * Match without action
    */
   export type MatchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20000,6 +20549,4636 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MatchInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TeamExternalLink
+   */
+
+  export type AggregateTeamExternalLink = {
+    _count: TeamExternalLinkCountAggregateOutputType | null
+    _min: TeamExternalLinkMinAggregateOutputType | null
+    _max: TeamExternalLinkMaxAggregateOutputType | null
+  }
+
+  export type TeamExternalLinkMinAggregateOutputType = {
+    id: string | null
+    teamId: string | null
+    provider: string | null
+    platform: string | null
+    eaClubId: string | null
+    clubName: string | null
+    verifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TeamExternalLinkMaxAggregateOutputType = {
+    id: string | null
+    teamId: string | null
+    provider: string | null
+    platform: string | null
+    eaClubId: string | null
+    clubName: string | null
+    verifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TeamExternalLinkCountAggregateOutputType = {
+    id: number
+    teamId: number
+    provider: number
+    platform: number
+    eaClubId: number
+    clubName: number
+    verifiedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TeamExternalLinkMinAggregateInputType = {
+    id?: true
+    teamId?: true
+    provider?: true
+    platform?: true
+    eaClubId?: true
+    clubName?: true
+    verifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TeamExternalLinkMaxAggregateInputType = {
+    id?: true
+    teamId?: true
+    provider?: true
+    platform?: true
+    eaClubId?: true
+    clubName?: true
+    verifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TeamExternalLinkCountAggregateInputType = {
+    id?: true
+    teamId?: true
+    provider?: true
+    platform?: true
+    eaClubId?: true
+    clubName?: true
+    verifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TeamExternalLinkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TeamExternalLink to aggregate.
+     */
+    where?: TeamExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamExternalLinks to fetch.
+     */
+    orderBy?: TeamExternalLinkOrderByWithRelationInput | TeamExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TeamExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamExternalLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TeamExternalLinks
+    **/
+    _count?: true | TeamExternalLinkCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TeamExternalLinkMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TeamExternalLinkMaxAggregateInputType
+  }
+
+  export type GetTeamExternalLinkAggregateType<T extends TeamExternalLinkAggregateArgs> = {
+        [P in keyof T & keyof AggregateTeamExternalLink]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTeamExternalLink[P]>
+      : GetScalarType<T[P], AggregateTeamExternalLink[P]>
+  }
+
+
+
+
+  export type TeamExternalLinkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamExternalLinkWhereInput
+    orderBy?: TeamExternalLinkOrderByWithAggregationInput | TeamExternalLinkOrderByWithAggregationInput[]
+    by: TeamExternalLinkScalarFieldEnum[] | TeamExternalLinkScalarFieldEnum
+    having?: TeamExternalLinkScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TeamExternalLinkCountAggregateInputType | true
+    _min?: TeamExternalLinkMinAggregateInputType
+    _max?: TeamExternalLinkMaxAggregateInputType
+  }
+
+  export type TeamExternalLinkGroupByOutputType = {
+    id: string
+    teamId: string
+    provider: string
+    platform: string
+    eaClubId: string
+    clubName: string | null
+    verifiedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TeamExternalLinkCountAggregateOutputType | null
+    _min: TeamExternalLinkMinAggregateOutputType | null
+    _max: TeamExternalLinkMaxAggregateOutputType | null
+  }
+
+  type GetTeamExternalLinkGroupByPayload<T extends TeamExternalLinkGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TeamExternalLinkGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TeamExternalLinkGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TeamExternalLinkGroupByOutputType[P]>
+            : GetScalarType<T[P], TeamExternalLinkGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TeamExternalLinkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    provider?: boolean
+    platform?: boolean
+    eaClubId?: boolean
+    clubName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamExternalLink"]>
+
+  export type TeamExternalLinkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    provider?: boolean
+    platform?: boolean
+    eaClubId?: boolean
+    clubName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamExternalLink"]>
+
+  export type TeamExternalLinkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    provider?: boolean
+    platform?: boolean
+    eaClubId?: boolean
+    clubName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamExternalLink"]>
+
+  export type TeamExternalLinkSelectScalar = {
+    id?: boolean
+    teamId?: boolean
+    provider?: boolean
+    platform?: boolean
+    eaClubId?: boolean
+    clubName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TeamExternalLinkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "provider" | "platform" | "eaClubId" | "clubName" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["teamExternalLink"]>
+  export type TeamExternalLinkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type TeamExternalLinkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type TeamExternalLinkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $TeamExternalLinkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TeamExternalLink"
+    objects: {
+      team: Prisma.$ClubPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      teamId: string
+      provider: string
+      platform: string
+      eaClubId: string
+      clubName: string | null
+      verifiedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["teamExternalLink"]>
+    composites: {}
+  }
+
+  type TeamExternalLinkGetPayload<S extends boolean | null | undefined | TeamExternalLinkDefaultArgs> = $Result.GetResult<Prisma.$TeamExternalLinkPayload, S>
+
+  type TeamExternalLinkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TeamExternalLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TeamExternalLinkCountAggregateInputType | true
+    }
+
+  export interface TeamExternalLinkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TeamExternalLink'], meta: { name: 'TeamExternalLink' } }
+    /**
+     * Find zero or one TeamExternalLink that matches the filter.
+     * @param {TeamExternalLinkFindUniqueArgs} args - Arguments to find a TeamExternalLink
+     * @example
+     * // Get one TeamExternalLink
+     * const teamExternalLink = await prisma.teamExternalLink.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TeamExternalLinkFindUniqueArgs>(args: SelectSubset<T, TeamExternalLinkFindUniqueArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TeamExternalLink that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TeamExternalLinkFindUniqueOrThrowArgs} args - Arguments to find a TeamExternalLink
+     * @example
+     * // Get one TeamExternalLink
+     * const teamExternalLink = await prisma.teamExternalLink.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TeamExternalLinkFindUniqueOrThrowArgs>(args: SelectSubset<T, TeamExternalLinkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TeamExternalLink that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamExternalLinkFindFirstArgs} args - Arguments to find a TeamExternalLink
+     * @example
+     * // Get one TeamExternalLink
+     * const teamExternalLink = await prisma.teamExternalLink.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TeamExternalLinkFindFirstArgs>(args?: SelectSubset<T, TeamExternalLinkFindFirstArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TeamExternalLink that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamExternalLinkFindFirstOrThrowArgs} args - Arguments to find a TeamExternalLink
+     * @example
+     * // Get one TeamExternalLink
+     * const teamExternalLink = await prisma.teamExternalLink.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TeamExternalLinkFindFirstOrThrowArgs>(args?: SelectSubset<T, TeamExternalLinkFindFirstOrThrowArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TeamExternalLinks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamExternalLinkFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TeamExternalLinks
+     * const teamExternalLinks = await prisma.teamExternalLink.findMany()
+     * 
+     * // Get first 10 TeamExternalLinks
+     * const teamExternalLinks = await prisma.teamExternalLink.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const teamExternalLinkWithIdOnly = await prisma.teamExternalLink.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TeamExternalLinkFindManyArgs>(args?: SelectSubset<T, TeamExternalLinkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TeamExternalLink.
+     * @param {TeamExternalLinkCreateArgs} args - Arguments to create a TeamExternalLink.
+     * @example
+     * // Create one TeamExternalLink
+     * const TeamExternalLink = await prisma.teamExternalLink.create({
+     *   data: {
+     *     // ... data to create a TeamExternalLink
+     *   }
+     * })
+     * 
+     */
+    create<T extends TeamExternalLinkCreateArgs>(args: SelectSubset<T, TeamExternalLinkCreateArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TeamExternalLinks.
+     * @param {TeamExternalLinkCreateManyArgs} args - Arguments to create many TeamExternalLinks.
+     * @example
+     * // Create many TeamExternalLinks
+     * const teamExternalLink = await prisma.teamExternalLink.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TeamExternalLinkCreateManyArgs>(args?: SelectSubset<T, TeamExternalLinkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TeamExternalLinks and returns the data saved in the database.
+     * @param {TeamExternalLinkCreateManyAndReturnArgs} args - Arguments to create many TeamExternalLinks.
+     * @example
+     * // Create many TeamExternalLinks
+     * const teamExternalLink = await prisma.teamExternalLink.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TeamExternalLinks and only return the `id`
+     * const teamExternalLinkWithIdOnly = await prisma.teamExternalLink.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TeamExternalLinkCreateManyAndReturnArgs>(args?: SelectSubset<T, TeamExternalLinkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TeamExternalLink.
+     * @param {TeamExternalLinkDeleteArgs} args - Arguments to delete one TeamExternalLink.
+     * @example
+     * // Delete one TeamExternalLink
+     * const TeamExternalLink = await prisma.teamExternalLink.delete({
+     *   where: {
+     *     // ... filter to delete one TeamExternalLink
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TeamExternalLinkDeleteArgs>(args: SelectSubset<T, TeamExternalLinkDeleteArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TeamExternalLink.
+     * @param {TeamExternalLinkUpdateArgs} args - Arguments to update one TeamExternalLink.
+     * @example
+     * // Update one TeamExternalLink
+     * const teamExternalLink = await prisma.teamExternalLink.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TeamExternalLinkUpdateArgs>(args: SelectSubset<T, TeamExternalLinkUpdateArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TeamExternalLinks.
+     * @param {TeamExternalLinkDeleteManyArgs} args - Arguments to filter TeamExternalLinks to delete.
+     * @example
+     * // Delete a few TeamExternalLinks
+     * const { count } = await prisma.teamExternalLink.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TeamExternalLinkDeleteManyArgs>(args?: SelectSubset<T, TeamExternalLinkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TeamExternalLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamExternalLinkUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TeamExternalLinks
+     * const teamExternalLink = await prisma.teamExternalLink.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TeamExternalLinkUpdateManyArgs>(args: SelectSubset<T, TeamExternalLinkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TeamExternalLinks and returns the data updated in the database.
+     * @param {TeamExternalLinkUpdateManyAndReturnArgs} args - Arguments to update many TeamExternalLinks.
+     * @example
+     * // Update many TeamExternalLinks
+     * const teamExternalLink = await prisma.teamExternalLink.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TeamExternalLinks and only return the `id`
+     * const teamExternalLinkWithIdOnly = await prisma.teamExternalLink.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TeamExternalLinkUpdateManyAndReturnArgs>(args: SelectSubset<T, TeamExternalLinkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TeamExternalLink.
+     * @param {TeamExternalLinkUpsertArgs} args - Arguments to update or create a TeamExternalLink.
+     * @example
+     * // Update or create a TeamExternalLink
+     * const teamExternalLink = await prisma.teamExternalLink.upsert({
+     *   create: {
+     *     // ... data to create a TeamExternalLink
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TeamExternalLink we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TeamExternalLinkUpsertArgs>(args: SelectSubset<T, TeamExternalLinkUpsertArgs<ExtArgs>>): Prisma__TeamExternalLinkClient<$Result.GetResult<Prisma.$TeamExternalLinkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TeamExternalLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamExternalLinkCountArgs} args - Arguments to filter TeamExternalLinks to count.
+     * @example
+     * // Count the number of TeamExternalLinks
+     * const count = await prisma.teamExternalLink.count({
+     *   where: {
+     *     // ... the filter for the TeamExternalLinks we want to count
+     *   }
+     * })
+    **/
+    count<T extends TeamExternalLinkCountArgs>(
+      args?: Subset<T, TeamExternalLinkCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TeamExternalLinkCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TeamExternalLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamExternalLinkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TeamExternalLinkAggregateArgs>(args: Subset<T, TeamExternalLinkAggregateArgs>): Prisma.PrismaPromise<GetTeamExternalLinkAggregateType<T>>
+
+    /**
+     * Group by TeamExternalLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamExternalLinkGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TeamExternalLinkGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TeamExternalLinkGroupByArgs['orderBy'] }
+        : { orderBy?: TeamExternalLinkGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TeamExternalLinkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTeamExternalLinkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TeamExternalLink model
+   */
+  readonly fields: TeamExternalLinkFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TeamExternalLink.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TeamExternalLinkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TeamExternalLink model
+   */
+  interface TeamExternalLinkFieldRefs {
+    readonly id: FieldRef<"TeamExternalLink", 'String'>
+    readonly teamId: FieldRef<"TeamExternalLink", 'String'>
+    readonly provider: FieldRef<"TeamExternalLink", 'String'>
+    readonly platform: FieldRef<"TeamExternalLink", 'String'>
+    readonly eaClubId: FieldRef<"TeamExternalLink", 'String'>
+    readonly clubName: FieldRef<"TeamExternalLink", 'String'>
+    readonly verifiedAt: FieldRef<"TeamExternalLink", 'DateTime'>
+    readonly createdAt: FieldRef<"TeamExternalLink", 'DateTime'>
+    readonly updatedAt: FieldRef<"TeamExternalLink", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TeamExternalLink findUnique
+   */
+  export type TeamExternalLinkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamExternalLink to fetch.
+     */
+    where: TeamExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * TeamExternalLink findUniqueOrThrow
+   */
+  export type TeamExternalLinkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamExternalLink to fetch.
+     */
+    where: TeamExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * TeamExternalLink findFirst
+   */
+  export type TeamExternalLinkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamExternalLink to fetch.
+     */
+    where?: TeamExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamExternalLinks to fetch.
+     */
+    orderBy?: TeamExternalLinkOrderByWithRelationInput | TeamExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TeamExternalLinks.
+     */
+    cursor?: TeamExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamExternalLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamExternalLinks.
+     */
+    distinct?: TeamExternalLinkScalarFieldEnum | TeamExternalLinkScalarFieldEnum[]
+  }
+
+  /**
+   * TeamExternalLink findFirstOrThrow
+   */
+  export type TeamExternalLinkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamExternalLink to fetch.
+     */
+    where?: TeamExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamExternalLinks to fetch.
+     */
+    orderBy?: TeamExternalLinkOrderByWithRelationInput | TeamExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TeamExternalLinks.
+     */
+    cursor?: TeamExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamExternalLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamExternalLinks.
+     */
+    distinct?: TeamExternalLinkScalarFieldEnum | TeamExternalLinkScalarFieldEnum[]
+  }
+
+  /**
+   * TeamExternalLink findMany
+   */
+  export type TeamExternalLinkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamExternalLinks to fetch.
+     */
+    where?: TeamExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamExternalLinks to fetch.
+     */
+    orderBy?: TeamExternalLinkOrderByWithRelationInput | TeamExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TeamExternalLinks.
+     */
+    cursor?: TeamExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamExternalLinks.
+     */
+    skip?: number
+    distinct?: TeamExternalLinkScalarFieldEnum | TeamExternalLinkScalarFieldEnum[]
+  }
+
+  /**
+   * TeamExternalLink create
+   */
+  export type TeamExternalLinkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TeamExternalLink.
+     */
+    data: XOR<TeamExternalLinkCreateInput, TeamExternalLinkUncheckedCreateInput>
+  }
+
+  /**
+   * TeamExternalLink createMany
+   */
+  export type TeamExternalLinkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TeamExternalLinks.
+     */
+    data: TeamExternalLinkCreateManyInput | TeamExternalLinkCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TeamExternalLink createManyAndReturn
+   */
+  export type TeamExternalLinkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * The data used to create many TeamExternalLinks.
+     */
+    data: TeamExternalLinkCreateManyInput | TeamExternalLinkCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TeamExternalLink update
+   */
+  export type TeamExternalLinkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TeamExternalLink.
+     */
+    data: XOR<TeamExternalLinkUpdateInput, TeamExternalLinkUncheckedUpdateInput>
+    /**
+     * Choose, which TeamExternalLink to update.
+     */
+    where: TeamExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * TeamExternalLink updateMany
+   */
+  export type TeamExternalLinkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TeamExternalLinks.
+     */
+    data: XOR<TeamExternalLinkUpdateManyMutationInput, TeamExternalLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which TeamExternalLinks to update
+     */
+    where?: TeamExternalLinkWhereInput
+    /**
+     * Limit how many TeamExternalLinks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TeamExternalLink updateManyAndReturn
+   */
+  export type TeamExternalLinkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * The data used to update TeamExternalLinks.
+     */
+    data: XOR<TeamExternalLinkUpdateManyMutationInput, TeamExternalLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which TeamExternalLinks to update
+     */
+    where?: TeamExternalLinkWhereInput
+    /**
+     * Limit how many TeamExternalLinks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TeamExternalLink upsert
+   */
+  export type TeamExternalLinkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TeamExternalLink to update in case it exists.
+     */
+    where: TeamExternalLinkWhereUniqueInput
+    /**
+     * In case the TeamExternalLink found by the `where` argument doesn't exist, create a new TeamExternalLink with this data.
+     */
+    create: XOR<TeamExternalLinkCreateInput, TeamExternalLinkUncheckedCreateInput>
+    /**
+     * In case the TeamExternalLink was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TeamExternalLinkUpdateInput, TeamExternalLinkUncheckedUpdateInput>
+  }
+
+  /**
+   * TeamExternalLink delete
+   */
+  export type TeamExternalLinkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter which TeamExternalLink to delete.
+     */
+    where: TeamExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * TeamExternalLink deleteMany
+   */
+  export type TeamExternalLinkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TeamExternalLinks to delete
+     */
+    where?: TeamExternalLinkWhereInput
+    /**
+     * Limit how many TeamExternalLinks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TeamExternalLink without action
+   */
+  export type TeamExternalLinkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamExternalLink
+     */
+    select?: TeamExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamExternalLink
+     */
+    omit?: TeamExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamExternalLinkInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PlayerExternalLink
+   */
+
+  export type AggregatePlayerExternalLink = {
+    _count: PlayerExternalLinkCountAggregateOutputType | null
+    _min: PlayerExternalLinkMinAggregateOutputType | null
+    _max: PlayerExternalLinkMaxAggregateOutputType | null
+  }
+
+  export type PlayerExternalLinkMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    provider: string | null
+    platform: string | null
+    personaName: string | null
+    verifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PlayerExternalLinkMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    provider: string | null
+    platform: string | null
+    personaName: string | null
+    verifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PlayerExternalLinkCountAggregateOutputType = {
+    id: number
+    userId: number
+    provider: number
+    platform: number
+    personaName: number
+    verifiedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PlayerExternalLinkMinAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    platform?: true
+    personaName?: true
+    verifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PlayerExternalLinkMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    platform?: true
+    personaName?: true
+    verifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PlayerExternalLinkCountAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    platform?: true
+    personaName?: true
+    verifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PlayerExternalLinkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlayerExternalLink to aggregate.
+     */
+    where?: PlayerExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerExternalLinks to fetch.
+     */
+    orderBy?: PlayerExternalLinkOrderByWithRelationInput | PlayerExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PlayerExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerExternalLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PlayerExternalLinks
+    **/
+    _count?: true | PlayerExternalLinkCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PlayerExternalLinkMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PlayerExternalLinkMaxAggregateInputType
+  }
+
+  export type GetPlayerExternalLinkAggregateType<T extends PlayerExternalLinkAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlayerExternalLink]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlayerExternalLink[P]>
+      : GetScalarType<T[P], AggregatePlayerExternalLink[P]>
+  }
+
+
+
+
+  export type PlayerExternalLinkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlayerExternalLinkWhereInput
+    orderBy?: PlayerExternalLinkOrderByWithAggregationInput | PlayerExternalLinkOrderByWithAggregationInput[]
+    by: PlayerExternalLinkScalarFieldEnum[] | PlayerExternalLinkScalarFieldEnum
+    having?: PlayerExternalLinkScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PlayerExternalLinkCountAggregateInputType | true
+    _min?: PlayerExternalLinkMinAggregateInputType
+    _max?: PlayerExternalLinkMaxAggregateInputType
+  }
+
+  export type PlayerExternalLinkGroupByOutputType = {
+    id: string
+    userId: string
+    provider: string
+    platform: string | null
+    personaName: string
+    verifiedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PlayerExternalLinkCountAggregateOutputType | null
+    _min: PlayerExternalLinkMinAggregateOutputType | null
+    _max: PlayerExternalLinkMaxAggregateOutputType | null
+  }
+
+  type GetPlayerExternalLinkGroupByPayload<T extends PlayerExternalLinkGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PlayerExternalLinkGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PlayerExternalLinkGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PlayerExternalLinkGroupByOutputType[P]>
+            : GetScalarType<T[P], PlayerExternalLinkGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PlayerExternalLinkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    platform?: boolean
+    personaName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["playerExternalLink"]>
+
+  export type PlayerExternalLinkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    platform?: boolean
+    personaName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["playerExternalLink"]>
+
+  export type PlayerExternalLinkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    platform?: boolean
+    personaName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["playerExternalLink"]>
+
+  export type PlayerExternalLinkSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    platform?: boolean
+    personaName?: boolean
+    verifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PlayerExternalLinkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "platform" | "personaName" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["playerExternalLink"]>
+  export type PlayerExternalLinkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PlayerExternalLinkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PlayerExternalLinkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PlayerExternalLinkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PlayerExternalLink"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      provider: string
+      platform: string | null
+      personaName: string
+      verifiedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["playerExternalLink"]>
+    composites: {}
+  }
+
+  type PlayerExternalLinkGetPayload<S extends boolean | null | undefined | PlayerExternalLinkDefaultArgs> = $Result.GetResult<Prisma.$PlayerExternalLinkPayload, S>
+
+  type PlayerExternalLinkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PlayerExternalLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PlayerExternalLinkCountAggregateInputType | true
+    }
+
+  export interface PlayerExternalLinkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PlayerExternalLink'], meta: { name: 'PlayerExternalLink' } }
+    /**
+     * Find zero or one PlayerExternalLink that matches the filter.
+     * @param {PlayerExternalLinkFindUniqueArgs} args - Arguments to find a PlayerExternalLink
+     * @example
+     * // Get one PlayerExternalLink
+     * const playerExternalLink = await prisma.playerExternalLink.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PlayerExternalLinkFindUniqueArgs>(args: SelectSubset<T, PlayerExternalLinkFindUniqueArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PlayerExternalLink that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PlayerExternalLinkFindUniqueOrThrowArgs} args - Arguments to find a PlayerExternalLink
+     * @example
+     * // Get one PlayerExternalLink
+     * const playerExternalLink = await prisma.playerExternalLink.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PlayerExternalLinkFindUniqueOrThrowArgs>(args: SelectSubset<T, PlayerExternalLinkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlayerExternalLink that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerExternalLinkFindFirstArgs} args - Arguments to find a PlayerExternalLink
+     * @example
+     * // Get one PlayerExternalLink
+     * const playerExternalLink = await prisma.playerExternalLink.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PlayerExternalLinkFindFirstArgs>(args?: SelectSubset<T, PlayerExternalLinkFindFirstArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlayerExternalLink that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerExternalLinkFindFirstOrThrowArgs} args - Arguments to find a PlayerExternalLink
+     * @example
+     * // Get one PlayerExternalLink
+     * const playerExternalLink = await prisma.playerExternalLink.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PlayerExternalLinkFindFirstOrThrowArgs>(args?: SelectSubset<T, PlayerExternalLinkFindFirstOrThrowArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PlayerExternalLinks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerExternalLinkFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PlayerExternalLinks
+     * const playerExternalLinks = await prisma.playerExternalLink.findMany()
+     * 
+     * // Get first 10 PlayerExternalLinks
+     * const playerExternalLinks = await prisma.playerExternalLink.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const playerExternalLinkWithIdOnly = await prisma.playerExternalLink.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PlayerExternalLinkFindManyArgs>(args?: SelectSubset<T, PlayerExternalLinkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PlayerExternalLink.
+     * @param {PlayerExternalLinkCreateArgs} args - Arguments to create a PlayerExternalLink.
+     * @example
+     * // Create one PlayerExternalLink
+     * const PlayerExternalLink = await prisma.playerExternalLink.create({
+     *   data: {
+     *     // ... data to create a PlayerExternalLink
+     *   }
+     * })
+     * 
+     */
+    create<T extends PlayerExternalLinkCreateArgs>(args: SelectSubset<T, PlayerExternalLinkCreateArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PlayerExternalLinks.
+     * @param {PlayerExternalLinkCreateManyArgs} args - Arguments to create many PlayerExternalLinks.
+     * @example
+     * // Create many PlayerExternalLinks
+     * const playerExternalLink = await prisma.playerExternalLink.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PlayerExternalLinkCreateManyArgs>(args?: SelectSubset<T, PlayerExternalLinkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PlayerExternalLinks and returns the data saved in the database.
+     * @param {PlayerExternalLinkCreateManyAndReturnArgs} args - Arguments to create many PlayerExternalLinks.
+     * @example
+     * // Create many PlayerExternalLinks
+     * const playerExternalLink = await prisma.playerExternalLink.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PlayerExternalLinks and only return the `id`
+     * const playerExternalLinkWithIdOnly = await prisma.playerExternalLink.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PlayerExternalLinkCreateManyAndReturnArgs>(args?: SelectSubset<T, PlayerExternalLinkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PlayerExternalLink.
+     * @param {PlayerExternalLinkDeleteArgs} args - Arguments to delete one PlayerExternalLink.
+     * @example
+     * // Delete one PlayerExternalLink
+     * const PlayerExternalLink = await prisma.playerExternalLink.delete({
+     *   where: {
+     *     // ... filter to delete one PlayerExternalLink
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PlayerExternalLinkDeleteArgs>(args: SelectSubset<T, PlayerExternalLinkDeleteArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PlayerExternalLink.
+     * @param {PlayerExternalLinkUpdateArgs} args - Arguments to update one PlayerExternalLink.
+     * @example
+     * // Update one PlayerExternalLink
+     * const playerExternalLink = await prisma.playerExternalLink.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PlayerExternalLinkUpdateArgs>(args: SelectSubset<T, PlayerExternalLinkUpdateArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PlayerExternalLinks.
+     * @param {PlayerExternalLinkDeleteManyArgs} args - Arguments to filter PlayerExternalLinks to delete.
+     * @example
+     * // Delete a few PlayerExternalLinks
+     * const { count } = await prisma.playerExternalLink.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PlayerExternalLinkDeleteManyArgs>(args?: SelectSubset<T, PlayerExternalLinkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlayerExternalLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerExternalLinkUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PlayerExternalLinks
+     * const playerExternalLink = await prisma.playerExternalLink.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PlayerExternalLinkUpdateManyArgs>(args: SelectSubset<T, PlayerExternalLinkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlayerExternalLinks and returns the data updated in the database.
+     * @param {PlayerExternalLinkUpdateManyAndReturnArgs} args - Arguments to update many PlayerExternalLinks.
+     * @example
+     * // Update many PlayerExternalLinks
+     * const playerExternalLink = await prisma.playerExternalLink.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PlayerExternalLinks and only return the `id`
+     * const playerExternalLinkWithIdOnly = await prisma.playerExternalLink.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PlayerExternalLinkUpdateManyAndReturnArgs>(args: SelectSubset<T, PlayerExternalLinkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PlayerExternalLink.
+     * @param {PlayerExternalLinkUpsertArgs} args - Arguments to update or create a PlayerExternalLink.
+     * @example
+     * // Update or create a PlayerExternalLink
+     * const playerExternalLink = await prisma.playerExternalLink.upsert({
+     *   create: {
+     *     // ... data to create a PlayerExternalLink
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PlayerExternalLink we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PlayerExternalLinkUpsertArgs>(args: SelectSubset<T, PlayerExternalLinkUpsertArgs<ExtArgs>>): Prisma__PlayerExternalLinkClient<$Result.GetResult<Prisma.$PlayerExternalLinkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PlayerExternalLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerExternalLinkCountArgs} args - Arguments to filter PlayerExternalLinks to count.
+     * @example
+     * // Count the number of PlayerExternalLinks
+     * const count = await prisma.playerExternalLink.count({
+     *   where: {
+     *     // ... the filter for the PlayerExternalLinks we want to count
+     *   }
+     * })
+    **/
+    count<T extends PlayerExternalLinkCountArgs>(
+      args?: Subset<T, PlayerExternalLinkCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PlayerExternalLinkCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PlayerExternalLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerExternalLinkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PlayerExternalLinkAggregateArgs>(args: Subset<T, PlayerExternalLinkAggregateArgs>): Prisma.PrismaPromise<GetPlayerExternalLinkAggregateType<T>>
+
+    /**
+     * Group by PlayerExternalLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerExternalLinkGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PlayerExternalLinkGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PlayerExternalLinkGroupByArgs['orderBy'] }
+        : { orderBy?: PlayerExternalLinkGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PlayerExternalLinkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlayerExternalLinkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PlayerExternalLink model
+   */
+  readonly fields: PlayerExternalLinkFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PlayerExternalLink.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PlayerExternalLinkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PlayerExternalLink model
+   */
+  interface PlayerExternalLinkFieldRefs {
+    readonly id: FieldRef<"PlayerExternalLink", 'String'>
+    readonly userId: FieldRef<"PlayerExternalLink", 'String'>
+    readonly provider: FieldRef<"PlayerExternalLink", 'String'>
+    readonly platform: FieldRef<"PlayerExternalLink", 'String'>
+    readonly personaName: FieldRef<"PlayerExternalLink", 'String'>
+    readonly verifiedAt: FieldRef<"PlayerExternalLink", 'DateTime'>
+    readonly createdAt: FieldRef<"PlayerExternalLink", 'DateTime'>
+    readonly updatedAt: FieldRef<"PlayerExternalLink", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PlayerExternalLink findUnique
+   */
+  export type PlayerExternalLinkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerExternalLink to fetch.
+     */
+    where: PlayerExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * PlayerExternalLink findUniqueOrThrow
+   */
+  export type PlayerExternalLinkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerExternalLink to fetch.
+     */
+    where: PlayerExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * PlayerExternalLink findFirst
+   */
+  export type PlayerExternalLinkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerExternalLink to fetch.
+     */
+    where?: PlayerExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerExternalLinks to fetch.
+     */
+    orderBy?: PlayerExternalLinkOrderByWithRelationInput | PlayerExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlayerExternalLinks.
+     */
+    cursor?: PlayerExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerExternalLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlayerExternalLinks.
+     */
+    distinct?: PlayerExternalLinkScalarFieldEnum | PlayerExternalLinkScalarFieldEnum[]
+  }
+
+  /**
+   * PlayerExternalLink findFirstOrThrow
+   */
+  export type PlayerExternalLinkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerExternalLink to fetch.
+     */
+    where?: PlayerExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerExternalLinks to fetch.
+     */
+    orderBy?: PlayerExternalLinkOrderByWithRelationInput | PlayerExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlayerExternalLinks.
+     */
+    cursor?: PlayerExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerExternalLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlayerExternalLinks.
+     */
+    distinct?: PlayerExternalLinkScalarFieldEnum | PlayerExternalLinkScalarFieldEnum[]
+  }
+
+  /**
+   * PlayerExternalLink findMany
+   */
+  export type PlayerExternalLinkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerExternalLinks to fetch.
+     */
+    where?: PlayerExternalLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerExternalLinks to fetch.
+     */
+    orderBy?: PlayerExternalLinkOrderByWithRelationInput | PlayerExternalLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PlayerExternalLinks.
+     */
+    cursor?: PlayerExternalLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerExternalLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerExternalLinks.
+     */
+    skip?: number
+    distinct?: PlayerExternalLinkScalarFieldEnum | PlayerExternalLinkScalarFieldEnum[]
+  }
+
+  /**
+   * PlayerExternalLink create
+   */
+  export type PlayerExternalLinkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PlayerExternalLink.
+     */
+    data: XOR<PlayerExternalLinkCreateInput, PlayerExternalLinkUncheckedCreateInput>
+  }
+
+  /**
+   * PlayerExternalLink createMany
+   */
+  export type PlayerExternalLinkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PlayerExternalLinks.
+     */
+    data: PlayerExternalLinkCreateManyInput | PlayerExternalLinkCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlayerExternalLink createManyAndReturn
+   */
+  export type PlayerExternalLinkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * The data used to create many PlayerExternalLinks.
+     */
+    data: PlayerExternalLinkCreateManyInput | PlayerExternalLinkCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PlayerExternalLink update
+   */
+  export type PlayerExternalLinkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PlayerExternalLink.
+     */
+    data: XOR<PlayerExternalLinkUpdateInput, PlayerExternalLinkUncheckedUpdateInput>
+    /**
+     * Choose, which PlayerExternalLink to update.
+     */
+    where: PlayerExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * PlayerExternalLink updateMany
+   */
+  export type PlayerExternalLinkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PlayerExternalLinks.
+     */
+    data: XOR<PlayerExternalLinkUpdateManyMutationInput, PlayerExternalLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which PlayerExternalLinks to update
+     */
+    where?: PlayerExternalLinkWhereInput
+    /**
+     * Limit how many PlayerExternalLinks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlayerExternalLink updateManyAndReturn
+   */
+  export type PlayerExternalLinkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * The data used to update PlayerExternalLinks.
+     */
+    data: XOR<PlayerExternalLinkUpdateManyMutationInput, PlayerExternalLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which PlayerExternalLinks to update
+     */
+    where?: PlayerExternalLinkWhereInput
+    /**
+     * Limit how many PlayerExternalLinks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PlayerExternalLink upsert
+   */
+  export type PlayerExternalLinkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PlayerExternalLink to update in case it exists.
+     */
+    where: PlayerExternalLinkWhereUniqueInput
+    /**
+     * In case the PlayerExternalLink found by the `where` argument doesn't exist, create a new PlayerExternalLink with this data.
+     */
+    create: XOR<PlayerExternalLinkCreateInput, PlayerExternalLinkUncheckedCreateInput>
+    /**
+     * In case the PlayerExternalLink was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PlayerExternalLinkUpdateInput, PlayerExternalLinkUncheckedUpdateInput>
+  }
+
+  /**
+   * PlayerExternalLink delete
+   */
+  export type PlayerExternalLinkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+    /**
+     * Filter which PlayerExternalLink to delete.
+     */
+    where: PlayerExternalLinkWhereUniqueInput
+  }
+
+  /**
+   * PlayerExternalLink deleteMany
+   */
+  export type PlayerExternalLinkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlayerExternalLinks to delete
+     */
+    where?: PlayerExternalLinkWhereInput
+    /**
+     * Limit how many PlayerExternalLinks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlayerExternalLink without action
+   */
+  export type PlayerExternalLinkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerExternalLink
+     */
+    select?: PlayerExternalLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerExternalLink
+     */
+    omit?: PlayerExternalLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerExternalLinkInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MatchSync
+   */
+
+  export type AggregateMatchSync = {
+    _count: MatchSyncCountAggregateOutputType | null
+    _avg: MatchSyncAvgAggregateOutputType | null
+    _sum: MatchSyncSumAggregateOutputType | null
+    _min: MatchSyncMinAggregateOutputType | null
+    _max: MatchSyncMaxAggregateOutputType | null
+  }
+
+  export type MatchSyncAvgAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type MatchSyncSumAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type MatchSyncMinAggregateOutputType = {
+    id: string | null
+    matchId: string | null
+    provider: string | null
+    providerMatchId: string | null
+    homeEaClubId: string | null
+    awayEaClubId: string | null
+    status: string | null
+    attempts: number | null
+    lastError: string | null
+    syncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MatchSyncMaxAggregateOutputType = {
+    id: string | null
+    matchId: string | null
+    provider: string | null
+    providerMatchId: string | null
+    homeEaClubId: string | null
+    awayEaClubId: string | null
+    status: string | null
+    attempts: number | null
+    lastError: string | null
+    syncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MatchSyncCountAggregateOutputType = {
+    id: number
+    matchId: number
+    provider: number
+    providerMatchId: number
+    homeEaClubId: number
+    awayEaClubId: number
+    status: number
+    attempts: number
+    lastError: number
+    rawPayload: number
+    syncedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MatchSyncAvgAggregateInputType = {
+    attempts?: true
+  }
+
+  export type MatchSyncSumAggregateInputType = {
+    attempts?: true
+  }
+
+  export type MatchSyncMinAggregateInputType = {
+    id?: true
+    matchId?: true
+    provider?: true
+    providerMatchId?: true
+    homeEaClubId?: true
+    awayEaClubId?: true
+    status?: true
+    attempts?: true
+    lastError?: true
+    syncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MatchSyncMaxAggregateInputType = {
+    id?: true
+    matchId?: true
+    provider?: true
+    providerMatchId?: true
+    homeEaClubId?: true
+    awayEaClubId?: true
+    status?: true
+    attempts?: true
+    lastError?: true
+    syncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MatchSyncCountAggregateInputType = {
+    id?: true
+    matchId?: true
+    provider?: true
+    providerMatchId?: true
+    homeEaClubId?: true
+    awayEaClubId?: true
+    status?: true
+    attempts?: true
+    lastError?: true
+    rawPayload?: true
+    syncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MatchSyncAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MatchSync to aggregate.
+     */
+    where?: MatchSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchSyncs to fetch.
+     */
+    orderBy?: MatchSyncOrderByWithRelationInput | MatchSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MatchSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchSyncs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MatchSyncs
+    **/
+    _count?: true | MatchSyncCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MatchSyncAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MatchSyncSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MatchSyncMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MatchSyncMaxAggregateInputType
+  }
+
+  export type GetMatchSyncAggregateType<T extends MatchSyncAggregateArgs> = {
+        [P in keyof T & keyof AggregateMatchSync]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMatchSync[P]>
+      : GetScalarType<T[P], AggregateMatchSync[P]>
+  }
+
+
+
+
+  export type MatchSyncGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MatchSyncWhereInput
+    orderBy?: MatchSyncOrderByWithAggregationInput | MatchSyncOrderByWithAggregationInput[]
+    by: MatchSyncScalarFieldEnum[] | MatchSyncScalarFieldEnum
+    having?: MatchSyncScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MatchSyncCountAggregateInputType | true
+    _avg?: MatchSyncAvgAggregateInputType
+    _sum?: MatchSyncSumAggregateInputType
+    _min?: MatchSyncMinAggregateInputType
+    _max?: MatchSyncMaxAggregateInputType
+  }
+
+  export type MatchSyncGroupByOutputType = {
+    id: string
+    matchId: string
+    provider: string
+    providerMatchId: string | null
+    homeEaClubId: string | null
+    awayEaClubId: string | null
+    status: string
+    attempts: number
+    lastError: string | null
+    rawPayload: JsonValue | null
+    syncedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MatchSyncCountAggregateOutputType | null
+    _avg: MatchSyncAvgAggregateOutputType | null
+    _sum: MatchSyncSumAggregateOutputType | null
+    _min: MatchSyncMinAggregateOutputType | null
+    _max: MatchSyncMaxAggregateOutputType | null
+  }
+
+  type GetMatchSyncGroupByPayload<T extends MatchSyncGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MatchSyncGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MatchSyncGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MatchSyncGroupByOutputType[P]>
+            : GetScalarType<T[P], MatchSyncGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MatchSyncSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    matchId?: boolean
+    provider?: boolean
+    providerMatchId?: boolean
+    homeEaClubId?: boolean
+    awayEaClubId?: boolean
+    status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    rawPayload?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["matchSync"]>
+
+  export type MatchSyncSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    matchId?: boolean
+    provider?: boolean
+    providerMatchId?: boolean
+    homeEaClubId?: boolean
+    awayEaClubId?: boolean
+    status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    rawPayload?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["matchSync"]>
+
+  export type MatchSyncSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    matchId?: boolean
+    provider?: boolean
+    providerMatchId?: boolean
+    homeEaClubId?: boolean
+    awayEaClubId?: boolean
+    status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    rawPayload?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["matchSync"]>
+
+  export type MatchSyncSelectScalar = {
+    id?: boolean
+    matchId?: boolean
+    provider?: boolean
+    providerMatchId?: boolean
+    homeEaClubId?: boolean
+    awayEaClubId?: boolean
+    status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    rawPayload?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MatchSyncOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "matchId" | "provider" | "providerMatchId" | "homeEaClubId" | "awayEaClubId" | "status" | "attempts" | "lastError" | "rawPayload" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["matchSync"]>
+  export type MatchSyncInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+  }
+  export type MatchSyncIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+  }
+  export type MatchSyncIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+  }
+
+  export type $MatchSyncPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MatchSync"
+    objects: {
+      match: Prisma.$MatchPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      matchId: string
+      provider: string
+      providerMatchId: string | null
+      homeEaClubId: string | null
+      awayEaClubId: string | null
+      status: string
+      attempts: number
+      lastError: string | null
+      rawPayload: Prisma.JsonValue | null
+      syncedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["matchSync"]>
+    composites: {}
+  }
+
+  type MatchSyncGetPayload<S extends boolean | null | undefined | MatchSyncDefaultArgs> = $Result.GetResult<Prisma.$MatchSyncPayload, S>
+
+  type MatchSyncCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MatchSyncFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MatchSyncCountAggregateInputType | true
+    }
+
+  export interface MatchSyncDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MatchSync'], meta: { name: 'MatchSync' } }
+    /**
+     * Find zero or one MatchSync that matches the filter.
+     * @param {MatchSyncFindUniqueArgs} args - Arguments to find a MatchSync
+     * @example
+     * // Get one MatchSync
+     * const matchSync = await prisma.matchSync.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MatchSyncFindUniqueArgs>(args: SelectSubset<T, MatchSyncFindUniqueArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MatchSync that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MatchSyncFindUniqueOrThrowArgs} args - Arguments to find a MatchSync
+     * @example
+     * // Get one MatchSync
+     * const matchSync = await prisma.matchSync.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MatchSyncFindUniqueOrThrowArgs>(args: SelectSubset<T, MatchSyncFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MatchSync that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchSyncFindFirstArgs} args - Arguments to find a MatchSync
+     * @example
+     * // Get one MatchSync
+     * const matchSync = await prisma.matchSync.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MatchSyncFindFirstArgs>(args?: SelectSubset<T, MatchSyncFindFirstArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MatchSync that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchSyncFindFirstOrThrowArgs} args - Arguments to find a MatchSync
+     * @example
+     * // Get one MatchSync
+     * const matchSync = await prisma.matchSync.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MatchSyncFindFirstOrThrowArgs>(args?: SelectSubset<T, MatchSyncFindFirstOrThrowArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MatchSyncs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchSyncFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MatchSyncs
+     * const matchSyncs = await prisma.matchSync.findMany()
+     * 
+     * // Get first 10 MatchSyncs
+     * const matchSyncs = await prisma.matchSync.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const matchSyncWithIdOnly = await prisma.matchSync.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MatchSyncFindManyArgs>(args?: SelectSubset<T, MatchSyncFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MatchSync.
+     * @param {MatchSyncCreateArgs} args - Arguments to create a MatchSync.
+     * @example
+     * // Create one MatchSync
+     * const MatchSync = await prisma.matchSync.create({
+     *   data: {
+     *     // ... data to create a MatchSync
+     *   }
+     * })
+     * 
+     */
+    create<T extends MatchSyncCreateArgs>(args: SelectSubset<T, MatchSyncCreateArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MatchSyncs.
+     * @param {MatchSyncCreateManyArgs} args - Arguments to create many MatchSyncs.
+     * @example
+     * // Create many MatchSyncs
+     * const matchSync = await prisma.matchSync.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MatchSyncCreateManyArgs>(args?: SelectSubset<T, MatchSyncCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MatchSyncs and returns the data saved in the database.
+     * @param {MatchSyncCreateManyAndReturnArgs} args - Arguments to create many MatchSyncs.
+     * @example
+     * // Create many MatchSyncs
+     * const matchSync = await prisma.matchSync.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MatchSyncs and only return the `id`
+     * const matchSyncWithIdOnly = await prisma.matchSync.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MatchSyncCreateManyAndReturnArgs>(args?: SelectSubset<T, MatchSyncCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MatchSync.
+     * @param {MatchSyncDeleteArgs} args - Arguments to delete one MatchSync.
+     * @example
+     * // Delete one MatchSync
+     * const MatchSync = await prisma.matchSync.delete({
+     *   where: {
+     *     // ... filter to delete one MatchSync
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MatchSyncDeleteArgs>(args: SelectSubset<T, MatchSyncDeleteArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MatchSync.
+     * @param {MatchSyncUpdateArgs} args - Arguments to update one MatchSync.
+     * @example
+     * // Update one MatchSync
+     * const matchSync = await prisma.matchSync.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MatchSyncUpdateArgs>(args: SelectSubset<T, MatchSyncUpdateArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MatchSyncs.
+     * @param {MatchSyncDeleteManyArgs} args - Arguments to filter MatchSyncs to delete.
+     * @example
+     * // Delete a few MatchSyncs
+     * const { count } = await prisma.matchSync.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MatchSyncDeleteManyArgs>(args?: SelectSubset<T, MatchSyncDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MatchSyncs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchSyncUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MatchSyncs
+     * const matchSync = await prisma.matchSync.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MatchSyncUpdateManyArgs>(args: SelectSubset<T, MatchSyncUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MatchSyncs and returns the data updated in the database.
+     * @param {MatchSyncUpdateManyAndReturnArgs} args - Arguments to update many MatchSyncs.
+     * @example
+     * // Update many MatchSyncs
+     * const matchSync = await prisma.matchSync.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MatchSyncs and only return the `id`
+     * const matchSyncWithIdOnly = await prisma.matchSync.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MatchSyncUpdateManyAndReturnArgs>(args: SelectSubset<T, MatchSyncUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MatchSync.
+     * @param {MatchSyncUpsertArgs} args - Arguments to update or create a MatchSync.
+     * @example
+     * // Update or create a MatchSync
+     * const matchSync = await prisma.matchSync.upsert({
+     *   create: {
+     *     // ... data to create a MatchSync
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MatchSync we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MatchSyncUpsertArgs>(args: SelectSubset<T, MatchSyncUpsertArgs<ExtArgs>>): Prisma__MatchSyncClient<$Result.GetResult<Prisma.$MatchSyncPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MatchSyncs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchSyncCountArgs} args - Arguments to filter MatchSyncs to count.
+     * @example
+     * // Count the number of MatchSyncs
+     * const count = await prisma.matchSync.count({
+     *   where: {
+     *     // ... the filter for the MatchSyncs we want to count
+     *   }
+     * })
+    **/
+    count<T extends MatchSyncCountArgs>(
+      args?: Subset<T, MatchSyncCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MatchSyncCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MatchSync.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchSyncAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MatchSyncAggregateArgs>(args: Subset<T, MatchSyncAggregateArgs>): Prisma.PrismaPromise<GetMatchSyncAggregateType<T>>
+
+    /**
+     * Group by MatchSync.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MatchSyncGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MatchSyncGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MatchSyncGroupByArgs['orderBy'] }
+        : { orderBy?: MatchSyncGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MatchSyncGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMatchSyncGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MatchSync model
+   */
+  readonly fields: MatchSyncFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MatchSync.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MatchSyncClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    match<T extends MatchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MatchDefaultArgs<ExtArgs>>): Prisma__MatchClient<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MatchSync model
+   */
+  interface MatchSyncFieldRefs {
+    readonly id: FieldRef<"MatchSync", 'String'>
+    readonly matchId: FieldRef<"MatchSync", 'String'>
+    readonly provider: FieldRef<"MatchSync", 'String'>
+    readonly providerMatchId: FieldRef<"MatchSync", 'String'>
+    readonly homeEaClubId: FieldRef<"MatchSync", 'String'>
+    readonly awayEaClubId: FieldRef<"MatchSync", 'String'>
+    readonly status: FieldRef<"MatchSync", 'String'>
+    readonly attempts: FieldRef<"MatchSync", 'Int'>
+    readonly lastError: FieldRef<"MatchSync", 'String'>
+    readonly rawPayload: FieldRef<"MatchSync", 'Json'>
+    readonly syncedAt: FieldRef<"MatchSync", 'DateTime'>
+    readonly createdAt: FieldRef<"MatchSync", 'DateTime'>
+    readonly updatedAt: FieldRef<"MatchSync", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MatchSync findUnique
+   */
+  export type MatchSyncFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchSync to fetch.
+     */
+    where: MatchSyncWhereUniqueInput
+  }
+
+  /**
+   * MatchSync findUniqueOrThrow
+   */
+  export type MatchSyncFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchSync to fetch.
+     */
+    where: MatchSyncWhereUniqueInput
+  }
+
+  /**
+   * MatchSync findFirst
+   */
+  export type MatchSyncFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchSync to fetch.
+     */
+    where?: MatchSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchSyncs to fetch.
+     */
+    orderBy?: MatchSyncOrderByWithRelationInput | MatchSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MatchSyncs.
+     */
+    cursor?: MatchSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchSyncs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MatchSyncs.
+     */
+    distinct?: MatchSyncScalarFieldEnum | MatchSyncScalarFieldEnum[]
+  }
+
+  /**
+   * MatchSync findFirstOrThrow
+   */
+  export type MatchSyncFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchSync to fetch.
+     */
+    where?: MatchSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchSyncs to fetch.
+     */
+    orderBy?: MatchSyncOrderByWithRelationInput | MatchSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MatchSyncs.
+     */
+    cursor?: MatchSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchSyncs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MatchSyncs.
+     */
+    distinct?: MatchSyncScalarFieldEnum | MatchSyncScalarFieldEnum[]
+  }
+
+  /**
+   * MatchSync findMany
+   */
+  export type MatchSyncFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * Filter, which MatchSyncs to fetch.
+     */
+    where?: MatchSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MatchSyncs to fetch.
+     */
+    orderBy?: MatchSyncOrderByWithRelationInput | MatchSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MatchSyncs.
+     */
+    cursor?: MatchSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MatchSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MatchSyncs.
+     */
+    skip?: number
+    distinct?: MatchSyncScalarFieldEnum | MatchSyncScalarFieldEnum[]
+  }
+
+  /**
+   * MatchSync create
+   */
+  export type MatchSyncCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MatchSync.
+     */
+    data: XOR<MatchSyncCreateInput, MatchSyncUncheckedCreateInput>
+  }
+
+  /**
+   * MatchSync createMany
+   */
+  export type MatchSyncCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MatchSyncs.
+     */
+    data: MatchSyncCreateManyInput | MatchSyncCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MatchSync createManyAndReturn
+   */
+  export type MatchSyncCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * The data used to create many MatchSyncs.
+     */
+    data: MatchSyncCreateManyInput | MatchSyncCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MatchSync update
+   */
+  export type MatchSyncUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MatchSync.
+     */
+    data: XOR<MatchSyncUpdateInput, MatchSyncUncheckedUpdateInput>
+    /**
+     * Choose, which MatchSync to update.
+     */
+    where: MatchSyncWhereUniqueInput
+  }
+
+  /**
+   * MatchSync updateMany
+   */
+  export type MatchSyncUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MatchSyncs.
+     */
+    data: XOR<MatchSyncUpdateManyMutationInput, MatchSyncUncheckedUpdateManyInput>
+    /**
+     * Filter which MatchSyncs to update
+     */
+    where?: MatchSyncWhereInput
+    /**
+     * Limit how many MatchSyncs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MatchSync updateManyAndReturn
+   */
+  export type MatchSyncUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * The data used to update MatchSyncs.
+     */
+    data: XOR<MatchSyncUpdateManyMutationInput, MatchSyncUncheckedUpdateManyInput>
+    /**
+     * Filter which MatchSyncs to update
+     */
+    where?: MatchSyncWhereInput
+    /**
+     * Limit how many MatchSyncs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MatchSync upsert
+   */
+  export type MatchSyncUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MatchSync to update in case it exists.
+     */
+    where: MatchSyncWhereUniqueInput
+    /**
+     * In case the MatchSync found by the `where` argument doesn't exist, create a new MatchSync with this data.
+     */
+    create: XOR<MatchSyncCreateInput, MatchSyncUncheckedCreateInput>
+    /**
+     * In case the MatchSync was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MatchSyncUpdateInput, MatchSyncUncheckedUpdateInput>
+  }
+
+  /**
+   * MatchSync delete
+   */
+  export type MatchSyncDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+    /**
+     * Filter which MatchSync to delete.
+     */
+    where: MatchSyncWhereUniqueInput
+  }
+
+  /**
+   * MatchSync deleteMany
+   */
+  export type MatchSyncDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MatchSyncs to delete
+     */
+    where?: MatchSyncWhereInput
+    /**
+     * Limit how many MatchSyncs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MatchSync without action
+   */
+  export type MatchSyncDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MatchSync
+     */
+    select?: MatchSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MatchSync
+     */
+    omit?: MatchSyncOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MatchSyncInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PlayerMatchExternalStat
+   */
+
+  export type AggregatePlayerMatchExternalStat = {
+    _count: PlayerMatchExternalStatCountAggregateOutputType | null
+    _avg: PlayerMatchExternalStatAvgAggregateOutputType | null
+    _sum: PlayerMatchExternalStatSumAggregateOutputType | null
+    _min: PlayerMatchExternalStatMinAggregateOutputType | null
+    _max: PlayerMatchExternalStatMaxAggregateOutputType | null
+  }
+
+  export type PlayerMatchExternalStatAvgAggregateOutputType = {
+    rating: number | null
+    goals: number | null
+    assists: number | null
+    saves: number | null
+  }
+
+  export type PlayerMatchExternalStatSumAggregateOutputType = {
+    rating: number | null
+    goals: number | null
+    assists: number | null
+    saves: number | null
+  }
+
+  export type PlayerMatchExternalStatMinAggregateOutputType = {
+    id: string | null
+    matchId: string | null
+    userId: string | null
+    provider: string | null
+    personaName: string | null
+    rating: number | null
+    goals: number | null
+    assists: number | null
+    saves: number | null
+    cleanSheet: boolean | null
+    position: string | null
+    createdAt: Date | null
+  }
+
+  export type PlayerMatchExternalStatMaxAggregateOutputType = {
+    id: string | null
+    matchId: string | null
+    userId: string | null
+    provider: string | null
+    personaName: string | null
+    rating: number | null
+    goals: number | null
+    assists: number | null
+    saves: number | null
+    cleanSheet: boolean | null
+    position: string | null
+    createdAt: Date | null
+  }
+
+  export type PlayerMatchExternalStatCountAggregateOutputType = {
+    id: number
+    matchId: number
+    userId: number
+    provider: number
+    personaName: number
+    rating: number
+    goals: number
+    assists: number
+    saves: number
+    cleanSheet: number
+    position: number
+    rawPayload: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PlayerMatchExternalStatAvgAggregateInputType = {
+    rating?: true
+    goals?: true
+    assists?: true
+    saves?: true
+  }
+
+  export type PlayerMatchExternalStatSumAggregateInputType = {
+    rating?: true
+    goals?: true
+    assists?: true
+    saves?: true
+  }
+
+  export type PlayerMatchExternalStatMinAggregateInputType = {
+    id?: true
+    matchId?: true
+    userId?: true
+    provider?: true
+    personaName?: true
+    rating?: true
+    goals?: true
+    assists?: true
+    saves?: true
+    cleanSheet?: true
+    position?: true
+    createdAt?: true
+  }
+
+  export type PlayerMatchExternalStatMaxAggregateInputType = {
+    id?: true
+    matchId?: true
+    userId?: true
+    provider?: true
+    personaName?: true
+    rating?: true
+    goals?: true
+    assists?: true
+    saves?: true
+    cleanSheet?: true
+    position?: true
+    createdAt?: true
+  }
+
+  export type PlayerMatchExternalStatCountAggregateInputType = {
+    id?: true
+    matchId?: true
+    userId?: true
+    provider?: true
+    personaName?: true
+    rating?: true
+    goals?: true
+    assists?: true
+    saves?: true
+    cleanSheet?: true
+    position?: true
+    rawPayload?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PlayerMatchExternalStatAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlayerMatchExternalStat to aggregate.
+     */
+    where?: PlayerMatchExternalStatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerMatchExternalStats to fetch.
+     */
+    orderBy?: PlayerMatchExternalStatOrderByWithRelationInput | PlayerMatchExternalStatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PlayerMatchExternalStatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerMatchExternalStats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerMatchExternalStats.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PlayerMatchExternalStats
+    **/
+    _count?: true | PlayerMatchExternalStatCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PlayerMatchExternalStatAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PlayerMatchExternalStatSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PlayerMatchExternalStatMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PlayerMatchExternalStatMaxAggregateInputType
+  }
+
+  export type GetPlayerMatchExternalStatAggregateType<T extends PlayerMatchExternalStatAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlayerMatchExternalStat]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlayerMatchExternalStat[P]>
+      : GetScalarType<T[P], AggregatePlayerMatchExternalStat[P]>
+  }
+
+
+
+
+  export type PlayerMatchExternalStatGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlayerMatchExternalStatWhereInput
+    orderBy?: PlayerMatchExternalStatOrderByWithAggregationInput | PlayerMatchExternalStatOrderByWithAggregationInput[]
+    by: PlayerMatchExternalStatScalarFieldEnum[] | PlayerMatchExternalStatScalarFieldEnum
+    having?: PlayerMatchExternalStatScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PlayerMatchExternalStatCountAggregateInputType | true
+    _avg?: PlayerMatchExternalStatAvgAggregateInputType
+    _sum?: PlayerMatchExternalStatSumAggregateInputType
+    _min?: PlayerMatchExternalStatMinAggregateInputType
+    _max?: PlayerMatchExternalStatMaxAggregateInputType
+  }
+
+  export type PlayerMatchExternalStatGroupByOutputType = {
+    id: string
+    matchId: string
+    userId: string | null
+    provider: string
+    personaName: string
+    rating: number | null
+    goals: number | null
+    assists: number | null
+    saves: number | null
+    cleanSheet: boolean | null
+    position: string | null
+    rawPayload: JsonValue | null
+    createdAt: Date
+    _count: PlayerMatchExternalStatCountAggregateOutputType | null
+    _avg: PlayerMatchExternalStatAvgAggregateOutputType | null
+    _sum: PlayerMatchExternalStatSumAggregateOutputType | null
+    _min: PlayerMatchExternalStatMinAggregateOutputType | null
+    _max: PlayerMatchExternalStatMaxAggregateOutputType | null
+  }
+
+  type GetPlayerMatchExternalStatGroupByPayload<T extends PlayerMatchExternalStatGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PlayerMatchExternalStatGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PlayerMatchExternalStatGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PlayerMatchExternalStatGroupByOutputType[P]>
+            : GetScalarType<T[P], PlayerMatchExternalStatGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PlayerMatchExternalStatSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    matchId?: boolean
+    userId?: boolean
+    provider?: boolean
+    personaName?: boolean
+    rating?: boolean
+    goals?: boolean
+    assists?: boolean
+    saves?: boolean
+    cleanSheet?: boolean
+    position?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    user?: boolean | PlayerMatchExternalStat$userArgs<ExtArgs>
+  }, ExtArgs["result"]["playerMatchExternalStat"]>
+
+  export type PlayerMatchExternalStatSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    matchId?: boolean
+    userId?: boolean
+    provider?: boolean
+    personaName?: boolean
+    rating?: boolean
+    goals?: boolean
+    assists?: boolean
+    saves?: boolean
+    cleanSheet?: boolean
+    position?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    user?: boolean | PlayerMatchExternalStat$userArgs<ExtArgs>
+  }, ExtArgs["result"]["playerMatchExternalStat"]>
+
+  export type PlayerMatchExternalStatSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    matchId?: boolean
+    userId?: boolean
+    provider?: boolean
+    personaName?: boolean
+    rating?: boolean
+    goals?: boolean
+    assists?: boolean
+    saves?: boolean
+    cleanSheet?: boolean
+    position?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    user?: boolean | PlayerMatchExternalStat$userArgs<ExtArgs>
+  }, ExtArgs["result"]["playerMatchExternalStat"]>
+
+  export type PlayerMatchExternalStatSelectScalar = {
+    id?: boolean
+    matchId?: boolean
+    userId?: boolean
+    provider?: boolean
+    personaName?: boolean
+    rating?: boolean
+    goals?: boolean
+    assists?: boolean
+    saves?: boolean
+    cleanSheet?: boolean
+    position?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+  }
+
+  export type PlayerMatchExternalStatOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "matchId" | "userId" | "provider" | "personaName" | "rating" | "goals" | "assists" | "saves" | "cleanSheet" | "position" | "rawPayload" | "createdAt", ExtArgs["result"]["playerMatchExternalStat"]>
+  export type PlayerMatchExternalStatInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    user?: boolean | PlayerMatchExternalStat$userArgs<ExtArgs>
+  }
+  export type PlayerMatchExternalStatIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    user?: boolean | PlayerMatchExternalStat$userArgs<ExtArgs>
+  }
+  export type PlayerMatchExternalStatIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    match?: boolean | MatchDefaultArgs<ExtArgs>
+    user?: boolean | PlayerMatchExternalStat$userArgs<ExtArgs>
+  }
+
+  export type $PlayerMatchExternalStatPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PlayerMatchExternalStat"
+    objects: {
+      match: Prisma.$MatchPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      matchId: string
+      userId: string | null
+      provider: string
+      personaName: string
+      rating: number | null
+      goals: number | null
+      assists: number | null
+      saves: number | null
+      cleanSheet: boolean | null
+      position: string | null
+      rawPayload: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["playerMatchExternalStat"]>
+    composites: {}
+  }
+
+  type PlayerMatchExternalStatGetPayload<S extends boolean | null | undefined | PlayerMatchExternalStatDefaultArgs> = $Result.GetResult<Prisma.$PlayerMatchExternalStatPayload, S>
+
+  type PlayerMatchExternalStatCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PlayerMatchExternalStatFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PlayerMatchExternalStatCountAggregateInputType | true
+    }
+
+  export interface PlayerMatchExternalStatDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PlayerMatchExternalStat'], meta: { name: 'PlayerMatchExternalStat' } }
+    /**
+     * Find zero or one PlayerMatchExternalStat that matches the filter.
+     * @param {PlayerMatchExternalStatFindUniqueArgs} args - Arguments to find a PlayerMatchExternalStat
+     * @example
+     * // Get one PlayerMatchExternalStat
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PlayerMatchExternalStatFindUniqueArgs>(args: SelectSubset<T, PlayerMatchExternalStatFindUniqueArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PlayerMatchExternalStat that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PlayerMatchExternalStatFindUniqueOrThrowArgs} args - Arguments to find a PlayerMatchExternalStat
+     * @example
+     * // Get one PlayerMatchExternalStat
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PlayerMatchExternalStatFindUniqueOrThrowArgs>(args: SelectSubset<T, PlayerMatchExternalStatFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlayerMatchExternalStat that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerMatchExternalStatFindFirstArgs} args - Arguments to find a PlayerMatchExternalStat
+     * @example
+     * // Get one PlayerMatchExternalStat
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PlayerMatchExternalStatFindFirstArgs>(args?: SelectSubset<T, PlayerMatchExternalStatFindFirstArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlayerMatchExternalStat that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerMatchExternalStatFindFirstOrThrowArgs} args - Arguments to find a PlayerMatchExternalStat
+     * @example
+     * // Get one PlayerMatchExternalStat
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PlayerMatchExternalStatFindFirstOrThrowArgs>(args?: SelectSubset<T, PlayerMatchExternalStatFindFirstOrThrowArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PlayerMatchExternalStats that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerMatchExternalStatFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PlayerMatchExternalStats
+     * const playerMatchExternalStats = await prisma.playerMatchExternalStat.findMany()
+     * 
+     * // Get first 10 PlayerMatchExternalStats
+     * const playerMatchExternalStats = await prisma.playerMatchExternalStat.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const playerMatchExternalStatWithIdOnly = await prisma.playerMatchExternalStat.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PlayerMatchExternalStatFindManyArgs>(args?: SelectSubset<T, PlayerMatchExternalStatFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PlayerMatchExternalStat.
+     * @param {PlayerMatchExternalStatCreateArgs} args - Arguments to create a PlayerMatchExternalStat.
+     * @example
+     * // Create one PlayerMatchExternalStat
+     * const PlayerMatchExternalStat = await prisma.playerMatchExternalStat.create({
+     *   data: {
+     *     // ... data to create a PlayerMatchExternalStat
+     *   }
+     * })
+     * 
+     */
+    create<T extends PlayerMatchExternalStatCreateArgs>(args: SelectSubset<T, PlayerMatchExternalStatCreateArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PlayerMatchExternalStats.
+     * @param {PlayerMatchExternalStatCreateManyArgs} args - Arguments to create many PlayerMatchExternalStats.
+     * @example
+     * // Create many PlayerMatchExternalStats
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PlayerMatchExternalStatCreateManyArgs>(args?: SelectSubset<T, PlayerMatchExternalStatCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PlayerMatchExternalStats and returns the data saved in the database.
+     * @param {PlayerMatchExternalStatCreateManyAndReturnArgs} args - Arguments to create many PlayerMatchExternalStats.
+     * @example
+     * // Create many PlayerMatchExternalStats
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PlayerMatchExternalStats and only return the `id`
+     * const playerMatchExternalStatWithIdOnly = await prisma.playerMatchExternalStat.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PlayerMatchExternalStatCreateManyAndReturnArgs>(args?: SelectSubset<T, PlayerMatchExternalStatCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PlayerMatchExternalStat.
+     * @param {PlayerMatchExternalStatDeleteArgs} args - Arguments to delete one PlayerMatchExternalStat.
+     * @example
+     * // Delete one PlayerMatchExternalStat
+     * const PlayerMatchExternalStat = await prisma.playerMatchExternalStat.delete({
+     *   where: {
+     *     // ... filter to delete one PlayerMatchExternalStat
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PlayerMatchExternalStatDeleteArgs>(args: SelectSubset<T, PlayerMatchExternalStatDeleteArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PlayerMatchExternalStat.
+     * @param {PlayerMatchExternalStatUpdateArgs} args - Arguments to update one PlayerMatchExternalStat.
+     * @example
+     * // Update one PlayerMatchExternalStat
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PlayerMatchExternalStatUpdateArgs>(args: SelectSubset<T, PlayerMatchExternalStatUpdateArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PlayerMatchExternalStats.
+     * @param {PlayerMatchExternalStatDeleteManyArgs} args - Arguments to filter PlayerMatchExternalStats to delete.
+     * @example
+     * // Delete a few PlayerMatchExternalStats
+     * const { count } = await prisma.playerMatchExternalStat.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PlayerMatchExternalStatDeleteManyArgs>(args?: SelectSubset<T, PlayerMatchExternalStatDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlayerMatchExternalStats.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerMatchExternalStatUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PlayerMatchExternalStats
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PlayerMatchExternalStatUpdateManyArgs>(args: SelectSubset<T, PlayerMatchExternalStatUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlayerMatchExternalStats and returns the data updated in the database.
+     * @param {PlayerMatchExternalStatUpdateManyAndReturnArgs} args - Arguments to update many PlayerMatchExternalStats.
+     * @example
+     * // Update many PlayerMatchExternalStats
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PlayerMatchExternalStats and only return the `id`
+     * const playerMatchExternalStatWithIdOnly = await prisma.playerMatchExternalStat.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PlayerMatchExternalStatUpdateManyAndReturnArgs>(args: SelectSubset<T, PlayerMatchExternalStatUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PlayerMatchExternalStat.
+     * @param {PlayerMatchExternalStatUpsertArgs} args - Arguments to update or create a PlayerMatchExternalStat.
+     * @example
+     * // Update or create a PlayerMatchExternalStat
+     * const playerMatchExternalStat = await prisma.playerMatchExternalStat.upsert({
+     *   create: {
+     *     // ... data to create a PlayerMatchExternalStat
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PlayerMatchExternalStat we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PlayerMatchExternalStatUpsertArgs>(args: SelectSubset<T, PlayerMatchExternalStatUpsertArgs<ExtArgs>>): Prisma__PlayerMatchExternalStatClient<$Result.GetResult<Prisma.$PlayerMatchExternalStatPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PlayerMatchExternalStats.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerMatchExternalStatCountArgs} args - Arguments to filter PlayerMatchExternalStats to count.
+     * @example
+     * // Count the number of PlayerMatchExternalStats
+     * const count = await prisma.playerMatchExternalStat.count({
+     *   where: {
+     *     // ... the filter for the PlayerMatchExternalStats we want to count
+     *   }
+     * })
+    **/
+    count<T extends PlayerMatchExternalStatCountArgs>(
+      args?: Subset<T, PlayerMatchExternalStatCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PlayerMatchExternalStatCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PlayerMatchExternalStat.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerMatchExternalStatAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PlayerMatchExternalStatAggregateArgs>(args: Subset<T, PlayerMatchExternalStatAggregateArgs>): Prisma.PrismaPromise<GetPlayerMatchExternalStatAggregateType<T>>
+
+    /**
+     * Group by PlayerMatchExternalStat.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlayerMatchExternalStatGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PlayerMatchExternalStatGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PlayerMatchExternalStatGroupByArgs['orderBy'] }
+        : { orderBy?: PlayerMatchExternalStatGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PlayerMatchExternalStatGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlayerMatchExternalStatGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PlayerMatchExternalStat model
+   */
+  readonly fields: PlayerMatchExternalStatFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PlayerMatchExternalStat.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PlayerMatchExternalStatClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    match<T extends MatchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MatchDefaultArgs<ExtArgs>>): Prisma__MatchClient<$Result.GetResult<Prisma.$MatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends PlayerMatchExternalStat$userArgs<ExtArgs> = {}>(args?: Subset<T, PlayerMatchExternalStat$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PlayerMatchExternalStat model
+   */
+  interface PlayerMatchExternalStatFieldRefs {
+    readonly id: FieldRef<"PlayerMatchExternalStat", 'String'>
+    readonly matchId: FieldRef<"PlayerMatchExternalStat", 'String'>
+    readonly userId: FieldRef<"PlayerMatchExternalStat", 'String'>
+    readonly provider: FieldRef<"PlayerMatchExternalStat", 'String'>
+    readonly personaName: FieldRef<"PlayerMatchExternalStat", 'String'>
+    readonly rating: FieldRef<"PlayerMatchExternalStat", 'Float'>
+    readonly goals: FieldRef<"PlayerMatchExternalStat", 'Int'>
+    readonly assists: FieldRef<"PlayerMatchExternalStat", 'Int'>
+    readonly saves: FieldRef<"PlayerMatchExternalStat", 'Int'>
+    readonly cleanSheet: FieldRef<"PlayerMatchExternalStat", 'Boolean'>
+    readonly position: FieldRef<"PlayerMatchExternalStat", 'String'>
+    readonly rawPayload: FieldRef<"PlayerMatchExternalStat", 'Json'>
+    readonly createdAt: FieldRef<"PlayerMatchExternalStat", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PlayerMatchExternalStat findUnique
+   */
+  export type PlayerMatchExternalStatFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerMatchExternalStat to fetch.
+     */
+    where: PlayerMatchExternalStatWhereUniqueInput
+  }
+
+  /**
+   * PlayerMatchExternalStat findUniqueOrThrow
+   */
+  export type PlayerMatchExternalStatFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerMatchExternalStat to fetch.
+     */
+    where: PlayerMatchExternalStatWhereUniqueInput
+  }
+
+  /**
+   * PlayerMatchExternalStat findFirst
+   */
+  export type PlayerMatchExternalStatFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerMatchExternalStat to fetch.
+     */
+    where?: PlayerMatchExternalStatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerMatchExternalStats to fetch.
+     */
+    orderBy?: PlayerMatchExternalStatOrderByWithRelationInput | PlayerMatchExternalStatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlayerMatchExternalStats.
+     */
+    cursor?: PlayerMatchExternalStatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerMatchExternalStats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerMatchExternalStats.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlayerMatchExternalStats.
+     */
+    distinct?: PlayerMatchExternalStatScalarFieldEnum | PlayerMatchExternalStatScalarFieldEnum[]
+  }
+
+  /**
+   * PlayerMatchExternalStat findFirstOrThrow
+   */
+  export type PlayerMatchExternalStatFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerMatchExternalStat to fetch.
+     */
+    where?: PlayerMatchExternalStatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerMatchExternalStats to fetch.
+     */
+    orderBy?: PlayerMatchExternalStatOrderByWithRelationInput | PlayerMatchExternalStatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlayerMatchExternalStats.
+     */
+    cursor?: PlayerMatchExternalStatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerMatchExternalStats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerMatchExternalStats.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlayerMatchExternalStats.
+     */
+    distinct?: PlayerMatchExternalStatScalarFieldEnum | PlayerMatchExternalStatScalarFieldEnum[]
+  }
+
+  /**
+   * PlayerMatchExternalStat findMany
+   */
+  export type PlayerMatchExternalStatFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * Filter, which PlayerMatchExternalStats to fetch.
+     */
+    where?: PlayerMatchExternalStatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlayerMatchExternalStats to fetch.
+     */
+    orderBy?: PlayerMatchExternalStatOrderByWithRelationInput | PlayerMatchExternalStatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PlayerMatchExternalStats.
+     */
+    cursor?: PlayerMatchExternalStatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlayerMatchExternalStats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlayerMatchExternalStats.
+     */
+    skip?: number
+    distinct?: PlayerMatchExternalStatScalarFieldEnum | PlayerMatchExternalStatScalarFieldEnum[]
+  }
+
+  /**
+   * PlayerMatchExternalStat create
+   */
+  export type PlayerMatchExternalStatCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PlayerMatchExternalStat.
+     */
+    data: XOR<PlayerMatchExternalStatCreateInput, PlayerMatchExternalStatUncheckedCreateInput>
+  }
+
+  /**
+   * PlayerMatchExternalStat createMany
+   */
+  export type PlayerMatchExternalStatCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PlayerMatchExternalStats.
+     */
+    data: PlayerMatchExternalStatCreateManyInput | PlayerMatchExternalStatCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlayerMatchExternalStat createManyAndReturn
+   */
+  export type PlayerMatchExternalStatCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * The data used to create many PlayerMatchExternalStats.
+     */
+    data: PlayerMatchExternalStatCreateManyInput | PlayerMatchExternalStatCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PlayerMatchExternalStat update
+   */
+  export type PlayerMatchExternalStatUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PlayerMatchExternalStat.
+     */
+    data: XOR<PlayerMatchExternalStatUpdateInput, PlayerMatchExternalStatUncheckedUpdateInput>
+    /**
+     * Choose, which PlayerMatchExternalStat to update.
+     */
+    where: PlayerMatchExternalStatWhereUniqueInput
+  }
+
+  /**
+   * PlayerMatchExternalStat updateMany
+   */
+  export type PlayerMatchExternalStatUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PlayerMatchExternalStats.
+     */
+    data: XOR<PlayerMatchExternalStatUpdateManyMutationInput, PlayerMatchExternalStatUncheckedUpdateManyInput>
+    /**
+     * Filter which PlayerMatchExternalStats to update
+     */
+    where?: PlayerMatchExternalStatWhereInput
+    /**
+     * Limit how many PlayerMatchExternalStats to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlayerMatchExternalStat updateManyAndReturn
+   */
+  export type PlayerMatchExternalStatUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * The data used to update PlayerMatchExternalStats.
+     */
+    data: XOR<PlayerMatchExternalStatUpdateManyMutationInput, PlayerMatchExternalStatUncheckedUpdateManyInput>
+    /**
+     * Filter which PlayerMatchExternalStats to update
+     */
+    where?: PlayerMatchExternalStatWhereInput
+    /**
+     * Limit how many PlayerMatchExternalStats to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PlayerMatchExternalStat upsert
+   */
+  export type PlayerMatchExternalStatUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PlayerMatchExternalStat to update in case it exists.
+     */
+    where: PlayerMatchExternalStatWhereUniqueInput
+    /**
+     * In case the PlayerMatchExternalStat found by the `where` argument doesn't exist, create a new PlayerMatchExternalStat with this data.
+     */
+    create: XOR<PlayerMatchExternalStatCreateInput, PlayerMatchExternalStatUncheckedCreateInput>
+    /**
+     * In case the PlayerMatchExternalStat was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PlayerMatchExternalStatUpdateInput, PlayerMatchExternalStatUncheckedUpdateInput>
+  }
+
+  /**
+   * PlayerMatchExternalStat delete
+   */
+  export type PlayerMatchExternalStatDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
+    /**
+     * Filter which PlayerMatchExternalStat to delete.
+     */
+    where: PlayerMatchExternalStatWhereUniqueInput
+  }
+
+  /**
+   * PlayerMatchExternalStat deleteMany
+   */
+  export type PlayerMatchExternalStatDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlayerMatchExternalStats to delete
+     */
+    where?: PlayerMatchExternalStatWhereInput
+    /**
+     * Limit how many PlayerMatchExternalStats to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlayerMatchExternalStat.user
+   */
+  export type PlayerMatchExternalStat$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * PlayerMatchExternalStat without action
+   */
+  export type PlayerMatchExternalStatDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerMatchExternalStat
+     */
+    select?: PlayerMatchExternalStatSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerMatchExternalStat
+     */
+    omit?: PlayerMatchExternalStatOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerMatchExternalStatInclude<ExtArgs> | null
   }
 
 
@@ -42905,6 +48084,73 @@ export namespace Prisma {
   export type MatchScalarFieldEnum = (typeof MatchScalarFieldEnum)[keyof typeof MatchScalarFieldEnum]
 
 
+  export const TeamExternalLinkScalarFieldEnum: {
+    id: 'id',
+    teamId: 'teamId',
+    provider: 'provider',
+    platform: 'platform',
+    eaClubId: 'eaClubId',
+    clubName: 'clubName',
+    verifiedAt: 'verifiedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TeamExternalLinkScalarFieldEnum = (typeof TeamExternalLinkScalarFieldEnum)[keyof typeof TeamExternalLinkScalarFieldEnum]
+
+
+  export const PlayerExternalLinkScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    provider: 'provider',
+    platform: 'platform',
+    personaName: 'personaName',
+    verifiedAt: 'verifiedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PlayerExternalLinkScalarFieldEnum = (typeof PlayerExternalLinkScalarFieldEnum)[keyof typeof PlayerExternalLinkScalarFieldEnum]
+
+
+  export const MatchSyncScalarFieldEnum: {
+    id: 'id',
+    matchId: 'matchId',
+    provider: 'provider',
+    providerMatchId: 'providerMatchId',
+    homeEaClubId: 'homeEaClubId',
+    awayEaClubId: 'awayEaClubId',
+    status: 'status',
+    attempts: 'attempts',
+    lastError: 'lastError',
+    rawPayload: 'rawPayload',
+    syncedAt: 'syncedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MatchSyncScalarFieldEnum = (typeof MatchSyncScalarFieldEnum)[keyof typeof MatchSyncScalarFieldEnum]
+
+
+  export const PlayerMatchExternalStatScalarFieldEnum: {
+    id: 'id',
+    matchId: 'matchId',
+    userId: 'userId',
+    provider: 'provider',
+    personaName: 'personaName',
+    rating: 'rating',
+    goals: 'goals',
+    assists: 'assists',
+    saves: 'saves',
+    cleanSheet: 'cleanSheet',
+    position: 'position',
+    rawPayload: 'rawPayload',
+    createdAt: 'createdAt'
+  };
+
+  export type PlayerMatchExternalStatScalarFieldEnum = (typeof PlayerMatchExternalStatScalarFieldEnum)[keyof typeof PlayerMatchExternalStatScalarFieldEnum]
+
+
   export const LeagueTableScalarFieldEnum: {
     id: 'id',
     competition_id: 'competition_id',
@@ -43463,6 +48709,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'EventType'
    */
   export type EnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventType'>
@@ -43599,20 +48859,6 @@ export namespace Prisma {
    * Reference to a field of type 'NotificationType[]'
    */
   export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -43771,6 +49017,8 @@ export namespace Prisma {
     walletTransactions?: TransactionListRelationFilter
     supportTickets?: TicketListRelationFilter
     ticketReplies?: TicketReplyListRelationFilter
+    playerExternalLinks?: PlayerExternalLinkListRelationFilter
+    playerMatchExternalStats?: PlayerMatchExternalStatListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -43824,6 +49072,8 @@ export namespace Prisma {
     walletTransactions?: TransactionOrderByRelationAggregateInput
     supportTickets?: TicketOrderByRelationAggregateInput
     ticketReplies?: TicketReplyOrderByRelationAggregateInput
+    playerExternalLinks?: PlayerExternalLinkOrderByRelationAggregateInput
+    playerMatchExternalStats?: PlayerMatchExternalStatOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -43880,6 +49130,8 @@ export namespace Prisma {
     walletTransactions?: TransactionListRelationFilter
     supportTickets?: TicketListRelationFilter
     ticketReplies?: TicketReplyListRelationFilter
+    playerExternalLinks?: PlayerExternalLinkListRelationFilter
+    playerMatchExternalStats?: PlayerMatchExternalStatListRelationFilter
   }, "id" | "email" | "ea_persona_name" | "external_id">
 
   export type UserOrderByWithAggregationInput = {
@@ -43993,6 +49245,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableListRelationFilter
     wallet?: XOR<ClubWalletNullableScalarRelationFilter, ClubWalletWhereInput> | null
     transferSellerSettlementsAsSeller?: TransferSellerSettlementListRelationFilter
+    teamExternalLinks?: TeamExternalLinkListRelationFilter
   }
 
   export type ClubOrderByWithRelationInput = {
@@ -44031,6 +49284,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableOrderByRelationAggregateInput
     wallet?: ClubWalletOrderByWithRelationInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementOrderByRelationAggregateInput
+    teamExternalLinks?: TeamExternalLinkOrderByRelationAggregateInput
   }
 
   export type ClubWhereUniqueInput = Prisma.AtLeast<{
@@ -44072,6 +49326,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableListRelationFilter
     wallet?: XOR<ClubWalletNullableScalarRelationFilter, ClubWalletWhereInput> | null
     transferSellerSettlementsAsSeller?: TransferSellerSettlementListRelationFilter
+    teamExternalLinks?: TeamExternalLinkListRelationFilter
   }, "id" | "name" | "ea_club_id" | "proclubs_url">
 
   export type ClubOrderByWithAggregationInput = {
@@ -44777,6 +50032,8 @@ export namespace Prisma {
     competition?: XOR<CompetitionNullableScalarRelationFilter, CompetitionWhereInput> | null
     homeTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     predictions?: PredictionListRelationFilter
+    matchSyncs?: MatchSyncListRelationFilter
+    playerMatchExternalStats?: PlayerMatchExternalStatListRelationFilter
   }
 
   export type MatchOrderByWithRelationInput = {
@@ -44805,6 +50062,8 @@ export namespace Prisma {
     competition?: CompetitionOrderByWithRelationInput
     homeTeam?: ClubOrderByWithRelationInput
     predictions?: PredictionOrderByRelationAggregateInput
+    matchSyncs?: MatchSyncOrderByRelationAggregateInput
+    playerMatchExternalStats?: PlayerMatchExternalStatOrderByRelationAggregateInput
   }
 
   export type MatchWhereUniqueInput = Prisma.AtLeast<{
@@ -44836,6 +50095,8 @@ export namespace Prisma {
     competition?: XOR<CompetitionNullableScalarRelationFilter, CompetitionWhereInput> | null
     homeTeam?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     predictions?: PredictionListRelationFilter
+    matchSyncs?: MatchSyncListRelationFilter
+    playerMatchExternalStats?: PlayerMatchExternalStatListRelationFilter
   }, "id" | "ea_match_id">
 
   export type MatchOrderByWithAggregationInput = {
@@ -44884,6 +50145,351 @@ export namespace Prisma {
     bracket_index?: IntNullableWithAggregatesFilter<"Match"> | number | null
     winner_advances_to_match_id?: UuidNullableWithAggregatesFilter<"Match"> | string | null
     winner_slot_in_next?: EnumBracketAdvanceSlotNullableWithAggregatesFilter<"Match"> | $Enums.BracketAdvanceSlot | null
+  }
+
+  export type TeamExternalLinkWhereInput = {
+    AND?: TeamExternalLinkWhereInput | TeamExternalLinkWhereInput[]
+    OR?: TeamExternalLinkWhereInput[]
+    NOT?: TeamExternalLinkWhereInput | TeamExternalLinkWhereInput[]
+    id?: UuidFilter<"TeamExternalLink"> | string
+    teamId?: UuidFilter<"TeamExternalLink"> | string
+    provider?: StringFilter<"TeamExternalLink"> | string
+    platform?: StringFilter<"TeamExternalLink"> | string
+    eaClubId?: StringFilter<"TeamExternalLink"> | string
+    clubName?: StringNullableFilter<"TeamExternalLink"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"TeamExternalLink"> | Date | string | null
+    createdAt?: DateTimeFilter<"TeamExternalLink"> | Date | string
+    updatedAt?: DateTimeFilter<"TeamExternalLink"> | Date | string
+    team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }
+
+  export type TeamExternalLinkOrderByWithRelationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    eaClubId?: SortOrder
+    clubName?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    team?: ClubOrderByWithRelationInput
+  }
+
+  export type TeamExternalLinkWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    teamId_provider?: TeamExternalLinkTeamIdProviderCompoundUniqueInput
+    AND?: TeamExternalLinkWhereInput | TeamExternalLinkWhereInput[]
+    OR?: TeamExternalLinkWhereInput[]
+    NOT?: TeamExternalLinkWhereInput | TeamExternalLinkWhereInput[]
+    teamId?: UuidFilter<"TeamExternalLink"> | string
+    provider?: StringFilter<"TeamExternalLink"> | string
+    platform?: StringFilter<"TeamExternalLink"> | string
+    eaClubId?: StringFilter<"TeamExternalLink"> | string
+    clubName?: StringNullableFilter<"TeamExternalLink"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"TeamExternalLink"> | Date | string | null
+    createdAt?: DateTimeFilter<"TeamExternalLink"> | Date | string
+    updatedAt?: DateTimeFilter<"TeamExternalLink"> | Date | string
+    team?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }, "id" | "teamId_provider">
+
+  export type TeamExternalLinkOrderByWithAggregationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    eaClubId?: SortOrder
+    clubName?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TeamExternalLinkCountOrderByAggregateInput
+    _max?: TeamExternalLinkMaxOrderByAggregateInput
+    _min?: TeamExternalLinkMinOrderByAggregateInput
+  }
+
+  export type TeamExternalLinkScalarWhereWithAggregatesInput = {
+    AND?: TeamExternalLinkScalarWhereWithAggregatesInput | TeamExternalLinkScalarWhereWithAggregatesInput[]
+    OR?: TeamExternalLinkScalarWhereWithAggregatesInput[]
+    NOT?: TeamExternalLinkScalarWhereWithAggregatesInput | TeamExternalLinkScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"TeamExternalLink"> | string
+    teamId?: UuidWithAggregatesFilter<"TeamExternalLink"> | string
+    provider?: StringWithAggregatesFilter<"TeamExternalLink"> | string
+    platform?: StringWithAggregatesFilter<"TeamExternalLink"> | string
+    eaClubId?: StringWithAggregatesFilter<"TeamExternalLink"> | string
+    clubName?: StringNullableWithAggregatesFilter<"TeamExternalLink"> | string | null
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"TeamExternalLink"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"TeamExternalLink"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TeamExternalLink"> | Date | string
+  }
+
+  export type PlayerExternalLinkWhereInput = {
+    AND?: PlayerExternalLinkWhereInput | PlayerExternalLinkWhereInput[]
+    OR?: PlayerExternalLinkWhereInput[]
+    NOT?: PlayerExternalLinkWhereInput | PlayerExternalLinkWhereInput[]
+    id?: UuidFilter<"PlayerExternalLink"> | string
+    userId?: UuidFilter<"PlayerExternalLink"> | string
+    provider?: StringFilter<"PlayerExternalLink"> | string
+    platform?: StringNullableFilter<"PlayerExternalLink"> | string | null
+    personaName?: StringFilter<"PlayerExternalLink"> | string
+    verifiedAt?: DateTimeNullableFilter<"PlayerExternalLink"> | Date | string | null
+    createdAt?: DateTimeFilter<"PlayerExternalLink"> | Date | string
+    updatedAt?: DateTimeFilter<"PlayerExternalLink"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type PlayerExternalLinkOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrderInput | SortOrder
+    personaName?: SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type PlayerExternalLinkWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_provider?: PlayerExternalLinkUserIdProviderCompoundUniqueInput
+    AND?: PlayerExternalLinkWhereInput | PlayerExternalLinkWhereInput[]
+    OR?: PlayerExternalLinkWhereInput[]
+    NOT?: PlayerExternalLinkWhereInput | PlayerExternalLinkWhereInput[]
+    userId?: UuidFilter<"PlayerExternalLink"> | string
+    provider?: StringFilter<"PlayerExternalLink"> | string
+    platform?: StringNullableFilter<"PlayerExternalLink"> | string | null
+    personaName?: StringFilter<"PlayerExternalLink"> | string
+    verifiedAt?: DateTimeNullableFilter<"PlayerExternalLink"> | Date | string | null
+    createdAt?: DateTimeFilter<"PlayerExternalLink"> | Date | string
+    updatedAt?: DateTimeFilter<"PlayerExternalLink"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_provider">
+
+  export type PlayerExternalLinkOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrderInput | SortOrder
+    personaName?: SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PlayerExternalLinkCountOrderByAggregateInput
+    _max?: PlayerExternalLinkMaxOrderByAggregateInput
+    _min?: PlayerExternalLinkMinOrderByAggregateInput
+  }
+
+  export type PlayerExternalLinkScalarWhereWithAggregatesInput = {
+    AND?: PlayerExternalLinkScalarWhereWithAggregatesInput | PlayerExternalLinkScalarWhereWithAggregatesInput[]
+    OR?: PlayerExternalLinkScalarWhereWithAggregatesInput[]
+    NOT?: PlayerExternalLinkScalarWhereWithAggregatesInput | PlayerExternalLinkScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"PlayerExternalLink"> | string
+    userId?: UuidWithAggregatesFilter<"PlayerExternalLink"> | string
+    provider?: StringWithAggregatesFilter<"PlayerExternalLink"> | string
+    platform?: StringNullableWithAggregatesFilter<"PlayerExternalLink"> | string | null
+    personaName?: StringWithAggregatesFilter<"PlayerExternalLink"> | string
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"PlayerExternalLink"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PlayerExternalLink"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PlayerExternalLink"> | Date | string
+  }
+
+  export type MatchSyncWhereInput = {
+    AND?: MatchSyncWhereInput | MatchSyncWhereInput[]
+    OR?: MatchSyncWhereInput[]
+    NOT?: MatchSyncWhereInput | MatchSyncWhereInput[]
+    id?: UuidFilter<"MatchSync"> | string
+    matchId?: UuidFilter<"MatchSync"> | string
+    provider?: StringFilter<"MatchSync"> | string
+    providerMatchId?: StringNullableFilter<"MatchSync"> | string | null
+    homeEaClubId?: StringNullableFilter<"MatchSync"> | string | null
+    awayEaClubId?: StringNullableFilter<"MatchSync"> | string | null
+    status?: StringFilter<"MatchSync"> | string
+    attempts?: IntFilter<"MatchSync"> | number
+    lastError?: StringNullableFilter<"MatchSync"> | string | null
+    rawPayload?: JsonNullableFilter<"MatchSync">
+    syncedAt?: DateTimeNullableFilter<"MatchSync"> | Date | string | null
+    createdAt?: DateTimeFilter<"MatchSync"> | Date | string
+    updatedAt?: DateTimeFilter<"MatchSync"> | Date | string
+    match?: XOR<MatchScalarRelationFilter, MatchWhereInput>
+  }
+
+  export type MatchSyncOrderByWithRelationInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    provider?: SortOrder
+    providerMatchId?: SortOrderInput | SortOrder
+    homeEaClubId?: SortOrderInput | SortOrder
+    awayEaClubId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    rawPayload?: SortOrderInput | SortOrder
+    syncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    match?: MatchOrderByWithRelationInput
+  }
+
+  export type MatchSyncWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    matchId_provider?: MatchSyncMatchIdProviderCompoundUniqueInput
+    AND?: MatchSyncWhereInput | MatchSyncWhereInput[]
+    OR?: MatchSyncWhereInput[]
+    NOT?: MatchSyncWhereInput | MatchSyncWhereInput[]
+    matchId?: UuidFilter<"MatchSync"> | string
+    provider?: StringFilter<"MatchSync"> | string
+    providerMatchId?: StringNullableFilter<"MatchSync"> | string | null
+    homeEaClubId?: StringNullableFilter<"MatchSync"> | string | null
+    awayEaClubId?: StringNullableFilter<"MatchSync"> | string | null
+    status?: StringFilter<"MatchSync"> | string
+    attempts?: IntFilter<"MatchSync"> | number
+    lastError?: StringNullableFilter<"MatchSync"> | string | null
+    rawPayload?: JsonNullableFilter<"MatchSync">
+    syncedAt?: DateTimeNullableFilter<"MatchSync"> | Date | string | null
+    createdAt?: DateTimeFilter<"MatchSync"> | Date | string
+    updatedAt?: DateTimeFilter<"MatchSync"> | Date | string
+    match?: XOR<MatchScalarRelationFilter, MatchWhereInput>
+  }, "id" | "matchId_provider">
+
+  export type MatchSyncOrderByWithAggregationInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    provider?: SortOrder
+    providerMatchId?: SortOrderInput | SortOrder
+    homeEaClubId?: SortOrderInput | SortOrder
+    awayEaClubId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    rawPayload?: SortOrderInput | SortOrder
+    syncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MatchSyncCountOrderByAggregateInput
+    _avg?: MatchSyncAvgOrderByAggregateInput
+    _max?: MatchSyncMaxOrderByAggregateInput
+    _min?: MatchSyncMinOrderByAggregateInput
+    _sum?: MatchSyncSumOrderByAggregateInput
+  }
+
+  export type MatchSyncScalarWhereWithAggregatesInput = {
+    AND?: MatchSyncScalarWhereWithAggregatesInput | MatchSyncScalarWhereWithAggregatesInput[]
+    OR?: MatchSyncScalarWhereWithAggregatesInput[]
+    NOT?: MatchSyncScalarWhereWithAggregatesInput | MatchSyncScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"MatchSync"> | string
+    matchId?: UuidWithAggregatesFilter<"MatchSync"> | string
+    provider?: StringWithAggregatesFilter<"MatchSync"> | string
+    providerMatchId?: StringNullableWithAggregatesFilter<"MatchSync"> | string | null
+    homeEaClubId?: StringNullableWithAggregatesFilter<"MatchSync"> | string | null
+    awayEaClubId?: StringNullableWithAggregatesFilter<"MatchSync"> | string | null
+    status?: StringWithAggregatesFilter<"MatchSync"> | string
+    attempts?: IntWithAggregatesFilter<"MatchSync"> | number
+    lastError?: StringNullableWithAggregatesFilter<"MatchSync"> | string | null
+    rawPayload?: JsonNullableWithAggregatesFilter<"MatchSync">
+    syncedAt?: DateTimeNullableWithAggregatesFilter<"MatchSync"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MatchSync"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MatchSync"> | Date | string
+  }
+
+  export type PlayerMatchExternalStatWhereInput = {
+    AND?: PlayerMatchExternalStatWhereInput | PlayerMatchExternalStatWhereInput[]
+    OR?: PlayerMatchExternalStatWhereInput[]
+    NOT?: PlayerMatchExternalStatWhereInput | PlayerMatchExternalStatWhereInput[]
+    id?: UuidFilter<"PlayerMatchExternalStat"> | string
+    matchId?: UuidFilter<"PlayerMatchExternalStat"> | string
+    userId?: UuidNullableFilter<"PlayerMatchExternalStat"> | string | null
+    provider?: StringFilter<"PlayerMatchExternalStat"> | string
+    personaName?: StringFilter<"PlayerMatchExternalStat"> | string
+    rating?: FloatNullableFilter<"PlayerMatchExternalStat"> | number | null
+    goals?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    assists?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    saves?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    cleanSheet?: BoolNullableFilter<"PlayerMatchExternalStat"> | boolean | null
+    position?: StringNullableFilter<"PlayerMatchExternalStat"> | string | null
+    rawPayload?: JsonNullableFilter<"PlayerMatchExternalStat">
+    createdAt?: DateTimeFilter<"PlayerMatchExternalStat"> | Date | string
+    match?: XOR<MatchScalarRelationFilter, MatchWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type PlayerMatchExternalStatOrderByWithRelationInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    personaName?: SortOrder
+    rating?: SortOrderInput | SortOrder
+    goals?: SortOrderInput | SortOrder
+    assists?: SortOrderInput | SortOrder
+    saves?: SortOrderInput | SortOrder
+    cleanSheet?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    rawPayload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    match?: MatchOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type PlayerMatchExternalStatWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PlayerMatchExternalStatWhereInput | PlayerMatchExternalStatWhereInput[]
+    OR?: PlayerMatchExternalStatWhereInput[]
+    NOT?: PlayerMatchExternalStatWhereInput | PlayerMatchExternalStatWhereInput[]
+    matchId?: UuidFilter<"PlayerMatchExternalStat"> | string
+    userId?: UuidNullableFilter<"PlayerMatchExternalStat"> | string | null
+    provider?: StringFilter<"PlayerMatchExternalStat"> | string
+    personaName?: StringFilter<"PlayerMatchExternalStat"> | string
+    rating?: FloatNullableFilter<"PlayerMatchExternalStat"> | number | null
+    goals?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    assists?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    saves?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    cleanSheet?: BoolNullableFilter<"PlayerMatchExternalStat"> | boolean | null
+    position?: StringNullableFilter<"PlayerMatchExternalStat"> | string | null
+    rawPayload?: JsonNullableFilter<"PlayerMatchExternalStat">
+    createdAt?: DateTimeFilter<"PlayerMatchExternalStat"> | Date | string
+    match?: XOR<MatchScalarRelationFilter, MatchWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type PlayerMatchExternalStatOrderByWithAggregationInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    personaName?: SortOrder
+    rating?: SortOrderInput | SortOrder
+    goals?: SortOrderInput | SortOrder
+    assists?: SortOrderInput | SortOrder
+    saves?: SortOrderInput | SortOrder
+    cleanSheet?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    rawPayload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PlayerMatchExternalStatCountOrderByAggregateInput
+    _avg?: PlayerMatchExternalStatAvgOrderByAggregateInput
+    _max?: PlayerMatchExternalStatMaxOrderByAggregateInput
+    _min?: PlayerMatchExternalStatMinOrderByAggregateInput
+    _sum?: PlayerMatchExternalStatSumOrderByAggregateInput
+  }
+
+  export type PlayerMatchExternalStatScalarWhereWithAggregatesInput = {
+    AND?: PlayerMatchExternalStatScalarWhereWithAggregatesInput | PlayerMatchExternalStatScalarWhereWithAggregatesInput[]
+    OR?: PlayerMatchExternalStatScalarWhereWithAggregatesInput[]
+    NOT?: PlayerMatchExternalStatScalarWhereWithAggregatesInput | PlayerMatchExternalStatScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"PlayerMatchExternalStat"> | string
+    matchId?: UuidWithAggregatesFilter<"PlayerMatchExternalStat"> | string
+    userId?: UuidNullableWithAggregatesFilter<"PlayerMatchExternalStat"> | string | null
+    provider?: StringWithAggregatesFilter<"PlayerMatchExternalStat"> | string
+    personaName?: StringWithAggregatesFilter<"PlayerMatchExternalStat"> | string
+    rating?: FloatNullableWithAggregatesFilter<"PlayerMatchExternalStat"> | number | null
+    goals?: IntNullableWithAggregatesFilter<"PlayerMatchExternalStat"> | number | null
+    assists?: IntNullableWithAggregatesFilter<"PlayerMatchExternalStat"> | number | null
+    saves?: IntNullableWithAggregatesFilter<"PlayerMatchExternalStat"> | number | null
+    cleanSheet?: BoolNullableWithAggregatesFilter<"PlayerMatchExternalStat"> | boolean | null
+    position?: StringNullableWithAggregatesFilter<"PlayerMatchExternalStat"> | string | null
+    rawPayload?: JsonNullableWithAggregatesFilter<"PlayerMatchExternalStat">
+    createdAt?: DateTimeWithAggregatesFilter<"PlayerMatchExternalStat"> | Date | string
   }
 
   export type LeagueTableWhereInput = {
@@ -46400,6 +52006,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -46452,6 +52060,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -46504,6 +52114,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -46556,6 +52168,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -46688,6 +52302,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateInput = {
@@ -46725,6 +52340,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUpdateInput = {
@@ -46762,6 +52378,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateInput = {
@@ -46799,6 +52416,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubCreateManyInput = {
@@ -47550,6 +53168,8 @@ export namespace Prisma {
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateInput = {
@@ -47574,6 +53194,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUpdateInput = {
@@ -47598,6 +53220,8 @@ export namespace Prisma {
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateInput = {
@@ -47622,6 +53246,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchCreateManyInput = {
@@ -47678,6 +53304,386 @@ export namespace Prisma {
     bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
     winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
     winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+  }
+
+  export type TeamExternalLinkCreateInput = {
+    id?: string
+    provider?: string
+    platform: string
+    eaClubId: string
+    clubName?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: ClubCreateNestedOneWithoutTeamExternalLinksInput
+  }
+
+  export type TeamExternalLinkUncheckedCreateInput = {
+    id?: string
+    teamId: string
+    provider?: string
+    platform: string
+    eaClubId: string
+    clubName?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TeamExternalLinkUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    eaClubId?: StringFieldUpdateOperationsInput | string
+    clubName?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: ClubUpdateOneRequiredWithoutTeamExternalLinksNestedInput
+  }
+
+  export type TeamExternalLinkUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    eaClubId?: StringFieldUpdateOperationsInput | string
+    clubName?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamExternalLinkCreateManyInput = {
+    id?: string
+    teamId: string
+    provider?: string
+    platform: string
+    eaClubId: string
+    clubName?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TeamExternalLinkUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    eaClubId?: StringFieldUpdateOperationsInput | string
+    clubName?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamExternalLinkUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    eaClubId?: StringFieldUpdateOperationsInput | string
+    clubName?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerExternalLinkCreateInput = {
+    id?: string
+    provider?: string
+    platform?: string | null
+    personaName: string
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutPlayerExternalLinksInput
+  }
+
+  export type PlayerExternalLinkUncheckedCreateInput = {
+    id?: string
+    userId: string
+    provider?: string
+    platform?: string | null
+    personaName: string
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlayerExternalLinkUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    personaName?: StringFieldUpdateOperationsInput | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPlayerExternalLinksNestedInput
+  }
+
+  export type PlayerExternalLinkUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    personaName?: StringFieldUpdateOperationsInput | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerExternalLinkCreateManyInput = {
+    id?: string
+    userId: string
+    provider?: string
+    platform?: string | null
+    personaName: string
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlayerExternalLinkUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    personaName?: StringFieldUpdateOperationsInput | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerExternalLinkUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    personaName?: StringFieldUpdateOperationsInput | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MatchSyncCreateInput = {
+    id?: string
+    provider?: string
+    providerMatchId?: string | null
+    homeEaClubId?: string | null
+    awayEaClubId?: string | null
+    status?: string
+    attempts?: number
+    lastError?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    match: MatchCreateNestedOneWithoutMatchSyncsInput
+  }
+
+  export type MatchSyncUncheckedCreateInput = {
+    id?: string
+    matchId: string
+    provider?: string
+    providerMatchId?: string | null
+    homeEaClubId?: string | null
+    awayEaClubId?: string | null
+    status?: string
+    attempts?: number
+    lastError?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MatchSyncUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerMatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    awayEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    match?: MatchUpdateOneRequiredWithoutMatchSyncsNestedInput
+  }
+
+  export type MatchSyncUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerMatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    awayEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MatchSyncCreateManyInput = {
+    id?: string
+    matchId: string
+    provider?: string
+    providerMatchId?: string | null
+    homeEaClubId?: string | null
+    awayEaClubId?: string | null
+    status?: string
+    attempts?: number
+    lastError?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MatchSyncUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerMatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    awayEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MatchSyncUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerMatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    awayEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerMatchExternalStatCreateInput = {
+    id?: string
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    match: MatchCreateNestedOneWithoutPlayerMatchExternalStatsInput
+    user?: UserCreateNestedOneWithoutPlayerMatchExternalStatsInput
+  }
+
+  export type PlayerMatchExternalStatUncheckedCreateInput = {
+    id?: string
+    matchId: string
+    userId?: string | null
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type PlayerMatchExternalStatUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    match?: MatchUpdateOneRequiredWithoutPlayerMatchExternalStatsNestedInput
+    user?: UserUpdateOneWithoutPlayerMatchExternalStatsNestedInput
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerMatchExternalStatCreateManyInput = {
+    id?: string
+    matchId: string
+    userId?: string | null
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type PlayerMatchExternalStatUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type LeagueTableCreateInput = {
@@ -49364,6 +55370,18 @@ export namespace Prisma {
     none?: TicketReplyWhereInput
   }
 
+  export type PlayerExternalLinkListRelationFilter = {
+    every?: PlayerExternalLinkWhereInput
+    some?: PlayerExternalLinkWhereInput
+    none?: PlayerExternalLinkWhereInput
+  }
+
+  export type PlayerMatchExternalStatListRelationFilter = {
+    every?: PlayerMatchExternalStatWhereInput
+    some?: PlayerMatchExternalStatWhereInput
+    none?: PlayerMatchExternalStatWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -49430,6 +55448,14 @@ export namespace Prisma {
   }
 
   export type TicketReplyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PlayerExternalLinkOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PlayerMatchExternalStatOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -49747,6 +55773,12 @@ export namespace Prisma {
     none?: TransferSellerSettlementWhereInput
   }
 
+  export type TeamExternalLinkListRelationFilter = {
+    every?: TeamExternalLinkWhereInput
+    some?: TeamExternalLinkWhereInput
+    none?: TeamExternalLinkWhereInput
+  }
+
   export type StoreItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -49764,6 +55796,10 @@ export namespace Prisma {
   }
 
   export type TransferSellerSettlementOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TeamExternalLinkOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -50377,6 +56413,16 @@ export namespace Prisma {
     isNot?: CompetitionWhereInput | null
   }
 
+  export type MatchSyncListRelationFilter = {
+    every?: MatchSyncWhereInput
+    some?: MatchSyncWhereInput
+    none?: MatchSyncWhereInput
+  }
+
+  export type MatchSyncOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type MatchCountOrderByAggregateInput = {
     id?: SortOrder
     ea_match_id?: SortOrder
@@ -50485,6 +56531,298 @@ export namespace Prisma {
     _max?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel>
   }
 
+  export type TeamExternalLinkTeamIdProviderCompoundUniqueInput = {
+    teamId: string
+    provider: string
+  }
+
+  export type TeamExternalLinkCountOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    eaClubId?: SortOrder
+    clubName?: SortOrder
+    verifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TeamExternalLinkMaxOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    eaClubId?: SortOrder
+    clubName?: SortOrder
+    verifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TeamExternalLinkMinOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    eaClubId?: SortOrder
+    clubName?: SortOrder
+    verifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlayerExternalLinkUserIdProviderCompoundUniqueInput = {
+    userId: string
+    provider: string
+  }
+
+  export type PlayerExternalLinkCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    personaName?: SortOrder
+    verifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlayerExternalLinkMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    personaName?: SortOrder
+    verifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlayerExternalLinkMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    platform?: SortOrder
+    personaName?: SortOrder
+    verifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type MatchScalarRelationFilter = {
+    is?: MatchWhereInput
+    isNot?: MatchWhereInput
+  }
+
+  export type MatchSyncMatchIdProviderCompoundUniqueInput = {
+    matchId: string
+    provider: string
+  }
+
+  export type MatchSyncCountOrderByAggregateInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    provider?: SortOrder
+    providerMatchId?: SortOrder
+    homeEaClubId?: SortOrder
+    awayEaClubId?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    rawPayload?: SortOrder
+    syncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MatchSyncAvgOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
+  export type MatchSyncMaxOrderByAggregateInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    provider?: SortOrder
+    providerMatchId?: SortOrder
+    homeEaClubId?: SortOrder
+    awayEaClubId?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    syncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MatchSyncMinOrderByAggregateInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    provider?: SortOrder
+    providerMatchId?: SortOrder
+    homeEaClubId?: SortOrder
+    awayEaClubId?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    syncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MatchSyncSumOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type PlayerMatchExternalStatCountOrderByAggregateInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    personaName?: SortOrder
+    rating?: SortOrder
+    goals?: SortOrder
+    assists?: SortOrder
+    saves?: SortOrder
+    cleanSheet?: SortOrder
+    position?: SortOrder
+    rawPayload?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PlayerMatchExternalStatAvgOrderByAggregateInput = {
+    rating?: SortOrder
+    goals?: SortOrder
+    assists?: SortOrder
+    saves?: SortOrder
+  }
+
+  export type PlayerMatchExternalStatMaxOrderByAggregateInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    personaName?: SortOrder
+    rating?: SortOrder
+    goals?: SortOrder
+    assists?: SortOrder
+    saves?: SortOrder
+    cleanSheet?: SortOrder
+    position?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PlayerMatchExternalStatMinOrderByAggregateInput = {
+    id?: SortOrder
+    matchId?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    personaName?: SortOrder
+    rating?: SortOrder
+    goals?: SortOrder
+    assists?: SortOrder
+    saves?: SortOrder
+    cleanSheet?: SortOrder
+    position?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PlayerMatchExternalStatSumOrderByAggregateInput = {
+    rating?: SortOrder
+    goals?: SortOrder
+    assists?: SortOrder
+    saves?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
   export type LeagueTableCompetition_idTeam_idCompoundUniqueInput = {
     competition_id: string
     team_id: string
@@ -50555,11 +56893,6 @@ export namespace Prisma {
     goals_against?: SortOrder
     goal_difference?: SortOrder
     points?: SortOrder
-  }
-
-  export type MatchScalarRelationFilter = {
-    is?: MatchWhereInput
-    isNot?: MatchWhereInput
   }
 
   export type MatchScoreReportMatch_idReporting_team_idCompoundUniqueInput = {
@@ -50893,17 +57226,6 @@ export namespace Prisma {
     not?: NestedEnumTransferModeFilter<$PrismaModel> | $Enums.TransferMode
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type EnumTransferOfferStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
@@ -51011,22 +57333,6 @@ export namespace Prisma {
     _max?: NestedEnumTransferModeFilter<$PrismaModel>
   }
 
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
   export type EnumTransferOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
@@ -51116,29 +57422,6 @@ export namespace Prisma {
     notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumNotificationTypeFilter<$PrismaModel> | $Enums.NotificationType
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
@@ -51182,32 +57465,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumStoreItemCategoryFilter<$PrismaModel = never> = {
@@ -51858,6 +58115,20 @@ export namespace Prisma {
     connect?: TicketReplyWhereUniqueInput | TicketReplyWhereUniqueInput[]
   }
 
+  export type PlayerExternalLinkCreateNestedManyWithoutUserInput = {
+    create?: XOR<PlayerExternalLinkCreateWithoutUserInput, PlayerExternalLinkUncheckedCreateWithoutUserInput> | PlayerExternalLinkCreateWithoutUserInput[] | PlayerExternalLinkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerExternalLinkCreateOrConnectWithoutUserInput | PlayerExternalLinkCreateOrConnectWithoutUserInput[]
+    createMany?: PlayerExternalLinkCreateManyUserInputEnvelope
+    connect?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+  }
+
+  export type PlayerMatchExternalStatCreateNestedManyWithoutUserInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutUserInput, PlayerMatchExternalStatUncheckedCreateWithoutUserInput> | PlayerMatchExternalStatCreateWithoutUserInput[] | PlayerMatchExternalStatUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutUserInput | PlayerMatchExternalStatCreateOrConnectWithoutUserInput[]
+    createMany?: PlayerMatchExternalStatCreateManyUserInputEnvelope
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+  }
+
   export type ContractUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -51994,6 +58265,20 @@ export namespace Prisma {
     connectOrCreate?: TicketReplyCreateOrConnectWithoutAuthorInput | TicketReplyCreateOrConnectWithoutAuthorInput[]
     createMany?: TicketReplyCreateManyAuthorInputEnvelope
     connect?: TicketReplyWhereUniqueInput | TicketReplyWhereUniqueInput[]
+  }
+
+  export type PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<PlayerExternalLinkCreateWithoutUserInput, PlayerExternalLinkUncheckedCreateWithoutUserInput> | PlayerExternalLinkCreateWithoutUserInput[] | PlayerExternalLinkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerExternalLinkCreateOrConnectWithoutUserInput | PlayerExternalLinkCreateOrConnectWithoutUserInput[]
+    createMany?: PlayerExternalLinkCreateManyUserInputEnvelope
+    connect?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+  }
+
+  export type PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutUserInput, PlayerMatchExternalStatUncheckedCreateWithoutUserInput> | PlayerMatchExternalStatCreateWithoutUserInput[] | PlayerMatchExternalStatUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutUserInput | PlayerMatchExternalStatCreateOrConnectWithoutUserInput[]
+    createMany?: PlayerMatchExternalStatCreateManyUserInputEnvelope
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -52314,6 +58599,34 @@ export namespace Prisma {
     deleteMany?: TicketReplyScalarWhereInput | TicketReplyScalarWhereInput[]
   }
 
+  export type PlayerExternalLinkUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PlayerExternalLinkCreateWithoutUserInput, PlayerExternalLinkUncheckedCreateWithoutUserInput> | PlayerExternalLinkCreateWithoutUserInput[] | PlayerExternalLinkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerExternalLinkCreateOrConnectWithoutUserInput | PlayerExternalLinkCreateOrConnectWithoutUserInput[]
+    upsert?: PlayerExternalLinkUpsertWithWhereUniqueWithoutUserInput | PlayerExternalLinkUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PlayerExternalLinkCreateManyUserInputEnvelope
+    set?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    disconnect?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    delete?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    connect?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    update?: PlayerExternalLinkUpdateWithWhereUniqueWithoutUserInput | PlayerExternalLinkUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PlayerExternalLinkUpdateManyWithWhereWithoutUserInput | PlayerExternalLinkUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PlayerExternalLinkScalarWhereInput | PlayerExternalLinkScalarWhereInput[]
+  }
+
+  export type PlayerMatchExternalStatUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutUserInput, PlayerMatchExternalStatUncheckedCreateWithoutUserInput> | PlayerMatchExternalStatCreateWithoutUserInput[] | PlayerMatchExternalStatUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutUserInput | PlayerMatchExternalStatCreateOrConnectWithoutUserInput[]
+    upsert?: PlayerMatchExternalStatUpsertWithWhereUniqueWithoutUserInput | PlayerMatchExternalStatUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PlayerMatchExternalStatCreateManyUserInputEnvelope
+    set?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    disconnect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    delete?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    update?: PlayerMatchExternalStatUpdateWithWhereUniqueWithoutUserInput | PlayerMatchExternalStatUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PlayerMatchExternalStatUpdateManyWithWhereWithoutUserInput | PlayerMatchExternalStatUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PlayerMatchExternalStatScalarWhereInput | PlayerMatchExternalStatScalarWhereInput[]
+  }
+
   export type ContractUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ContractCreateWithoutUserInput, ContractUncheckedCreateWithoutUserInput> | ContractCreateWithoutUserInput[] | ContractUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ContractCreateOrConnectWithoutUserInput | ContractCreateOrConnectWithoutUserInput[]
@@ -52586,6 +58899,34 @@ export namespace Prisma {
     deleteMany?: TicketReplyScalarWhereInput | TicketReplyScalarWhereInput[]
   }
 
+  export type PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PlayerExternalLinkCreateWithoutUserInput, PlayerExternalLinkUncheckedCreateWithoutUserInput> | PlayerExternalLinkCreateWithoutUserInput[] | PlayerExternalLinkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerExternalLinkCreateOrConnectWithoutUserInput | PlayerExternalLinkCreateOrConnectWithoutUserInput[]
+    upsert?: PlayerExternalLinkUpsertWithWhereUniqueWithoutUserInput | PlayerExternalLinkUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PlayerExternalLinkCreateManyUserInputEnvelope
+    set?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    disconnect?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    delete?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    connect?: PlayerExternalLinkWhereUniqueInput | PlayerExternalLinkWhereUniqueInput[]
+    update?: PlayerExternalLinkUpdateWithWhereUniqueWithoutUserInput | PlayerExternalLinkUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PlayerExternalLinkUpdateManyWithWhereWithoutUserInput | PlayerExternalLinkUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PlayerExternalLinkScalarWhereInput | PlayerExternalLinkScalarWhereInput[]
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutUserInput, PlayerMatchExternalStatUncheckedCreateWithoutUserInput> | PlayerMatchExternalStatCreateWithoutUserInput[] | PlayerMatchExternalStatUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutUserInput | PlayerMatchExternalStatCreateOrConnectWithoutUserInput[]
+    upsert?: PlayerMatchExternalStatUpsertWithWhereUniqueWithoutUserInput | PlayerMatchExternalStatUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PlayerMatchExternalStatCreateManyUserInputEnvelope
+    set?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    disconnect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    delete?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    update?: PlayerMatchExternalStatUpdateWithWhereUniqueWithoutUserInput | PlayerMatchExternalStatUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PlayerMatchExternalStatUpdateManyWithWhereWithoutUserInput | PlayerMatchExternalStatUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PlayerMatchExternalStatScalarWhereInput | PlayerMatchExternalStatScalarWhereInput[]
+  }
+
   export type StoreItemCreateNestedManyWithoutClubInput = {
     create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
     connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
@@ -52716,6 +59057,13 @@ export namespace Prisma {
     connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
   }
 
+  export type TeamExternalLinkCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamExternalLinkCreateWithoutTeamInput, TeamExternalLinkUncheckedCreateWithoutTeamInput> | TeamExternalLinkCreateWithoutTeamInput[] | TeamExternalLinkUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamExternalLinkCreateOrConnectWithoutTeamInput | TeamExternalLinkCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamExternalLinkCreateManyTeamInputEnvelope
+    connect?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+  }
+
   export type StoreItemUncheckedCreateNestedManyWithoutClubInput = {
     create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
     connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
@@ -52838,6 +59186,13 @@ export namespace Prisma {
     connectOrCreate?: TransferSellerSettlementCreateOrConnectWithoutSellerClubInput | TransferSellerSettlementCreateOrConnectWithoutSellerClubInput[]
     createMany?: TransferSellerSettlementCreateManySellerClubInputEnvelope
     connect?: TransferSellerSettlementWhereUniqueInput | TransferSellerSettlementWhereUniqueInput[]
+  }
+
+  export type TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamExternalLinkCreateWithoutTeamInput, TeamExternalLinkUncheckedCreateWithoutTeamInput> | TeamExternalLinkCreateWithoutTeamInput[] | TeamExternalLinkUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamExternalLinkCreateOrConnectWithoutTeamInput | TeamExternalLinkCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamExternalLinkCreateManyTeamInputEnvelope
+    connect?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
   }
 
   export type EnumPlatformFieldUpdateOperationsInput = {
@@ -53110,6 +59465,20 @@ export namespace Prisma {
     deleteMany?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
   }
 
+  export type TeamExternalLinkUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamExternalLinkCreateWithoutTeamInput, TeamExternalLinkUncheckedCreateWithoutTeamInput> | TeamExternalLinkCreateWithoutTeamInput[] | TeamExternalLinkUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamExternalLinkCreateOrConnectWithoutTeamInput | TeamExternalLinkCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamExternalLinkUpsertWithWhereUniqueWithoutTeamInput | TeamExternalLinkUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamExternalLinkCreateManyTeamInputEnvelope
+    set?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    disconnect?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    delete?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    connect?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    update?: TeamExternalLinkUpdateWithWhereUniqueWithoutTeamInput | TeamExternalLinkUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamExternalLinkUpdateManyWithWhereWithoutTeamInput | TeamExternalLinkUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamExternalLinkScalarWhereInput | TeamExternalLinkScalarWhereInput[]
+  }
+
   export type StoreItemUncheckedUpdateManyWithoutClubNestedInput = {
     create?: XOR<StoreItemCreateWithoutClubInput, StoreItemUncheckedCreateWithoutClubInput> | StoreItemCreateWithoutClubInput[] | StoreItemUncheckedCreateWithoutClubInput[]
     connectOrCreate?: StoreItemCreateOrConnectWithoutClubInput | StoreItemCreateOrConnectWithoutClubInput[]
@@ -53352,6 +59721,20 @@ export namespace Prisma {
     update?: TransferSellerSettlementUpdateWithWhereUniqueWithoutSellerClubInput | TransferSellerSettlementUpdateWithWhereUniqueWithoutSellerClubInput[]
     updateMany?: TransferSellerSettlementUpdateManyWithWhereWithoutSellerClubInput | TransferSellerSettlementUpdateManyWithWhereWithoutSellerClubInput[]
     deleteMany?: TransferSellerSettlementScalarWhereInput | TransferSellerSettlementScalarWhereInput[]
+  }
+
+  export type TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamExternalLinkCreateWithoutTeamInput, TeamExternalLinkUncheckedCreateWithoutTeamInput> | TeamExternalLinkCreateWithoutTeamInput[] | TeamExternalLinkUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamExternalLinkCreateOrConnectWithoutTeamInput | TeamExternalLinkCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamExternalLinkUpsertWithWhereUniqueWithoutTeamInput | TeamExternalLinkUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamExternalLinkCreateManyTeamInputEnvelope
+    set?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    disconnect?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    delete?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    connect?: TeamExternalLinkWhereUniqueInput | TeamExternalLinkWhereUniqueInput[]
+    update?: TeamExternalLinkUpdateWithWhereUniqueWithoutTeamInput | TeamExternalLinkUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamExternalLinkUpdateManyWithWhereWithoutTeamInput | TeamExternalLinkUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamExternalLinkScalarWhereInput | TeamExternalLinkScalarWhereInput[]
   }
 
   export type ClubCreateNestedOneWithoutWalletInput = {
@@ -53840,6 +60223,20 @@ export namespace Prisma {
     connect?: PredictionWhereUniqueInput | PredictionWhereUniqueInput[]
   }
 
+  export type MatchSyncCreateNestedManyWithoutMatchInput = {
+    create?: XOR<MatchSyncCreateWithoutMatchInput, MatchSyncUncheckedCreateWithoutMatchInput> | MatchSyncCreateWithoutMatchInput[] | MatchSyncUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchSyncCreateOrConnectWithoutMatchInput | MatchSyncCreateOrConnectWithoutMatchInput[]
+    createMany?: MatchSyncCreateManyMatchInputEnvelope
+    connect?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+  }
+
+  export type PlayerMatchExternalStatCreateNestedManyWithoutMatchInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutMatchInput, PlayerMatchExternalStatUncheckedCreateWithoutMatchInput> | PlayerMatchExternalStatCreateWithoutMatchInput[] | PlayerMatchExternalStatUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutMatchInput | PlayerMatchExternalStatCreateOrConnectWithoutMatchInput[]
+    createMany?: PlayerMatchExternalStatCreateManyMatchInputEnvelope
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+  }
+
   export type MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput = {
     create?: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput> | MatchCreateWithoutWinner_advances_toInput[] | MatchUncheckedCreateWithoutWinner_advances_toInput[]
     connectOrCreate?: MatchCreateOrConnectWithoutWinner_advances_toInput | MatchCreateOrConnectWithoutWinner_advances_toInput[]
@@ -53866,6 +60263,20 @@ export namespace Prisma {
     connectOrCreate?: PredictionCreateOrConnectWithoutMatchInput | PredictionCreateOrConnectWithoutMatchInput[]
     createMany?: PredictionCreateManyMatchInputEnvelope
     connect?: PredictionWhereUniqueInput | PredictionWhereUniqueInput[]
+  }
+
+  export type MatchSyncUncheckedCreateNestedManyWithoutMatchInput = {
+    create?: XOR<MatchSyncCreateWithoutMatchInput, MatchSyncUncheckedCreateWithoutMatchInput> | MatchSyncCreateWithoutMatchInput[] | MatchSyncUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchSyncCreateOrConnectWithoutMatchInput | MatchSyncCreateOrConnectWithoutMatchInput[]
+    createMany?: MatchSyncCreateManyMatchInputEnvelope
+    connect?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+  }
+
+  export type PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutMatchInput, PlayerMatchExternalStatUncheckedCreateWithoutMatchInput> | PlayerMatchExternalStatCreateWithoutMatchInput[] | PlayerMatchExternalStatUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutMatchInput | PlayerMatchExternalStatCreateOrConnectWithoutMatchInput[]
+    createMany?: PlayerMatchExternalStatCreateManyMatchInputEnvelope
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
   }
 
   export type EnumMatchStatusFieldUpdateOperationsInput = {
@@ -53972,6 +60383,34 @@ export namespace Prisma {
     deleteMany?: PredictionScalarWhereInput | PredictionScalarWhereInput[]
   }
 
+  export type MatchSyncUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<MatchSyncCreateWithoutMatchInput, MatchSyncUncheckedCreateWithoutMatchInput> | MatchSyncCreateWithoutMatchInput[] | MatchSyncUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchSyncCreateOrConnectWithoutMatchInput | MatchSyncCreateOrConnectWithoutMatchInput[]
+    upsert?: MatchSyncUpsertWithWhereUniqueWithoutMatchInput | MatchSyncUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: MatchSyncCreateManyMatchInputEnvelope
+    set?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    disconnect?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    delete?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    connect?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    update?: MatchSyncUpdateWithWhereUniqueWithoutMatchInput | MatchSyncUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: MatchSyncUpdateManyWithWhereWithoutMatchInput | MatchSyncUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: MatchSyncScalarWhereInput | MatchSyncScalarWhereInput[]
+  }
+
+  export type PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutMatchInput, PlayerMatchExternalStatUncheckedCreateWithoutMatchInput> | PlayerMatchExternalStatCreateWithoutMatchInput[] | PlayerMatchExternalStatUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutMatchInput | PlayerMatchExternalStatCreateOrConnectWithoutMatchInput[]
+    upsert?: PlayerMatchExternalStatUpsertWithWhereUniqueWithoutMatchInput | PlayerMatchExternalStatUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: PlayerMatchExternalStatCreateManyMatchInputEnvelope
+    set?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    disconnect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    delete?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    update?: PlayerMatchExternalStatUpdateWithWhereUniqueWithoutMatchInput | PlayerMatchExternalStatUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: PlayerMatchExternalStatUpdateManyWithWhereWithoutMatchInput | PlayerMatchExternalStatUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: PlayerMatchExternalStatScalarWhereInput | PlayerMatchExternalStatScalarWhereInput[]
+  }
+
   export type MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput = {
     create?: XOR<MatchCreateWithoutWinner_advances_toInput, MatchUncheckedCreateWithoutWinner_advances_toInput> | MatchCreateWithoutWinner_advances_toInput[] | MatchUncheckedCreateWithoutWinner_advances_toInput[]
     connectOrCreate?: MatchCreateOrConnectWithoutWinner_advances_toInput | MatchCreateOrConnectWithoutWinner_advances_toInput[]
@@ -54026,6 +60465,118 @@ export namespace Prisma {
     update?: PredictionUpdateWithWhereUniqueWithoutMatchInput | PredictionUpdateWithWhereUniqueWithoutMatchInput[]
     updateMany?: PredictionUpdateManyWithWhereWithoutMatchInput | PredictionUpdateManyWithWhereWithoutMatchInput[]
     deleteMany?: PredictionScalarWhereInput | PredictionScalarWhereInput[]
+  }
+
+  export type MatchSyncUncheckedUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<MatchSyncCreateWithoutMatchInput, MatchSyncUncheckedCreateWithoutMatchInput> | MatchSyncCreateWithoutMatchInput[] | MatchSyncUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: MatchSyncCreateOrConnectWithoutMatchInput | MatchSyncCreateOrConnectWithoutMatchInput[]
+    upsert?: MatchSyncUpsertWithWhereUniqueWithoutMatchInput | MatchSyncUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: MatchSyncCreateManyMatchInputEnvelope
+    set?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    disconnect?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    delete?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    connect?: MatchSyncWhereUniqueInput | MatchSyncWhereUniqueInput[]
+    update?: MatchSyncUpdateWithWhereUniqueWithoutMatchInput | MatchSyncUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: MatchSyncUpdateManyWithWhereWithoutMatchInput | MatchSyncUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: MatchSyncScalarWhereInput | MatchSyncScalarWhereInput[]
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<PlayerMatchExternalStatCreateWithoutMatchInput, PlayerMatchExternalStatUncheckedCreateWithoutMatchInput> | PlayerMatchExternalStatCreateWithoutMatchInput[] | PlayerMatchExternalStatUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerMatchExternalStatCreateOrConnectWithoutMatchInput | PlayerMatchExternalStatCreateOrConnectWithoutMatchInput[]
+    upsert?: PlayerMatchExternalStatUpsertWithWhereUniqueWithoutMatchInput | PlayerMatchExternalStatUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: PlayerMatchExternalStatCreateManyMatchInputEnvelope
+    set?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    disconnect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    delete?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    connect?: PlayerMatchExternalStatWhereUniqueInput | PlayerMatchExternalStatWhereUniqueInput[]
+    update?: PlayerMatchExternalStatUpdateWithWhereUniqueWithoutMatchInput | PlayerMatchExternalStatUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: PlayerMatchExternalStatUpdateManyWithWhereWithoutMatchInput | PlayerMatchExternalStatUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: PlayerMatchExternalStatScalarWhereInput | PlayerMatchExternalStatScalarWhereInput[]
+  }
+
+  export type ClubCreateNestedOneWithoutTeamExternalLinksInput = {
+    create?: XOR<ClubCreateWithoutTeamExternalLinksInput, ClubUncheckedCreateWithoutTeamExternalLinksInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutTeamExternalLinksInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type ClubUpdateOneRequiredWithoutTeamExternalLinksNestedInput = {
+    create?: XOR<ClubCreateWithoutTeamExternalLinksInput, ClubUncheckedCreateWithoutTeamExternalLinksInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutTeamExternalLinksInput
+    upsert?: ClubUpsertWithoutTeamExternalLinksInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutTeamExternalLinksInput, ClubUpdateWithoutTeamExternalLinksInput>, ClubUncheckedUpdateWithoutTeamExternalLinksInput>
+  }
+
+  export type UserCreateNestedOneWithoutPlayerExternalLinksInput = {
+    create?: XOR<UserCreateWithoutPlayerExternalLinksInput, UserUncheckedCreateWithoutPlayerExternalLinksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlayerExternalLinksInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutPlayerExternalLinksNestedInput = {
+    create?: XOR<UserCreateWithoutPlayerExternalLinksInput, UserUncheckedCreateWithoutPlayerExternalLinksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlayerExternalLinksInput
+    upsert?: UserUpsertWithoutPlayerExternalLinksInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlayerExternalLinksInput, UserUpdateWithoutPlayerExternalLinksInput>, UserUncheckedUpdateWithoutPlayerExternalLinksInput>
+  }
+
+  export type MatchCreateNestedOneWithoutMatchSyncsInput = {
+    create?: XOR<MatchCreateWithoutMatchSyncsInput, MatchUncheckedCreateWithoutMatchSyncsInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutMatchSyncsInput
+    connect?: MatchWhereUniqueInput
+  }
+
+  export type MatchUpdateOneRequiredWithoutMatchSyncsNestedInput = {
+    create?: XOR<MatchCreateWithoutMatchSyncsInput, MatchUncheckedCreateWithoutMatchSyncsInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutMatchSyncsInput
+    upsert?: MatchUpsertWithoutMatchSyncsInput
+    connect?: MatchWhereUniqueInput
+    update?: XOR<XOR<MatchUpdateToOneWithWhereWithoutMatchSyncsInput, MatchUpdateWithoutMatchSyncsInput>, MatchUncheckedUpdateWithoutMatchSyncsInput>
+  }
+
+  export type MatchCreateNestedOneWithoutPlayerMatchExternalStatsInput = {
+    create?: XOR<MatchCreateWithoutPlayerMatchExternalStatsInput, MatchUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutPlayerMatchExternalStatsInput
+    connect?: MatchWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutPlayerMatchExternalStatsInput = {
+    create?: XOR<UserCreateWithoutPlayerMatchExternalStatsInput, UserUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlayerMatchExternalStatsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type MatchUpdateOneRequiredWithoutPlayerMatchExternalStatsNestedInput = {
+    create?: XOR<MatchCreateWithoutPlayerMatchExternalStatsInput, MatchUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+    connectOrCreate?: MatchCreateOrConnectWithoutPlayerMatchExternalStatsInput
+    upsert?: MatchUpsertWithoutPlayerMatchExternalStatsInput
+    connect?: MatchWhereUniqueInput
+    update?: XOR<XOR<MatchUpdateToOneWithWhereWithoutPlayerMatchExternalStatsInput, MatchUpdateWithoutPlayerMatchExternalStatsInput>, MatchUncheckedUpdateWithoutPlayerMatchExternalStatsInput>
+  }
+
+  export type UserUpdateOneWithoutPlayerMatchExternalStatsNestedInput = {
+    create?: XOR<UserCreateWithoutPlayerMatchExternalStatsInput, UserUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlayerMatchExternalStatsInput
+    upsert?: UserUpsertWithoutPlayerMatchExternalStatsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlayerMatchExternalStatsInput, UserUpdateWithoutPlayerMatchExternalStatsInput>, UserUncheckedUpdateWithoutPlayerMatchExternalStatsInput>
   }
 
   export type CompetitionCreateNestedOneWithoutLeagueTableEntriesInput = {
@@ -54362,14 +60913,6 @@ export namespace Prisma {
 
   export type EnumTransferModeFieldUpdateOperationsInput = {
     set?: $Enums.TransferMode
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type EnumTransferOfferStatusFieldUpdateOperationsInput = {
@@ -55356,6 +61899,58 @@ export namespace Prisma {
     _min?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel>
     _max?: NestedEnumBracketAdvanceSlotNullableFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
 
   export type NestedEnumEventTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.EventType | EnumEventTypeFieldRefInput<$PrismaModel>
@@ -55473,22 +62068,6 @@ export namespace Prisma {
     _max?: NestedEnumTransferModeFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
   export type NestedEnumTransferOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferOfferStatus | EnumTransferOfferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferOfferStatus[] | ListEnumTransferOfferStatusFieldRefInput<$PrismaModel>
@@ -55541,29 +62120,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumStoreItemCategoryFilter<$PrismaModel = never> = {
@@ -56027,6 +62583,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutManagerInput = {
@@ -56063,6 +62620,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutManagerInput = {
@@ -56364,6 +62922,76 @@ export namespace Prisma {
 
   export type TicketReplyCreateManyAuthorInputEnvelope = {
     data: TicketReplyCreateManyAuthorInput | TicketReplyCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PlayerExternalLinkCreateWithoutUserInput = {
+    id?: string
+    provider?: string
+    platform?: string | null
+    personaName: string
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlayerExternalLinkUncheckedCreateWithoutUserInput = {
+    id?: string
+    provider?: string
+    platform?: string | null
+    personaName: string
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlayerExternalLinkCreateOrConnectWithoutUserInput = {
+    where: PlayerExternalLinkWhereUniqueInput
+    create: XOR<PlayerExternalLinkCreateWithoutUserInput, PlayerExternalLinkUncheckedCreateWithoutUserInput>
+  }
+
+  export type PlayerExternalLinkCreateManyUserInputEnvelope = {
+    data: PlayerExternalLinkCreateManyUserInput | PlayerExternalLinkCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PlayerMatchExternalStatCreateWithoutUserInput = {
+    id?: string
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    match: MatchCreateNestedOneWithoutPlayerMatchExternalStatsInput
+  }
+
+  export type PlayerMatchExternalStatUncheckedCreateWithoutUserInput = {
+    id?: string
+    matchId: string
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type PlayerMatchExternalStatCreateOrConnectWithoutUserInput = {
+    where: PlayerMatchExternalStatWhereUniqueInput
+    create: XOR<PlayerMatchExternalStatCreateWithoutUserInput, PlayerMatchExternalStatUncheckedCreateWithoutUserInput>
+  }
+
+  export type PlayerMatchExternalStatCreateManyUserInputEnvelope = {
+    data: PlayerMatchExternalStatCreateManyUserInput | PlayerMatchExternalStatCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -56980,6 +63608,71 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"TicketReply"> | Date | string
   }
 
+  export type PlayerExternalLinkUpsertWithWhereUniqueWithoutUserInput = {
+    where: PlayerExternalLinkWhereUniqueInput
+    update: XOR<PlayerExternalLinkUpdateWithoutUserInput, PlayerExternalLinkUncheckedUpdateWithoutUserInput>
+    create: XOR<PlayerExternalLinkCreateWithoutUserInput, PlayerExternalLinkUncheckedCreateWithoutUserInput>
+  }
+
+  export type PlayerExternalLinkUpdateWithWhereUniqueWithoutUserInput = {
+    where: PlayerExternalLinkWhereUniqueInput
+    data: XOR<PlayerExternalLinkUpdateWithoutUserInput, PlayerExternalLinkUncheckedUpdateWithoutUserInput>
+  }
+
+  export type PlayerExternalLinkUpdateManyWithWhereWithoutUserInput = {
+    where: PlayerExternalLinkScalarWhereInput
+    data: XOR<PlayerExternalLinkUpdateManyMutationInput, PlayerExternalLinkUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type PlayerExternalLinkScalarWhereInput = {
+    AND?: PlayerExternalLinkScalarWhereInput | PlayerExternalLinkScalarWhereInput[]
+    OR?: PlayerExternalLinkScalarWhereInput[]
+    NOT?: PlayerExternalLinkScalarWhereInput | PlayerExternalLinkScalarWhereInput[]
+    id?: UuidFilter<"PlayerExternalLink"> | string
+    userId?: UuidFilter<"PlayerExternalLink"> | string
+    provider?: StringFilter<"PlayerExternalLink"> | string
+    platform?: StringNullableFilter<"PlayerExternalLink"> | string | null
+    personaName?: StringFilter<"PlayerExternalLink"> | string
+    verifiedAt?: DateTimeNullableFilter<"PlayerExternalLink"> | Date | string | null
+    createdAt?: DateTimeFilter<"PlayerExternalLink"> | Date | string
+    updatedAt?: DateTimeFilter<"PlayerExternalLink"> | Date | string
+  }
+
+  export type PlayerMatchExternalStatUpsertWithWhereUniqueWithoutUserInput = {
+    where: PlayerMatchExternalStatWhereUniqueInput
+    update: XOR<PlayerMatchExternalStatUpdateWithoutUserInput, PlayerMatchExternalStatUncheckedUpdateWithoutUserInput>
+    create: XOR<PlayerMatchExternalStatCreateWithoutUserInput, PlayerMatchExternalStatUncheckedCreateWithoutUserInput>
+  }
+
+  export type PlayerMatchExternalStatUpdateWithWhereUniqueWithoutUserInput = {
+    where: PlayerMatchExternalStatWhereUniqueInput
+    data: XOR<PlayerMatchExternalStatUpdateWithoutUserInput, PlayerMatchExternalStatUncheckedUpdateWithoutUserInput>
+  }
+
+  export type PlayerMatchExternalStatUpdateManyWithWhereWithoutUserInput = {
+    where: PlayerMatchExternalStatScalarWhereInput
+    data: XOR<PlayerMatchExternalStatUpdateManyMutationInput, PlayerMatchExternalStatUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type PlayerMatchExternalStatScalarWhereInput = {
+    AND?: PlayerMatchExternalStatScalarWhereInput | PlayerMatchExternalStatScalarWhereInput[]
+    OR?: PlayerMatchExternalStatScalarWhereInput[]
+    NOT?: PlayerMatchExternalStatScalarWhereInput | PlayerMatchExternalStatScalarWhereInput[]
+    id?: UuidFilter<"PlayerMatchExternalStat"> | string
+    matchId?: UuidFilter<"PlayerMatchExternalStat"> | string
+    userId?: UuidNullableFilter<"PlayerMatchExternalStat"> | string | null
+    provider?: StringFilter<"PlayerMatchExternalStat"> | string
+    personaName?: StringFilter<"PlayerMatchExternalStat"> | string
+    rating?: FloatNullableFilter<"PlayerMatchExternalStat"> | number | null
+    goals?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    assists?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    saves?: IntNullableFilter<"PlayerMatchExternalStat"> | number | null
+    cleanSheet?: BoolNullableFilter<"PlayerMatchExternalStat"> | boolean | null
+    position?: StringNullableFilter<"PlayerMatchExternalStat"> | string | null
+    rawPayload?: JsonNullableFilter<"PlayerMatchExternalStat">
+    createdAt?: DateTimeFilter<"PlayerMatchExternalStat"> | Date | string
+  }
+
   export type StoreItemCreateWithoutClubInput = {
     id?: string
     name: string
@@ -57175,6 +63868,8 @@ export namespace Prisma {
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutAwayTeamInput = {
@@ -57198,6 +63893,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutAwayTeamInput = {
@@ -57231,6 +63928,8 @@ export namespace Prisma {
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutHomeTeamInput = {
@@ -57254,6 +63953,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutHomeTeamInput = {
@@ -57337,6 +64038,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutManagedClubsInput = {
@@ -57388,6 +64091,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutManagedClubsInput = {
@@ -57689,6 +64394,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TeamExternalLinkCreateWithoutTeamInput = {
+    id?: string
+    provider?: string
+    platform: string
+    eaClubId: string
+    clubName?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TeamExternalLinkUncheckedCreateWithoutTeamInput = {
+    id?: string
+    provider?: string
+    platform: string
+    eaClubId: string
+    clubName?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TeamExternalLinkCreateOrConnectWithoutTeamInput = {
+    where: TeamExternalLinkWhereUniqueInput
+    create: XOR<TeamExternalLinkCreateWithoutTeamInput, TeamExternalLinkUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TeamExternalLinkCreateManyTeamInputEnvelope = {
+    data: TeamExternalLinkCreateManyTeamInput | TeamExternalLinkCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
   export type StoreItemUpsertWithWhereUniqueWithoutClubInput = {
     where: StoreItemWhereUniqueInput
     update: XOR<StoreItemUpdateWithoutClubInput, StoreItemUncheckedUpdateWithoutClubInput>
@@ -57939,6 +64676,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedClubsInput = {
@@ -57990,6 +64729,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutTeamInput = {
@@ -58194,6 +64935,37 @@ export namespace Prisma {
     settled_at?: DateTimeNullableFilter<"TransferSellerSettlement"> | Date | string | null
   }
 
+  export type TeamExternalLinkUpsertWithWhereUniqueWithoutTeamInput = {
+    where: TeamExternalLinkWhereUniqueInput
+    update: XOR<TeamExternalLinkUpdateWithoutTeamInput, TeamExternalLinkUncheckedUpdateWithoutTeamInput>
+    create: XOR<TeamExternalLinkCreateWithoutTeamInput, TeamExternalLinkUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TeamExternalLinkUpdateWithWhereUniqueWithoutTeamInput = {
+    where: TeamExternalLinkWhereUniqueInput
+    data: XOR<TeamExternalLinkUpdateWithoutTeamInput, TeamExternalLinkUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type TeamExternalLinkUpdateManyWithWhereWithoutTeamInput = {
+    where: TeamExternalLinkScalarWhereInput
+    data: XOR<TeamExternalLinkUpdateManyMutationInput, TeamExternalLinkUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type TeamExternalLinkScalarWhereInput = {
+    AND?: TeamExternalLinkScalarWhereInput | TeamExternalLinkScalarWhereInput[]
+    OR?: TeamExternalLinkScalarWhereInput[]
+    NOT?: TeamExternalLinkScalarWhereInput | TeamExternalLinkScalarWhereInput[]
+    id?: UuidFilter<"TeamExternalLink"> | string
+    teamId?: UuidFilter<"TeamExternalLink"> | string
+    provider?: StringFilter<"TeamExternalLink"> | string
+    platform?: StringFilter<"TeamExternalLink"> | string
+    eaClubId?: StringFilter<"TeamExternalLink"> | string
+    clubName?: StringNullableFilter<"TeamExternalLink"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"TeamExternalLink"> | Date | string | null
+    createdAt?: DateTimeFilter<"TeamExternalLink"> | Date | string
+    updatedAt?: DateTimeFilter<"TeamExternalLink"> | Date | string
+  }
+
   export type ClubCreateWithoutWalletInput = {
     id?: string
     name: string
@@ -58228,6 +65000,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutWalletInput = {
@@ -58264,6 +65037,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutWalletInput = {
@@ -58316,6 +65090,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutWalletInput = {
@@ -58352,6 +65127,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type ContractCreateWithoutStartSeasonInput = {
@@ -58604,6 +65380,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutMembersInput = {
@@ -58640,6 +65417,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutMembersInput = {
@@ -58696,6 +65474,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -58747,6 +65527,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -58799,6 +65581,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMembersInput = {
@@ -58835,6 +65618,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutTeamMembershipsInput = {
@@ -58897,6 +65681,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -58948,6 +65734,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutStatsInput = {
@@ -58999,6 +65787,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutStatsInput = {
@@ -59050,6 +65840,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutStatsInput = {
@@ -59117,6 +65909,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatsInput = {
@@ -59168,6 +65962,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEaExternalStatsInput = {
@@ -59219,6 +66015,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEaExternalStatsInput = {
@@ -59270,6 +66068,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEaExternalStatsInput = {
@@ -59337,6 +66137,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEaExternalStatsInput = {
@@ -59388,6 +66190,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubCreateWithoutEaClubStatsInput = {
@@ -59424,6 +66228,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutEaClubStatsInput = {
@@ -59460,6 +66265,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutEaClubStatsInput = {
@@ -59512,6 +66318,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutEaClubStatsInput = {
@@ -59548,6 +66355,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CompetitionTeamCreateWithoutCompetitionInput = {
@@ -59591,6 +66399,8 @@ export namespace Prisma {
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutCompetitionInput = {
@@ -59614,6 +66424,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutCompetitionInput = {
@@ -59779,6 +66591,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutCompetitionsInput = {
@@ -59815,6 +66628,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutCompetitionsInput = {
@@ -59906,6 +66720,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutCompetitionsInput = {
@@ -59942,6 +66757,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type MatchCreateWithoutFed_byInput = {
@@ -59965,6 +66781,8 @@ export namespace Prisma {
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutFed_byInput = {
@@ -59988,6 +66806,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutFed_byInput = {
@@ -60016,6 +66836,8 @@ export namespace Prisma {
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutWinner_advances_toInput = {
@@ -60039,6 +66861,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutWinner_advances_toInput = {
@@ -60141,6 +66965,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutAwayMatchesInput = {
@@ -60177,6 +67002,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutAwayMatchesInput = {
@@ -60251,6 +67077,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutHomeMatchesInput = {
@@ -60287,6 +67114,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutHomeMatchesInput = {
@@ -60324,6 +67152,86 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MatchSyncCreateWithoutMatchInput = {
+    id?: string
+    provider?: string
+    providerMatchId?: string | null
+    homeEaClubId?: string | null
+    awayEaClubId?: string | null
+    status?: string
+    attempts?: number
+    lastError?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MatchSyncUncheckedCreateWithoutMatchInput = {
+    id?: string
+    provider?: string
+    providerMatchId?: string | null
+    homeEaClubId?: string | null
+    awayEaClubId?: string | null
+    status?: string
+    attempts?: number
+    lastError?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MatchSyncCreateOrConnectWithoutMatchInput = {
+    where: MatchSyncWhereUniqueInput
+    create: XOR<MatchSyncCreateWithoutMatchInput, MatchSyncUncheckedCreateWithoutMatchInput>
+  }
+
+  export type MatchSyncCreateManyMatchInputEnvelope = {
+    data: MatchSyncCreateManyMatchInput | MatchSyncCreateManyMatchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PlayerMatchExternalStatCreateWithoutMatchInput = {
+    id?: string
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutPlayerMatchExternalStatsInput
+  }
+
+  export type PlayerMatchExternalStatUncheckedCreateWithoutMatchInput = {
+    id?: string
+    userId?: string | null
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type PlayerMatchExternalStatCreateOrConnectWithoutMatchInput = {
+    where: PlayerMatchExternalStatWhereUniqueInput
+    create: XOR<PlayerMatchExternalStatCreateWithoutMatchInput, PlayerMatchExternalStatUncheckedCreateWithoutMatchInput>
+  }
+
+  export type PlayerMatchExternalStatCreateManyMatchInputEnvelope = {
+    data: PlayerMatchExternalStatCreateManyMatchInput | PlayerMatchExternalStatCreateManyMatchInput[]
+    skipDuplicates?: boolean
+  }
+
   export type MatchUpsertWithoutFed_byInput = {
     update: XOR<MatchUpdateWithoutFed_byInput, MatchUncheckedUpdateWithoutFed_byInput>
     create: XOR<MatchCreateWithoutFed_byInput, MatchUncheckedCreateWithoutFed_byInput>
@@ -60356,6 +67264,8 @@ export namespace Prisma {
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutFed_byInput = {
@@ -60379,6 +67289,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUpsertWithWhereUniqueWithoutWinner_advances_toInput = {
@@ -60474,6 +67386,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAwayMatchesInput = {
@@ -60510,6 +67423,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CompetitionUpsertWithoutMatchesInput = {
@@ -60596,6 +67510,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutHomeMatchesInput = {
@@ -60632,6 +67547,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type PredictionUpsertWithWhereUniqueWithoutMatchInput = {
@@ -60648,6 +67564,909 @@ export namespace Prisma {
   export type PredictionUpdateManyWithWhereWithoutMatchInput = {
     where: PredictionScalarWhereInput
     data: XOR<PredictionUpdateManyMutationInput, PredictionUncheckedUpdateManyWithoutMatchInput>
+  }
+
+  export type MatchSyncUpsertWithWhereUniqueWithoutMatchInput = {
+    where: MatchSyncWhereUniqueInput
+    update: XOR<MatchSyncUpdateWithoutMatchInput, MatchSyncUncheckedUpdateWithoutMatchInput>
+    create: XOR<MatchSyncCreateWithoutMatchInput, MatchSyncUncheckedCreateWithoutMatchInput>
+  }
+
+  export type MatchSyncUpdateWithWhereUniqueWithoutMatchInput = {
+    where: MatchSyncWhereUniqueInput
+    data: XOR<MatchSyncUpdateWithoutMatchInput, MatchSyncUncheckedUpdateWithoutMatchInput>
+  }
+
+  export type MatchSyncUpdateManyWithWhereWithoutMatchInput = {
+    where: MatchSyncScalarWhereInput
+    data: XOR<MatchSyncUpdateManyMutationInput, MatchSyncUncheckedUpdateManyWithoutMatchInput>
+  }
+
+  export type MatchSyncScalarWhereInput = {
+    AND?: MatchSyncScalarWhereInput | MatchSyncScalarWhereInput[]
+    OR?: MatchSyncScalarWhereInput[]
+    NOT?: MatchSyncScalarWhereInput | MatchSyncScalarWhereInput[]
+    id?: UuidFilter<"MatchSync"> | string
+    matchId?: UuidFilter<"MatchSync"> | string
+    provider?: StringFilter<"MatchSync"> | string
+    providerMatchId?: StringNullableFilter<"MatchSync"> | string | null
+    homeEaClubId?: StringNullableFilter<"MatchSync"> | string | null
+    awayEaClubId?: StringNullableFilter<"MatchSync"> | string | null
+    status?: StringFilter<"MatchSync"> | string
+    attempts?: IntFilter<"MatchSync"> | number
+    lastError?: StringNullableFilter<"MatchSync"> | string | null
+    rawPayload?: JsonNullableFilter<"MatchSync">
+    syncedAt?: DateTimeNullableFilter<"MatchSync"> | Date | string | null
+    createdAt?: DateTimeFilter<"MatchSync"> | Date | string
+    updatedAt?: DateTimeFilter<"MatchSync"> | Date | string
+  }
+
+  export type PlayerMatchExternalStatUpsertWithWhereUniqueWithoutMatchInput = {
+    where: PlayerMatchExternalStatWhereUniqueInput
+    update: XOR<PlayerMatchExternalStatUpdateWithoutMatchInput, PlayerMatchExternalStatUncheckedUpdateWithoutMatchInput>
+    create: XOR<PlayerMatchExternalStatCreateWithoutMatchInput, PlayerMatchExternalStatUncheckedCreateWithoutMatchInput>
+  }
+
+  export type PlayerMatchExternalStatUpdateWithWhereUniqueWithoutMatchInput = {
+    where: PlayerMatchExternalStatWhereUniqueInput
+    data: XOR<PlayerMatchExternalStatUpdateWithoutMatchInput, PlayerMatchExternalStatUncheckedUpdateWithoutMatchInput>
+  }
+
+  export type PlayerMatchExternalStatUpdateManyWithWhereWithoutMatchInput = {
+    where: PlayerMatchExternalStatScalarWhereInput
+    data: XOR<PlayerMatchExternalStatUpdateManyMutationInput, PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchInput>
+  }
+
+  export type ClubCreateWithoutTeamExternalLinksInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemCreateNestedManyWithoutClubInput
+    competitions?: CompetitionTeamCreateNestedManyWithoutTeamInput
+    contracts?: ContractCreateNestedManyWithoutTeamInput
+    invitations?: InvitationCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    manager?: UserCreateNestedOneWithoutManagedClubsInput
+    transactions?: TransactionCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutTeamInput
+    messages?: MessageCreateNestedManyWithoutTeamInput
+    eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
+    leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutTeamExternalLinksInput = {
+    id?: string
+    name: string
+    logo_url?: string | null
+    created_at?: Date | string
+    ea_club_id?: string | null
+    platform?: $Enums.Platform
+    proclubs_url?: string | null
+    budget?: number
+    prestige_level?: number
+    xp?: number
+    description?: string | null
+    manager_id?: string | null
+    validation_status?: $Enums.ValidationStatus
+    presidentPremium?: boolean
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    storeItems?: StoreItemUncheckedCreateNestedManyWithoutClubInput
+    competitions?: CompetitionTeamUncheckedCreateNestedManyWithoutTeamInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutTeamInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutTeamInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutTeamInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutReportingTeamInput
+    awayMatches?: MatchUncheckedCreateNestedManyWithoutAwayTeamInput
+    homeMatches?: MatchUncheckedCreateNestedManyWithoutHomeTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTeamInput
+    sentOffers?: TransferOfferUncheckedCreateNestedManyWithoutFromTeamInput
+    receivedOffers?: TransferOfferUncheckedCreateNestedManyWithoutToTeamInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutTeamInput
+    messages?: MessageUncheckedCreateNestedManyWithoutTeamInput
+    eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
+    leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
+    wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutTeamExternalLinksInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutTeamExternalLinksInput, ClubUncheckedCreateWithoutTeamExternalLinksInput>
+  }
+
+  export type ClubUpsertWithoutTeamExternalLinksInput = {
+    update: XOR<ClubUpdateWithoutTeamExternalLinksInput, ClubUncheckedUpdateWithoutTeamExternalLinksInput>
+    create: XOR<ClubCreateWithoutTeamExternalLinksInput, ClubUncheckedCreateWithoutTeamExternalLinksInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutTeamExternalLinksInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutTeamExternalLinksInput, ClubUncheckedUpdateWithoutTeamExternalLinksInput>
+  }
+
+  export type ClubUpdateWithoutTeamExternalLinksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUpdateManyWithoutClubNestedInput
+    competitions?: CompetitionTeamUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    manager?: UserUpdateOneWithoutManagedClubsNestedInput
+    transactions?: TransactionUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutTeamNestedInput
+    messages?: MessageUpdateManyWithoutTeamNestedInput
+    eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
+    leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutTeamExternalLinksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_club_id?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumPlatformFieldUpdateOperationsInput | $Enums.Platform
+    proclubs_url?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: FloatFieldUpdateOperationsInput | number
+    prestige_level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    manager_id?: NullableStringFieldUpdateOperationsInput | string | null
+    validation_status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    presidentPremium?: BoolFieldUpdateOperationsInput | boolean
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    storeItems?: StoreItemUncheckedUpdateManyWithoutClubNestedInput
+    competitions?: CompetitionTeamUncheckedUpdateManyWithoutTeamNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutTeamNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutTeamNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutTeamNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutReportingTeamNestedInput
+    awayMatches?: MatchUncheckedUpdateManyWithoutAwayTeamNestedInput
+    homeMatches?: MatchUncheckedUpdateManyWithoutHomeTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTeamNestedInput
+    sentOffers?: TransferOfferUncheckedUpdateManyWithoutFromTeamNestedInput
+    receivedOffers?: TransferOfferUncheckedUpdateManyWithoutToTeamNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutTeamNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutTeamNestedInput
+    eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
+    leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
+    wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+  }
+
+  export type UserCreateWithoutPlayerExternalLinksInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    eaExternalStats?: EaExternalStatsCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    managedClubs?: ClubCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryCreateNestedManyWithoutUserInput
+    predictions?: PredictionCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
+    supportTickets?: TicketCreateNestedManyWithoutUserInput
+    ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPlayerExternalLinksInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    eaExternalStats?: EaExternalStatsUncheckedCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    managedClubs?: ClubUncheckedCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
+    ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPlayerExternalLinksInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPlayerExternalLinksInput, UserUncheckedCreateWithoutPlayerExternalLinksInput>
+  }
+
+  export type UserUpsertWithoutPlayerExternalLinksInput = {
+    update: XOR<UserUpdateWithoutPlayerExternalLinksInput, UserUncheckedUpdateWithoutPlayerExternalLinksInput>
+    create: XOR<UserCreateWithoutPlayerExternalLinksInput, UserUncheckedCreateWithoutPlayerExternalLinksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPlayerExternalLinksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPlayerExternalLinksInput, UserUncheckedUpdateWithoutPlayerExternalLinksInput>
+  }
+
+  export type UserUpdateWithoutPlayerExternalLinksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    eaExternalStats?: EaExternalStatsUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
+    supportTickets?: TicketUpdateManyWithoutUserNestedInput
+    ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPlayerExternalLinksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    eaExternalStats?: EaExternalStatsUncheckedUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUncheckedUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
+    ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type MatchCreateWithoutMatchSyncsInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_score?: number | null
+    away_score?: number | null
+    proof_url?: string | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
+    awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
+    homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
+    predictions?: PredictionCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchUncheckedCreateWithoutMatchSyncsInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    proof_url?: string | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    competition_id?: string | null
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchCreateOrConnectWithoutMatchSyncsInput = {
+    where: MatchWhereUniqueInput
+    create: XOR<MatchCreateWithoutMatchSyncsInput, MatchUncheckedCreateWithoutMatchSyncsInput>
+  }
+
+  export type MatchUpsertWithoutMatchSyncsInput = {
+    update: XOR<MatchUpdateWithoutMatchSyncsInput, MatchUncheckedUpdateWithoutMatchSyncsInput>
+    create: XOR<MatchCreateWithoutMatchSyncsInput, MatchUncheckedCreateWithoutMatchSyncsInput>
+    where?: MatchWhereInput
+  }
+
+  export type MatchUpdateToOneWithWhereWithoutMatchSyncsInput = {
+    where?: MatchWhereInput
+    data: XOR<MatchUpdateWithoutMatchSyncsInput, MatchUncheckedUpdateWithoutMatchSyncsInput>
+  }
+
+  export type MatchUpdateWithoutMatchSyncsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    proof_url?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
+    awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
+    homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
+    predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchUncheckedUpdateWithoutMatchSyncsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    proof_url?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchCreateWithoutPlayerMatchExternalStatsInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_score?: number | null
+    away_score?: number | null
+    proof_url?: string | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchCreateNestedOneWithoutFed_byInput
+    fed_by?: MatchCreateNestedManyWithoutWinner_advances_toInput
+    events?: MatchEventCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportCreateNestedManyWithoutMatchInput
+    awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
+    competition?: CompetitionCreateNestedOneWithoutMatchesInput
+    homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
+    predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchUncheckedCreateWithoutPlayerMatchExternalStatsInput = {
+    id?: string
+    ea_match_id?: string | null
+    home_team_id: string
+    away_team_id: string
+    home_score?: number | null
+    away_score?: number | null
+    proof_url?: string | null
+    status?: $Enums.MatchStatus
+    played_at?: Date | string | null
+    startTime?: Date | string | null
+    isVisible?: boolean
+    competition_id?: string | null
+    round?: string | null
+    bracket_round?: number | null
+    bracket_index?: number | null
+    winner_advances_to_match_id?: string | null
+    winner_slot_in_next?: $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
+    events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
+    scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchCreateOrConnectWithoutPlayerMatchExternalStatsInput = {
+    where: MatchWhereUniqueInput
+    create: XOR<MatchCreateWithoutPlayerMatchExternalStatsInput, MatchUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+  }
+
+  export type UserCreateWithoutPlayerMatchExternalStatsInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
+    activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsCreateNestedOneWithoutUserInput
+    eaExternalStats?: EaExternalStatsCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberCreateNestedManyWithoutUserInput
+    managedClubs?: ClubCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryCreateNestedManyWithoutUserInput
+    predictions?: PredictionCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionCreateNestedManyWithoutUserInput
+    messagesSent?: MessageCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionCreateNestedManyWithoutUserInput
+    supportTickets?: TicketCreateNestedManyWithoutUserInput
+    ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPlayerMatchExternalStatsInput = {
+    id?: string
+    email: string
+    password_hash: string
+    role?: $Enums.UserRole
+    created_at?: Date | string
+    ea_persona_name?: string | null
+    gamertag_psn?: string | null
+    gamertag_xbox?: string | null
+    preferred_position?: $Enums.Position | null
+    nationality?: string | null
+    external_id?: string | null
+    level?: number
+    xp?: number
+    omjepCoins?: number
+    jepyCoins?: number
+    isPremium?: boolean
+    avatarUrl?: string | null
+    avatarRarity?: $Enums.AvatarRarity
+    activeFrameUrl?: string | null
+    activeBannerUrl?: string | null
+    activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
+    matchScoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutSubmittedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    stats?: PlayerStatsUncheckedCreateNestedOneWithoutUserInput
+    eaExternalStats?: EaExternalStatsUncheckedCreateNestedOneWithoutUserInput
+    teamMemberships?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    managedClubs?: ClubUncheckedCreateNestedManyWithoutManagerInput
+    transferOffers?: TransferOfferUncheckedCreateNestedManyWithoutPlayerInput
+    transferRequests?: TransferRequestUncheckedCreateNestedManyWithoutPlayerInput
+    inventory?: UserInventoryUncheckedCreateNestedManyWithoutUserInput
+    predictions?: PredictionUncheckedCreateNestedManyWithoutUserInput
+    subscriptions?: UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    messagesSent?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
+    ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPlayerMatchExternalStatsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPlayerMatchExternalStatsInput, UserUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+  }
+
+  export type MatchUpsertWithoutPlayerMatchExternalStatsInput = {
+    update: XOR<MatchUpdateWithoutPlayerMatchExternalStatsInput, MatchUncheckedUpdateWithoutPlayerMatchExternalStatsInput>
+    create: XOR<MatchCreateWithoutPlayerMatchExternalStatsInput, MatchUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+    where?: MatchWhereInput
+  }
+
+  export type MatchUpdateToOneWithWhereWithoutPlayerMatchExternalStatsInput = {
+    where?: MatchWhereInput
+    data: XOR<MatchUpdateWithoutPlayerMatchExternalStatsInput, MatchUncheckedUpdateWithoutPlayerMatchExternalStatsInput>
+  }
+
+  export type MatchUpdateWithoutPlayerMatchExternalStatsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    proof_url?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    winner_advances_to?: MatchUpdateOneWithoutFed_byNestedInput
+    fed_by?: MatchUpdateManyWithoutWinner_advances_toNestedInput
+    events?: MatchEventUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUpdateManyWithoutMatchNestedInput
+    awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
+    competition?: CompetitionUpdateOneWithoutMatchesNestedInput
+    homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
+    predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchUncheckedUpdateWithoutPlayerMatchExternalStatsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    home_team_id?: StringFieldUpdateOperationsInput | string
+    away_team_id?: StringFieldUpdateOperationsInput | string
+    home_score?: NullableIntFieldUpdateOperationsInput | number | null
+    away_score?: NullableIntFieldUpdateOperationsInput | number | null
+    proof_url?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumMatchStatusFieldUpdateOperationsInput | $Enums.MatchStatus
+    played_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVisible?: BoolFieldUpdateOperationsInput | boolean
+    competition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    round?: NullableStringFieldUpdateOperationsInput | string | null
+    bracket_round?: NullableIntFieldUpdateOperationsInput | number | null
+    bracket_index?: NullableIntFieldUpdateOperationsInput | number | null
+    winner_advances_to_match_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winner_slot_in_next?: NullableEnumBracketAdvanceSlotFieldUpdateOperationsInput | $Enums.BracketAdvanceSlot | null
+    fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
+    events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
+    scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+  }
+
+  export type UserUpsertWithoutPlayerMatchExternalStatsInput = {
+    update: XOR<UserUpdateWithoutPlayerMatchExternalStatsInput, UserUncheckedUpdateWithoutPlayerMatchExternalStatsInput>
+    create: XOR<UserCreateWithoutPlayerMatchExternalStatsInput, UserUncheckedCreateWithoutPlayerMatchExternalStatsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPlayerMatchExternalStatsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPlayerMatchExternalStatsInput, UserUncheckedUpdateWithoutPlayerMatchExternalStatsInput>
+  }
+
+  export type UserUpdateWithoutPlayerMatchExternalStatsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUpdateOneWithoutUserNestedInput
+    eaExternalStats?: EaExternalStatsUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
+    supportTickets?: TicketUpdateManyWithoutUserNestedInput
+    ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPlayerMatchExternalStatsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    ea_persona_name?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_psn?: NullableStringFieldUpdateOperationsInput | string | null
+    gamertag_xbox?: NullableStringFieldUpdateOperationsInput | string | null
+    preferred_position?: NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    external_id?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: IntFieldUpdateOperationsInput | number
+    xp?: IntFieldUpdateOperationsInput | number
+    omjepCoins?: IntFieldUpdateOperationsInput | number
+    jepyCoins?: IntFieldUpdateOperationsInput | number
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
+    activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
+    matchScoreReports?: MatchScoreReportUncheckedUpdateManyWithoutSubmittedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    stats?: PlayerStatsUncheckedUpdateOneWithoutUserNestedInput
+    eaExternalStats?: EaExternalStatsUncheckedUpdateOneWithoutUserNestedInput
+    teamMemberships?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    managedClubs?: ClubUncheckedUpdateManyWithoutManagerNestedInput
+    transferOffers?: TransferOfferUncheckedUpdateManyWithoutPlayerNestedInput
+    transferRequests?: TransferRequestUncheckedUpdateManyWithoutPlayerNestedInput
+    inventory?: UserInventoryUncheckedUpdateManyWithoutUserNestedInput
+    predictions?: PredictionUncheckedUpdateManyWithoutUserNestedInput
+    subscriptions?: UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    messagesSent?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
+    ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompetitionCreateWithoutLeagueTableEntriesInput = {
@@ -60717,6 +68536,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutLeagueTableEntriesInput = {
@@ -60753,6 +68573,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutLeagueTableEntriesInput = {
@@ -60844,6 +68665,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutLeagueTableEntriesInput = {
@@ -60880,6 +68702,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type MatchCreateWithoutScoreReportsInput = {
@@ -60903,6 +68726,8 @@ export namespace Prisma {
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutScoreReportsInput = {
@@ -60926,6 +68751,8 @@ export namespace Prisma {
     fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutScoreReportsInput = {
@@ -60967,6 +68794,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutMatchScoreReportsInput = {
@@ -61003,6 +68831,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutMatchScoreReportsInput = {
@@ -61059,6 +68888,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMatchScoreReportsInput = {
@@ -61110,6 +68941,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMatchScoreReportsInput = {
@@ -61149,6 +68982,8 @@ export namespace Prisma {
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutScoreReportsInput = {
@@ -61172,6 +69007,8 @@ export namespace Prisma {
     fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type ClubUpsertWithoutMatchScoreReportsInput = {
@@ -61219,6 +69056,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMatchScoreReportsInput = {
@@ -61255,6 +69093,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutMatchScoreReportsInput = {
@@ -61317,6 +69156,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchScoreReportsInput = {
@@ -61368,6 +69209,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MatchCreateWithoutEventsInput = {
@@ -61391,6 +69234,8 @@ export namespace Prisma {
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
     predictions?: PredictionCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutEventsInput = {
@@ -61414,6 +69259,8 @@ export namespace Prisma {
     fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
     predictions?: PredictionUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutEventsInput = {
@@ -61470,6 +69317,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMatchEventsInput = {
@@ -61521,6 +69370,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMatchEventsInput = {
@@ -61562,6 +69413,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutMatchEventsInput = {
@@ -61598,6 +69450,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutMatchEventsInput = {
@@ -61637,6 +69490,8 @@ export namespace Prisma {
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutEventsInput = {
@@ -61660,6 +69515,8 @@ export namespace Prisma {
     fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type UserUpsertWithoutMatchEventsInput = {
@@ -61722,6 +69579,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMatchEventsInput = {
@@ -61773,6 +69632,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutMatchEventsInput = {
@@ -61820,6 +69681,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMatchEventsInput = {
@@ -61856,6 +69718,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutTransferRequestsInput = {
@@ -61907,6 +69770,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransferRequestsInput = {
@@ -61958,6 +69823,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransferRequestsInput = {
@@ -61999,6 +69866,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutTransferRequestsInput = {
@@ -62035,6 +69903,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutTransferRequestsInput = {
@@ -62102,6 +69971,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferRequestsInput = {
@@ -62153,6 +70024,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutTransferRequestsInput = {
@@ -62200,6 +70073,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTransferRequestsInput = {
@@ -62236,6 +70110,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutReceivedInvitationsInput = {
@@ -62287,6 +70162,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -62338,6 +70215,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -62394,6 +70273,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -62445,6 +70326,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -62486,6 +70369,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutInvitationsInput = {
@@ -62522,6 +70406,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutInvitationsInput = {
@@ -62589,6 +70474,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -62640,6 +70527,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutSentInvitationsInput = {
@@ -62702,6 +70591,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -62753,6 +70644,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutInvitationsInput = {
@@ -62800,6 +70693,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutInvitationsInput = {
@@ -62836,6 +70730,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SeasonCreateWithoutContractsAsStartInput = {
@@ -62938,6 +70833,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutContractsInput = {
@@ -62974,6 +70870,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutContractsInput = {
@@ -63030,6 +70927,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutContractsInput = {
@@ -63081,6 +70980,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutContractsInput = {
@@ -63211,6 +71112,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutContractsInput = {
@@ -63247,6 +71149,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutContractsInput = {
@@ -63309,6 +71212,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutContractsInput = {
@@ -63360,6 +71265,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubCreateWithoutTransactionsInput = {
@@ -63396,6 +71303,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutTransactionsInput = {
@@ -63432,6 +71340,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutTransactionsInput = {
@@ -63488,6 +71397,8 @@ export namespace Prisma {
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWalletTransactionsInput = {
@@ -63539,6 +71450,8 @@ export namespace Prisma {
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWalletTransactionsInput = {
@@ -63591,6 +71504,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTransactionsInput = {
@@ -63627,6 +71541,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutWalletTransactionsInput = {
@@ -63689,6 +71604,8 @@ export namespace Prisma {
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWalletTransactionsInput = {
@@ -63740,6 +71657,8 @@ export namespace Prisma {
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SeasonCreateWithoutOffersAsContractStartInput = {
@@ -63809,6 +71728,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutSentOffersInput = {
@@ -63845,6 +71765,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutSentOffersInput = {
@@ -63901,6 +71822,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransferOffersInput = {
@@ -63952,6 +71875,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransferOffersInput = {
@@ -63993,6 +71918,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutReceivedOffersInput = {
@@ -64029,6 +71955,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutReceivedOffersInput = {
@@ -64145,6 +72072,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutSentOffersInput = {
@@ -64181,6 +72109,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutTransferOffersInput = {
@@ -64243,6 +72172,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransferOffersInput = {
@@ -64294,6 +72225,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutReceivedOffersInput = {
@@ -64341,6 +72274,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutReceivedOffersInput = {
@@ -64377,6 +72311,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TransferSellerSettlementUpsertWithoutTransferOfferInput = {
@@ -64489,6 +72424,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutTransferSellerSettlementsAsSellerInput = {
@@ -64525,6 +72461,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUncheckedCreateNestedOneWithoutClubInput
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutTransferSellerSettlementsAsSellerInput = {
@@ -64661,6 +72598,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTransferSellerSettlementsAsSellerInput = {
@@ -64697,6 +72635,7 @@ export namespace Prisma {
     eaClubStats?: EaClubStatsUncheckedUpdateOneWithoutClubNestedInput
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SeasonUpsertWithoutTransferSellerSettlementsInput = {
@@ -64787,6 +72726,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -64838,6 +72779,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -64905,6 +72848,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -64956,6 +72901,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubCreateWithoutStoreItemsInput = {
@@ -64992,6 +72939,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutStoreItemsInput = {
@@ -65028,6 +72976,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutStoreItemsInput = {
@@ -65106,6 +73055,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutActiveJerseyInput = {
@@ -65157,6 +73108,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutActiveJerseyInput = {
@@ -65214,6 +73167,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutStoreItemsInput = {
@@ -65250,6 +73204,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserInventoryUpsertWithWhereUniqueWithoutItemInput = {
@@ -65368,6 +73323,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInventoryInput = {
@@ -65419,6 +73376,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInventoryInput = {
@@ -65515,6 +73474,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInventoryInput = {
@@ -65566,6 +73527,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type StoreItemUpsertWithoutInventoryInput = {
@@ -65652,6 +73615,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPredictionsInput = {
@@ -65703,6 +73668,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPredictionsInput = {
@@ -65731,6 +73698,8 @@ export namespace Prisma {
     awayTeam: ClubCreateNestedOneWithoutAwayMatchesInput
     competition?: CompetitionCreateNestedOneWithoutMatchesInput
     homeTeam: ClubCreateNestedOneWithoutHomeMatchesInput
+    matchSyncs?: MatchSyncCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutMatchInput
   }
 
   export type MatchUncheckedCreateWithoutPredictionsInput = {
@@ -65754,6 +73723,8 @@ export namespace Prisma {
     fed_by?: MatchUncheckedCreateNestedManyWithoutWinner_advances_toInput
     events?: MatchEventUncheckedCreateNestedManyWithoutMatchInput
     scoreReports?: MatchScoreReportUncheckedCreateNestedManyWithoutMatchInput
+    matchSyncs?: MatchSyncUncheckedCreateNestedManyWithoutMatchInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchCreateOrConnectWithoutPredictionsInput = {
@@ -65821,6 +73792,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPredictionsInput = {
@@ -65872,6 +73845,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MatchUpsertWithoutPredictionsInput = {
@@ -65906,6 +73881,8 @@ export namespace Prisma {
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutPredictionsInput = {
@@ -65929,6 +73906,8 @@ export namespace Prisma {
     fed_by?: MatchUncheckedUpdateManyWithoutWinner_advances_toNestedInput
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type UserSubscriptionCreateWithoutPlanInput = {
@@ -66022,6 +74001,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSubscriptionsInput = {
@@ -66073,6 +74054,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSubscriptionsInput = {
@@ -66163,6 +74146,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSubscriptionsInput = {
@@ -66214,6 +74199,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SubscriptionPlanUpsertWithoutSubscriptionsInput = {
@@ -66294,6 +74281,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMessagesSentInput = {
@@ -66345,6 +74334,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMessagesSentInput = {
@@ -66401,6 +74392,8 @@ export namespace Prisma {
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMessagesReceivedInput = {
@@ -66452,6 +74445,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMessagesReceivedInput = {
@@ -66493,6 +74488,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkCreateNestedManyWithoutTeamInput
   }
 
   export type ClubUncheckedCreateWithoutMessagesInput = {
@@ -66529,6 +74525,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedCreateNestedManyWithoutTeamInput
     wallet?: ClubWalletUncheckedCreateNestedOneWithoutTeamInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedCreateNestedManyWithoutSellerClubInput
+    teamExternalLinks?: TeamExternalLinkUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type ClubCreateOrConnectWithoutMessagesInput = {
@@ -66596,6 +74593,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesSentInput = {
@@ -66647,6 +74646,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutMessagesReceivedInput = {
@@ -66709,6 +74710,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesReceivedInput = {
@@ -66760,6 +74763,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClubUpsertWithoutMessagesInput = {
@@ -66807,6 +74812,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMessagesInput = {
@@ -66843,6 +74849,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutSupportTicketsInput = {
@@ -66894,6 +74901,8 @@ export namespace Prisma {
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSupportTicketsInput = {
@@ -66945,6 +74954,8 @@ export namespace Prisma {
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     ticketReplies?: TicketReplyUncheckedCreateNestedManyWithoutAuthorInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSupportTicketsInput = {
@@ -67038,6 +75049,8 @@ export namespace Prisma {
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSupportTicketsInput = {
@@ -67089,6 +75102,8 @@ export namespace Prisma {
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TicketReplyUpsertWithWhereUniqueWithoutTicketInput = {
@@ -67181,6 +75196,8 @@ export namespace Prisma {
     messagesReceived?: MessageCreateNestedManyWithoutReceiverInput
     walletTransactions?: TransactionCreateNestedManyWithoutUserInput
     supportTickets?: TicketCreateNestedManyWithoutUserInput
+    playerExternalLinks?: PlayerExternalLinkCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTicketRepliesInput = {
@@ -67232,6 +75249,8 @@ export namespace Prisma {
     messagesReceived?: MessageUncheckedCreateNestedManyWithoutReceiverInput
     walletTransactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     supportTickets?: TicketUncheckedCreateNestedManyWithoutUserInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedCreateNestedManyWithoutUserInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTicketRepliesInput = {
@@ -67330,6 +75349,8 @@ export namespace Prisma {
     messagesReceived?: MessageUpdateManyWithoutReceiverNestedInput
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTicketRepliesInput = {
@@ -67381,6 +75402,8 @@ export namespace Prisma {
     messagesReceived?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ContractCreateManyUserInput = {
@@ -67559,6 +75582,31 @@ export namespace Prisma {
     body: string
     is_staff?: boolean
     created_at?: Date | string
+  }
+
+  export type PlayerExternalLinkCreateManyUserInput = {
+    id?: string
+    provider?: string
+    platform?: string | null
+    personaName: string
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlayerMatchExternalStatCreateManyUserInput = {
+    id?: string
+    matchId: string
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
   }
 
   export type ContractUpdateWithoutUserInput = {
@@ -67793,6 +75841,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutManagerInput = {
@@ -67829,6 +75878,7 @@ export namespace Prisma {
     leagueTableEntries?: LeagueTableUncheckedUpdateManyWithoutTeamNestedInput
     wallet?: ClubWalletUncheckedUpdateOneWithoutTeamNestedInput
     transferSellerSettlementsAsSeller?: TransferSellerSettlementUncheckedUpdateManyWithoutSellerClubNestedInput
+    teamExternalLinks?: TeamExternalLinkUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type ClubUncheckedUpdateManyWithoutManagerInput = {
@@ -68135,6 +76185,81 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PlayerExternalLinkUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    personaName?: StringFieldUpdateOperationsInput | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerExternalLinkUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    personaName?: StringFieldUpdateOperationsInput | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerExternalLinkUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    personaName?: StringFieldUpdateOperationsInput | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerMatchExternalStatUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    match?: MatchUpdateOneRequiredWithoutPlayerMatchExternalStatsNestedInput
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StoreItemCreateManyClubInput = {
     id?: string
     name: string
@@ -68319,6 +76444,17 @@ export namespace Prisma {
     season_id?: string | null
     created_at?: Date | string
     settled_at?: Date | string | null
+  }
+
+  export type TeamExternalLinkCreateManyTeamInput = {
+    id?: string
+    provider?: string
+    platform: string
+    eaClubId: string
+    clubName?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type StoreItemUpdateWithoutClubInput = {
@@ -68511,6 +76647,8 @@ export namespace Prisma {
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutAwayTeamInput = {
@@ -68534,6 +76672,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateManyWithoutAwayTeamInput = {
@@ -68576,6 +76716,8 @@ export namespace Prisma {
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutHomeTeamInput = {
@@ -68599,6 +76741,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateManyWithoutHomeTeamInput = {
@@ -68903,6 +77047,39 @@ export namespace Prisma {
     settled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type TeamExternalLinkUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    eaClubId?: StringFieldUpdateOperationsInput | string
+    clubName?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamExternalLinkUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    eaClubId?: StringFieldUpdateOperationsInput | string
+    clubName?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamExternalLinkUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    eaClubId?: StringFieldUpdateOperationsInput | string
+    clubName?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ContractCreateManyStartSeasonInput = {
     id?: string
     team_id: string
@@ -69199,6 +77376,8 @@ export namespace Prisma {
     awayTeam?: ClubUpdateOneRequiredWithoutAwayMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutCompetitionInput = {
@@ -69222,6 +77401,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateManyWithoutCompetitionInput = {
@@ -69332,6 +77513,36 @@ export namespace Prisma {
     created_at?: Date | string
   }
 
+  export type MatchSyncCreateManyMatchInput = {
+    id?: string
+    provider?: string
+    providerMatchId?: string | null
+    homeEaClubId?: string | null
+    awayEaClubId?: string | null
+    status?: string
+    attempts?: number
+    lastError?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlayerMatchExternalStatCreateManyMatchInput = {
+    id?: string
+    userId?: string | null
+    provider?: string
+    personaName: string
+    rating?: number | null
+    goals?: number | null
+    assists?: number | null
+    saves?: number | null
+    cleanSheet?: boolean | null
+    position?: string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
   export type MatchUpdateWithoutWinner_advances_toInput = {
     id?: StringFieldUpdateOperationsInput | string
     ea_match_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69353,6 +77564,8 @@ export namespace Prisma {
     competition?: CompetitionUpdateOneWithoutMatchesNestedInput
     homeTeam?: ClubUpdateOneRequiredWithoutHomeMatchesNestedInput
     predictions?: PredictionUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateWithoutWinner_advances_toInput = {
@@ -69376,6 +77589,8 @@ export namespace Prisma {
     events?: MatchEventUncheckedUpdateManyWithoutMatchNestedInput
     scoreReports?: MatchScoreReportUncheckedUpdateManyWithoutMatchNestedInput
     predictions?: PredictionUncheckedUpdateManyWithoutMatchNestedInput
+    matchSyncs?: MatchSyncUncheckedUpdateManyWithoutMatchNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchUncheckedUpdateManyWithoutWinner_advances_toInput = {
@@ -69479,6 +77694,96 @@ export namespace Prisma {
     betAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumPredictionStatusFieldUpdateOperationsInput | $Enums.PredictionStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MatchSyncUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerMatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    awayEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MatchSyncUncheckedUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerMatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    awayEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MatchSyncUncheckedUpdateManyWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerMatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    awayEaClubId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerMatchExternalStatUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutPlayerMatchExternalStatsNestedInput
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlayerMatchExternalStatUncheckedUpdateManyWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    personaName?: StringFieldUpdateOperationsInput | string
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableIntFieldUpdateOperationsInput | number | null
+    assists?: NullableIntFieldUpdateOperationsInput | number | null
+    saves?: NullableIntFieldUpdateOperationsInput | number | null
+    cleanSheet?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserInventoryCreateManyItemInput = {
@@ -69585,6 +77890,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutActiveJerseyInput = {
@@ -69636,6 +77943,8 @@ export namespace Prisma {
     walletTransactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     supportTickets?: TicketUncheckedUpdateManyWithoutUserNestedInput
     ticketReplies?: TicketReplyUncheckedUpdateManyWithoutAuthorNestedInput
+    playerExternalLinks?: PlayerExternalLinkUncheckedUpdateManyWithoutUserNestedInput
+    playerMatchExternalStats?: PlayerMatchExternalStatUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutActiveJerseyInput = {

@@ -4,12 +4,14 @@ import {
   LayoutDashboard, Swords, Shield, Users, ClipboardList,
   ChevronRight, Menu, X, ArrowLeft, Crown, ShoppingBag, ListOrdered, Headphones, Images,
   Mail,
+  RefreshCw,
 } from 'lucide-react';
 
 const sidebarLinks = [
   { to: '/admin', label: 'Tableau de Bord', icon: LayoutDashboard, exact: true },
   { to: '/admin/competitions', label: 'Compétitions', icon: ListOrdered },
   { to: '/admin/matches', label: 'Matchs', icon: Swords },
+  { to: '/admin/ea-match-sync', label: 'Sync EA FC', icon: RefreshCw },
   { to: '/admin/users', label: 'Utilisateurs', icon: Users },
   { to: '/admin/clubs', label: 'Clubs', icon: Shield },
   { to: '/admin/club-requests', label: 'Demandes clubs', icon: ClipboardList },
@@ -23,6 +25,7 @@ const pageTitles: Record<string, string> = {
   '/admin': 'Tableau de Bord',
   '/admin/competitions': 'Compétitions',
   '/admin/matches': 'Matchs',
+  '/admin/ea-match-sync': 'Sync EA FC 26',
   '/admin/users': 'Utilisateurs',
   '/admin/clubs': 'Clubs',
   '/admin/club-requests': 'Demandes clubs',
