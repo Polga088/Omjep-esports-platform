@@ -1,27 +1,38 @@
 import type { ReactNode } from 'react'
+import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
+  BarChart3,
+  Building2,
   ChevronRight,
-  Crown,
+  CircleDot,
+  Coins,
   Gamepad2,
-  Medal,
-  MessageCircle,
+  LayoutDashboard,
   Radio,
   Shield,
   Sparkles,
-  Star,
-  Target,
-  PlayCircle,
   Trophy,
-  Tv,
+  UserPlus,
   Users,
   Zap,
 } from 'lucide-react'
 
+/** Visuels gaming locaux — déposer les fichiers dans `public/images/gaming/`. */
+export const gameVisuals = [
+  { title: 'Compétition', src: '/images/gaming/competition.png' },
+  { title: 'Clubs', src: '/images/gaming/clubs.png' },
+  { title: 'Arène', src: '/images/gaming/arena.png' },
+  { title: 'Setup', src: '/images/gaming/setup.png' },
+  { title: 'Trophée', src: '/images/gaming/trophy.png' },
+  { title: 'Joueurs pro', src: '/images/gaming/hero.png' },
+  { title: 'Manette', src: '/images/gaming/controller.png' },
+] as const
+
 const surfaceCard =
-  'rounded-2xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_94%,var(--omjep-bg-elevated))] p-5 shadow-[var(--omjep-shadow-md)] backdrop-blur-xl ring-1 ring-[color-mix(in_srgb,var(--omjep-border)_45%,transparent)] sm:p-6 dark:bg-[color-mix(in_srgb,var(--omjep-bg-panel)_88%,#06040c)] dark:shadow-[var(--omjep-shadow-lg)]'
+  'rounded-2xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_88%,var(--omjep-bg-elevated))] shadow-[var(--omjep-shadow-md)] backdrop-blur-xl ring-1 ring-[color-mix(in_srgb,var(--omjep-border)_45%,transparent)] sm:dark:bg-[color-mix(in_srgb,var(--omjep-bg-panel)_82%,#06040c)] dark:shadow-[var(--omjep-shadow-lg)]'
 
 const SectionShell = ({
   id,
@@ -60,207 +71,301 @@ const SectionShell = ({
   )
 }
 
-const chipClass =
-  'inline-flex items-center gap-1.5 rounded-full border border-[color-mix(in_srgb,var(--omjep-mauve)_30%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_8%,var(--omjep-bg-panel-soft))] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-omjep-text-primary'
+const badgePill =
+  'inline-flex items-center gap-1.5 rounded-full border border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_10%,var(--omjep-bg-panel-soft))] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-omjep-text-primary'
+
+const premiumFallback =
+  'absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,color-mix(in_srgb,var(--omjep-mauve)_45%,#0a0614),#050308_55%,#020105)]'
+
+const VisualCard = ({
+  title,
+  src,
+  tilt,
+  delay,
+}: {
+  title: string
+  src: string
+  tilt: number
+  delay: number
+}) => {
+  const reduce = useReducedMotion()
+  const [broken, setBroken] = useState(false)
+  const handleError = useCallback(() => setBroken(true), [])
+
+  return (
+    <motion.figure
+      className="group relative aspect-[4/5] w-[min(100%,220px)] shrink-0 snap-center sm:w-[200px] lg:w-[220px]"
+      initial={reduce ? false : { opacity: 0, y: 24, rotate: tilt * 0.4 }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0, rotate: tilt }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, delay: reduce ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      style={{ transformStyle: 'preserve-3d' }}
+    >
+      <div
+        className="relative h-full overflow-hidden rounded-2xl border border-[color-mix(in_srgb,var(--omjep-gold)_28%,var(--omjep-border))] shadow-[0_0_0_1px_color-mix(in_srgb,var(--omjep-mauve)_20%,transparent)] transition duration-300 motion-safe:group-hover:scale-[1.04] motion-safe:group-hover:shadow-[0_0_32px_color-mix(in_srgb,var(--omjep-mauve)_35%,transparent),0_0_0_1px_color-mix(in_srgb,var(--omjep-gold)_40%,transparent)]"
+        style={{ transform: `rotateY(${tilt * 0.8}deg)` }}
+      >
+        {broken ? <div className={premiumFallback} aria-hidden /> : null}
+        {!broken ? (
+          <img
+            src={src}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={handleError}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : null}
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-[#030208] via-[#030208]/55 to-transparent"
+          aria-hidden
+        />
+        <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[color-mix(in_srgb,var(--omjep-mauve)_25%,transparent)] transition group-hover:opacity-55" aria-hidden />
+        <figcaption className="absolute inset-x-0 bottom-0 p-4">
+          <p className="font-heading text-xs font-black uppercase tracking-[0.18em] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+            {title}
+          </p>
+        </figcaption>
+      </div>
+    </motion.figure>
+  )
+}
+
+const SkeletonBar = ({ className = '' }: { className?: string }) => (
+  <div
+    className={`h-2.5 rounded-md bg-[color-mix(in_srgb,var(--omjep-mauve)_12%,var(--omjep-bg-panel-soft))] ${className}`}
+    aria-hidden
+  />
+)
 
 export default function JoinOmjepPage() {
   const reduce = useReducedMotion()
 
-  const heroChips = [
-    { label: 'League OMJEP', icon: Trophy },
-    { label: 'Coupe nationale', icon: Medal },
-    { label: 'UCL Pro Clubs', icon: Star },
-    { label: 'Joueur du mois', icon: Sparkles },
-  ]
+  const heroBadges = ['Clubs Pro', 'Compétitions officielles', 'Classements live', 'Marché des joueurs']
 
   const whyCards = [
     {
-      title: 'Compétitions officielles',
-      body: 'Calendriers homologués, résultats centralisés et règlement aligné sur la scène EA FC Pro Clubs.',
+      title: 'Compétitions organisées',
+      body: 'Formats homologués, calendriers structurés et arbitrage aligné sur une scène e-sport professionnelle.',
       icon: Shield,
     },
     {
-      title: 'Identité joueur',
-      body: 'Profil public premium : stats, poste, historique et visibilité auprès des clubs engagés.',
-      icon: Target,
+      title: 'Clubs & managers',
+      body: 'Outils de gestion d’effectif, staff et identité club pour piloter une saison complète sur OMJEP.',
+      icon: Building2,
     },
     {
-      title: 'Club & mercato',
-      body: 'Rejoins un roster, passe en « disponible » ou attire l’œil des staffs en recherche de renforts.',
-      icon: Users,
+      title: 'Classement officiel',
+      body: 'Un classement unique et traçable : chaque résultat compte dans la progression collective et individuelle.',
+      icon: BarChart3,
     },
     {
-      title: 'Prestige & visibilité',
-      body: 'Badges, palmarès et présence dans l’écosystème OMJEP — ta progression devient lisible.',
-      icon: Zap,
+      title: 'Économie virtuelle OC / JPY',
+      body: 'Monnaies plateforme pour récompenser l’engagement et alimenter le marché des joueurs de manière cohérente.',
+      icon: Coins,
     },
   ]
 
-  const steps = [
-    { n: '01', title: 'Créer son profil joueur', desc: 'Pseudo EA, plateforme, poste, niveau — la base pour être pris au sérieux.' },
-    { n: '02', title: 'Rejoindre un club ou se rendre disponible', desc: 'Candidature, essais ou statut ouvert aux recruteurs OMJEP.' },
-    { n: '03', title: 'Participer aux compétitions', desc: 'League, coupes, phases finales : tout est tracé sur la plateforme.' },
-    { n: '04', title: 'Badges, réputation & récompenses', desc: 'Performances reconnues, progression visible, objectifs saisonniers.' },
+  const experienceSteps = [
+    { title: 'Créer son profil', desc: 'Identité joueur, plateforme et préférences compétition.', icon: UserPlus },
+    { title: 'Rejoindre un club', desc: 'Candidature, essai ou rattachement à un roster OMJEP.', icon: Users },
+    { title: 'Participer aux compétitions', desc: 'Ligues, coupes et phases finales suivies sur la plateforme.', icon: Trophy },
+    { title: 'Reporter les résultats', desc: 'Workflow officiel pour valider les scores et la feuille de match.', icon: Radio },
+    { title: 'Monter au classement', desc: 'Progression visible dans les standings nationaux et circuits.', icon: Zap },
   ]
 
-  const highlights = [
-    { title: 'League', tag: 'Saison longue', tone: 'mauve' as const },
-    { title: 'Coupe', tag: 'Knockout', tone: 'gold' as const },
-    { title: 'UCL', tag: 'Elite', tone: 'mauve' as const },
-    { title: 'Joueur de la semaine', tag: 'Spotlight', tone: 'gold' as const },
+  const competitionCards = [
+    {
+      name: 'Ligue OMJEP',
+      blurb: 'Saison longue, rythme régulier et titre national.',
+      tone: 'gold' as const,
+      href: '/plateforme#live-matches',
+    },
+    {
+      name: 'Coupe du Trône eSport',
+      blurb: 'Knockout intense, moments décisifs et prestige royal.',
+      tone: 'copper' as const,
+      href: '/plateforme#live-matches',
+    },
+    {
+      name: 'Champions League',
+      blurb: 'Sommet continental réservé aux meilleurs clubs OMJEP.',
+      tone: 'violet' as const,
+      href: '/plateforme#live-matches',
+    },
   ]
+
+  const tilts = [-5, 4, -3, 5, -4, 3, -3.5]
 
   return (
     <div className="join-omjep-root relative min-w-0 overflow-x-hidden pb-8" data-join-omjep="1">
-      {/* Ambient */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div
-          className="absolute inset-0 opacity-[0.65] dark:opacity-50"
+          className="absolute inset-0 opacity-[0.72] dark:opacity-[0.58]"
           style={{
             backgroundImage: `
-              radial-gradient(ellipse 80% 55% at 10% -10%, color-mix(in srgb, var(--omjep-mauve) 22%, transparent), transparent 52%),
-              radial-gradient(ellipse 60% 50% at 95% 15%, color-mix(in srgb, var(--omjep-gold) 14%, transparent), transparent 48%),
-              radial-gradient(ellipse 50% 40% at 50% 100%, color-mix(in srgb, var(--omjep-mauve) 10%, transparent), transparent 55%)
+              radial-gradient(ellipse 80% 55% at 12% -8%, color-mix(in srgb, var(--omjep-mauve) 26%, transparent), transparent 52%),
+              radial-gradient(ellipse 55% 45% at 92% 12%, color-mix(in srgb, var(--omjep-gold) 16%, transparent), transparent 48%),
+              radial-gradient(ellipse 50% 42% at 50% 100%, color-mix(in srgb, var(--omjep-mauve) 12%, transparent), transparent 55%)
             `,
           }}
         />
-        <div className="join-omjep-grid-fade absolute inset-0 opacity-[0.35] dark:opacity-[0.22]" aria-hidden />
+        <div className="join-omjep-grid-fade absolute inset-0 opacity-[0.4] dark:opacity-[0.26]" aria-hidden />
       </div>
 
-      {/* Hero */}
-      <header className="relative mx-auto max-w-6xl px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28 lg:px-8 lg:pb-28 lg:pt-32">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
-          <div>
-            <motion.div
-              className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--omjep-border-gold)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_10%,var(--omjep-bg-panel-soft))] px-3 py-1.5"
-              initial={reduce ? false : { opacity: 0, y: 12 }}
-              animate={reduce ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.45 }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60 opacity-60 motion-reduce:animate-none" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary">
-                Recrutement joueurs · EA FC Pro Clubs
-              </span>
-            </motion.div>
+      {/* Floating particles */}
+      <div className="pointer-events-none fixed inset-0 -z-[5] overflow-hidden" aria-hidden>
+        {[...Array(18)].map((_, i) => (
+          <span
+            key={i}
+            className="absolute h-1 w-1 rounded-full bg-[color-mix(in_srgb,var(--omjep-mauve)_70%,white)] opacity-40 shadow-[0_0_12px_color-mix(in_srgb,var(--omjep-mauve)_80%,transparent)] motion-safe:animate-pulse"
+            style={{
+              left: `${(i * 17) % 100}%`,
+              top: `${(i * 23) % 100}%`,
+              animationDelay: `${i * 0.35}s`,
+            }}
+          />
+        ))}
+      </div>
 
-            <motion.h1
-              className="mt-6 font-heading text-4xl font-black leading-[1.05] tracking-tight text-omjep-text-primary sm:text-5xl lg:text-6xl"
-              initial={reduce ? false : { opacity: 0, y: 18 }}
-              animate={reduce ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: reduce ? 0 : 0.06 }}
-            >
-              Rejoins{' '}
-              <span className="bg-gradient-to-r from-omjep-mauve via-[color-mix(in_srgb,var(--omjep-mauve)_70%,var(--omjep-gold))] to-[color-mix(in_srgb,var(--omjep-gold)_85%,var(--omjep-mauve))] bg-clip-text text-transparent">
+      {/* —— Hero —— */}
+      <header className="relative flex min-h-[min(92vh,900px)] flex-col justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/images/gaming/hero.png"
+            alt=""
+            className="h-full w-full object-cover object-center opacity-90"
+            loading="eager"
+            fetchPriority="high"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-[#030212]/95 via-[#05031a]/88 to-[#07051f]/75"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-[#020105] via-transparent to-[color-mix(in_srgb,var(--omjep-mauve)_18%,transparent)]"
+            aria-hidden
+          />
+          <div className="join-omjep-grid-fade absolute inset-0 opacity-30" aria-hidden />
+          <div
+            className="absolute left-0 top-1/4 h-px w-[55%] bg-gradient-to-r from-[color-mix(in_srgb,var(--omjep-gold)_55%,transparent)] to-transparent blur-[1px]"
+            aria-hidden
+          />
+          <div
+            className="absolute bottom-1/3 right-0 h-px w-[40%] bg-gradient-to-l from-[color-mix(in_srgb,var(--omjep-mauve)_50%,transparent)] to-transparent"
+            aria-hidden
+          />
+        </div>
+
+        <div className="relative z-[1] mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 lg:px-8">
+          <motion.div
+            className="flex flex-wrap items-center gap-4"
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            animate={reduce ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+          >
+            <span className="font-heading text-2xl font-black tracking-tight text-white sm:text-3xl">
+              <span className="bg-gradient-to-r from-white via-white to-[color-mix(in_srgb,var(--omjep-mauve)_85%,white)] bg-clip-text text-transparent">
                 OMJEP
               </span>
-              <br />
-              <span className="text-omjep-text-primary">l’arène Pro Clubs</span>
-            </motion.h1>
+            </span>
+            <span className="hidden h-6 w-px bg-white/25 sm:block" aria-hidden />
+            <p className="max-w-md text-[10px] font-bold uppercase leading-relaxed tracking-[0.2em] text-white/70">
+              Organisation Marocaine des Jeux Électroniques Professionnels
+            </p>
+          </motion.div>
 
-            <motion.p
-              className="mt-5 max-w-xl text-base leading-relaxed text-omjep-text-secondary sm:text-lg"
-              initial={reduce ? false : { opacity: 0, y: 14 }}
-              animate={reduce ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: reduce ? 0 : 0.12 }}
-            >
-              La plateforme officielle pour jouer, progresser et briller dans les compétitions EA FC Pro Clubs au
-              Maroc — profil, clubs, mercato et visibilité au même endroit.
-            </motion.p>
-
-            <motion.div
-              className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
-              initial={reduce ? false : { opacity: 0, y: 12 }}
-              animate={reduce ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: reduce ? 0 : 0.18 }}
-            >
-              <Link
-                to="/register"
-                className="omjep-btn-primary inline-flex min-h-[48px] items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold normal-case tracking-normal"
-              >
-                Créer mon profil joueur
-                <ArrowRight className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
-              </Link>
-              <Link
-                to="/plateforme#live-matches"
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-omjep-border/80 bg-omjep-bg-panel-soft/90 px-6 py-3.5 text-sm font-semibold text-omjep-text-primary shadow-sm transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))] hover:bg-[color-mix(in_srgb,var(--omjep-mauve)_6%,var(--omjep-bg-panel-soft))]"
-              >
-                Voir les compétitions
-                <ChevronRight className="h-4 w-4 opacity-70" aria-hidden />
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* Hero visual — floating chips + card stack */}
           <motion.div
-            className="relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-none"
-            initial={reduce ? false : { opacity: 0, scale: 0.97 }}
-            animate={reduce ? undefined : { opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: reduce ? 0 : 0.15, ease: [0.22, 1, 0.36, 1] }}
+            initial={reduce ? false : { opacity: 0, y: 22 }}
+            animate={reduce ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: reduce ? 0 : 0.06 }}
+            className="max-w-3xl"
           >
-            <div className="join-omjep-hero-glow pointer-events-none absolute -inset-6 rounded-3xl blur-2xl motion-reduce:opacity-40" aria-hidden />
-            <div className={`relative ${surfaceCard} p-6 sm:p-8`}>
-              <div className="flex flex-wrap gap-2">
-                {heroChips.map(({ label, icon: Icon }, i) => (
-                  <motion.span
-                    key={label}
-                    className={chipClass}
-                    initial={reduce ? false : { opacity: 0, y: 8 }}
-                    animate={reduce ? undefined : { opacity: 1, y: 0 }}
-                    transition={{ delay: reduce ? 0 : 0.2 + i * 0.07, duration: 0.35 }}
-                  >
-                    <Icon className="h-3.5 w-3.5 text-[color-mix(in_srgb,var(--omjep-gold)_80%,var(--omjep-mauve))]" aria-hidden />
-                    {label}
-                  </motion.span>
-                ))}
-              </div>
-              <div className="mt-8 flex items-center gap-4">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[color-mix(in_srgb,var(--omjep-gold)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_12%,var(--omjep-bg-panel))] shadow-[var(--omjep-glow-gold-soft)]">
-                  <Crown className="h-8 w-8 text-[color-mix(in_srgb,var(--omjep-gold)_90%,var(--omjep-mauve))]" aria-hidden />
-                </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-omjep-text-muted">Rang national</p>
-                  <p className="font-heading text-2xl font-black text-omjep-text-primary">#12</p>
-                  <p className="text-[11px] text-omjep-text-secondary">Aperçu — ton profil ici après inscription</p>
-                </div>
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-2 rounded-xl border border-omjep-border/50 bg-omjep-bg-panel-soft/80 p-3">
-                {[
-                  { k: 'Win rate', v: '62%' },
-                  { k: 'Buts / match', v: '1.4' },
-                  { k: 'Clean sheets', v: '08' },
-                ].map((s) => (
-                  <div key={s.k} className="text-center">
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-omjep-text-muted">{s.k}</p>
-                    <p className="mt-1 font-heading text-lg font-black text-omjep-text-primary">{s.v}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <h1 className="font-heading text-4xl font-black leading-[1.08] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)] sm:text-5xl lg:text-[3.25rem] lg:leading-[1.06]">
+              La plateforme marocaine des compétitions e-sport professionnelles
+            </h1>
+            <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-[color-mix(in_srgb,white_88%,var(--omjep-mauve))] sm:text-lg">
+              Créez votre club, rejoignez des compétitions, suivez les classements et vivez l’expérience OMJEP.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="flex flex-wrap gap-2"
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={reduce ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: reduce ? 0 : 0.14 }}
+          >
+            {heroBadges.map((label) => (
+              <span key={label} className={badgePill}>
+                <Sparkles className="h-3.5 w-3.5 text-[color-mix(in_srgb,var(--omjep-gold)_90%,var(--omjep-mauve))]" aria-hidden />
+                {label}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div
+            className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
+            initial={reduce ? false : { opacity: 0, y: 14 }}
+            animate={reduce ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: reduce ? 0 : 0.2 }}
+          >
+            <Link
+              to="/register"
+              className="omjep-btn-primary inline-flex min-h-[52px] items-center justify-center gap-2 px-8 py-3.5 text-sm font-semibold normal-case tracking-normal shadow-[0_0_28px_color-mix(in_srgb,var(--omjep-mauve)_35%,transparent)]"
+            >
+              Rejoindre OMJEP
+              <ArrowRight className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+            </Link>
+            <Link
+              to="/plateforme#live-matches"
+              className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-[color-mix(in_srgb,#0c0820_75%,transparent)] px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_45%,white)] hover:bg-[color-mix(in_srgb,var(--omjep-mauve)_18%,#0c0820)]"
+            >
+              Voir les compétitions
+              <ChevronRight className="h-4 w-4 opacity-80" aria-hidden />
+            </Link>
           </motion.div>
         </div>
       </header>
 
-      {/* Why join */}
+      {/* —— Visual wall —— */}
+      <section
+        className="relative border-y border-[color-mix(in_srgb,var(--omjep-border)_70%,transparent)] bg-[color-mix(in_srgb,var(--omjep-bg-panel)_55%,#03010a)] py-12 sm:py-16"
+        aria-labelledby="join-visual-wall-heading"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,color-mix(in_srgb,var(--omjep-mauve)_12%,transparent),transparent_60%)]" aria-hidden />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h2 id="join-visual-wall-heading" className="font-heading text-lg font-black text-omjep-text-primary sm:text-xl">
+            Ambiances compétition
+          </h2>
+          <p className="mt-2 max-w-xl text-sm text-omjep-text-secondary">
+            Un mur visuel inspiré de l’arène, du club et du setup pro — même énergie que les grands broadcasts e-sport.
+          </p>
+          <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pt-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:justify-center [&::-webkit-scrollbar]:hidden">
+            {gameVisuals.map((v, i) => (
+              <VisualCard key={v.title} title={v.title} src={v.src} tilt={tilts[i] ?? 0} delay={i * 0.06} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* —— Pourquoi OMJEP —— */}
       <SectionShell
         id="pourquoi"
         eyebrow="Pourquoi OMJEP"
-        title="Quatre raisons de franchir la ligne"
-        subtitle="Pas un simple tableau de scores : un parcours joueur pensé pour la compétition Pro Clubs."
+        title="Une plateforme pensée pour la performance"
+        subtitle="Structure, lisibilité et prestige : les piliers d’une expérience compétition sérieuse."
       >
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {whyCards.map(({ title, body, icon: Icon }, i) => (
             <motion.article
               key={title}
-              className={`${surfaceCard} flex flex-col gap-3 p-5 transition motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[var(--omjep-shadow-lg)]`}
+              className={`${surfaceCard} flex flex-col gap-3 p-5 transition motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_0_24px_color-mix(in_srgb,var(--omjep-mauve)_22%,transparent)]`}
               initial={reduce ? false : { opacity: 0, y: 20 }}
               whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: reduce ? 0 : i * 0.06, duration: 0.45 }}
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-omjep-border/60 bg-[color-mix(in_srgb,var(--omjep-mauve)_10%,var(--omjep-bg-panel-soft))] text-omjep-mauve">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_12%,var(--omjep-bg-panel-soft))] text-omjep-mauve shadow-[0_0_16px_color-mix(in_srgb,var(--omjep-mauve)_25%,transparent)]">
                 <Icon className="h-5 w-5" aria-hidden />
               </span>
               <h3 className="font-heading text-base font-bold text-omjep-text-primary">{title}</h3>
@@ -270,231 +375,197 @@ export default function JoinOmjepPage() {
         </div>
       </SectionShell>
 
-      {/* How it works */}
-      <SectionShell
-        id="parcours"
-        eyebrow="Parcours"
-        title="Comment ça marche"
-        subtitle="Quatre étapes claires — du profil à la reconnaissance en compétition."
-      >
-        <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, i) => (
-            <motion.li
-              key={step.n}
-              className={`relative ${surfaceCard} overflow-hidden p-5`}
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ delay: reduce ? 0 : i * 0.08, duration: 0.45 }}
-            >
-              <span className="font-heading text-3xl font-black text-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))]">
-                {step.n}
-              </span>
-              <h3 className="mt-3 font-heading text-sm font-bold text-omjep-text-primary">{step.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-omjep-text-secondary">{step.desc}</p>
-              {i < steps.length - 1 ? (
-                <ChevronRight className="absolute right-3 top-1/2 hidden h-5 w-5 -translate-y-1/2 text-omjep-border lg:block" aria-hidden />
-              ) : null}
-            </motion.li>
-          ))}
-        </ol>
-      </SectionShell>
+      {/* —— Expérience compétition —— */}
+      <section className="relative border-t border-omjep-border/40 bg-[color-mix(in_srgb,var(--omjep-bg-panel-soft)_40%,transparent)] py-14 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <p className="font-heading text-[10px] font-extrabold uppercase tracking-[0.28em] text-[color-mix(in_srgb,var(--omjep-gold)_75%,var(--omjep-text-muted))]">
+            Expérience compétition
+          </p>
+          <h2 className="mt-2 font-heading text-2xl font-black tracking-tight text-omjep-text-primary sm:text-3xl">
+            De l’inscription au sommet du classement
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm text-omjep-text-secondary sm:text-base">
+            Parcours linéaire, état actif visuel et repères clairs — comme un flux HUD sur le terrain.
+          </p>
 
-      {/* Competition highlights */}
-      <SectionShell
-        id="formats"
-        eyebrow="Formats"
-        title="Compétitions qui comptent"
-        subtitle="Des circuits variés pour tous les niveaux — avec une présentation digne d’un broadcast esport."
-      >
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {highlights.map((h, i) => (
-            <motion.div
-              key={h.title}
-              className={`join-omjep-highlight join-omjep-highlight--${h.tone} ${surfaceCard} flex flex-col gap-3 p-5`}
-              initial={reduce ? false : { opacity: 0, y: 18 }}
-              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ delay: reduce ? 0 : i * 0.07, duration: 0.5 }}
-            >
-              <span
-                className={
-                  h.tone === 'gold'
-                    ? 'w-fit rounded-full border border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_12%,transparent)] px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))]'
-                    : 'w-fit rounded-full border border-[color-mix(in_srgb,var(--omjep-mauve)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_10%,transparent)] px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-omjep-text-primary'
-                }
-              >
-                {h.tag}
-              </span>
-              <p className="font-heading text-xl font-black text-omjep-text-primary">{h.title}</p>
-              <p className="text-xs text-omjep-text-secondary">Saison OMJEP · homologué · suivi live</p>
-            </motion.div>
-          ))}
-        </div>
-      </SectionShell>
+          <div className="relative mt-12 lg:mt-14">
+            <div
+              className="pointer-events-none absolute left-6 top-8 bottom-8 w-px bg-gradient-to-b from-transparent via-[color-mix(in_srgb,var(--omjep-mauve)_55%,transparent)] to-transparent lg:left-0 lg:right-0 lg:top-10 lg:bottom-auto lg:mx-auto lg:h-0.5 lg:w-[min(100%,880px)] lg:bg-gradient-to-r lg:from-transparent lg:via-[color-mix(in_srgb,var(--omjep-mauve)_50%,var(--omjep-gold))] lg:to-transparent"
+              aria-hidden
+            />
 
-      {/* Player identity preview */}
-      <SectionShell
-        id="profil"
-        eyebrow="Identité joueur"
-        title="Ton profil, niveau showcase"
-        subtitle="Un aperçu du type de fiche que les clubs et le staff voient sur OMJEP."
-      >
-        <motion.div
-          className={`mx-auto max-w-3xl ${surfaceCard} overflow-hidden p-0 sm:p-0`}
-          initial={reduce ? false : { opacity: 0, y: 24 }}
-          whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ duration: 0.55 }}
-        >
-          <div className="grid gap-0 md:grid-cols-[1fr_1.1fr]">
-            <div className="border-b border-omjep-border/60 bg-[color-mix(in_srgb,var(--omjep-mauve)_8%,var(--omjep-bg-panel-soft))] p-6 md:border-b-0 md:border-r">
-              <div className="flex items-start gap-4">
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-[color-mix(in_srgb,var(--omjep-gold)_50%,var(--omjep-mauve))] bg-gradient-to-br from-omjep-bg-panel to-omjep-bg-panel-soft font-heading text-2xl font-black text-omjep-mauve">
-                  OM
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate font-heading text-xl font-black text-omjep-text-primary">OMJEP_ST · MC</p>
-                  <p className="mt-1 text-sm text-omjep-text-secondary">Club : Eagles Rabat · Disponible mercato</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className={chipClass}>
-                      <Gamepad2 className="h-3.5 w-3.5" aria-hidden />
-                      PS5
+            <ol className="relative grid gap-6 lg:grid-cols-5 lg:gap-3">
+              {experienceSteps.map((step, i) => {
+                const Icon = step.icon
+                const active = i === 2
+                return (
+                  <motion.li
+                    key={step.title}
+                    className={`relative ${surfaceCard} flex gap-4 p-4 lg:flex-col lg:items-center lg:text-center`}
+                    initial={reduce ? false : { opacity: 0, y: 16 }}
+                    whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.15 }}
+                    transition={{ delay: reduce ? 0 : i * 0.07, duration: 0.45 }}
+                  >
+                    <span
+                      className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 font-heading text-xs font-black ${
+                        active
+                          ? 'border-[color-mix(in_srgb,var(--omjep-mauve)_85%,var(--omjep-gold))] bg-[color-mix(in_srgb,var(--omjep-mauve)_22%,var(--omjep-bg-panel))] text-white shadow-[0_0_20px_color-mix(in_srgb,var(--omjep-mauve)_45%,transparent)]'
+                          : 'border-omjep-border/80 bg-omjep-bg-panel-soft text-omjep-text-muted'
+                      }`}
+                    >
+                      <Icon className={`h-5 w-5 ${active ? 'text-[color-mix(in_srgb,var(--omjep-gold)_90%,white)]' : ''}`} aria-hidden />
+                      {active ? (
+                        <span className="absolute -inset-1 -z-10 animate-ping rounded-full bg-[color-mix(in_srgb,var(--omjep-mauve)_35%,transparent)] motion-reduce:hidden" />
+                      ) : null}
                     </span>
-                    <span className={chipClass}>Maroc</span>
-                    <span className={chipClass}>Pro Clubs Elite</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-4 p-6">
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {[
-                  { l: 'Matchs', v: '128' },
-                  { l: 'Buts', v: '94' },
-                  { l: 'Passes D', v: '61' },
-                  { l: 'Note moy.', v: '8.4' },
-                ].map((x) => (
-                  <div key={x.l} className="rounded-xl border border-omjep-border/50 bg-omjep-bg-panel-soft/80 px-3 py-2 text-center">
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-omjep-text-muted">{x.l}</p>
-                    <p className="mt-0.5 font-heading text-lg font-black text-omjep-text-primary">{x.v}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="rounded-xl border border-omjep-border/50 bg-omjep-bg-panel-soft/60 p-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-omjep-text-muted">Social & stream</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="rounded-lg border border-omjep-border/60 px-2 py-1 text-[11px] font-medium text-omjep-text-secondary">Kick / OMJEP</span>
-                  <span className="rounded-lg border border-omjep-border/60 px-2 py-1 text-[11px] font-medium text-omjep-text-secondary">YouTube highlights</span>
-                  <span className="rounded-lg border border-omjep-border/60 px-2 py-1 text-[11px] font-medium text-omjep-text-secondary">Discord club</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </SectionShell>
-
-      {/* Why clubs need you */}
-      <SectionShell
-        id="clubs"
-        eyebrow="Recrutement"
-        title="Les clubs ont besoin de toi"
-        subtitle="OMJEP connecte les staffs aux profils affûtés — ta feuille de route devient un argument."
-      >
-        <div className={`grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center ${surfaceCard} p-6 sm:p-8`}>
-          <div>
-            <ul className="space-y-4">
-              {[
-                'Profils visibles avec stats homologuées et historique de compétition.',
-                'Mercato, essais et statut « disponible » pour capter les opportunités.',
-                'Messagerie compétition & notifications pour ne rien rater.',
-                'Visibilité dans les classements et les temps forts OMJEP.',
-              ].map((t) => (
-                <li key={t} className="flex gap-3 text-sm leading-relaxed text-omjep-text-secondary">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[color-mix(in_srgb,var(--omjep-gold)_70%,var(--omjep-mauve))]" aria-hidden />
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="relative rounded-2xl border border-omjep-border/60 bg-[color-mix(in_srgb,var(--omjep-bg-panel-soft)_90%,transparent)] p-6">
-            <Radio className="absolute right-4 top-4 h-5 w-5 text-omjep-mauve/80" aria-hidden />
-            <p className="font-heading text-sm font-bold uppercase tracking-wider text-omjep-text-muted">Live recrutement</p>
-            <p className="mt-3 text-lg font-bold text-omjep-text-primary">« On cherche un MC box-to-box pour la League — profil OMJEP requis. »</p>
-            <p className="mt-2 text-xs text-omjep-text-muted">Exemple de brief staff — démo narrative</p>
+                    <div className="min-w-0 flex-1 pl-2 lg:w-full lg:pl-0">
+                      <p className="font-heading text-[10px] font-black uppercase tracking-widest text-omjep-text-muted">
+                        Étape {i + 1}
+                      </p>
+                      <h3 className="mt-1 font-heading text-sm font-bold text-omjep-text-primary">{step.title}</h3>
+                      <p className="mt-2 text-xs leading-relaxed text-omjep-text-secondary">{step.desc}</p>
+                    </div>
+                  </motion.li>
+                )
+              })}
+            </ol>
           </div>
         </div>
-      </SectionShell>
+      </section>
 
-      {/* Streamer / creator */}
+      {/* —— Live cockpit (preview UI only) —— */}
       <SectionShell
-        id="createurs"
-        eyebrow="Visibilité"
-        title="Créateurs & communauté"
-        subtitle="OMJEP amplifie aussi les voix : contenus, clips et Discord rattachés à la compétition."
+        id="cockpit"
+        eyebrow="Live cockpit"
+        title="Aperçu de l’interface compétition"
+        subtitle="Représentation stylisée des modules OMJEP — sans données live ni chiffres fictifs."
       >
-        <div className="flex flex-col items-center justify-between gap-6 rounded-2xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_92%,var(--omjep-bg-elevated))] px-6 py-8 text-center sm:flex-row sm:text-left">
-          <div className="flex flex-wrap justify-center gap-4 sm:justify-start">
+        <div className={`${surfaceCard} overflow-hidden p-0`}>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-omjep-border/60 bg-[color-mix(in_srgb,var(--omjep-mauve)_10%,var(--omjep-bg-panel-soft))] px-4 py-3 sm:px-6">
+            <div className="flex items-center gap-2 text-omjep-text-primary">
+              <LayoutDashboard className="h-4 w-4 text-omjep-mauve" aria-hidden />
+              <span className="font-heading text-xs font-bold uppercase tracking-wider">Aperçu plateforme</span>
+            </div>
+            <span className="rounded-full border border-[color-mix(in_srgb,var(--omjep-gold)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_10%,transparent)] px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))]">
+              Maquette UI
+            </span>
+          </div>
+          <div className="grid gap-4 p-4 sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
             {[
-              { Icon: PlayCircle, label: 'YouTube' },
-              { Icon: Tv, label: 'Kick' },
-              { Icon: MessageCircle, label: 'Discord' },
-              { Icon: Users, label: 'Communauté' },
-            ].map(({ Icon, label }) => (
-              <span
+              { label: 'Matchs en cours', icon: CircleDot },
+              { label: 'Clubs inscrits', icon: Building2 },
+              { label: 'Classement live', icon: BarChart3 },
+              { label: 'Activité mercato', icon: Gamepad2 },
+            ].map(({ label, icon: Icon }) => (
+              <div
                 key={label}
-                className="inline-flex items-center gap-2 rounded-xl border border-omjep-border/60 bg-omjep-bg-panel-soft/90 px-4 py-2.5 text-sm font-semibold text-omjep-text-primary"
+                className="rounded-xl border border-omjep-border/60 bg-omjep-bg-panel-soft/80 p-4 ring-1 ring-[color-mix(in_srgb,var(--omjep-border)_50%,transparent)]"
               >
-                <Icon className="h-4 w-4 text-omjep-mauve" aria-hidden />
-                {label}
-              </span>
+                <div className="flex items-center gap-2 text-omjep-text-primary">
+                  <Icon className="h-4 w-4 shrink-0 text-omjep-mauve" aria-hidden />
+                  <p className="text-xs font-bold uppercase tracking-wide text-omjep-text-secondary">{label}</p>
+                </div>
+                <div className="mt-4 space-y-2">
+                  <SkeletonBar className="w-3/4" />
+                  <SkeletonBar className="w-full opacity-80" />
+                  <SkeletonBar className="w-5/6 opacity-60" />
+                </div>
+                <p className="mt-3 text-[10px] font-medium uppercase tracking-wider text-omjep-text-muted">
+                  Contenu chargé après connexion
+                </p>
+              </div>
             ))}
           </div>
-          <Link
-            to="/community"
-            className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-omjep-mauve transition hover:text-omjep-text-primary"
-          >
-            Voir l’actualité
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
         </div>
       </SectionShell>
 
-      {/* Final CTA */}
+      {/* —— Compétitions —— */}
+      <SectionShell
+        id="competitions"
+        eyebrow="Compétitions"
+        title="Trois vitrines majeures"
+        subtitle="Identités visuelles distinctes pour chaque format — même exigence de qualité."
+      >
+        <div className="grid gap-6 lg:grid-cols-3">
+          {competitionCards.map((c, i) => {
+            const ring =
+              c.tone === 'gold'
+                ? 'border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-border))] shadow-[inset_0_1px_0_color-mix(in_srgb,var(--omjep-gold)_18%,transparent),0_0_0_1px_color-mix(in_srgb,var(--omjep-gold)_12%,transparent)]'
+                : c.tone === 'copper'
+                  ? 'border-[color-mix(in_srgb,#b45309_50%,var(--omjep-border))] shadow-[inset_0_1px_0_color-mix(in_srgb,#f97316_12%,transparent)]'
+                  : 'border-[color-mix(in_srgb,var(--omjep-mauve)_50%,#1e3a8a)] shadow-[0_0_24px_color-mix(in_srgb,var(--omjep-mauve)_18%,transparent)]'
+            const chip =
+              c.tone === 'gold'
+                ? 'bg-[color-mix(in_srgb,var(--omjep-gold)_14%,transparent)] text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))]'
+                : c.tone === 'copper'
+                  ? 'bg-[color-mix(in_srgb,#ea580c_14%,transparent)] text-orange-100'
+                  : 'bg-[color-mix(in_srgb,var(--omjep-mauve)_16%,#1e1b4b)] text-indigo-100'
+            return (
+              <motion.article
+                key={c.name}
+                className={`${surfaceCard} flex flex-col gap-4 p-6 ${ring}`}
+                initial={reduce ? false : { opacity: 0, y: 22 }}
+                whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ delay: reduce ? 0 : i * 0.08, duration: 0.5 }}
+              >
+                <span className={`w-fit rounded-full border border-white/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest ${chip}`}>
+                  {c.tone === 'gold' ? 'Or OMJEP' : c.tone === 'copper' ? 'Feu & cuivre' : 'Violet & bleu nuit'}
+                </span>
+                <h3 className="font-heading text-xl font-black text-omjep-text-primary">{c.name}</h3>
+                <p className="flex-1 text-sm leading-relaxed text-omjep-text-secondary">{c.blurb}</p>
+                <Link
+                  to={c.href}
+                  className="inline-flex w-fit items-center gap-2 rounded-xl border border-omjep-border/80 bg-omjep-bg-panel-soft/90 px-4 py-2.5 text-sm font-semibold text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_40%,var(--omjep-border))]"
+                >
+                  Découvrir
+                  <ChevronRight className="h-4 w-4 opacity-70" aria-hidden />
+                </Link>
+              </motion.article>
+            )
+          })}
+        </div>
+      </SectionShell>
+
+      {/* —— Final CTA —— */}
       <section className="join-omjep-cta mx-auto max-w-6xl px-4 pb-20 pt-4 sm:px-6 lg:px-8 lg:pb-28">
         <motion.div
-          className="relative overflow-hidden rounded-3xl border border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_14%,var(--omjep-bg-panel))] p-8 shadow-[var(--omjep-shadow-lg)] sm:p-10 lg:p-12"
+          className="relative overflow-hidden rounded-3xl border border-[color-mix(in_srgb,var(--omjep-mauve)_40%,var(--omjep-border))] shadow-[var(--omjep-shadow-lg)]"
           initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.55 }}
         >
-          <div className="join-omjep-cta-shine pointer-events-none absolute inset-0 opacity-50 motion-reduce:opacity-25" aria-hidden />
-          <div className="relative text-center">
-            <h2 className="font-heading text-2xl font-black tracking-tight text-omjep-text-primary sm:text-3xl lg:text-4xl">
-              Prêt à enfiler le maillot OMJEP ?
+          <img
+            src="/images/gaming/trophy.png"
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#03010a]/96 via-[#08051c]/92 to-[#120a28]/88" aria-hidden />
+          <div className="absolute inset-0 bg-[color-mix(in_srgb,var(--omjep-mauve)_15%,transparent)] mix-blend-soft-light" aria-hidden />
+          <div className="join-omjep-cta-shine pointer-events-none absolute inset-0 opacity-40 motion-reduce:opacity-22" aria-hidden />
+
+          <div className="relative px-6 py-12 text-center sm:px-10 sm:py-14 lg:px-14 lg:py-16">
+            <h2 className="font-heading text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">
+              Prêt à entrer dans l’arène OMJEP ?
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-omjep-text-secondary sm:text-base">
-              Crée ton compte, complète ton profil joueur et intègre le calendrier des compétitions officielles Pro Clubs.
+            <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
+              Créez votre compte pour accéder aux compétitions, au club et au marché des joueurs sur la plateforme officielle.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 to="/register"
-                className="inline-flex min-h-[48px] min-w-[200px] items-center justify-center rounded-xl border border-white/20 bg-[color-mix(in_srgb,var(--omjep-mauve)_25%,#1a1030)] px-6 py-3.5 text-sm font-bold text-white shadow-[var(--omjep-glow-mauve-soft)] transition hover:brightness-110"
+                className="omjep-btn-primary inline-flex min-h-[50px] min-w-[200px] items-center justify-center px-7 py-3.5 text-sm font-semibold normal-case tracking-normal"
               >
-                Je veux participer
+                Créer mon compte
               </Link>
               <Link
-                to="/register"
-                className="omjep-btn-primary inline-flex min-h-[48px] min-w-[200px] items-center justify-center px-6 py-3.5 text-sm font-semibold normal-case tracking-normal"
+                to="/login"
+                className="inline-flex min-h-[50px] min-w-[200px] items-center justify-center rounded-xl border border-white/25 bg-[color-mix(in_srgb,#0a0618_82%,transparent)] px-7 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:border-white/45 hover:bg-[color-mix(in_srgb,var(--omjep-mauve)_25%,#0a0618)]"
               >
-                Créer mon compte joueur
-              </Link>
-              <Link
-                to="/plateforme#live-matches"
-                className="inline-flex min-h-[48px] items-center justify-center px-4 py-3 text-sm font-semibold text-omjep-text-primary underline-offset-4 transition hover:underline"
-              >
-                Découvrir les compétitions
+                Connexion
               </Link>
             </div>
           </div>
