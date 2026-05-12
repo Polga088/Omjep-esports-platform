@@ -25,6 +25,14 @@ export interface User {
   activeJerseyId?: string | null;
   /** Rareté du set cosmétique (skins & cadres) */
   avatarRarity?: 'common' | 'premium' | 'legendary';
+  instagramUrl?: string | null;
+  whatsappUrl?: string | null;
+  discordUrl?: string | null;
+  youtubeUrl?: string | null;
+  kickUrl?: string | null;
+  streamUrl?: string | null;
+  latestVideoUrl?: string | null;
+  latestLiveUrl?: string | null;
   /** Couleurs club pour le dégradé maillot (API `/auth/me` si maillot actif) */
   teamPrimaryColor?: string;
   teamSecondaryColor?: string;

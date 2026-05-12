@@ -53,6 +53,14 @@ model User {
   walletTransactions  Transaction[]
   supportTickets      Ticket[]
   ticketReplies       TicketReply[]
+  instagramUrl        String?            @map("instagram_url")
+  whatsappUrl         String?            @map("whatsapp_url")
+  discordUrl          String?            @map("discord_url")
+  youtubeUrl          String?            @map("youtube_url")
+  kickUrl             String?            @map("kick_url")
+  streamUrl           String?            @map("stream_url")
+  latestVideoUrl      String?            @map("latest_video_url")
+  latestLiveUrl       String?            @map("latest_live_url")
 
   @@map("users")
 }

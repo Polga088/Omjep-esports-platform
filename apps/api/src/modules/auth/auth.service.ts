@@ -64,6 +64,14 @@ const USER_PUBLIC_SELECT = {
   activeFrameUrl: true,
   activeBannerUrl: true,
   activeJerseyId: true,
+  instagramUrl: true,
+  whatsappUrl: true,
+  discordUrl: true,
+  youtubeUrl: true,
+  kickUrl: true,
+  streamUrl: true,
+  latestVideoUrl: true,
+  latestLiveUrl: true,
 } as const;
 
 export interface PublicAuthUser {
@@ -86,6 +94,14 @@ export interface PublicAuthUser {
   activeFrameUrl: string | null;
   activeBannerUrl: string | null;
   activeJerseyId: string | null;
+  instagramUrl: string | null;
+  whatsappUrl: string | null;
+  discordUrl: string | null;
+  youtubeUrl: string | null;
+  kickUrl: string | null;
+  streamUrl: string | null;
+  latestVideoUrl: string | null;
+  latestLiveUrl: string | null;
   teamPrimaryColor?: string;
   teamSecondaryColor?: string;
 }

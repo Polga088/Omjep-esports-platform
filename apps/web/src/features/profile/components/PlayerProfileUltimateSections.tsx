@@ -32,13 +32,16 @@ export interface SocialLinkRow {
 }
 
 export interface CreatorProfileBundle {
-  youtubeChannel: string
-  kickChannel: string
-  discordCommunity: string
-  mainStreamUrl: string
-  latestVideoLabel: string
-  latestLiveLabel: string
+  youtubeUrl: string
+  kickUrl: string
+  discordUrl: string
+  streamUrl: string
+  latestVideoUrl: string
+  latestLiveUrl: string
 }
+
+const linkInputClass =
+  'w-full min-w-0 rounded-xl border border-[color-mix(in_srgb,var(--omjep-mauve)_38%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-bg-panel)_92%,#06030f)] px-3 py-2.5 text-sm text-omjep-text-primary shadow-[inset_0_1px_0_color-mix(in_srgb,white_4%,transparent)] outline-none transition placeholder:text-omjep-text-muted focus:border-[color-mix(in_srgb,var(--omjep-gold)_42%,var(--omjep-mauve))] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--omjep-mauve)_28%,transparent)]'
 
 export interface PlayerProfileHeroSectionProps {
   heroAvatar: ReactNode
@@ -407,13 +410,36 @@ const socialIconMap: Record<SocialLinkRow['id'], typeof AtSign> = {
 export interface PlayerSocialLinksSectionProps {
   rows: SocialLinkRow[]
   isPublicProfile: boolean
-  onEditRequest?: () => void
+  onEditSocial?: () => void
+  editMode?: boolean
+  draft?: {
+    instagramUrl: string
+    whatsappUrl: string
+    discordUrl: string
+    youtubeUrl: string
+    kickUrl: string
+  }
+  onDraftChange?: (
+    field: 'instagramUrl' | 'whatsappUrl' | 'discordUrl' | 'youtubeUrl' | 'kickUrl',
+    value: string,
+  ) => void
+  onSaveSocial?: () => void
+  onCancelSocial?: () => void
+  socialSaving?: boolean
+  socialError?: string | null
 }
 
 export const PlayerSocialLinksSection = ({
   rows,
   isPublicProfile,
-  onEditRequest,
+  onEditSocial,
+  editMode = false,
+  draft,
+  onDraftChange,
+  onSaveSocial,
+  onCancelSocial,
+  socialSaving = false,
+  socialError = null,
 }: PlayerSocialLinksSectionProps) => {
   return (
     <section
@@ -422,13 +448,13 @@ export const PlayerSocialLinksSection = ({
     >
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-omjep-border/70 pb-3">
         <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-omjep-mauve">Social</p>
-        {onEditRequest ? (
+        {!editMode && onEditSocial ? (
           <button
             type="button"
-            onClick={onEditRequest}
-            className="text-[11px] font-bold uppercase tracking-wide text-omjep-mauve underline-offset-2 hover:underline"
+            onClick={onEditSocial}
+            className="rounded-lg border border-[color-mix(in_srgb,var(--omjep-mauve)_40%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_12%,transparent)] px-3 py-1.5 text-[11px] font-black uppercase tracking-wide text-omjep-text-primary transition hover:border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-mauve))] hover:bg-[color-mix(in_srgb,var(--omjep-mauve)_18%,transparent)]"
           >
-            Éditer (bientôt)
+            Modifier
           </button>
         ) : null}
       </header>
@@ -437,40 +463,90 @@ export const PlayerSocialLinksSection = ({
           Vue publique : les liens sensibles pourront être masqués automatiquement.
         </p>
       ) : null}
-      <ul className="space-y-2">
-        {rows.map((row) => {
-          const Icon = socialIconMap[row.id]
-          const showEmpty = row.isEmpty || !row.value.trim()
-          return (
-            <li
-              key={row.id}
-              className="flex flex-col gap-1 rounded-xl border border-omjep-border bg-omjep-bg-elevated/85 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
+
+      {editMode && draft && onDraftChange && onSaveSocial && onCancelSocial ? (
+        <div className="space-y-4">
+          {(
+            [
+              ['instagramUrl', 'Instagram', 'https://instagram.com/… ou @pseudo'],
+              ['whatsappUrl', 'WhatsApp', 'Numéro, wa.me/… ou lien'],
+              ['discordUrl', 'Discord', 'Pseudo, invite ou lien Discord'],
+              ['youtubeUrl', 'YouTube', 'Chaîne ou URL YouTube'],
+              ['kickUrl', 'Kick', 'Chaîne ou URL Kick'],
+            ] as const
+          ).map(([field, label, ph]) => (
+            <label key={field} className="block min-w-0">
+              <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-omjep-text-muted">
+                {label}
+              </span>
+              <input
+                type="text"
+                value={draft[field]}
+                onChange={(e) => onDraftChange(field, e.target.value)}
+                placeholder={ph}
+                autoComplete="off"
+                className={linkInputClass}
+              />
+            </label>
+          ))}
+          {socialError ? (
+            <p className="rounded-lg border border-omjep-danger/30 bg-omjep-danger/10 px-3 py-2 text-xs text-omjep-danger">{socialError}</p>
+          ) : null}
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={onCancelSocial}
+              disabled={socialSaving}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-omjep-border bg-omjep-bg-elevated px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-omjep-text-primary transition hover:border-omjep-mauve/35 disabled:opacity-50"
             >
-              <div className="inline-flex items-center gap-2">
-                <Icon className="h-4 w-4 shrink-0 text-omjep-mauve" aria-hidden />
-                <span className="text-xs font-bold text-omjep-text-primary">{row.label}</span>
-              </div>
-              <div className="min-w-0 pl-6 sm:max-w-[60%] sm:pl-0 sm:text-right">
-                {showEmpty ? (
-                  <span className="text-xs italic text-omjep-text-muted">Non renseigné</span>
-                ) : row.href ? (
-                  <a
-                    href={row.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 break-all text-xs font-medium text-omjep-mauve hover:underline"
-                  >
-                    {row.value}
-                    <ExternalLink className="h-3 w-3 shrink-0 opacity-70" aria-hidden />
-                  </a>
-                ) : (
-                  <span className="break-all text-xs text-omjep-text-secondary">{row.value}</span>
-                )}
-              </div>
-            </li>
-          )
-        })}
-      </ul>
+              Annuler
+            </button>
+            <button
+              type="button"
+              onClick={onSaveSocial}
+              disabled={socialSaving}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_14%,#0a0712)] px-4 py-2.5 text-xs font-black uppercase tracking-wide text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))] shadow-[0_0_16px_color-mix(in_srgb,var(--omjep-gold)_18%,transparent)] transition hover:brightness-110 disabled:opacity-50"
+            >
+              {socialSaving ? 'Enregistrement…' : 'Sauvegarder'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <ul className="space-y-2">
+          {rows.map((row) => {
+            const Icon = socialIconMap[row.id]
+            const showEmpty = row.isEmpty || !row.value.trim()
+            return (
+              <li
+                key={row.id}
+                className="flex flex-col gap-1 rounded-xl border border-omjep-border bg-omjep-bg-elevated/85 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="inline-flex items-center gap-2">
+                  <Icon className="h-4 w-4 shrink-0 text-omjep-mauve" aria-hidden />
+                  <span className="text-xs font-bold text-omjep-text-primary">{row.label}</span>
+                </div>
+                <div className="min-w-0 pl-6 sm:max-w-[60%] sm:pl-0 sm:text-right">
+                  {showEmpty ? (
+                    <span className="text-xs italic text-omjep-text-muted">Non renseigné</span>
+                  ) : row.href ? (
+                    <a
+                      href={row.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 break-all text-xs font-medium text-omjep-mauve hover:underline"
+                    >
+                      {row.value}
+                      <ExternalLink className="h-3 w-3 shrink-0 opacity-70" aria-hidden />
+                    </a>
+                  ) : (
+                    <span className="break-all text-xs text-omjep-text-secondary">{row.value}</span>
+                  )}
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </section>
   )
 }
@@ -699,14 +775,71 @@ export const PlayerCardAndStoreSection = ({
 export interface PlayerStreamerCreatorSectionProps {
   creator: CreatorProfileBundle
   onConfigure: () => void
+  editMode?: boolean
+  draft?: {
+    youtubeUrl: string
+    kickUrl: string
+    discordUrl: string
+    streamUrl: string
+    latestVideoUrl: string
+    latestLiveUrl: string
+  }
+  onStreamerDraftChange?: (
+    field: 'youtubeUrl' | 'kickUrl' | 'discordUrl' | 'streamUrl' | 'latestVideoUrl' | 'latestLiveUrl',
+    value: string,
+  ) => void
+  onSaveStreamer?: () => void
+  onCancelStreamer?: () => void
+  streamerSaving?: boolean
+  streamerError?: string | null
 }
 
-export const PlayerStreamerCreatorSection = ({ creator, onConfigure }: PlayerStreamerCreatorSectionProps) => {
+function externalHref(v: string): string | null {
+  const t = v.trim()
+  if (!t) return null
+  return /^https?:\/\//i.test(t) ? t : null
+}
+
+export const PlayerStreamerCreatorSection = ({
+  creator,
+  onConfigure,
+  editMode = false,
+  draft,
+  onStreamerDraftChange,
+  onSaveStreamer,
+  onCancelStreamer,
+  streamerSaving = false,
+  streamerError = null,
+}: PlayerStreamerCreatorSectionProps) => {
   const hasAny =
-    creator.youtubeChannel.trim() ||
-    creator.kickChannel.trim() ||
-    creator.discordCommunity.trim() ||
-    creator.mainStreamUrl.trim()
+    creator.youtubeUrl.trim() ||
+    creator.kickUrl.trim() ||
+    creator.discordUrl.trim() ||
+    creator.streamUrl.trim() ||
+    creator.latestVideoUrl.trim() ||
+    creator.latestLiveUrl.trim()
+
+  const renderValue = (value: string) => {
+    const t = value.trim()
+    if (!t) {
+      return <span className="italic text-omjep-text-muted">Non renseigné</span>
+    }
+    const href = externalHref(t)
+    if (href) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex max-w-full items-center gap-1 truncate text-sm font-semibold text-omjep-mauve hover:underline"
+        >
+          <span className="truncate">{t}</span>
+          <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-70" aria-hidden />
+        </a>
+      )
+    }
+    return <span className="break-all text-sm font-semibold text-omjep-text-primary">{t}</span>
+  }
 
   return (
     <section
@@ -724,64 +857,104 @@ export const PlayerStreamerCreatorSection = ({ creator, onConfigure }: PlayerStr
         </div>
         <h2 className="font-display text-lg font-bold text-omjep-text-primary">Votre vitrine contenu</h2>
         <p className="mt-1 text-sm text-omjep-text-secondary">
-          Chaînes, communauté et lien stream principal — prêt pour la monétisation créateur OMJEP.
+          Chaînes, communauté et liens stream — synchronisés avec la section Social pour YouTube, Kick et Discord.
         </p>
 
-        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-          <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
-            <p className="text-[10px] font-bold uppercase text-omjep-text-muted">YouTube</p>
-            <p className="truncate text-sm font-semibold text-omjep-text-primary">
-              {creator.youtubeChannel.trim() || <span className="italic text-omjep-text-muted">Non configuré</span>}
-            </p>
-          </li>
-          <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
-            <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Kick</p>
-            <p className="truncate text-sm font-semibold text-omjep-text-primary">
-              {creator.kickChannel.trim() || <span className="italic text-omjep-text-muted">Non configuré</span>}
-            </p>
-          </li>
-          <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
-            <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Discord</p>
-            <p className="truncate text-sm font-semibold text-omjep-text-primary">
-              {creator.discordCommunity.trim() || <span className="italic text-omjep-text-muted">Non configuré</span>}
-            </p>
-          </li>
-          <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
-            <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Stream principal</p>
-            <p className="truncate text-sm font-semibold text-omjep-text-primary">
-              {creator.mainStreamUrl.trim() || <span className="italic text-omjep-text-muted">Non configuré</span>}
-            </p>
-          </li>
-        </ul>
-
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          <div className="rounded-xl border border-dashed border-omjep-border bg-omjep-bg-panel-soft/60 px-3 py-3">
-            <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Dernière vidéo</p>
-            <p className="mt-1 text-sm text-omjep-text-secondary">
-              {creator.latestVideoLabel.trim() || 'Placeholder — sync à brancher'}
-            </p>
+        {editMode && draft && onStreamerDraftChange && onSaveStreamer && onCancelStreamer ? (
+          <div className="mt-4 space-y-4">
+            {(
+              [
+                ['youtubeUrl', 'YouTube', 'URL ou handle chaîne YouTube'],
+                ['kickUrl', 'Kick', 'URL ou chaîne Kick'],
+                ['discordUrl', 'Discord', 'Communauté / invite / pseudo'],
+                ['streamUrl', 'Stream principal', 'Lien multistream ou page officielle'],
+                ['latestVideoUrl', 'Dernière vidéo', 'Lien direct vers la dernière vidéo'],
+                ['latestLiveUrl', 'Dernier live', 'Replay ou lien du dernier live'],
+              ] as const
+            ).map(([field, label, ph]) => (
+              <label key={field} className="block min-w-0">
+                <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-omjep-text-muted">
+                  {label}
+                </span>
+                <input
+                  type="text"
+                  value={draft[field]}
+                  onChange={(e) => onStreamerDraftChange(field, e.target.value)}
+                  placeholder={ph}
+                  autoComplete="off"
+                  className={linkInputClass}
+                />
+              </label>
+            ))}
+            {streamerError ? (
+              <p className="rounded-lg border border-omjep-danger/30 bg-omjep-danger/10 px-3 py-2 text-xs text-omjep-danger">{streamerError}</p>
+            ) : null}
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={onCancelStreamer}
+                disabled={streamerSaving}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-omjep-border bg-omjep-bg-elevated px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-omjep-text-primary transition hover:border-omjep-mauve/35 disabled:opacity-50"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={onSaveStreamer}
+                disabled={streamerSaving}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_14%,#0a0712)] px-4 py-2.5 text-xs font-black uppercase tracking-wide text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))] shadow-[0_0_16px_color-mix(in_srgb,var(--omjep-gold)_18%,transparent)] transition hover:brightness-110 disabled:opacity-50"
+              >
+                {streamerSaving ? 'Enregistrement…' : 'Sauvegarder'}
+              </button>
+            </div>
           </div>
-          <div className="rounded-xl border border-dashed border-omjep-border bg-omjep-bg-panel-soft/60 px-3 py-3">
-            <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Dernier live</p>
-            <p className="mt-1 text-sm text-omjep-text-secondary">
-              {creator.latestLiveLabel.trim() || 'Placeholder — sync à brancher'}
-            </p>
-          </div>
-        </div>
+        ) : (
+          <>
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+              <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase text-omjep-text-muted">YouTube</p>
+                <div className="mt-1 min-w-0">{renderValue(creator.youtubeUrl)}</div>
+              </li>
+              <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Kick</p>
+                <div className="mt-1 min-w-0">{renderValue(creator.kickUrl)}</div>
+              </li>
+              <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Discord</p>
+                <div className="mt-1 min-w-0">{renderValue(creator.discordUrl)}</div>
+              </li>
+              <li className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Stream principal</p>
+                <div className="mt-1 min-w-0">{renderValue(creator.streamUrl)}</div>
+              </li>
+            </ul>
 
-        {!hasAny ? (
-          <p className="mt-3 text-xs text-omjep-text-muted">
-            Renseignez vos liens lorsque le backend créateur sera disponible. Structure UI prête.
-          </p>
-        ) : null}
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <div className="rounded-xl border border-dashed border-omjep-border bg-omjep-bg-panel-soft/60 px-3 py-3">
+                <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Dernière vidéo</p>
+                <div className="mt-1 min-w-0">{renderValue(creator.latestVideoUrl)}</div>
+              </div>
+              <div className="rounded-xl border border-dashed border-omjep-border bg-omjep-bg-panel-soft/60 px-3 py-3">
+                <p className="text-[10px] font-bold uppercase text-omjep-text-muted">Dernier live</p>
+                <div className="mt-1 min-w-0">{renderValue(creator.latestLiveUrl)}</div>
+              </div>
+            </div>
 
-        <button
-          type="button"
-          onClick={onConfigure}
-          className="mt-4 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-omjep-border-gold/45 bg-omjep-gold/12 px-4 py-3 text-xs font-black uppercase tracking-wide text-omjep-gold transition hover:bg-omjep-gold/18 sm:w-auto"
-        >
-          Configurer espace streamer
-        </button>
+            {!hasAny ? (
+              <p className="mt-3 text-xs text-omjep-text-muted">
+                Ajoutez vos liens pour afficher votre vitrine créateur sur votre profil public.
+              </p>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={onConfigure}
+              className="mt-4 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-omjep-border-gold/45 bg-omjep-gold/12 px-4 py-3 text-xs font-black uppercase tracking-wide text-omjep-gold transition hover:bg-omjep-gold/18 sm:w-auto"
+            >
+              Configurer espace streamer
+            </button>
+          </>
+        )}
       </div>
     </section>
   )

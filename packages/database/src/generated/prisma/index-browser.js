@@ -142,7 +142,15 @@ exports.Prisma.UserScalarFieldEnum = {
   avatarRarity: 'avatarRarity',
   activeFrameUrl: 'activeFrameUrl',
   activeBannerUrl: 'activeBannerUrl',
-  activeJerseyId: 'activeJerseyId'
+  activeJerseyId: 'activeJerseyId',
+  instagramUrl: 'instagramUrl',
+  whatsappUrl: 'whatsappUrl',
+  discordUrl: 'discordUrl',
+  youtubeUrl: 'youtubeUrl',
+  kickUrl: 'kickUrl',
+  streamUrl: 'streamUrl',
+  latestVideoUrl: 'latestVideoUrl',
+  latestLiveUrl: 'latestLiveUrl'
 };
 
 exports.Prisma.ClubScalarFieldEnum = {

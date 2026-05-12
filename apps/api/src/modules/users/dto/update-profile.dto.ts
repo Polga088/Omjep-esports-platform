@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsIn, IsUUID, ValidateIf } from 'class-validator';
+import { IsOptional, IsString, IsIn, IsUUID, ValidateIf, MaxLength } from 'class-validator';
 
 const POSITIONS = [
   'GK', 'DC', 'LAT', 'RAT', 'MDC', 'MOC', 'MG', 'MD', 'BU', 'ATT',
@@ -42,4 +42,44 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsIn(AVATAR_RARITY_JSON)
   avatarRarity?: (typeof AVATAR_RARITY_JSON)[number];
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  instagramUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  whatsappUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  discordUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  youtubeUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  kickUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  streamUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  latestVideoUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  latestLiveUrl?: string;
 }

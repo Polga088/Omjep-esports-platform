@@ -4754,6 +4754,14 @@ export namespace Prisma {
     activeFrameUrl: string | null
     activeBannerUrl: string | null
     activeJerseyId: string | null
+    instagramUrl: string | null
+    whatsappUrl: string | null
+    discordUrl: string | null
+    youtubeUrl: string | null
+    kickUrl: string | null
+    streamUrl: string | null
+    latestVideoUrl: string | null
+    latestLiveUrl: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -4778,6 +4786,14 @@ export namespace Prisma {
     activeFrameUrl: string | null
     activeBannerUrl: string | null
     activeJerseyId: string | null
+    instagramUrl: string | null
+    whatsappUrl: string | null
+    discordUrl: string | null
+    youtubeUrl: string | null
+    kickUrl: string | null
+    streamUrl: string | null
+    latestVideoUrl: string | null
+    latestLiveUrl: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -4802,6 +4818,14 @@ export namespace Prisma {
     activeFrameUrl: number
     activeBannerUrl: number
     activeJerseyId: number
+    instagramUrl: number
+    whatsappUrl: number
+    discordUrl: number
+    youtubeUrl: number
+    kickUrl: number
+    streamUrl: number
+    latestVideoUrl: number
+    latestLiveUrl: number
     _all: number
   }
 
@@ -4842,6 +4866,14 @@ export namespace Prisma {
     activeFrameUrl?: true
     activeBannerUrl?: true
     activeJerseyId?: true
+    instagramUrl?: true
+    whatsappUrl?: true
+    discordUrl?: true
+    youtubeUrl?: true
+    kickUrl?: true
+    streamUrl?: true
+    latestVideoUrl?: true
+    latestLiveUrl?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -4866,6 +4898,14 @@ export namespace Prisma {
     activeFrameUrl?: true
     activeBannerUrl?: true
     activeJerseyId?: true
+    instagramUrl?: true
+    whatsappUrl?: true
+    discordUrl?: true
+    youtubeUrl?: true
+    kickUrl?: true
+    streamUrl?: true
+    latestVideoUrl?: true
+    latestLiveUrl?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -4890,6 +4930,14 @@ export namespace Prisma {
     activeFrameUrl?: true
     activeBannerUrl?: true
     activeJerseyId?: true
+    instagramUrl?: true
+    whatsappUrl?: true
+    discordUrl?: true
+    youtubeUrl?: true
+    kickUrl?: true
+    streamUrl?: true
+    latestVideoUrl?: true
+    latestLiveUrl?: true
     _all?: true
   }
 
@@ -5001,6 +5049,14 @@ export namespace Prisma {
     activeFrameUrl: string | null
     activeBannerUrl: string | null
     activeJerseyId: string | null
+    instagramUrl: string | null
+    whatsappUrl: string | null
+    discordUrl: string | null
+    youtubeUrl: string | null
+    kickUrl: string | null
+    streamUrl: string | null
+    latestVideoUrl: string | null
+    latestLiveUrl: string | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -5044,6 +5100,14 @@ export namespace Prisma {
     activeFrameUrl?: boolean
     activeBannerUrl?: boolean
     activeJerseyId?: boolean
+    instagramUrl?: boolean
+    whatsappUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    kickUrl?: boolean
+    streamUrl?: boolean
+    latestVideoUrl?: boolean
+    latestLiveUrl?: boolean
     activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
@@ -5090,6 +5154,14 @@ export namespace Prisma {
     activeFrameUrl?: boolean
     activeBannerUrl?: boolean
     activeJerseyId?: boolean
+    instagramUrl?: boolean
+    whatsappUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    kickUrl?: boolean
+    streamUrl?: boolean
+    latestVideoUrl?: boolean
+    latestLiveUrl?: boolean
     activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5115,6 +5187,14 @@ export namespace Prisma {
     activeFrameUrl?: boolean
     activeBannerUrl?: boolean
     activeJerseyId?: boolean
+    instagramUrl?: boolean
+    whatsappUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    kickUrl?: boolean
+    streamUrl?: boolean
+    latestVideoUrl?: boolean
+    latestLiveUrl?: boolean
     activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5140,9 +5220,17 @@ export namespace Prisma {
     activeFrameUrl?: boolean
     activeBannerUrl?: boolean
     activeJerseyId?: boolean
+    instagramUrl?: boolean
+    whatsappUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    kickUrl?: boolean
+    streamUrl?: boolean
+    latestVideoUrl?: boolean
+    latestLiveUrl?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password_hash" | "role" | "created_at" | "ea_persona_name" | "gamertag_psn" | "gamertag_xbox" | "preferred_position" | "nationality" | "external_id" | "level" | "xp" | "omjepCoins" | "jepyCoins" | "isPremium" | "avatarUrl" | "avatarRarity" | "activeFrameUrl" | "activeBannerUrl" | "activeJerseyId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password_hash" | "role" | "created_at" | "ea_persona_name" | "gamertag_psn" | "gamertag_xbox" | "preferred_position" | "nationality" | "external_id" | "level" | "xp" | "omjepCoins" | "jepyCoins" | "isPremium" | "avatarUrl" | "avatarRarity" | "activeFrameUrl" | "activeBannerUrl" | "activeJerseyId" | "instagramUrl" | "whatsappUrl" | "discordUrl" | "youtubeUrl" | "kickUrl" | "streamUrl" | "latestVideoUrl" | "latestLiveUrl", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     activeJersey?: boolean | User$activeJerseyArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
@@ -5227,6 +5315,14 @@ export namespace Prisma {
        */
       activeBannerUrl: string | null
       activeJerseyId: string | null
+      instagramUrl: string | null
+      whatsappUrl: string | null
+      discordUrl: string | null
+      youtubeUrl: string | null
+      kickUrl: string | null
+      streamUrl: string | null
+      latestVideoUrl: string | null
+      latestLiveUrl: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -5692,6 +5788,14 @@ export namespace Prisma {
     readonly activeFrameUrl: FieldRef<"User", 'String'>
     readonly activeBannerUrl: FieldRef<"User", 'String'>
     readonly activeJerseyId: FieldRef<"User", 'String'>
+    readonly instagramUrl: FieldRef<"User", 'String'>
+    readonly whatsappUrl: FieldRef<"User", 'String'>
+    readonly discordUrl: FieldRef<"User", 'String'>
+    readonly youtubeUrl: FieldRef<"User", 'String'>
+    readonly kickUrl: FieldRef<"User", 'String'>
+    readonly streamUrl: FieldRef<"User", 'String'>
+    readonly latestVideoUrl: FieldRef<"User", 'String'>
+    readonly latestLiveUrl: FieldRef<"User", 'String'>
   }
     
 
@@ -42622,7 +42726,15 @@ export namespace Prisma {
     avatarRarity: 'avatarRarity',
     activeFrameUrl: 'activeFrameUrl',
     activeBannerUrl: 'activeBannerUrl',
-    activeJerseyId: 'activeJerseyId'
+    activeJerseyId: 'activeJerseyId',
+    instagramUrl: 'instagramUrl',
+    whatsappUrl: 'whatsappUrl',
+    discordUrl: 'discordUrl',
+    youtubeUrl: 'youtubeUrl',
+    kickUrl: 'kickUrl',
+    streamUrl: 'streamUrl',
+    latestVideoUrl: 'latestVideoUrl',
+    latestLiveUrl: 'latestLiveUrl'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -43630,6 +43742,14 @@ export namespace Prisma {
     activeFrameUrl?: StringNullableFilter<"User"> | string | null
     activeBannerUrl?: StringNullableFilter<"User"> | string | null
     activeJerseyId?: UuidNullableFilter<"User"> | string | null
+    instagramUrl?: StringNullableFilter<"User"> | string | null
+    whatsappUrl?: StringNullableFilter<"User"> | string | null
+    discordUrl?: StringNullableFilter<"User"> | string | null
+    youtubeUrl?: StringNullableFilter<"User"> | string | null
+    kickUrl?: StringNullableFilter<"User"> | string | null
+    streamUrl?: StringNullableFilter<"User"> | string | null
+    latestVideoUrl?: StringNullableFilter<"User"> | string | null
+    latestLiveUrl?: StringNullableFilter<"User"> | string | null
     activeJersey?: XOR<StoreItemNullableScalarRelationFilter, StoreItemWhereInput> | null
     contracts?: ContractListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
@@ -43675,6 +43795,14 @@ export namespace Prisma {
     activeFrameUrl?: SortOrderInput | SortOrder
     activeBannerUrl?: SortOrderInput | SortOrder
     activeJerseyId?: SortOrderInput | SortOrder
+    instagramUrl?: SortOrderInput | SortOrder
+    whatsappUrl?: SortOrderInput | SortOrder
+    discordUrl?: SortOrderInput | SortOrder
+    youtubeUrl?: SortOrderInput | SortOrder
+    kickUrl?: SortOrderInput | SortOrder
+    streamUrl?: SortOrderInput | SortOrder
+    latestVideoUrl?: SortOrderInput | SortOrder
+    latestLiveUrl?: SortOrderInput | SortOrder
     activeJersey?: StoreItemOrderByWithRelationInput
     contracts?: ContractOrderByRelationAggregateInput
     receivedInvitations?: InvitationOrderByRelationAggregateInput
@@ -43723,6 +43851,14 @@ export namespace Prisma {
     activeFrameUrl?: StringNullableFilter<"User"> | string | null
     activeBannerUrl?: StringNullableFilter<"User"> | string | null
     activeJerseyId?: UuidNullableFilter<"User"> | string | null
+    instagramUrl?: StringNullableFilter<"User"> | string | null
+    whatsappUrl?: StringNullableFilter<"User"> | string | null
+    discordUrl?: StringNullableFilter<"User"> | string | null
+    youtubeUrl?: StringNullableFilter<"User"> | string | null
+    kickUrl?: StringNullableFilter<"User"> | string | null
+    streamUrl?: StringNullableFilter<"User"> | string | null
+    latestVideoUrl?: StringNullableFilter<"User"> | string | null
+    latestLiveUrl?: StringNullableFilter<"User"> | string | null
     activeJersey?: XOR<StoreItemNullableScalarRelationFilter, StoreItemWhereInput> | null
     contracts?: ContractListRelationFilter
     receivedInvitations?: InvitationListRelationFilter
@@ -43768,6 +43904,14 @@ export namespace Prisma {
     activeFrameUrl?: SortOrderInput | SortOrder
     activeBannerUrl?: SortOrderInput | SortOrder
     activeJerseyId?: SortOrderInput | SortOrder
+    instagramUrl?: SortOrderInput | SortOrder
+    whatsappUrl?: SortOrderInput | SortOrder
+    discordUrl?: SortOrderInput | SortOrder
+    youtubeUrl?: SortOrderInput | SortOrder
+    kickUrl?: SortOrderInput | SortOrder
+    streamUrl?: SortOrderInput | SortOrder
+    latestVideoUrl?: SortOrderInput | SortOrder
+    latestLiveUrl?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -43800,6 +43944,14 @@ export namespace Prisma {
     activeFrameUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     activeBannerUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     activeJerseyId?: UuidNullableWithAggregatesFilter<"User"> | string | null
+    instagramUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    whatsappUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    discordUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    youtubeUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    kickUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    streamUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    latestVideoUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    latestLiveUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type ClubWhereInput = {
@@ -46219,6 +46371,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -46264,6 +46424,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -46307,6 +46475,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -46352,6 +46528,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -46396,6 +46580,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -46419,6 +46611,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -46443,6 +46643,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClubCreateInput = {
@@ -49247,6 +49455,14 @@ export namespace Prisma {
     activeFrameUrl?: SortOrder
     activeBannerUrl?: SortOrder
     activeJerseyId?: SortOrder
+    instagramUrl?: SortOrder
+    whatsappUrl?: SortOrder
+    discordUrl?: SortOrder
+    youtubeUrl?: SortOrder
+    kickUrl?: SortOrder
+    streamUrl?: SortOrder
+    latestVideoUrl?: SortOrder
+    latestLiveUrl?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -49278,6 +49494,14 @@ export namespace Prisma {
     activeFrameUrl?: SortOrder
     activeBannerUrl?: SortOrder
     activeJerseyId?: SortOrder
+    instagramUrl?: SortOrder
+    whatsappUrl?: SortOrder
+    discordUrl?: SortOrder
+    youtubeUrl?: SortOrder
+    kickUrl?: SortOrder
+    streamUrl?: SortOrder
+    latestVideoUrl?: SortOrder
+    latestLiveUrl?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -49302,6 +49526,14 @@ export namespace Prisma {
     activeFrameUrl?: SortOrder
     activeBannerUrl?: SortOrder
     activeJerseyId?: SortOrder
+    instagramUrl?: SortOrder
+    whatsappUrl?: SortOrder
+    discordUrl?: SortOrder
+    youtubeUrl?: SortOrder
+    kickUrl?: SortOrder
+    streamUrl?: SortOrder
+    latestVideoUrl?: SortOrder
+    latestLiveUrl?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -57077,6 +57309,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -57121,6 +57361,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -57663,6 +57911,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -57707,6 +57963,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -58404,6 +58668,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -58448,6 +58720,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -58589,6 +58869,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -58633,6 +58921,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -58675,6 +58971,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -58719,6 +59023,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -58777,6 +59089,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -58821,6 +59141,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -58863,6 +59191,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -58907,6 +59243,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -58965,6 +59309,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -59009,6 +59361,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -60671,6 +61031,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -60715,6 +61083,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -60913,6 +61289,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -60957,6 +61341,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -61050,6 +61442,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -61094,6 +61494,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -61286,6 +61694,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -61330,6 +61746,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -61455,6 +61879,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -61499,6 +61931,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -61634,6 +62074,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -61678,6 +62126,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -61803,6 +62259,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -61847,6 +62311,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
@@ -61894,6 +62366,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -61938,6 +62418,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
@@ -62073,6 +62561,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -62117,6 +62613,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
@@ -62170,6 +62674,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -62214,6 +62726,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
@@ -62482,6 +63002,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -62526,6 +63054,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     matchEvents?: MatchEventUncheckedCreateNestedManyWithoutPlayerInput
@@ -62745,6 +63281,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -62789,6 +63333,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     matchEvents?: MatchEventUncheckedUpdateManyWithoutPlayerNestedInput
@@ -62908,6 +63460,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -62952,6 +63512,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -63093,6 +63661,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -63137,6 +63713,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -63289,6 +63873,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -63333,6 +63925,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -63615,6 +64215,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -63659,6 +64267,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -64143,6 +64759,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -64187,6 +64811,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -64245,6 +64877,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -64289,6 +64929,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -64430,6 +65078,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -64473,6 +65129,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -64645,6 +65309,14 @@ export namespace Prisma {
     activeFrameUrl?: StringNullableFilter<"User"> | string | null
     activeBannerUrl?: StringNullableFilter<"User"> | string | null
     activeJerseyId?: UuidNullableFilter<"User"> | string | null
+    instagramUrl?: StringNullableFilter<"User"> | string | null
+    whatsappUrl?: StringNullableFilter<"User"> | string | null
+    discordUrl?: StringNullableFilter<"User"> | string | null
+    youtubeUrl?: StringNullableFilter<"User"> | string | null
+    kickUrl?: StringNullableFilter<"User"> | string | null
+    streamUrl?: StringNullableFilter<"User"> | string | null
+    latestVideoUrl?: StringNullableFilter<"User"> | string | null
+    latestLiveUrl?: StringNullableFilter<"User"> | string | null
   }
 
   export type UserCreateWithoutInventoryInput = {
@@ -64668,6 +65340,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -64712,6 +65392,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -64799,6 +65487,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -64843,6 +65539,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -64920,6 +65624,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -64964,6 +65676,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -65073,6 +65793,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -65117,6 +65845,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -65258,6 +65994,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -65302,6 +66046,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -65383,6 +66135,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -65427,6 +66187,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -65498,6 +66266,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -65542,6 +66318,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -65589,6 +66373,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -65633,6 +66425,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -65768,6 +66568,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -65812,6 +66620,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -65865,6 +66681,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -65909,6 +66733,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -66034,6 +66866,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -66078,6 +66918,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -66162,6 +67010,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -66206,6 +67062,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -66289,6 +67153,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     activeJersey?: StoreItemCreateNestedOneWithoutEquippedByInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationCreateNestedManyWithoutInviteeInput
@@ -66333,6 +67205,14 @@ export namespace Prisma {
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
     activeJerseyId?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     receivedInvitations?: InvitationUncheckedCreateNestedManyWithoutInviteeInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -66422,6 +67302,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJersey?: StoreItemUpdateOneWithoutEquippedByNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
@@ -66466,6 +67354,14 @@ export namespace Prisma {
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeJerseyId?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -68612,6 +69508,14 @@ export namespace Prisma {
     avatarRarity?: $Enums.AvatarRarity
     activeFrameUrl?: string | null
     activeBannerUrl?: string | null
+    instagramUrl?: string | null
+    whatsappUrl?: string | null
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    kickUrl?: string | null
+    streamUrl?: string | null
+    latestVideoUrl?: string | null
+    latestLiveUrl?: string | null
   }
 
   export type UserInventoryUpdateWithoutItemInput = {
@@ -68653,6 +69557,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -68696,6 +69608,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     receivedInvitations?: InvitationUncheckedUpdateManyWithoutInviteeNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -68739,6 +69659,14 @@ export namespace Prisma {
     avatarRarity?: EnumAvatarRarityFieldUpdateOperationsInput | $Enums.AvatarRarity
     activeFrameUrl?: NullableStringFieldUpdateOperationsInput | string | null
     activeBannerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    kickUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    streamUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestVideoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestLiveUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserSubscriptionCreateManyPlanInput = {

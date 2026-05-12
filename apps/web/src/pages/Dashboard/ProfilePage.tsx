@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -6,6 +7,7 @@ import {
   useState,
   type FormEvent,
 } from 'react';
+import { isAxiosError } from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -30,6 +32,7 @@ import { xpProgress, calculateLevel } from '@/lib/leveling'
 import { useModalOpenSound } from '@/hooks/useModalOpenSound'
 import PremiumPlayerProfile from '@/features/profile/components/PremiumPlayerProfile';
 import ProfileIdentityDashboard from '@/features/profile/components/ProfileIdentityDashboard';
+import type { SocialLinkRow } from '@/features/profile/components/PlayerProfileUltimateSections';
 import {
   fetchMyPremiumProfile,
   getEquippedCardStyle,
@@ -71,6 +74,59 @@ interface MePayload extends ProfileForm {
   avatarRarity?: PlayerIdentityRarity;
   teamPrimaryColor?: string;
   teamSecondaryColor?: string;
+  instagramUrl?: string | null;
+  whatsappUrl?: string | null;
+  discordUrl?: string | null;
+  youtubeUrl?: string | null;
+  kickUrl?: string | null;
+  streamUrl?: string | null;
+  latestVideoUrl?: string | null;
+  latestLiveUrl?: string | null;
+}
+
+type SocialDraftState = {
+  instagramUrl: string;
+  whatsappUrl: string;
+  discordUrl: string;
+  youtubeUrl: string;
+  kickUrl: string;
+};
+
+type StreamerDraftState = {
+  youtubeUrl: string;
+  kickUrl: string;
+  discordUrl: string;
+  streamUrl: string;
+  latestVideoUrl: string;
+  latestLiveUrl: string;
+};
+
+type ProfileLinkPatchResponse = Pick<
+  MePayload,
+  | 'instagramUrl'
+  | 'whatsappUrl'
+  | 'discordUrl'
+  | 'youtubeUrl'
+  | 'kickUrl'
+  | 'streamUrl'
+  | 'latestVideoUrl'
+  | 'latestLiveUrl'
+>;
+
+function httpHref(v: string): string | null {
+  const t = v.trim();
+  if (!t) return null;
+  return /^https?:\/\//i.test(t) ? t : null;
+}
+
+function profileLinksPatchErrorMessage(err: unknown): string {
+  if (isAxiosError(err)) {
+    const body = err.response?.data as { message?: string | string[] } | undefined;
+    if (Array.isArray(body?.message)) return body.message.join(', ');
+    if (typeof body?.message === 'string') return body.message;
+    return err.message || 'Erreur réseau';
+  }
+  return 'Une erreur est survenue.';
 }
 
 function formatXp(n: number) {
@@ -194,10 +250,34 @@ export default function ProfilePage() {
   const [cardStoreRev, setCardStoreRev] = useState(0);
   const [gamePlatform, setGamePlatform] = useState<'PS5' | 'XBOX' | 'PC'>('PS5');
 
-  useModalOpenSound(identityModalOpen);
+  const [socialEditMode, setSocialEditMode] = useState(false);
+  const [streamerEditMode, setStreamerEditMode] = useState(false);
+  const [socialDraft, setSocialDraft] = useState<SocialDraftState>({
+    instagramUrl: '',
+    whatsappUrl: '',
+    discordUrl: '',
+    youtubeUrl: '',
+    kickUrl: '',
+  });
+  const [streamerDraft, setStreamerDraft] = useState<StreamerDraftState>({
+    youtubeUrl: '',
+    kickUrl: '',
+    discordUrl: '',
+    streamUrl: '',
+    latestVideoUrl: '',
+    latestLiveUrl: '',
+  });
+  const [socialSaving, setSocialSaving] = useState(false);
+  const [streamerSaving, setStreamerSaving] = useState(false);
+  const [socialError, setSocialError] = useState<string | null>(null);
+  const [streamerError, setStreamerError] = useState<string | null>(null);
+  const [socialFeedback, setSocialFeedback] = useState<string | null>(null);
+  const [streamerFeedback, setStreamerFeedback] = useState<string | null>(null);
 
   const avatarInputId = useId();
   const bannerInputId = useId();
+
+  useModalOpenSound(identityModalOpen);
 
   const avatarAnchorRef = useRef<HTMLDivElement>(null);
   const levelBaselineRef = useRef(1);
@@ -281,6 +361,14 @@ export default function ProfilePage() {
             teamSecondaryColor: data.teamSecondaryColor,
             level: typeof data.level === 'number' ? data.level : undefined,
             xp: typeof data.xp === 'number' ? data.xp : undefined,
+            instagramUrl: data.instagramUrl ?? undefined,
+            whatsappUrl: data.whatsappUrl ?? undefined,
+            discordUrl: data.discordUrl ?? undefined,
+            youtubeUrl: data.youtubeUrl ?? undefined,
+            kickUrl: data.kickUrl ?? undefined,
+            streamUrl: data.streamUrl ?? undefined,
+            latestVideoUrl: data.latestVideoUrl ?? undefined,
+            latestLiveUrl: data.latestLiveUrl ?? undefined,
           });
         }
         if (data.id && !cancelled) {
@@ -470,52 +558,195 @@ export default function ProfilePage() {
   const platformConsoleLabel =
     gamePlatform === 'PS5' ? 'PlayStation 5' : gamePlatform === 'XBOX' ? 'Xbox Series X|S' : 'PC';
 
-  const socialRows = [
-    {
-      id: 'instagram' as const,
-      label: 'Instagram',
-      value: '',
-      href: null as string | null,
-      isEmpty: true,
-    },
-    {
-      id: 'whatsapp' as const,
-      label: 'WhatsApp',
-      value: '',
-      href: null,
-      isEmpty: true,
-    },
-    {
-      id: 'discord' as const,
-      label: 'Discord',
-      value: `${playerPseudo}`,
-      href: null,
-      isEmpty: false,
-    },
-    {
-      id: 'youtube' as const,
-      label: 'YouTube',
-      value: '',
-      href: null,
-      isEmpty: true,
-    },
-    {
-      id: 'kick' as const,
-      label: 'Kick',
-      value: '',
-      href: null,
-      isEmpty: true,
-    },
-  ];
+  const persistedLinks = useMemo(() => {
+    const pick = (m: string | null | undefined, u: string | null | undefined) =>
+      String(m ?? u ?? '').trim();
+    return {
+      instagramUrl: pick(me?.instagramUrl, user?.instagramUrl),
+      whatsappUrl: pick(me?.whatsappUrl, user?.whatsappUrl),
+      discordUrl: pick(me?.discordUrl, user?.discordUrl),
+      youtubeUrl: pick(me?.youtubeUrl, user?.youtubeUrl),
+      kickUrl: pick(me?.kickUrl, user?.kickUrl),
+      streamUrl: pick(me?.streamUrl, user?.streamUrl),
+      latestVideoUrl: pick(me?.latestVideoUrl, user?.latestVideoUrl),
+      latestLiveUrl: pick(me?.latestLiveUrl, user?.latestLiveUrl),
+    };
+  }, [me, user]);
 
-  const creatorBundle = {
-    youtubeChannel: premiumProfile?.streamingProfile?.youtubeChannel ?? '',
-    kickChannel: premiumProfile?.streamingProfile?.kickChannel ?? '',
-    discordCommunity: premiumProfile?.streamingProfile?.discordCommunity ?? '',
-    mainStreamUrl: premiumProfile?.streamingProfile?.mainStreamUrl ?? '',
-    latestVideoLabel: premiumProfile?.streamingProfile?.latestVideoLabel ?? '',
-    latestLiveLabel: premiumProfile?.streamingProfile?.latestLiveLabel ?? '',
-  };
+  const socialRows: SocialLinkRow[] = useMemo(
+    () =>
+      (
+        [
+          ['instagram', 'Instagram', 'instagramUrl'],
+          ['whatsapp', 'WhatsApp', 'whatsappUrl'],
+          ['discord', 'Discord', 'discordUrl'],
+          ['youtube', 'YouTube', 'youtubeUrl'],
+          ['kick', 'Kick', 'kickUrl'],
+        ] as const
+      ).map(([id, label, key]) => {
+        const value = persistedLinks[key];
+        return {
+          id,
+          label,
+          value,
+          href: httpHref(value),
+          isEmpty: !value,
+        };
+      }),
+    [persistedLinks],
+  );
+
+  const creatorBundle = useMemo(
+    () => ({
+      youtubeUrl: persistedLinks.youtubeUrl,
+      kickUrl: persistedLinks.kickUrl,
+      discordUrl: persistedLinks.discordUrl,
+      streamUrl: persistedLinks.streamUrl,
+      latestVideoUrl: persistedLinks.latestVideoUrl,
+      latestLiveUrl: persistedLinks.latestLiveUrl,
+    }),
+    [persistedLinks],
+  );
+
+  const openSocialEditor = useCallback(() => {
+    setStreamerEditMode(false);
+    setStreamerFeedback(null);
+    setSocialError(null);
+    setStreamerError(null);
+    setSocialFeedback(null);
+    setSocialDraft({
+      instagramUrl: persistedLinks.instagramUrl,
+      whatsappUrl: persistedLinks.whatsappUrl,
+      discordUrl: persistedLinks.discordUrl,
+      youtubeUrl: persistedLinks.youtubeUrl,
+      kickUrl: persistedLinks.kickUrl,
+    });
+    setSocialEditMode(true);
+  }, [persistedLinks]);
+
+  const cancelSocialEditor = useCallback(() => {
+    setSocialEditMode(false);
+    setSocialError(null);
+  }, []);
+
+  const saveSocialEditor = useCallback(async () => {
+    setSocialSaving(true);
+    setSocialError(null);
+    try {
+      const { data } = await api.patch<ProfileLinkPatchResponse>('/users/profile', {
+        instagramUrl: socialDraft.instagramUrl,
+        whatsappUrl: socialDraft.whatsappUrl,
+        discordUrl: socialDraft.discordUrl,
+        youtubeUrl: socialDraft.youtubeUrl,
+        kickUrl: socialDraft.kickUrl,
+      });
+      patchUser({
+        instagramUrl: data.instagramUrl ?? null,
+        whatsappUrl: data.whatsappUrl ?? null,
+        discordUrl: data.discordUrl ?? null,
+        youtubeUrl: data.youtubeUrl ?? null,
+        kickUrl: data.kickUrl ?? null,
+      });
+      setMe((prev) =>
+        prev
+          ? {
+              ...prev,
+              instagramUrl: data.instagramUrl,
+              whatsappUrl: data.whatsappUrl,
+              discordUrl: data.discordUrl,
+              youtubeUrl: data.youtubeUrl,
+              kickUrl: data.kickUrl,
+            }
+          : prev,
+      );
+      setSocialEditMode(false);
+      setSocialFeedback('Liens sociaux enregistrés.');
+      setTimeout(() => setSocialFeedback(null), 4000);
+    } catch (e) {
+      setSocialError(profileLinksPatchErrorMessage(e));
+    } finally {
+      setSocialSaving(false);
+    }
+  }, [socialDraft, patchUser]);
+
+  const handleSocialDraftChange = useCallback(
+    (field: keyof SocialDraftState, value: string) => {
+      setSocialDraft((d) => ({ ...d, [field]: value }));
+    },
+    [],
+  );
+
+  const openStreamerEditor = useCallback(() => {
+    setSocialEditMode(false);
+    setSocialFeedback(null);
+    setSocialError(null);
+    setStreamerError(null);
+    setStreamerFeedback(null);
+    setStreamerDraft({
+      youtubeUrl: persistedLinks.youtubeUrl,
+      kickUrl: persistedLinks.kickUrl,
+      discordUrl: persistedLinks.discordUrl,
+      streamUrl: persistedLinks.streamUrl,
+      latestVideoUrl: persistedLinks.latestVideoUrl,
+      latestLiveUrl: persistedLinks.latestLiveUrl,
+    });
+    setStreamerEditMode(true);
+  }, [persistedLinks]);
+
+  const cancelStreamerEditor = useCallback(() => {
+    setStreamerEditMode(false);
+    setStreamerError(null);
+  }, []);
+
+  const saveStreamerEditor = useCallback(async () => {
+    setStreamerSaving(true);
+    setStreamerError(null);
+    try {
+      const { data } = await api.patch<ProfileLinkPatchResponse>('/users/profile', {
+        youtubeUrl: streamerDraft.youtubeUrl,
+        kickUrl: streamerDraft.kickUrl,
+        discordUrl: streamerDraft.discordUrl,
+        streamUrl: streamerDraft.streamUrl,
+        latestVideoUrl: streamerDraft.latestVideoUrl,
+        latestLiveUrl: streamerDraft.latestLiveUrl,
+      });
+      patchUser({
+        youtubeUrl: data.youtubeUrl ?? null,
+        kickUrl: data.kickUrl ?? null,
+        discordUrl: data.discordUrl ?? null,
+        streamUrl: data.streamUrl ?? null,
+        latestVideoUrl: data.latestVideoUrl ?? null,
+        latestLiveUrl: data.latestLiveUrl ?? null,
+      });
+      setMe((prev) =>
+        prev
+          ? {
+              ...prev,
+              youtubeUrl: data.youtubeUrl,
+              kickUrl: data.kickUrl,
+              discordUrl: data.discordUrl,
+              streamUrl: data.streamUrl,
+              latestVideoUrl: data.latestVideoUrl,
+              latestLiveUrl: data.latestLiveUrl,
+            }
+          : prev,
+      );
+      setStreamerEditMode(false);
+      setStreamerFeedback('Vitrine streamer enregistrée.');
+      setTimeout(() => setStreamerFeedback(null), 4000);
+    } catch (e) {
+      setStreamerError(profileLinksPatchErrorMessage(e));
+    } finally {
+      setStreamerSaving(false);
+    }
+  }, [streamerDraft, patchUser]);
+
+  const handleStreamerDraftChange = useCallback(
+    (field: keyof StreamerDraftState, value: string) => {
+      setStreamerDraft((d) => ({ ...d, [field]: value }));
+    },
+    [],
+  );
 
   const showVipBadge = Boolean(premiumProfile?.vipActive);
   const proClubIoPending = premiumProfile?.proClubIoSynced !== true;
@@ -567,8 +798,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-omjep-border bg-omjep-bg-panel/90 p-4 shadow-[var(--omjep-shadow-sm)]">
+    <div className="mx-auto max-w-[min(1180px,100%)] space-y-6">
+      <div className="omjep-surface-elevated flex flex-wrap items-center justify-between gap-3 p-4">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-mauve">
             Affichage profil
@@ -588,14 +819,12 @@ export default function ProfilePage() {
             <Share2 className="h-3.5 w-3.5" />
             {shareCopied ? 'Lien copié' : 'Partager mon profil'}
           </button>
-          <div className="inline-flex rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/60 p-1">
+          <div className="omjep-tabrail p-1">
             <button
               type="button"
               onClick={() => handleProfileViewChange('classic')}
-              className={`rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
-                !isPremiumView
-                  ? 'bg-omjep-mauve/20 text-omjep-text-primary'
-                  : 'text-omjep-text-muted hover:text-omjep-text-primary'
+              className={`omjep-tabrail__btn px-4 py-2 text-xs font-bold uppercase tracking-wide ${
+                !isPremiumView ? 'omjep-tabrail__btn--active' : ''
               }`}
             >
               Vue classique
@@ -603,10 +832,8 @@ export default function ProfilePage() {
             <button
               type="button"
               onClick={() => handleProfileViewChange('premium')}
-              className={`rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
-                isPremiumView
-                  ? 'border border-omjep-border-gold/45 bg-omjep-gold/12 text-omjep-gold'
-                  : 'text-omjep-text-muted hover:text-omjep-text-primary'
+              className={`omjep-tabrail__btn px-4 py-2 text-xs font-bold uppercase tracking-wide ${
+                isPremiumView ? 'omjep-tabrail__btn--active' : ''
               }`}
             >
               Vue premium
@@ -704,12 +931,24 @@ export default function ProfilePage() {
                 proClubIoPending={proClubIoPending}
                 showVipBadge={showVipBadge}
                 creator={creatorBundle}
-                onConfigureStreamer={() => {
-                  setIdentityModalOpen(true);
-                  setAvatarFile(null);
-                  setBannerFile(null);
-                  setError(null);
-                }}
+                onConfigureStreamer={openStreamerEditor}
+                onEditSocial={openSocialEditor}
+                socialEditMode={socialEditMode}
+                socialDraft={socialDraft}
+                onSocialDraftChange={handleSocialDraftChange}
+                onSaveSocial={saveSocialEditor}
+                onCancelSocial={cancelSocialEditor}
+                socialSaving={socialSaving}
+                socialError={socialError}
+                socialFeedback={socialFeedback}
+                streamerEditMode={streamerEditMode}
+                streamerDraft={streamerDraft}
+                onStreamerDraftChange={handleStreamerDraftChange}
+                onSaveStreamer={saveStreamerEditor}
+                onCancelStreamer={cancelStreamerEditor}
+                streamerSaving={streamerSaving}
+                streamerError={streamerError}
+                streamerFeedback={streamerFeedback}
               />
 
       {/* Réglages compétition — même logique formulaire, présentation carte */}

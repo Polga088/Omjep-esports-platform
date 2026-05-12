@@ -18,6 +18,13 @@ import { withWalletDefaults } from '../auth/wallet.util';
 
 const SALT_ROUNDS = 10;
 
+function trimSocialLink(value: string | undefined): string | null | undefined {
+  if (value === undefined) return undefined;
+  const t = value.trim();
+  if (t === '') return null;
+  return t.length > 300 ? t.slice(0, 300) : t;
+}
+
 function mapAvatarRarityJson(
   r: AvatarRarity,
 ): 'common' | 'premium' | 'legendary' {
@@ -259,6 +266,15 @@ export class UsersService {
     }
     if (dto.avatarUrl !== undefined) data.avatarUrl = dto.avatarUrl;
 
+    if (dto.instagramUrl !== undefined) data.instagramUrl = trimSocialLink(dto.instagramUrl);
+    if (dto.whatsappUrl !== undefined) data.whatsappUrl = trimSocialLink(dto.whatsappUrl);
+    if (dto.discordUrl !== undefined) data.discordUrl = trimSocialLink(dto.discordUrl);
+    if (dto.youtubeUrl !== undefined) data.youtubeUrl = trimSocialLink(dto.youtubeUrl);
+    if (dto.kickUrl !== undefined) data.kickUrl = trimSocialLink(dto.kickUrl);
+    if (dto.streamUrl !== undefined) data.streamUrl = trimSocialLink(dto.streamUrl);
+    if (dto.latestVideoUrl !== undefined) data.latestVideoUrl = trimSocialLink(dto.latestVideoUrl);
+    if (dto.latestLiveUrl !== undefined) data.latestLiveUrl = trimSocialLink(dto.latestLiveUrl);
+
     const updated = await this.prisma.user.update({
       where: { id: userId },
       data,
@@ -274,6 +290,14 @@ export class UsersService {
         activeJerseyId: true,
         avatarRarity: true,
         avatarUrl: true,
+        instagramUrl: true,
+        whatsappUrl: true,
+        discordUrl: true,
+        youtubeUrl: true,
+        kickUrl: true,
+        streamUrl: true,
+        latestVideoUrl: true,
+        latestLiveUrl: true,
       },
     });
 

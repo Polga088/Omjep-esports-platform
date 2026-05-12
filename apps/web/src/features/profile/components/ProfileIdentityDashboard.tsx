@@ -60,6 +60,42 @@ interface ProfileIdentityDashboardProps {
   showVipBadge: boolean
   creator: CreatorProfileBundle
   onConfigureStreamer: () => void
+  onEditSocial?: () => void
+  socialEditMode?: boolean
+  socialDraft?: {
+    instagramUrl: string
+    whatsappUrl: string
+    discordUrl: string
+    youtubeUrl: string
+    kickUrl: string
+  }
+  onSocialDraftChange?: (
+    field: 'instagramUrl' | 'whatsappUrl' | 'discordUrl' | 'youtubeUrl' | 'kickUrl',
+    value: string,
+  ) => void
+  onSaveSocial?: () => void
+  onCancelSocial?: () => void
+  socialSaving?: boolean
+  socialError?: string | null
+  socialFeedback?: string | null
+  streamerEditMode?: boolean
+  streamerDraft?: {
+    youtubeUrl: string
+    kickUrl: string
+    discordUrl: string
+    streamUrl: string
+    latestVideoUrl: string
+    latestLiveUrl: string
+  }
+  onStreamerDraftChange?: (
+    field: 'youtubeUrl' | 'kickUrl' | 'discordUrl' | 'streamUrl' | 'latestVideoUrl' | 'latestLiveUrl',
+    value: string,
+  ) => void
+  onSaveStreamer?: () => void
+  onCancelStreamer?: () => void
+  streamerSaving?: boolean
+  streamerError?: string | null
+  streamerFeedback?: string | null
 }
 
 const ProfileIdentityDashboard = ({
@@ -107,6 +143,23 @@ const ProfileIdentityDashboard = ({
   showVipBadge,
   creator,
   onConfigureStreamer,
+  onEditSocial,
+  socialEditMode = false,
+  socialDraft,
+  onSocialDraftChange,
+  onSaveSocial,
+  onCancelSocial,
+  socialSaving = false,
+  socialError = null,
+  socialFeedback = null,
+  streamerEditMode = false,
+  streamerDraft,
+  onStreamerDraftChange,
+  onSaveStreamer,
+  onCancelStreamer,
+  streamerSaving = false,
+  streamerError = null,
+  streamerFeedback = null,
 }: ProfileIdentityDashboardProps) => {
   const heroAvatar = (
     <div ref={avatarAnchorRef} className="flex justify-center">
@@ -170,10 +223,22 @@ const ProfileIdentityDashboard = ({
             cleanSheets={cleanSheets}
             proClubIoPending={proClubIoPending}
           />
+          {socialFeedback && !socialEditMode ? (
+            <p className="rounded-lg border border-omjep-success/35 bg-omjep-success/10 px-3 py-2 text-xs font-medium text-omjep-text-primary">
+              {socialFeedback}
+            </p>
+          ) : null}
           <PlayerSocialLinksSection
             rows={socialRows}
             isPublicProfile={isPublicProfile}
-            onEditRequest={onOpenIdentityEditor}
+            onEditSocial={onEditSocial}
+            editMode={socialEditMode}
+            draft={socialDraft}
+            onDraftChange={onSocialDraftChange}
+            onSaveSocial={onSaveSocial}
+            onCancelSocial={onCancelSocial}
+            socialSaving={socialSaving}
+            socialError={socialError}
           />
         </div>
         <div className="space-y-5 lg:col-span-5">
@@ -193,7 +258,22 @@ const ProfileIdentityDashboard = ({
             activeEffectLabel={equippedCardStyle?.cssEffect}
             showVipBadge={showVipBadge}
           />
-          <PlayerStreamerCreatorSection creator={creator} onConfigure={onConfigureStreamer} />
+          {streamerFeedback && !streamerEditMode ? (
+            <p className="rounded-lg border border-omjep-success/35 bg-omjep-success/10 px-3 py-2 text-xs font-medium text-omjep-text-primary">
+              {streamerFeedback}
+            </p>
+          ) : null}
+          <PlayerStreamerCreatorSection
+            creator={creator}
+            onConfigure={onConfigureStreamer}
+            editMode={streamerEditMode}
+            draft={streamerDraft}
+            onStreamerDraftChange={onStreamerDraftChange}
+            onSaveStreamer={onSaveStreamer}
+            onCancelStreamer={onCancelStreamer}
+            streamerSaving={streamerSaving}
+            streamerError={streamerError}
+          />
         </div>
       </div>
 
