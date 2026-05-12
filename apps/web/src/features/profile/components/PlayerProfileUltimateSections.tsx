@@ -228,7 +228,7 @@ export const PlayerProfileHeroSection = ({
             <dd className="mt-0.5 font-semibold text-omjep-text-primary">{placeholder(lastName)}</dd>
           </div>
           <div className="rounded-xl border border-omjep-border/80 bg-omjep-bg-panel/90 px-3 py-2.5 sm:col-span-2">
-            <dt className="text-[10px] font-bold uppercase tracking-wide text-omjep-text-muted">ID EA / pseudo plateforme</dt>
+            <dt className="text-[10px] font-bold uppercase tracking-wide text-omjep-text-muted">ID EA FC 26 / Persona</dt>
             <dd className="mt-0.5 font-mono text-omjep-text-primary">{placeholder(eaPersonaId)}</dd>
           </div>
           <div className="rounded-xl border border-omjep-border/80 bg-omjep-bg-panel/90 px-3 py-2.5">
@@ -274,7 +274,10 @@ export interface PlayerProClubsStatsSectionProps {
   goals: number | null
   assists: number | null
   cleanSheets: number | null
-  proClubIoPending: boolean
+  /** Valeur affichée pour l’ID EA FC 26 (persona) — vide = « À compléter » côté carte sync */
+  eaFcPersonaDisplay: string
+  /** Clic : scroll vers le champ ID dans la page profil */
+  onConfigureEaFcId?: () => void
 }
 
 export const PlayerProClubsStatsSection = ({
@@ -290,9 +293,12 @@ export const PlayerProClubsStatsSection = ({
   goals,
   assists,
   cleanSheets,
-  proClubIoPending,
+  eaFcPersonaDisplay,
+  onConfigureEaFcId,
 }: PlayerProClubsStatsSectionProps) => {
   const fmt = (n: number | null) => (n === null || Number.isNaN(n) ? '—' : String(n))
+  const personaTrim = eaFcPersonaDisplay.trim()
+  const idLine = personaTrim ? personaTrim : 'À compléter'
 
   return (
     <section
@@ -313,17 +319,53 @@ export const PlayerProClubsStatsSection = ({
         </div>
       </header>
 
-      {proClubIoPending ? (
-        <div
-          className="mb-4 rounded-xl border border-omjep-cobalt/30 bg-omjep-cobalt/8 px-4 py-3 text-sm text-omjep-text-secondary"
-          role="status"
-        >
-          <p className="font-semibold text-omjep-text-primary">En attente de synchronisation proclub.io</p>
-          <p className="mt-1 text-xs text-omjep-text-muted">
-            Les données affichées combinent votre progression OMJEP et des estimations locales jusqu&apos;à la sync officielle.
-          </p>
+      <div
+        className="mb-4 rounded-xl border border-[color-mix(in_srgb,var(--omjep-mauve)_32%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-mauve)_8%,var(--omjep-bg-panel-soft))] p-4 ring-1 ring-[color-mix(in_srgb,var(--omjep-gold)_18%,transparent)]"
+        role="region"
+        aria-label="Synchronisation EA FC 26"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 flex-1 space-y-2">
+            <span className="inline-flex rounded-full border border-[color-mix(in_srgb,var(--omjep-gold)_42%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_12%,transparent)] px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))]">
+              Beta
+            </span>
+            <p className="font-display text-base font-bold text-omjep-text-primary sm:text-lg">
+              Synchronisation EA FC 26 bientôt disponible
+            </p>
+            <p className="text-xs leading-relaxed text-omjep-text-secondary sm:text-sm">
+              La connexion proclubs.io sera activée progressivement pendant la beta. En attendant, complétez votre ID
+              EA FC 26, vos liens sociaux et votre espace streamer.
+            </p>
+          </div>
         </div>
-      ) : null}
+        <dl className="mt-4 grid gap-2 rounded-xl border border-omjep-border/70 bg-omjep-bg-panel/80 p-3 text-xs sm:grid-cols-2">
+          <div>
+            <dt className="font-bold uppercase tracking-wide text-omjep-text-muted">Connexion</dt>
+            <dd className="mt-0.5 font-semibold text-omjep-text-primary">Non connecté</dd>
+          </div>
+          <div>
+            <dt className="font-bold uppercase tracking-wide text-omjep-text-muted">ID EA FC 26</dt>
+            <dd className="mt-0.5 break-all font-semibold text-omjep-mauve">{idLine}</dd>
+          </div>
+          <div>
+            <dt className="font-bold uppercase tracking-wide text-omjep-text-muted">Source</dt>
+            <dd className="mt-0.5 text-omjep-text-primary">proclubs.io / EA Clubs</dd>
+          </div>
+          <div>
+            <dt className="font-bold uppercase tracking-wide text-omjep-text-muted">Statut</dt>
+            <dd className="mt-0.5 text-omjep-text-primary">Beta — sync bientôt disponible</dd>
+          </div>
+        </dl>
+        {onConfigureEaFcId ? (
+          <button
+            type="button"
+            onClick={onConfigureEaFcId}
+            className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-[color-mix(in_srgb,var(--omjep-gold)_45%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_12%,#0a0712)] px-4 py-2.5 text-xs font-black uppercase tracking-wide text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))] shadow-[0_0_14px_color-mix(in_srgb,var(--omjep-gold)_14%,transparent)] transition hover:brightness-110 sm:w-auto"
+          >
+            Configurer mon ID EA FC 26
+          </button>
+        ) : null}
+      </div>
 
       <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div className="rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5 text-center">
@@ -343,10 +385,14 @@ export const PlayerProClubsStatsSection = ({
           <p className="text-lg font-black tabular-nums text-omjep-cobalt">{fmt(assists)}</p>
         </div>
         <div className="col-span-2 rounded-xl border border-omjep-border bg-omjep-bg-elevated/90 px-3 py-2.5 text-center sm:col-span-4">
-          <p className="text-[9px] font-bold uppercase tracking-wide text-omjep-text-muted">Clean sheets (mock)</p>
+          <p className="text-[9px] font-bold uppercase tracking-wide text-omjep-text-muted">Clean sheets</p>
           <p className="text-lg font-black tabular-nums text-omjep-text-primary">{fmt(cleanSheets)}</p>
         </div>
       </div>
+
+      <p className="mb-4 text-center text-[11px] font-medium leading-snug text-omjep-text-muted sm:text-left">
+        Données estimées — synchronisation officielle à venir
+      </p>
 
       <div className="mb-5 rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/80 p-4">
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">

@@ -56,7 +56,8 @@ interface ProfileIdentityDashboardProps {
   cleanSheets: number | null
   overallRating: number
   proClubLevel: number
-  proClubIoPending: boolean
+  eaFcPersonaDisplay: string
+  onConfigureEaFcId?: () => void
   showVipBadge: boolean
   creator: CreatorProfileBundle
   onConfigureStreamer: () => void
@@ -139,7 +140,8 @@ const ProfileIdentityDashboard = ({
   cleanSheets,
   overallRating,
   proClubLevel,
-  proClubIoPending,
+  eaFcPersonaDisplay,
+  onConfigureEaFcId,
   showVipBadge,
   creator,
   onConfigureStreamer,
@@ -221,7 +223,8 @@ const ProfileIdentityDashboard = ({
             goals={matchStats?.goals ?? null}
             assists={matchStats?.assists ?? null}
             cleanSheets={cleanSheets}
-            proClubIoPending={proClubIoPending}
+            eaFcPersonaDisplay={eaFcPersonaDisplay}
+            onConfigureEaFcId={onConfigureEaFcId}
           />
           {socialFeedback && !socialEditMode ? (
             <p className="rounded-lg border border-omjep-success/35 bg-omjep-success/10 px-3 py-2 text-xs font-medium text-omjep-text-primary">

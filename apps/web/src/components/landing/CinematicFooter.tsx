@@ -6,8 +6,8 @@ import { toast } from 'sonner'
 const linksNav = [
   { to: '/', label: 'Rejoindre OMJEP' },
   { to: '/palmares', label: 'Palmarès officiel' },
-  { to: '/plateforme#leaderboard', label: 'Ranking national' },
-  { to: '/plateforme#live-matches', label: 'Matchs officiels' },
+  { to: '/register', label: 'Inscription' },
+  { to: '/login', label: 'Connexion joueur' },
   { to: '/community', label: 'Communauté eSport' },
 ]
 

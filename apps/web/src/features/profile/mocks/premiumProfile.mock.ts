@@ -41,7 +41,7 @@ export interface UserPremiumProfile {
     cleanSheets?: number
   }
   cardStylesInventory: UserCardStyle[]
-  /** false / undefined = callout synchronisation proclub.io côté UI */
+  /** Réservé futur import stats (non utilisé pour le bandeau beta profil) */
   proClubIoSynced?: boolean
   vipActive?: boolean
   streamingProfile?: {

@@ -437,7 +437,27 @@ export default function ProfilePage() {
     setSuccess(false);
 
     try {
-      await api.patch('/users/profile', form);
+      const { data } = await api.patch<MePayload>('/users/profile', form);
+      patchUser({
+        ea_persona_name: data.ea_persona_name ?? form.ea_persona_name,
+        preferred_position: data.preferred_position ?? form.preferred_position,
+        nationality: data.nationality ?? form.nationality,
+      });
+      setMe((prev) =>
+        prev
+          ? {
+              ...prev,
+              ea_persona_name: data.ea_persona_name ?? prev.ea_persona_name,
+              preferred_position: data.preferred_position ?? prev.preferred_position,
+              nationality: data.nationality ?? prev.nationality,
+            }
+          : prev,
+      );
+      setForm({
+        ea_persona_name: data.ea_persona_name ?? '',
+        preferred_position: data.preferred_position ?? '',
+        nationality: data.nationality ?? '',
+      });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch {
@@ -749,7 +769,6 @@ export default function ProfilePage() {
   );
 
   const showVipBadge = Boolean(premiumProfile?.vipActive);
-  const proClubIoPending = premiumProfile?.proClubIoSynced !== true;
   const statValues: Array<{ id: 'PAC' | 'SHO' | 'PAS' | 'DRI' | 'DEF' | 'PHY'; value: number }> = premiumProfile?.attributes
     ? [
         { id: 'PAC', value: premiumProfile.attributes.pace },
@@ -772,6 +791,16 @@ export default function ProfilePage() {
     Math.round(statValues.reduce((a, s) => a + s.value, 0) / Math.max(statValues.length, 1)),
   );
   const cleanSheetsFromPremium = premiumProfile?.performance?.cleanSheets ?? null;
+  const eaFcPersonaDisplay =
+    form.ea_persona_name.trim() || (user?.ea_persona_name ?? '').trim() || (me?.ea_persona_name ?? '').trim() || '';
+
+  const handleConfigureEaFcId = useCallback(() => {
+    const el = document.getElementById('ea_name');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      window.setTimeout(() => el.focus(), 400);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -928,7 +957,8 @@ export default function ProfilePage() {
                 cleanSheets={cleanSheetsFromPremium}
                 overallRating={overallRating}
                 proClubLevel={level}
-                proClubIoPending={proClubIoPending}
+                eaFcPersonaDisplay={eaFcPersonaDisplay}
+                onConfigureEaFcId={handleConfigureEaFcId}
                 showVipBadge={showVipBadge}
                 creator={creatorBundle}
                 onConfigureStreamer={openStreamerEditor}
@@ -960,8 +990,8 @@ export default function ProfilePage() {
             <h2 className="font-display text-xl font-bold text-omjep-text-primary">Réglages compétition</h2>
             <p className="mt-2 text-sm leading-relaxed text-omjep-text-secondary">
               Votre{' '}
-              <span className="font-semibold text-omjep-mauve">pseudo EA Sports</span> est utilisé pour la
-              récupération des stats. Il doit correspondre à votre gamertag.
+              <span className="font-semibold text-omjep-mauve">ID EA FC 26 / Persona</span> sera utilisé plus tard pour
+              associer vos stats EA FC 26 à votre profil OMJEP. Complétez-le dès maintenant pour la beta.
             </p>
             </div>
             <button
@@ -1009,7 +1039,7 @@ export default function ProfilePage() {
 
             <div className="space-y-2">
               <label htmlFor="ea_name" className="block text-sm font-medium text-omjep-text-primary">
-                Pseudo EA Sports
+                ID EA FC 26 / Persona
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
@@ -1020,11 +1050,14 @@ export default function ProfilePage() {
                   type="text"
                   value={form.ea_persona_name}
                   onChange={(e) => update('ea_persona_name', e.target.value)}
-                  placeholder="Ex: xEagle_Sniper"
+                  placeholder="Ex. Polga00088"
                   className="w-full rounded-xl border border-omjep-border bg-omjep-bg-panel-soft py-3 pl-11 pr-4 text-sm text-omjep-text-primary outline-none transition-all placeholder:text-omjep-text-muted hover:border-omjep-mauve/35 focus:border-omjep-mauve focus:ring-2 focus:ring-omjep-mauve/20"
                 />
               </div>
-              <p className="text-xs text-omjep-text-muted">Doit correspondre exactement à votre pseudo en jeu.</p>
+              <p className="text-xs text-omjep-text-muted">
+                Utilisé plus tard pour associer vos stats EA FC 26 à votre profil OMJEP. Saisissez le même identifiant
+                qu&apos;en jeu.
+              </p>
             </div>
 
             <div className="space-y-2">

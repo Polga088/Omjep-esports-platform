@@ -104,7 +104,7 @@ export default function Home() {
             <div className="flex items-center gap-2 text-omjep-mauve">
               <Bell className="h-4 w-4 shrink-0" aria-hidden />
               <p className="text-[10px] font-bold uppercase tracking-wider text-omjep-text-secondary">
-                Aperçu plateforme
+                Aperçu compétition
               </p>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-omjep-text-secondary">

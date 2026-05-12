@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/context/ThemeContext'
@@ -12,7 +12,6 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import AdminRoute from '@/components/AdminRoute'
 import ModeratorRoute from '@/components/ModeratorRoute'
 import ManagerRoute from '@/components/ManagerRoute'
-import Home from '@/pages/Home'
 import JoinOmjep from '@/pages/JoinOmjep'
 import Palmares from '@/pages/Palmares'
 import Login from '@/pages/Login'
@@ -100,7 +99,7 @@ function AnimatedAppRoutes() {
             <Route element={<MainLayout />}>
               <Route path="/" element={<JoinOmjep />} />
               <Route path="/join" element={<JoinOmjep />} />
-              <Route path="/plateforme" element={<Home />} />
+              <Route path="/plateforme/*" element={<Navigate to="/" replace />} />
               <Route path="/palmares" element={<Palmares />} />
               <Route path="/community" element={<Community />} />
               <Route path="/community/news/:slugOrId" element={<ArticleDetail />} />

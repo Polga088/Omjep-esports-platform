@@ -179,19 +179,19 @@ export default function JoinOmjepPage() {
       name: 'Ligue OMJEP',
       blurb: 'Saison longue, rythme régulier et titre national.',
       tone: 'gold' as const,
-      href: '/plateforme#live-matches',
+      href: '/register',
     },
     {
       name: 'Coupe du Trône eSport',
       blurb: 'Knockout intense, moments décisifs et prestige royal.',
       tone: 'copper' as const,
-      href: '/plateforme#live-matches',
+      href: '/register',
     },
     {
       name: 'Champions League',
       blurb: 'Sommet continental réservé aux meilleurs clubs OMJEP.',
       tone: 'violet' as const,
-      href: '/plateforme#live-matches',
+      href: '/register',
     },
   ]
 
@@ -317,7 +317,7 @@ export default function JoinOmjepPage() {
               <ArrowRight className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
             </Link>
             <Link
-              to="/plateforme#live-matches"
+              to="/login"
               className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-[color-mix(in_srgb,#0c0820_75%,transparent)] px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_45%,white)] hover:bg-[color-mix(in_srgb,var(--omjep-mauve)_18%,#0c0820)]"
             >
               Voir les compétitions
@@ -445,7 +445,7 @@ export default function JoinOmjepPage() {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-omjep-border/60 bg-[color-mix(in_srgb,var(--omjep-mauve)_10%,var(--omjep-bg-panel-soft))] px-4 py-3 sm:px-6">
             <div className="flex items-center gap-2 text-omjep-text-primary">
               <LayoutDashboard className="h-4 w-4 text-omjep-mauve" aria-hidden />
-              <span className="font-heading text-xs font-bold uppercase tracking-wider">Aperçu plateforme</span>
+              <span className="font-heading text-xs font-bold uppercase tracking-wider">Aperçu cockpit compétition</span>
             </div>
             <span className="rounded-full border border-[color-mix(in_srgb,var(--omjep-gold)_35%,var(--omjep-border))] bg-[color-mix(in_srgb,var(--omjep-gold)_10%,transparent)] px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-[color-mix(in_srgb,var(--omjep-accent-gold)_95%,var(--omjep-text-primary))]">
               Maquette UI
