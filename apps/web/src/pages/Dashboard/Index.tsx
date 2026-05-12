@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { animate, motion } from 'framer-motion'
+import { animate } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
-  Crown,
   Swords,
   Trophy,
-  Newspaper,
-  ArrowUpRight,
   Calendar,
   Repeat,
   ShoppingBag,
@@ -16,13 +13,9 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/store/useAuthStore'
 import api from '@/lib/api'
-import { formatCurrency } from '@/utils/formatCurrency'
 import LivePlayerCard from '@/components/LivePlayerCard'
-import { TechnicalDataValue } from '@/components/kimi/TechnicalDataValue'
-import WidgetGrid from '@/components/cockpit/WidgetGrid'
-import WidgetTile from '@/components/cockpit/WidgetTile'
-import ContactZone from '@/components/cockpit/ContactZone'
 import DashboardPageHeading from '@/components/dashboard/DashboardPageHeading'
+import { CockpitCommandModules } from '@/components/dashboard/CockpitModules'
 
 function xpForLevel(level: number) { return (level - 1) ** 2 * 100 }
 function xpForNextLevel(level: number) { return level ** 2 * 100 }
@@ -119,12 +112,6 @@ function useCountUp(target: number, decimals: number, enabled: boolean, delay = 
   return ref
 }
 
-function WidgetSkeleton() {
-  return (
-    <div className="h-full w-full animate-pulse rounded-lg border border-omjep-border/80 bg-gradient-to-br from-omjep-bg-panel-soft via-omjep-bg-panel/40 to-omjep-bg-panel-soft" />
-  )
-}
-
 const COCKPIT_SHORTCUTS: { to: string; label: string; icon: typeof Users }[] = [
   { to: '/dashboard/team', label: 'Mon équipe', icon: Users },
   { to: '/dashboard/matches', label: 'Matchs', icon: Swords },
@@ -207,8 +194,6 @@ export default function DashboardIndex() {
   const xpPct = xpProgress(xp, level)
   const oc = user?.omjepCoins ?? 0
   const jepy = user?.jepyCoins ?? 0
-  const walletSegOc = Math.min(100, Math.round((Math.log10(oc + 10) / 5) * 100))
-  const walletSegJ = Math.min(100, Math.round((Math.log10(jepy + 10) / 4.2) * 100))
 
   const influenceRef = useCountUp(level, 0, !loading)
   const ocRef = useCountUp(oc, 0, !loading, 0.2)
@@ -241,6 +226,10 @@ export default function DashboardIndex() {
       ? nextMatch.awayTeam
       : nextMatch.homeTeam
     : null
+  const reservedOc = typeof (user as { reservedOc?: number } | null)?.reservedOc === 'number'
+    ? (user as { reservedOc?: number }).reservedOc ?? 0
+    : null
+  const playerRarity = user?.avatarRarity ? user.avatarRarity.toUpperCase() : 'STANDARD'
 
   const priorities = [
     !hasClub
@@ -505,225 +494,27 @@ export default function DashboardIndex() {
         </div>
       ) : null}
 
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-text-muted">À traiter maintenant</p>
-            <h2 className="font-heading text-lg font-black text-omjep-text-primary">Priorités opérationnelles</h2>
-          </div>
-        </div>
-        <div className="grid gap-3 md:grid-cols-3">
-          {priorities.map((item) => {
-            const Icon = item.icon
-            return (
-              <article key={item.key} className="rounded-xl border border-omjep-border bg-omjep-bg-panel-soft/70 p-4">
-                <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-omjep-gold">
-                  <Icon className="h-4 w-4" />
-                  {item.title}
-                </p>
-                <p className="mt-2 text-sm text-omjep-text-secondary">{item.text}</p>
-                <Link to={item.ctaTo} className="omjep-btn-secondary mt-3 inline-flex px-3 py-2 text-[11px] normal-case tracking-normal">
-                  {item.ctaLabel}
-                </Link>
-              </article>
-            )
-          })}
-        </div>
-      </section>
-
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-text-muted">Modules cockpit</p>
-            <h2 className="font-heading text-lg font-black text-omjep-text-primary">Widgets de pilotage</h2>
-          </div>
-        </div>
-        <WidgetGrid cols={12} rowHeight="minmax(220px, auto)">
-          {/* INFLUENCE — XP + niveau */}
-        <WidgetTile
-          serial="MOD-INF-010"
-          title="Influence"
-          subtitle="Commandement & XP"
-          span={4}
-          rowSpan={2}
-          controls={
-            <Link
-              to="/dashboard/gamification"
-              className="contact-zone rounded-md border border-omjep-border bg-omjep-bg-panel/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary hover:border-omjep-border-gold hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-omjep-border-gold"
-            >
-              XP+
-            </Link>
-          }
-        >
-          {loading ? (
-            <WidgetSkeleton />
-          ) : (
-            <div className="flex h-full flex-col justify-between px-1 py-0.5 sm:px-1.5">
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-omjep-text-secondary">Niveau</span>
-                <Crown className="h-5 w-5 text-omjep-gold/85" aria-hidden />
-              </div>
-              <div className="my-2.5 flex flex-col items-start gap-1 sm:my-3 sm:flex-row sm:items-end sm:gap-2">
-                <TechnicalDataValue accent="gold" symbolScale="lg" className="text-5xl sm:text-6xl">
-                  <span ref={influenceRef} className="font-mono text-5xl font-bold text-omjep-text-primary sm:text-6xl" />
-                </TechnicalDataValue>
-                <span className="pb-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-omjep-text-muted sm:pb-2 sm:text-[12px]">Influence</span>
-              </div>
-              <div className="space-y-1.5 sm:space-y-2">
-                <div className="h-[2px] w-full bg-omjep-border">
-                  <div className="h-[2px] bg-omjep-mauve" style={{ width: `${xpPct}%` }} />
-                </div>
-                <p className="text-right text-[10px] uppercase tracking-[0.18em] text-omjep-text-muted">Lvl {level} · {xp} XP</p>
-              </div>
-            </div>
-          )}
-        </WidgetTile>
-
-        <WidgetTile
-          serial="MOD-NEXT-011"
-          title="Prochain rendez-vous"
-          subtitle="Pulse compétition"
-          span={8}
-          rowSpan={1}
-        >
-          {loading ? (
-            <WidgetSkeleton />
-          ) : nextMatch && nextKickoff ? (
-            <div className="flex h-full flex-col justify-between gap-2">
-              <p className="font-heading text-xl font-black text-omjep-text-primary">
-                {nextMatch.homeTeam.name} <span className="text-omjep-mauve">vs</span> {nextMatch.awayTeam.name}
-              </p>
-              <p className="text-xs text-omjep-text-secondary">
-                {nextMatch.competition?.name ?? 'Compétition'} · {nextKickoff.date} {nextKickoff.time}
-              </p>
-              <ContactZone as="link" to="/dashboard/schedule" size="sm" iconRight={<ArrowUpRight className="h-3.5 w-3.5" />}>
-                Ouvrir le calendrier
-              </ContactZone>
-            </div>
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center text-center">
-              <Calendar className="mb-2 h-7 w-7 text-omjep-gold/80" />
-              <p className="text-xs text-omjep-text-secondary">Calendrier en attente de publication</p>
-            </div>
-          )}
-        </WidgetTile>
-
-        <WidgetTile
-          serial="MOD-PLAYER-009"
-          title="Profil joueur"
-          subtitle="Carte active"
-          span={6}
-          rowSpan={2}
-          bodyClassName="!p-0"
-          focus
-        >
-          {loading ? (
-            <div className="p-4">
-              <WidgetSkeleton />
-            </div>
-          ) : (
-            <LivePlayerCard user={user} embedded />
-          )}
-        </WidgetTile>
-
-        <WidgetTile
-          serial="MOD-WALLET-020"
-          title="Économie personnelle"
-          subtitle="Portefeuille OC & Jepy"
-          span={6}
-          rowSpan={2}
-          controls={
-            <Link
-              to="/dashboard/store"
-              className="contact-zone rounded-md border border-omjep-border bg-omjep-bg-panel/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary hover:border-omjep-border-gold hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-omjep-border-gold"
-            >
-              Boutique
-            </Link>
-          }
-        >
-          {loading ? (
-            <WidgetSkeleton />
-          ) : (
-            <div className="flex h-full flex-col justify-between px-1 py-0.5 sm:px-1.5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-omjep-text-muted">OC</p>
-                  <TechnicalDataValue accent="gold" symbolScale="md" className="text-4xl sm:text-5xl">
-                    <span ref={ocRef} className="font-mono font-bold text-omjep-text-primary" />
-                  </TechnicalDataValue>
-                  <p className="mt-1 text-[11px] text-omjep-text-secondary">{formatCurrency(oc, 'OC')}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-omjep-text-muted">Jepy</p>
-                  <TechnicalDataValue accent="cyan" symbolScale="md" className="text-4xl sm:text-5xl">
-                    <span ref={jepyRef} className="font-mono font-bold text-omjep-mauve" />
-                  </TechnicalDataValue>
-                  <p className="mt-1 text-[11px] text-omjep-text-secondary">{formatCurrency(jepy, 'Jepy')}</p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div>
-                  <p className="mb-1 text-[10px] uppercase tracking-[0.16em] text-omjep-text-muted">Réserve OC</p>
-                  <div className="h-[2px] w-full bg-omjep-border">
-                    <div className="h-[2px] bg-omjep-mauve" style={{ width: `${walletSegOc}%` }} />
-                  </div>
-                </div>
-                <div>
-                  <p className="mb-1 text-[10px] uppercase tracking-[0.16em] text-omjep-text-muted">Réserve Jepy</p>
-                  <div className="h-[2px] w-full bg-omjep-border">
-                    <div className="h-[2px] bg-omjep-mauve" style={{ width: `${walletSegJ}%` }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </WidgetTile>
-
-        <WidgetTile
-          serial="MOD-NWS-040"
-          title="Flux mercato"
-          subtitle="Live news"
-          span={12}
-          rowSpan={2}
-          bodyClassName="!p-0"
-          controls={
-            <Link
-              to="/dashboard/transfers"
-              className="contact-zone rounded-md border border-omjep-border bg-omjep-bg-panel/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-omjep-text-secondary hover:border-omjep-border-gold hover:bg-omjep-bg-panel-soft/45 hover:text-omjep-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-omjep-border-gold"
-            >
-              Mercato
-            </Link>
-          }
-        >
-          {loading ? (
-            <div className="p-3 sm:p-4">
-              <WidgetSkeleton />
-            </div>
-          ) : news.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center text-center">
-              <Newspaper className="mb-2 h-8 w-8 text-omjep-mauve/75" />
-              <p className="text-xs text-omjep-text-secondary">Aucune actualité récente</p>
-            </div>
-          ) : (
-            <div className="flex h-full snap-x snap-mandatory gap-3 overflow-x-auto p-3 sm:gap-4 sm:p-4">
-              {news.map((n) => (
-                <motion.article
-                  key={n.id}
-                  layout
-                  className="min-w-[280px] max-w-[420px] shrink-0 snap-start rounded-2xl border border-omjep-border bg-omjep-bg-panel/35 p-5 shadow-xl backdrop-blur-xl transition-colors hover:border-omjep-border-gold sm:min-w-[320px] sm:p-7"
-                >
-                  <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-omjep-gold">
-                    {n.type === 'TRANSFER' || n.type === 'CONTRACT_RENEWAL' ? 'Signature' : 'Actualité'}
-                  </p>
-                  <p className="mt-2.5 line-clamp-2 font-display text-[15px] font-bold text-omjep-text-primary sm:mt-3 sm:text-base">{n.title}</p>
-                  <p className="mt-2 line-clamp-3 text-[12px] leading-relaxed text-omjep-text-secondary sm:mt-2.5">{n.description}</p>
-                </motion.article>
-              ))}
-            </div>
-          )}
-        </WidgetTile>
-        </WidgetGrid>
-      </section>
+      <CockpitCommandModules
+        loading={loading}
+        user={user}
+        dataTotals={data?.totals ?? null}
+        scheduleMatchCount={scheduleMatches.length}
+        news={news}
+        nextMatch={nextMatch}
+        nextKickoff={nextKickoff}
+        nextOpponent={nextOpponent}
+        myClubName={myClubName}
+        hasClub={hasClub}
+        roleLabel={roleLabel}
+        level={level}
+        xp={xp}
+        xpPct={xpPct}
+        oc={oc}
+        jepy={jepy}
+        reservedOc={reservedOc}
+        playerRarityLabel={playerRarity}
+        priorities={priorities}
+      />
     </div>
   )
 }
