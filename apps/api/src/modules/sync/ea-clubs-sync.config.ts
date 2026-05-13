@@ -4,6 +4,13 @@ export function isEaClubsSyncEnabled(): boolean {
   return v === '1' || String(v).toLowerCase() === 'true'
 }
 
+/**
+ * Quand false : pas d’appels HTTP planifiés vers proclubs.io (SyncService, EaStatsService cron),
+ * ni scrape ProClubs côté `ProClubsService` / sync manuelle exposée (beta silencieuse).
+ */
+export const EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE =
+  'Synchronisation désactivée pendant la beta.'
+
 export const EA_CLUBS_PROVIDER = 'EA_CLUBS' as const
 
 export const MATCH_SYNC_STATUS = {

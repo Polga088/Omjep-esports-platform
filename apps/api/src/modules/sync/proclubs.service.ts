@@ -8,6 +8,10 @@ import { PrismaService } from '@api/prisma/prisma.service';
 import { LevelingService } from '../leveling/leveling.service';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import {
+  EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE,
+  isEaClubsSyncEnabled,
+} from './ea-clubs-sync.config';
 
 // ─── Scraped data structures ────────────────────────────────────────
 
@@ -76,6 +80,10 @@ export class ProClubsService {
    * result + scorers/assisters, and matches them to OMJEP users via ea_persona_name.
    */
   async syncFromProClubsUrl(url: string): Promise<SyncFromUrlResult> {
+    if (!isEaClubsSyncEnabled()) {
+      return { synced: false, reason: EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE };
+    }
+
     this.logger.log(`[ProClubs] Scraping URL: ${url}`);
 
     const scraped = await this.scrapeProClubsPage(url);
@@ -121,6 +129,10 @@ export class ProClubsService {
    * Requires a matchId to target a specific OMJEP match.
    */
   async syncMatchFromUrl(matchId: string): Promise<SyncFromUrlResult> {
+    if (!isEaClubsSyncEnabled()) {
+      return { synced: false, reason: EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE };
+    }
+
     const match = await this.prisma.match.findUnique({
       where: { id: matchId },
       include: {
@@ -245,6 +257,10 @@ export class ProClubsService {
   async scrapeProClubsPage(
     url: string,
   ): Promise<ScrapedMatchResult | null> {
+    if (!isEaClubsSyncEnabled()) {
+      return null;
+    }
+
     try {
       const { data: html } = await axios.get<string>(url, {
         timeout: 15_000,
@@ -532,6 +548,17 @@ export class ProClubsService {
       throw new NotFoundException(`Club #${clubId} introuvable.`);
     }
 
+    if (!isEaClubsSyncEnabled()) {
+      return {
+        synced: false,
+        reason: EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE,
+        xp_prestige: club.xp,
+        prestige_level: club.prestige_level,
+        playersUpdated: 0,
+        rosterRowsParsed: 0,
+      };
+    }
+
     const url = club.proclubs_url?.trim();
     if (!url) {
       throw new BadRequestException(
@@ -655,6 +682,10 @@ export class ProClubsService {
   private async scrapeClubRosterData(
     url: string,
   ): Promise<ScrapedClubRosterRow[]> {
+    if (!isEaClubsSyncEnabled()) {
+      return [];
+    }
+
     try {
       const { data: html } = await axios.get<string>(url, {
         timeout: 20_000,

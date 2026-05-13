@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '@api/prisma/prisma.service';
+import { isEaClubsSyncEnabled } from './ea-clubs-sync.config';
 
 // -------------------------------------------------------------------
 // Types describing the shape of the external API response
@@ -28,6 +29,8 @@ interface ExternalClubStatsResponse {
 export class SyncService {
   private readonly logger = new Logger(SyncService.name);
 
+  private static proclubsCronDisabledNoticeLogged = false;
+
   // Base URL is read from an env variable so it can be swapped without
   // touching code (dev mock server → staging → production API).
   private readonly apiBaseUrl =
@@ -44,6 +47,16 @@ export class SyncService {
   // -----------------------------------------------------------------
   @Cron(CronExpression.EVERY_5_MINUTES)
   async syncClubStats(): Promise<void> {
+    if (!isEaClubsSyncEnabled()) {
+      if (!SyncService.proclubsCronDisabledNoticeLogged) {
+        SyncService.proclubsCronDisabledNoticeLogged = true;
+        this.logger.log(
+          '[EA Sync] ProClubs.io scheduled club stats sync skipped (EA_CLUBS_SYNC_ENABLED=false).',
+        );
+      }
+      return;
+    }
+
     this.logger.log('⚡ [SyncService] Starting club stats synchronisation…');
 
     // ── Step 1 : Fetch all teams that are linked to an EA club ──────

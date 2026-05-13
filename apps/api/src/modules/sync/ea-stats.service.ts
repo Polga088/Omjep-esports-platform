@@ -3,6 +3,10 @@ import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '@api/prisma/prisma.service';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import {
+  EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE,
+  isEaClubsSyncEnabled,
+} from './ea-clubs-sync.config';
 
 export interface EaPlayerProfileStats {
   games: number;
@@ -33,6 +37,8 @@ export interface AutoSyncSummary {
   usersSynced: number;
   clubsScanned: number;
   clubsSynced: number;
+  /** Présent lorsque la sync externe est coupée par le feature flag. */
+  message?: string;
 }
 
 interface CacheEntry<T> {
@@ -43,6 +49,7 @@ interface CacheEntry<T> {
 @Injectable()
 export class EaStatsService {
   private readonly logger = new Logger(EaStatsService.name);
+  private static eaStatsCronDisabledNoticeLogged = false;
   private readonly playerCache = new Map<string, CacheEntry<EaPlayerProfileStats>>();
   private readonly clubCache = new Map<string, CacheEntry<EaClubProfileStats>>();
   private static readonly CACHE_TTL_MS = 10 * 60 * 1000;
@@ -51,6 +58,16 @@ export class EaStatsService {
 
   @Cron('0 */2 * * *')
   async handleAutoSyncCron(): Promise<void> {
+    if (!isEaClubsSyncEnabled()) {
+      if (!EaStatsService.eaStatsCronDisabledNoticeLogged) {
+        EaStatsService.eaStatsCronDisabledNoticeLogged = true;
+        this.logger.log(
+          '[EA Sync] EaStatsService scheduled sync skipped (EA_CLUBS_SYNC_ENABLED=false).',
+        );
+      }
+      return;
+    }
+
     this.logger.log('[EaStats] Scheduled sync started (every 2h)');
     try {
       await this.autoSyncAll();
@@ -62,6 +79,16 @@ export class EaStatsService {
   }
 
   async autoSyncAll(): Promise<AutoSyncSummary> {
+    if (!isEaClubsSyncEnabled()) {
+      return {
+        usersScanned: 0,
+        usersSynced: 0,
+        clubsScanned: 0,
+        clubsSynced: 0,
+        message: EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE,
+      };
+    }
+
     const users = await this.prisma.eaExternalStats.findMany({
       where: {
         proclubs_url: {
@@ -115,6 +142,10 @@ export class EaStatsService {
     userId: string,
     proclubsUrl: string,
   ): Promise<SyncEaStatsResult> {
+    if (!isEaClubsSyncEnabled()) {
+      return { synced: false, reason: EXTERNAL_EA_PROCLUBS_SYNC_DISABLED_MESSAGE };
+    }
+
     this.logger.log(`[EaStats] Syncing profile for user ${userId} from ${proclubsUrl}`);
 
     try {
@@ -214,6 +245,10 @@ export class EaStatsService {
   }
 
   async syncClubProfile(clubId: string, proclubsUrl: string): Promise<boolean> {
+    if (!isEaClubsSyncEnabled()) {
+      return false;
+    }
+
     try {
       const stats = await this.fetchClubStatsCached(proclubsUrl);
 
