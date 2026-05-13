@@ -1,4 +1,13 @@
-import { IsArray, IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsObject,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import type { NewsCategory } from '../news.service';
 
 export class CreateNewsArticleDto {
@@ -32,4 +41,20 @@ export class CreateNewsArticleDto {
   @IsString({ each: true })
   @IsOptional()
   body?: string[];
+
+  @IsIn(['MERCATO', 'TOURNAMENT', 'UPDATE'])
+  @IsOptional()
+  type?: NewsCategory;
+
+  @IsString()
+  @IsOptional()
+  coverTemplate?: string;
+
+  @IsObject()
+  @IsOptional()
+  coverData?: Record<string, unknown>;
+
+  @IsBoolean()
+  @IsOptional()
+  published?: boolean;
 }

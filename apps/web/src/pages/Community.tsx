@@ -17,6 +17,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import api from '@/lib/api'
 import { useAuthStore } from '@/store/useAuthStore'
 import TacticalEmptyState from '@/components/TacticalEmptyState'
+import MercatoArticleCover from '@/components/community/MercatoArticleCover'
 
 type NewsCategory = 'MERCATO' | 'TOURNAMENT' | 'UPDATE'
 
@@ -24,14 +25,28 @@ interface CommunityArticle {
   id: string
   slug: string
   category: NewsCategory
+  type?: NewsCategory
   title: string
   excerpt: string
   readTime: string
   image: string | null
   quote: string | null
   body: string[]
+  coverTemplate?: string | null
+  coverData?: Record<string, unknown> | null
+  published?: boolean
   views: number
   createdAt: string
+}
+
+interface MercatoCoverData {
+  playerName: string
+  departureClubName: string
+  arrivalClubName: string
+  departureClubLogoUrl?: string | null
+  arrivalClubLogoUrl?: string | null
+  amountOc?: number | string
+  status?: string
 }
 
 interface NewsPagination {
@@ -118,18 +133,50 @@ function formatArticleDate(iso: string): string {
   }
 }
 
-function ArticleCover({
-  category,
-  imageUrl,
-  title,
-  tall,
-}: {
-  category: NewsCategory
-  imageUrl: string | null
-  title: string
-  tall?: boolean
-}) {
+function getMercatoCoverData(article: CommunityArticle): MercatoCoverData | null {
+  if ((article.type ?? article.category) !== 'MERCATO') return null
+  if (article.coverTemplate !== 'mercato-template') return null
+  const raw = article.coverData
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
+  const data = raw as Record<string, unknown>
+  if (
+    typeof data.playerName !== 'string' ||
+    typeof data.departureClubName !== 'string' ||
+    typeof data.arrivalClubName !== 'string'
+  ) {
+    return null
+  }
+  return {
+    playerName: data.playerName,
+    departureClubName: data.departureClubName,
+    arrivalClubName: data.arrivalClubName,
+    departureClubLogoUrl:
+      typeof data.departureClubLogoUrl === 'string' ? data.departureClubLogoUrl : null,
+    arrivalClubLogoUrl:
+      typeof data.arrivalClubLogoUrl === 'string' ? data.arrivalClubLogoUrl : null,
+    amountOc:
+      typeof data.amountOc === 'number' || typeof data.amountOc === 'string'
+        ? data.amountOc
+        : undefined,
+    status: typeof data.status === 'string' ? data.status : undefined,
+  }
+}
+
+function ArticleCover({ article, tall }: { article: CommunityArticle; tall?: boolean }) {
+  const category = article.category
+  const imageUrl = article.image
+  const title = article.title
   const h = tall ? 'min-h-[220px] sm:min-h-[280px] lg:min-h-[320px]' : 'min-h-[160px] sm:min-h-[180px]'
+  const mercatoCoverData = getMercatoCoverData(article)
+
+  if (mercatoCoverData) {
+    return (
+      <div className={`relative ${h} w-full overflow-hidden`}>
+        <MercatoArticleCover {...mercatoCoverData} compact={!tall} />
+      </div>
+    )
+  }
+
   if (imageUrl) {
     return (
       <div className={`relative ${h} w-full overflow-hidden`}>
@@ -318,7 +365,7 @@ export default function Community() {
             <section className="mb-12 grid gap-5 lg:grid-cols-3" aria-label="À la une">
               <article className="group overflow-hidden rounded-2xl border border-omjep-border/80 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_94%,#060a12)] shadow-[var(--omjep-shadow-lg)] transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_38%,var(--omjep-border))] hover:shadow-[0_0_40px_-16px_color-mix(in_srgb,var(--omjep-mauve)_35%,transparent)] lg:col-span-2">
                 <button type="button" onClick={() => handleSelectArticle(heroMain)} className="block w-full text-left">
-                  <ArticleCover category={heroMain.category} imageUrl={heroMain.image} title={heroMain.title} tall />
+                  <ArticleCover article={heroMain} tall />
                   <div className="space-y-3 p-5 sm:p-6">
                     <span className={`inline-flex rounded-lg border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${categoryTone(heroMain.category)}`}>
                       {categoryLabel(heroMain.category)}
@@ -344,7 +391,7 @@ export default function Community() {
                     className="group overflow-hidden rounded-xl border border-omjep-border/80 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_94%,#060a12)] shadow-sm transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_35%,var(--omjep-border))]"
                   >
                     <button type="button" onClick={() => handleSelectArticle(article)} className="block w-full text-left">
-                      <ArticleCover category={article.category} imageUrl={article.image} title={article.title} />
+                      <ArticleCover article={article} />
                       <div className="space-y-2 p-4">
                         <span className={`inline-flex rounded-md border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] ${categoryTone(article.category)}`}>
                           {categoryLabel(article.category)}
@@ -371,7 +418,7 @@ export default function Community() {
                       className="group flex flex-col overflow-hidden rounded-xl border border-omjep-border/70 bg-[color-mix(in_srgb,var(--omjep-bg-panel)_92%,#05080f)] shadow-sm transition hover:border-[color-mix(in_srgb,var(--omjep-mauve)_32%,var(--omjep-border))]"
                     >
                       <button type="button" onClick={() => handleSelectArticle(article)} className="flex flex-1 flex-col text-left">
-                        <ArticleCover category={article.category} imageUrl={article.image} title={article.title} />
+                        <ArticleCover article={article} />
                         <div className="flex flex-1 flex-col p-4">
                           <span className={`mb-2 w-fit rounded-md border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] ${categoryTone(article.category)}`}>
                             {categoryLabel(article.category)}

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Eye, LoaderCircle } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import api from '@/lib/api'
+import MercatoArticleCover from '@/components/community/MercatoArticleCover'
 
 type NewsCategory = 'MERCATO' | 'TOURNAMENT' | 'UPDATE'
 
@@ -9,14 +10,28 @@ interface CommunityArticle {
   id: string
   slug: string
   category: NewsCategory
+  type?: NewsCategory
   title: string
   excerpt: string
   readTime: string
   image: string | null
   quote: string | null
   body: string[]
+  coverTemplate?: string | null
+  coverData?: Record<string, unknown> | null
+  published?: boolean
   views: number
   createdAt: string
+}
+
+interface MercatoCoverData {
+  playerName: string
+  departureClubName: string
+  arrivalClubName: string
+  departureClubLogoUrl?: string | null
+  arrivalClubLogoUrl?: string | null
+  amountOc?: number | string
+  status?: string
 }
 
 async function fetchArticle(slugOrId: string): Promise<CommunityArticle> {
@@ -30,6 +45,35 @@ function CategoryBadge({ category }: { category: NewsCategory }) {
       {category}
     </span>
   )
+}
+
+function getMercatoCoverData(article: CommunityArticle): MercatoCoverData | null {
+  if ((article.type ?? article.category) !== 'MERCATO') return null
+  if (article.coverTemplate !== 'mercato-template') return null
+  const raw = article.coverData
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
+  const data = raw as Record<string, unknown>
+  if (
+    typeof data.playerName !== 'string' ||
+    typeof data.departureClubName !== 'string' ||
+    typeof data.arrivalClubName !== 'string'
+  ) {
+    return null
+  }
+  return {
+    playerName: data.playerName,
+    departureClubName: data.departureClubName,
+    arrivalClubName: data.arrivalClubName,
+    departureClubLogoUrl:
+      typeof data.departureClubLogoUrl === 'string' ? data.departureClubLogoUrl : null,
+    arrivalClubLogoUrl:
+      typeof data.arrivalClubLogoUrl === 'string' ? data.arrivalClubLogoUrl : null,
+    amountOc:
+      typeof data.amountOc === 'number' || typeof data.amountOc === 'string'
+        ? data.amountOc
+        : undefined,
+    status: typeof data.status === 'string' ? data.status : undefined,
+  }
 }
 
 export default function ArticleDetail() {
@@ -80,6 +124,8 @@ export default function ArticleDetail() {
     )
   }
 
+  const mercatoCoverData = getMercatoCoverData(article)
+
   return (
     <div className="kimi-community-page relative min-h-screen bg-[#040404] px-4 py-10 text-slate-100 sm:px-6 lg:px-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(212,175,55,0.12),transparent_45%),radial-gradient(circle_at_100%_20%,rgba(30,58,138,0.16),transparent_42%)]" />
@@ -103,11 +149,15 @@ export default function ArticleDetail() {
           {article.excerpt}
         </p>
 
-        {article.image && (
+        {mercatoCoverData ? (
+          <div className="my-8 overflow-hidden rounded-xl border border-white/10">
+            <MercatoArticleCover {...mercatoCoverData} />
+          </div>
+        ) : article.image ? (
           <div className="my-8 h-[340px] overflow-hidden rounded-xl border border-white/10 sm:h-[430px]">
             <img src={article.image} alt={article.title} className="h-full w-full object-cover" />
           </div>
-        )}
+        ) : null}
 
         <section className="space-y-5 text-[15px] leading-8 text-[#e6e2d7]">
           {article.quote && (

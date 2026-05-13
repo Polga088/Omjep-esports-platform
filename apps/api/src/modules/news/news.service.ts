@@ -20,12 +20,16 @@ interface NewsFeedFilters {
 
 interface CreateNewsArticleInput {
   category: NewsCategory;
+  type?: NewsCategory;
   title: string;
   excerpt: string;
   readTime: string;
   image?: string;
   quote?: string;
   body?: string[];
+  coverTemplate?: string;
+  coverData?: Record<string, unknown>;
+  published?: boolean;
 }
 
 const DEFAULT_CATEGORY_IMAGES: Record<NewsCategory, string> = {
@@ -140,17 +144,25 @@ export class NewsService {
     const body = this.getBodyFromMetadata(metadata.body);
     const views = this.getViewsFromMetadata(metadata.views);
     const slug = this.getSlugFromMetadata(metadata, event.title);
+    const type = this.getCategoryFromMetadata(metadata.type, event.type);
 
     return {
       id: event.id,
       slug,
       category,
+      type,
       title: event.title,
       excerpt: event.description,
       readTime: typeof metadata.readTime === 'string' ? metadata.readTime : '5 min',
       image: typeof metadata.image === 'string' && metadata.image.trim().length > 0 ? metadata.image : fallbackImage,
       quote: typeof metadata.quote === 'string' ? metadata.quote : null,
       body,
+      coverTemplate: typeof metadata.coverTemplate === 'string' ? metadata.coverTemplate : null,
+      coverData:
+        metadata.coverData && typeof metadata.coverData === 'object' && !Array.isArray(metadata.coverData)
+          ? (metadata.coverData as Record<string, unknown>)
+          : null,
+      published: typeof metadata.published === 'boolean' ? metadata.published : true,
       views,
       createdAt: event.created_at,
     };
@@ -182,10 +194,14 @@ export class NewsService {
       metadata: {
         slug,
         category: input.category,
+        type: input.type ?? input.category,
         readTime: input.readTime,
         image: safeImage,
         quote: input.quote ?? null,
         body: safeBody,
+        coverTemplate: input.coverTemplate ?? null,
+        coverData: input.coverData ?? null,
+        published: input.published ?? true,
         views: 0,
       },
     });

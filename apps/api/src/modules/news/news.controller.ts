@@ -43,12 +43,16 @@ export class NewsController {
   createArticle(@Body() body: CreateNewsArticleDto) {
     return this.newsService.createArticle({
       category: body.category,
+      type: body.type,
       title: body.title,
       excerpt: body.excerpt,
       readTime: body.readTime,
       image: body.image,
       quote: body.quote,
       body: body.body,
+      coverTemplate: body.coverTemplate,
+      coverData: body.coverData,
+      published: body.published,
     });
   }
 
